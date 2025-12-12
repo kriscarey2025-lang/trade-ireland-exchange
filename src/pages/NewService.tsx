@@ -314,15 +314,26 @@ export default function NewService() {
                   </div>
                 )}
 
-                {/* Categories - different label based on type */}
+                {/* What I can offer in return */}
                 <div className="space-y-3">
-                  <Label>
-                    {isRequest ? "Services I Can Offer in Return (optional)" : "Accept in Return (optional)"}
+                  <Label htmlFor="returnDescription">
+                    {isRequest ? "What I Can Offer in Return (optional)" : "What I'd Accept in Return (optional)"}
                   </Label>
+                  <Textarea
+                    id="returnDescription"
+                    placeholder={isRequest
+                      ? "Describe what skills or services you can offer as a trade..."
+                      : "Describe what you'd be open to receiving as a trade..."
+                    }
+                    rows={3}
+                    disabled={isSubmitting}
+                    maxLength={500}
+                    className="mb-2"
+                  />
                   <p className="text-sm text-muted-foreground">
                     {isRequest
-                      ? "Select which services you can offer as a trade"
-                      : "Select which types of services you would accept as a trade"
+                      ? "Or select specific categories you can offer:"
+                      : "Or select specific categories you'd accept:"
                     }
                   </p>
                   <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto p-1">
