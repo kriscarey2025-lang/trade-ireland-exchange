@@ -12,6 +12,8 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import NewService from "./pages/NewService";
 import ServiceDetail from "./pages/ServiceDetail";
+import Messages from "./pages/Messages";
+import Conversation from "./pages/Conversation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/services/new" element={<NewService />} />
             <Route path="/services/:id" element={<ServiceDetail />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/messages/:id" element={<Conversation />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut } from "lucide-react";
+import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -81,6 +81,11 @@ export function Header() {
                 </Link>
               </Button>
               <Button variant="ghost" size="icon" className="rounded-xl" asChild>
+                <Link to="/messages">
+                  <MessageCircle className="h-5 w-5" />
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" className="rounded-xl" asChild>
                 <Link to="/profile">
                   <User className="h-5 w-5" />
                 </Link>
@@ -141,6 +146,12 @@ export function Header() {
                     <Link to="/services/new" onClick={() => setMobileMenuOpen(false)}>
                       <Plus className="h-4 w-4 mr-1" />
                       Post Service
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full rounded-xl" asChild>
+                    <Link to="/messages" onClick={() => setMobileMenuOpen(false)}>
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Messages
                     </Link>
                   </Button>
                   <Button variant="outline" className="w-full rounded-xl" asChild>
