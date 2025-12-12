@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
@@ -25,6 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
+import { ContactDialog } from "@/components/messaging/ContactDialog";
 
 interface ServiceDetail {
   id: string;
@@ -52,6 +54,7 @@ export default function ServiceDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [contactOpen, setContactOpen] = useState(false);
 
   const { data: service, isLoading, error } = useQuery({
     queryKey: ["service", id],
@@ -94,10 +97,7 @@ export default function ServiceDetail() {
       return;
     }
 
-    // For now, show a toast - messaging can be added later
-    toast.success("Contact feature coming soon!", {
-      description: "We'll notify the provider of your interest.",
-    });
+    setContactOpen(true);
   };
 
   const handleShare = async () => {
@@ -368,6 +368,17 @@ export default function ServiceDetail() {
         </div>
       </main>
       <Footer />
+
+      {service && (
+        <ContactDialog
+          open={contactOpen}
+          onOpenChange={setContactOpen}
+          serviceId={service.id}
+          serviceTitle={service.title}
+          providerId={service.user_id}
+          providerName={service.profiles?.full_name || "Provider"}
+        />
+      )}
     </div>
   );
 }
