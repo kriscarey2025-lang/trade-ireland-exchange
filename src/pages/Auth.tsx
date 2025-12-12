@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,11 +8,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { z } from "zod";
+
+const emailSchema = z.string().trim().email({ message: "Invalid email address" }).max(255);
+const passwordSchema = z.string().min(8, { message: "Password must be at least 8 characters" }).max(128);
+const nameSchema = z.string().trim().min(1, { message: "Name is required" }).max(100);
+const locationSchema = z.string().trim().min(1, { message: "Location is required" }).max(100);
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const defaultTab = searchParams.get("mode") === "signup" ? "signup" : "login";
+  
+  const { user, loading: authLoading, signIn, signUp } = useAuth();
   
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,18 +38,47 @@ export default function Auth() {
   const [signupLocation, setSignupLocation] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user && !authLoading) {
+      navigate('/');
+    }
+  }, [user, authLoading, navigate]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate inputs
+    const emailResult = emailSchema.safeParse(loginEmail);
+    if (!emailResult.success) {
+      toast.error(emailResult.error.errors[0].message);
+      return;
+    }
+    
+    const passwordResult = passwordSchema.safeParse(loginPassword);
+    if (!passwordResult.success) {
+      toast.error(passwordResult.error.errors[0].message);
+      return;
+    }
+
     setIsLoading(true);
 
-    // Simulate login - replace with actual auth
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const { error } = await signIn(loginEmail, loginPassword);
     
-    toast.info("Authentication requires Lovable Cloud setup", {
-      description: "Connect Supabase to enable login functionality.",
-    });
-    
-    setIsLoading(false);
+    if (error) {
+      if (error.message.includes('Invalid login credentials')) {
+        toast.error("Invalid email or password");
+      } else if (error.message.includes('Email not confirmed')) {
+        toast.error("Please confirm your email address");
+      } else {
+        toast.error(error.message);
+      }
+      setIsLoading(false);
+      return;
+    }
+
+    toast.success("Welcome back!");
+    navigate('/');
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -50,17 +89,56 @@ export default function Auth() {
       return;
     }
 
+    // Validate inputs
+    const nameResult = nameSchema.safeParse(signupName);
+    if (!nameResult.success) {
+      toast.error(nameResult.error.errors[0].message);
+      return;
+    }
+
+    const emailResult = emailSchema.safeParse(signupEmail);
+    if (!emailResult.success) {
+      toast.error(emailResult.error.errors[0].message);
+      return;
+    }
+
+    const passwordResult = passwordSchema.safeParse(signupPassword);
+    if (!passwordResult.success) {
+      toast.error(passwordResult.error.errors[0].message);
+      return;
+    }
+
+    const locationResult = locationSchema.safeParse(signupLocation);
+    if (!locationResult.success) {
+      toast.error(locationResult.error.errors[0].message);
+      return;
+    }
+
     setIsLoading(true);
 
-    // Simulate signup - replace with actual auth
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const { error } = await signUp(signupEmail, signupPassword, signupName, signupLocation);
     
-    toast.info("Authentication requires Lovable Cloud setup", {
-      description: "Connect Supabase to enable registration functionality.",
-    });
-    
-    setIsLoading(false);
+    if (error) {
+      if (error.message.includes('User already registered')) {
+        toast.error("An account with this email already exists. Please sign in instead.");
+      } else {
+        toast.error(error.message);
+      }
+      setIsLoading(false);
+      return;
+    }
+
+    toast.success("Account created successfully!");
+    navigate('/');
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
@@ -96,17 +174,12 @@ export default function Auth() {
                         value={loginEmail}
                         onChange={(e) => setLoginEmail(e.target.value)}
                         required
+                        disabled={isLoading}
                       />
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <Label htmlFor="login-password">Password</Label>
-                        <Link
-                          to="/forgot-password"
-                          className="text-xs text-primary hover:underline"
-                        >
-                          Forgot password?
-                        </Link>
                       </div>
                       <div className="relative">
                         <Input
@@ -116,6 +189,7 @@ export default function Auth() {
                           value={loginPassword}
                           onChange={(e) => setLoginPassword(e.target.value)}
                           required
+                          disabled={isLoading}
                         />
                         <Button
                           type="button"
@@ -138,8 +212,17 @@ export default function Auth() {
                       className="w-full"
                       disabled={isLoading}
                     >
-                      {isLoading ? "Signing in..." : "Sign In"}
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Signing in...
+                        </>
+                      ) : (
+                        <>
+                          Sign In
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </Button>
                   </form>
                 </TabsContent>
@@ -156,6 +239,7 @@ export default function Auth() {
                         value={signupName}
                         onChange={(e) => setSignupName(e.target.value)}
                         required
+                        disabled={isLoading}
                       />
                     </div>
                     <div className="space-y-2">
@@ -167,6 +251,7 @@ export default function Auth() {
                         value={signupEmail}
                         onChange={(e) => setSignupEmail(e.target.value)}
                         required
+                        disabled={isLoading}
                       />
                     </div>
                     <div className="space-y-2">
@@ -178,6 +263,7 @@ export default function Auth() {
                         value={signupLocation}
                         onChange={(e) => setSignupLocation(e.target.value)}
                         required
+                        disabled={isLoading}
                       />
                     </div>
                     <div className="space-y-2">
@@ -191,6 +277,7 @@ export default function Auth() {
                           onChange={(e) => setSignupPassword(e.target.value)}
                           minLength={8}
                           required
+                          disabled={isLoading}
                         />
                         <Button
                           type="button"
@@ -214,6 +301,7 @@ export default function Auth() {
                         onCheckedChange={(checked) =>
                           setAgreedToTerms(checked as boolean)
                         }
+                        disabled={isLoading}
                       />
                       <Label htmlFor="terms" className="text-sm leading-tight">
                         I agree to the{" "}
@@ -232,8 +320,17 @@ export default function Auth() {
                       className="w-full"
                       disabled={isLoading}
                     >
-                      {isLoading ? "Creating account..." : "Create Free Account"}
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Creating account...
+                        </>
+                      ) : (
+                        <>
+                          Create Free Account
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </Button>
                   </form>
                 </TabsContent>
