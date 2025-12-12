@@ -33,7 +33,13 @@ const serviceSchema = z.object({
   price_type: z.enum(["fixed", "hourly", "negotiable"]),
 });
 
-const locations = ["Dublin", "Cork", "Galway", "Limerick", "Waterford", "Kilkenny", "Sligo", "Wexford", "Other"];
+const locations = [
+  "Carlow", "Cavan", "Clare", "Cork", "Donegal", "Dublin", 
+  "Galway", "Kerry", "Kildare", "Kilkenny", "Laois", "Leitrim", 
+  "Limerick", "Longford", "Louth", "Mayo", "Meath", "Monaghan", 
+  "Offaly", "Roscommon", "Sligo", "Tipperary", "Waterford", 
+  "Westmeath", "Wexford", "Wicklow"
+];
 
 export default function NewService() {
   const navigate = useNavigate();
