@@ -51,11 +51,11 @@ export default function Conversation() {
 
       const otherUserId = data.participant_1 === user.id ? data.participant_2 : data.participant_1;
       
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .eq("id", otherUserId)
-        .single();
+      // Use RPC function to get basic profile info (excludes email/phone for security)
+      const { data: profileData } = await supabase
+        .rpc("get_basic_profile", { _profile_id: otherUserId });
+
+      const profile = profileData?.[0] || null;
 
       return { ...data, other_profile: profile } as ConversationDetails;
     },
