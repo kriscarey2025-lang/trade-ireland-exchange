@@ -273,6 +273,35 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       verification_requests: {
         Row: {
           admin_notes: string | null
@@ -333,6 +362,22 @@ export type Database = {
           full_name: string
           id: string
           location: string
+        }[]
+      }
+      get_pending_verifications: {
+        Args: never
+        Returns: {
+          admin_notes: string
+          document_type: string
+          document_url: string
+          id: string
+          reviewed_at: string
+          status: string
+          submitted_at: string
+          user_avatar: string
+          user_email: string
+          user_id: string
+          user_name: string
         }[]
       }
       get_profile_for_conversation: {
@@ -397,13 +442,28 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_verification_document_url: {
+        Args: { _request_id: string }
+        Returns: string
+      }
       has_contact_access: {
         Args: { _profile_id: string; _viewer_id: string }
         Returns: boolean
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      review_verification: {
+        Args: { _approved: boolean; _notes?: string; _request_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -530,6 +590,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
