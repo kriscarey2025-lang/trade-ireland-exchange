@@ -39,7 +39,7 @@ export interface ServiceWithUser {
     id: string;
     name: string;
     avatar?: string;
-    rating: number;
+    rating: number | null;
     completedTrades: number;
     verificationStatus: "verified" | "pending" | "unverified";
   };
@@ -62,7 +62,7 @@ function transformService(dbService: DatabaseService): ServiceWithUser {
       id: dbService.user_id,
       name: dbService.profiles.full_name || "Anonymous",
       avatar: dbService.profiles.avatar_url || undefined,
-      rating: 4.5, // Default for now
+      rating: null, // No reviews yet
       completedTrades: 0,
       verificationStatus: "pending",
     } : undefined,

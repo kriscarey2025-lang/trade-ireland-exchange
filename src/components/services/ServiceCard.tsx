@@ -11,7 +11,7 @@ interface ServiceUser {
   id?: string;
   name: string;
   avatar?: string;
-  rating: number;
+  rating: number | null;
   completedTrades: number;
   verificationStatus: "verified" | "pending" | "unverified";
 }
@@ -107,10 +107,21 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
                   )}
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Star className="h-3 w-3 fill-warning text-warning" />
-                  <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
-                  <span>·</span>
-                  <span>{service.user.completedTrades} swaps</span>
+                  {service.user.rating !== null ? (
+                    <>
+                      <Star className="h-3 w-3 fill-warning text-warning" />
+                      <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
+                      <span>·</span>
+                    </>
+                  ) : (
+                    <span className="text-muted-foreground italic">No reviews</span>
+                  )}
+                  {service.user.completedTrades > 0 && (
+                    <>
+                      {service.user.rating !== null && <span>·</span>}
+                      <span>{service.user.completedTrades} swaps</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
