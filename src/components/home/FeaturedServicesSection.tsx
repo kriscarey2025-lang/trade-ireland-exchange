@@ -14,10 +14,10 @@ export function FeaturedServicesSection() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Latest Services
+              Examples of Potential Services
             </h2>
             <p className="text-muted-foreground">
-              Browse recently posted services from our community members.
+              These are sample listings for display purposes only — real community offerings coming soon!
             </p>
           </div>
           <Button variant="outline" asChild>
