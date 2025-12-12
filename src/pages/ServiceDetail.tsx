@@ -28,6 +28,7 @@ import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import { ContactDialog } from "@/components/messaging/ContactDialog";
+import { formatDisplayName } from "@/lib/utils";
 
 interface ServiceDetail {
   id: string;
@@ -319,7 +320,7 @@ export default function ServiceDetail() {
                     </Avatar>
                     <div>
                       <p className="font-semibold text-lg">
-                        {service.profiles?.full_name || "Anonymous"}
+                        {formatDisplayName(service.profiles?.full_name)}
                       </p>
                       {service.profiles?.location && (
                         <p className="text-sm text-muted-foreground flex items-center gap-1">
@@ -400,7 +401,7 @@ export default function ServiceDetail() {
           serviceId={service.id}
           serviceTitle={service.title}
           providerId={service.user_id}
-          providerName={service.profiles?.full_name || "Provider"}
+          providerName={formatDisplayName(service.profiles?.full_name)}
         />
       )}
     </div>

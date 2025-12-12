@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ServiceCategory } from "@/types";
+import { formatDisplayName } from "@/lib/utils";
 
 export interface DatabaseService {
   id: string;
@@ -60,7 +61,7 @@ function transformService(dbService: DatabaseService): ServiceWithUser {
     status: (dbService.status as "active" | "paused" | "completed") || "active",
     user: dbService.profiles ? {
       id: dbService.user_id,
-      name: dbService.profiles.full_name || "Anonymous",
+      name: formatDisplayName(dbService.profiles.full_name),
       avatar: dbService.profiles.avatar_url || undefined,
       rating: null, // No reviews yet
       completedTrades: 0,
