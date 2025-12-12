@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import NewService from "./pages/NewService";
+import EditService from "./pages/EditService";
 import ServiceDetail from "./pages/ServiceDetail";
 import Messages from "./pages/Messages";
 import Conversation from "./pages/Conversation";
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/services/new" element={<NewService />} />
+            <Route path="/services/:id/edit" element={<EditService />} />
             <Route path="/services/:id" element={<ServiceDetail />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:id" element={<Conversation />} />
