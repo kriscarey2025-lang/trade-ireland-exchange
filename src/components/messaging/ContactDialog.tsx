@@ -68,8 +68,14 @@ export function ContactDialog({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
+              maxLength={10000}
               className="resize-none"
             />
+            {message.length > 9000 && (
+              <p className="text-xs text-muted-foreground text-right">
+                {message.length}/10000
+              </p>
+            )}
           </div>
         </div>
 

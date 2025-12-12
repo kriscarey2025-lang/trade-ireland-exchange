@@ -258,14 +258,22 @@ export default function Conversation() {
             {/* Input */}
             <div className="p-4 border-t">
               <div className="flex gap-2">
-                <Textarea
-                  placeholder="Type a message..."
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  rows={1}
-                  className="resize-none min-h-[44px]"
-                />
+                <div className="flex-1 space-y-1">
+                  <Textarea
+                    placeholder="Type a message..."
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    rows={1}
+                    maxLength={10000}
+                    className="resize-none min-h-[44px]"
+                  />
+                  {newMessage.length > 9000 && (
+                    <p className="text-xs text-muted-foreground text-right">
+                      {newMessage.length}/10000
+                    </p>
+                  )}
+                </div>
                 <Button
                   onClick={handleSend}
                   disabled={!newMessage.trim() || sendMessage.isPending}
