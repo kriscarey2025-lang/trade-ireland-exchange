@@ -15,6 +15,12 @@ import EditService from "./pages/EditService";
 import ServiceDetail from "./pages/ServiceDetail";
 import Messages from "./pages/Messages";
 import Conversation from "./pages/Conversation";
+import FAQ from "./pages/FAQ";
+import Safety from "./pages/Safety";
+import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +44,12 @@ const App = () => (
             <Route path="/services/:id" element={<ServiceDetail />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:id" element={<Conversation />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/safety" element={<Safety />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/cookies" element={<Cookies />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
