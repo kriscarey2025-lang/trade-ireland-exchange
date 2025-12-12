@@ -1,17 +1,27 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Search, User, Plus, Coins, Sparkles } from "lucide-react";
+import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   
-  // Mock auth state - replace with real auth later
-  const isLoggedIn = false;
+  const isLoggedIn = !!user;
   const userCredits = 45;
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Signed out successfully");
+    navigate('/');
+    setMobileMenuOpen(false);
+  };
 
   const navLinks = [
     { href: "/browse", label: "Browse" },
@@ -75,6 +85,9 @@ export function Header() {
                   <User className="h-5 w-5" />
                 </Link>
               </Button>
+              <Button variant="ghost" size="icon" className="rounded-xl" onClick={handleSignOut}>
+                <LogOut className="h-5 w-5" />
+              </Button>
             </>
           ) : (
             <>
@@ -125,22 +138,26 @@ export function Header() {
               {isLoggedIn ? (
                 <>
                   <Button variant="accent" className="w-full rounded-xl" asChild>
-                    <Link to="/services/new">
+                    <Link to="/services/new" onClick={() => setMobileMenuOpen(false)}>
                       <Plus className="h-4 w-4 mr-1" />
                       Post Service
                     </Link>
                   </Button>
                   <Button variant="outline" className="w-full rounded-xl" asChild>
-                    <Link to="/profile">My Profile</Link>
+                    <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>My Profile</Link>
+                  </Button>
+                  <Button variant="ghost" className="w-full rounded-xl" onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
                   </Button>
                 </>
               ) : (
                 <>
                   <Button variant="outline" className="w-full rounded-xl" asChild>
-                    <Link to="/auth">Sign In</Link>
+                    <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
                   </Button>
                   <Button variant="hero" className="w-full rounded-xl" asChild>
-                    <Link to="/auth?mode=signup">
+                    <Link to="/auth?mode=signup" onClick={() => setMobileMenuOpen(false)}>
                       <Sparkles className="h-4 w-4 mr-1.5" />
                       Join Free
                     </Link>
