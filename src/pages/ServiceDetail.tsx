@@ -20,7 +20,8 @@ import {
   Heart,
   Loader2,
   User,
-  Mail
+  Mail,
+  Repeat
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
@@ -40,6 +41,7 @@ interface ServiceDetail {
   images: string[] | null;
   status: string | null;
   created_at: string;
+  accepted_categories: string[] | null;
   profiles: {
     id: string;
     full_name: string | null;
@@ -277,6 +279,28 @@ export default function ServiceDetail() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Accepts in Return */}
+              {service.accepted_categories && service.accepted_categories.length > 0 && (
+                <Card className="shadow-elevated border-border/50">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Repeat className="h-5 w-5 text-primary" />
+                      <h2 className="text-lg font-semibold">Accepts in Return</h2>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      The provider is open to trading for these services:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {service.accepted_categories.map((cat) => (
+                        <Badge key={cat} variant="secondary" className="rounded-lg">
+                          {categoryIcons[cat as ServiceCategory]} {categoryLabels[cat as ServiceCategory]}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Sidebar */}
