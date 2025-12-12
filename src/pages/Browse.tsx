@@ -18,6 +18,7 @@ import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
 import { useDebounce } from "@/hooks/useDebounce";
+import { SEO } from "@/components/SEO";
 
 const locations = ["All Ireland", "Dublin", "Cork", "Galway", "Limerick", "Waterford"];
 
@@ -51,9 +52,16 @@ export default function Browse() {
     searchQuery || selectedCategory !== "all" || selectedLocation !== "All Ireland";
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 bg-secondary/20">
+    <>
+      <SEO 
+        title="Browse Services"
+        description="Find skills and services you need in Ireland. Browse tiling, tutoring, gardening, childcare and more from verified community members."
+        keywords="find services Ireland, skill swap Dublin, service exchange Cork, community help Galway"
+        url="https://swap-skills.com/browse"
+      />
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 bg-secondary/20">
         <div className="container py-8">
           {/* Page Header */}
           <div className="mb-8">
@@ -185,8 +193,9 @@ export default function Browse() {
             </div>
           )}
         </div>
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }
