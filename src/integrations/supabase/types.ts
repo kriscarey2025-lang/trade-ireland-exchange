@@ -165,6 +165,7 @@ export type Database = {
           price_type: string | null
           status: string | null
           title: string
+          type: string
           updated_at: string
           user_id: string
         }
@@ -180,6 +181,7 @@ export type Database = {
           price_type?: string | null
           status?: string | null
           title: string
+          type?: string
           updated_at?: string
           user_id: string
         }
@@ -195,6 +197,7 @@ export type Database = {
           price_type?: string | null
           status?: string | null
           title?: string
+          type?: string
           updated_at?: string
           user_id?: string
         }

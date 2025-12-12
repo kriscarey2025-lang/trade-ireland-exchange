@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle } from "lucide-react";
+import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [postMenuOpen, setPostMenuOpen] = useState(false);
+  const postMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -16,10 +18,21 @@ export function Header() {
   const isLoggedIn = !!user;
   const userCredits = 45;
 
+  // Close post menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (postMenuRef.current && !postMenuRef.current.contains(event.target as Node)) {
+        setPostMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleSignOut = async () => {
     await signOut();
     toast.success("Signed out successfully");
-    navigate('/');
+    navigate("/");
     setMobileMenuOpen(false);
   };
 
@@ -74,12 +87,38 @@ export function Header() {
                 <Coins className="h-3.5 w-3.5 text-warning" />
                 {userCredits} credits
               </Badge>
-              <Button variant="accent" size="sm" className="rounded-xl" asChild>
-                <Link to="/services/new">
+              <div className="relative" ref={postMenuRef}>
+                <Button 
+                  variant="accent" 
+                  size="sm" 
+                  className="rounded-xl"
+                  onClick={() => setPostMenuOpen(!postMenuOpen)}
+                >
                   <Plus className="h-4 w-4 mr-1" />
-                  Post Service
-                </Link>
-              </Button>
+                  Post
+                  <ChevronDown className="h-3 w-3 ml-1" />
+                </Button>
+                {postMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-background rounded-xl border border-border shadow-lg py-1 z-50">
+                    <Link
+                      to="/services/new"
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors"
+                      onClick={() => setPostMenuOpen(false)}
+                    >
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      Offer a Service
+                    </Link>
+                    <Link
+                      to="/services/new?type=request"
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors"
+                      onClick={() => setPostMenuOpen(false)}
+                    >
+                      <Search className="h-4 w-4 text-accent-foreground" />
+                      Request a Service
+                    </Link>
+                  </div>
+                )}
+              </div>
               <Button variant="ghost" size="icon" className="rounded-xl" asChild>
                 <Link to="/messages">
                   <MessageCircle className="h-5 w-5" />
@@ -144,8 +183,14 @@ export function Header() {
                 <>
                   <Button variant="accent" className="w-full rounded-xl" asChild>
                     <Link to="/services/new" onClick={() => setMobileMenuOpen(false)}>
-                      <Plus className="h-4 w-4 mr-1" />
-                      Post Service
+                      <Sparkles className="h-4 w-4 mr-1" />
+                      Offer a Service
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="w-full rounded-xl" asChild>
+                    <Link to="/services/new?type=request" onClick={() => setMobileMenuOpen(false)}>
+                      <Search className="h-4 w-4 mr-1" />
+                      Request a Service
                     </Link>
                   </Button>
                   <Button variant="outline" className="w-full rounded-xl" asChild>
