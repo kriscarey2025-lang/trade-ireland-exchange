@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useMessages, useSendMessage, useMarkAsRead } from "@/hooks/useMessaging";
 import { format, isToday, isYesterday } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn, formatDisplayName } from "@/lib/utils";
 import { ContactSharingCard } from "@/components/messaging/ContactSharingCard";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -170,7 +170,7 @@ export default function Conversation() {
 
             <div className="flex-1 min-w-0">
               <p className="font-semibold truncate">
-                {conversation.other_profile?.full_name || "User"}
+                {formatDisplayName(conversation.other_profile?.full_name)}
               </p>
               {conversation.service && (
                 <Link 
@@ -200,7 +200,7 @@ export default function Conversation() {
                 <ContactSharingCard
                   conversationId={conversation.id}
                   otherUserId={conversation.other_profile.id}
-                  otherUserName={conversation.other_profile.full_name}
+                  otherUserName={formatDisplayName(conversation.other_profile.full_name)}
                 />
               )}
             </CollapsibleContent>
