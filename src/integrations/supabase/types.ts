@@ -186,6 +186,7 @@ export type Database = {
           location: string | null
           phone: string | null
           updated_at: string
+          verification_status: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -197,6 +198,7 @@ export type Database = {
           location?: string | null
           phone?: string | null
           updated_at?: string
+          verification_status?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -208,6 +210,7 @@ export type Database = {
           location?: string | null
           phone?: string | null
           updated_at?: string
+          verification_status?: string | null
         }
         Relationships: []
       }
@@ -265,6 +268,53 @@ export type Database = {
             foreignKeyName: "services_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verification_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          document_type: string
+          document_url: string
+          id: string
+          reviewed_at: string | null
+          status: string
+          submitted_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          document_type?: string
+          document_url: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          document_type?: string
+          document_url?: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
