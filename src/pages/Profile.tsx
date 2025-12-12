@@ -14,6 +14,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { UserListings } from "@/components/profile/UserListings";
+import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
+import { VerificationRequestCard } from "@/components/profile/VerificationRequestCard";
 
 const profileSchema = z.object({
   full_name: z.string().trim().min(1, "Name is required").max(100),
@@ -21,6 +23,16 @@ const profileSchema = z.object({
   bio: z.string().trim().max(500).optional(),
   phone: z.string().trim().max(20).optional(),
 });
+
+type VerificationStatus = "unverified" | "pending" | "verified" | "rejected";
+
+interface VerificationRequest {
+  id: string;
+  status: "pending" | "approved" | "rejected";
+  admin_notes: string | null;
+  submitted_at: string;
+  reviewed_at: string | null;
+}
 
 interface Profile {
   id: string;
@@ -31,6 +43,7 @@ interface Profile {
   location: string | null;
   bio: string | null;
   created_at: string;
+  verification_status: VerificationStatus;
 }
 
 export default function Profile() {
@@ -41,6 +54,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [verificationRequest, setVerificationRequest] = useState<VerificationRequest | null>(null);
   
   // Form state
   const [fullName, setFullName] = useState("");
@@ -55,35 +69,50 @@ export default function Profile() {
     }
   }, [user, authLoading, navigate]);
 
-  // Fetch profile data
+  // Fetch profile data and verification request
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchProfileAndVerification() {
       if (!user) return;
       
-      const { data, error } = await supabase
+      // Fetch profile
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .maybeSingle();
       
-      if (error) {
+      if (profileError) {
         toast.error("Failed to load profile");
         return;
       }
       
-      if (data) {
-        setProfile(data);
-        setFullName(data.full_name || "");
-        setLocation(data.location || "");
-        setBio(data.bio || "");
-        setPhone(data.phone || "");
+      if (profileData) {
+        setProfile({
+          ...profileData,
+          verification_status: (profileData.verification_status as VerificationStatus) || 'unverified'
+        });
+        setFullName(profileData.full_name || "");
+        setLocation(profileData.location || "");
+        setBio(profileData.bio || "");
+        setPhone(profileData.phone || "");
+      }
+
+      // Fetch verification request
+      const { data: verificationData } = await supabase
+        .from('verification_requests')
+        .select('id, status, admin_notes, submitted_at, reviewed_at')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (verificationData) {
+        setVerificationRequest(verificationData as VerificationRequest);
       }
       
       setLoading(false);
     }
     
     if (user) {
-      fetchProfile();
+      fetchProfileAndVerification();
     }
   }, [user]);
 
@@ -173,7 +202,10 @@ export default function Profile() {
               </div>
               <div className="pt-14 flex items-start justify-between">
                 <div>
-                  <CardTitle className="text-2xl">{profile?.full_name || "Your Name"}</CardTitle>
+                  <CardTitle className="text-2xl flex items-center gap-2">
+                    {profile?.full_name || "Your Name"}
+                    <VerifiedBadge status={profile?.verification_status || "unverified"} size="md" />
+                  </CardTitle>
                   <CardDescription className="flex items-center gap-1 mt-1">
                     <Mail className="h-3.5 w-3.5" />
                     {profile?.email}
@@ -329,6 +361,18 @@ export default function Profile() {
               )}
             </CardContent>
           </Card>
+
+          {/* ID Verification Card */}
+          {user && profile && (
+            <VerificationRequestCard
+              userId={user.id}
+              verificationStatus={profile.verification_status}
+              existingRequest={verificationRequest}
+              onStatusChange={(newStatus) => {
+                setProfile(prev => prev ? { ...prev, verification_status: newStatus } : null);
+              }}
+            />
+          )}
 
           {/* User Listings */}
           {user && <UserListings userId={user.id} />}
