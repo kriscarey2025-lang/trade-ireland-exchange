@@ -154,6 +154,7 @@ export type Database = {
       }
       services: {
         Row: {
+          accepted_categories: string[] | null
           category: string
           created_at: string
           description: string | null
@@ -168,6 +169,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          accepted_categories?: string[] | null
           category: string
           created_at?: string
           description?: string | null
@@ -182,6 +184,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          accepted_categories?: string[] | null
           category?: string
           created_at?: string
           description?: string | null

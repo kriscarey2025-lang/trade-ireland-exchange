@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,6 +49,7 @@ export default function NewService() {
   const [price, setPrice] = useState("");
   const [priceType, setPriceType] = useState<"fixed" | "hourly" | "negotiable">("negotiable");
   const [images, setImages] = useState<string[]>([]);
+  const [acceptedCategories, setAcceptedCategories] = useState<ServiceCategory[]>([]);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -93,6 +95,7 @@ export default function NewService() {
       price_type: priceType,
       status: "active",
       images: images.length > 0 ? images : null,
+      accepted_categories: acceptedCategories.length > 0 ? acceptedCategories : null,
     });
 
     if (error) {
@@ -279,6 +282,43 @@ export default function NewService() {
                     />
                   </div>
                 )}
+
+                {/* Accepted Categories in Return */}
+                <div className="space-y-3">
+                  <Label>Accept in Return (optional)</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Select which types of services you would accept as a trade
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto p-1">
+                    {allCategories.map((cat) => (
+                      <div key={cat} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`accept-${cat}`}
+                          checked={acceptedCategories.includes(cat)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setAcceptedCategories([...acceptedCategories, cat]);
+                            } else {
+                              setAcceptedCategories(acceptedCategories.filter(c => c !== cat));
+                            }
+                          }}
+                          disabled={isSubmitting}
+                        />
+                        <Label 
+                          htmlFor={`accept-${cat}`} 
+                          className="font-normal cursor-pointer text-sm"
+                        >
+                          {categoryIcons[cat]} {categoryLabels[cat]}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                  {acceptedCategories.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      {acceptedCategories.length} categor{acceptedCategories.length === 1 ? 'y' : 'ies'} selected
+                    </p>
+                  )}
+                </div>
 
                 {/* Submit */}
                 <div className="pt-4 flex gap-3">
