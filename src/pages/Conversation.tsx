@@ -7,12 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, ArrowLeft, Send, ExternalLink } from "lucide-react";
+import { Loader2, ArrowLeft, Send, ExternalLink, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useMessages, useSendMessage, useMarkAsRead } from "@/hooks/useMessaging";
 import { format, isToday, isYesterday } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ContactSharingCard } from "@/components/messaging/ContactSharingCard";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ConversationDetails {
   id: string;
@@ -28,6 +30,7 @@ export default function Conversation() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [newMessage, setNewMessage] = useState("");
+  const [showContactCard, setShowContactCard] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: conversation, isLoading: convLoading } = useQuery({
@@ -178,8 +181,30 @@ export default function Conversation() {
                   <ExternalLink className="h-3 w-3" />
                 </Link>
               )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowContactCard(!showContactCard)}
+                className="ml-auto"
+              >
+                <Info className="h-4 w-4 mr-1" />
+                Contact
+              </Button>
             </div>
           </div>
+
+          {/* Contact Sharing Card */}
+          <Collapsible open={showContactCard} onOpenChange={setShowContactCard}>
+            <CollapsibleContent className="mb-4">
+              {conversation.other_profile && (
+                <ContactSharingCard
+                  conversationId={conversation.id}
+                  otherUserId={conversation.other_profile.id}
+                  otherUserName={conversation.other_profile.full_name}
+                />
+              )}
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Messages */}
           <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
