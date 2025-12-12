@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Sparkles } from "lucide-react";
+import { Loader2, ArrowLeft, Sparkles, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
@@ -43,9 +43,14 @@ const locations = [
 
 export default function NewService() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Determine if this is an offer or request based on URL param
+  const serviceType = searchParams.get("type") === "request" ? "request" : "offer";
+  const isRequest = serviceType === "request";
   
   // Form state
   const [title, setTitle] = useState("");
@@ -102,6 +107,7 @@ export default function NewService() {
       status: "active",
       images: images.length > 0 ? images : null,
       accepted_categories: acceptedCategories.length > 0 ? acceptedCategories : null,
+      type: serviceType,
     });
 
     if (error) {
@@ -111,8 +117,8 @@ export default function NewService() {
       return;
     }
 
-    toast.success("Service posted successfully!");
-    navigate('/browse');
+    toast.success(isRequest ? "Request posted successfully!" : "Service posted successfully!");
+    navigate("/browse");
   };
 
   if (authLoading) {
@@ -141,13 +147,22 @@ export default function NewService() {
           <Card className="shadow-elevated border-border/50">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-hero flex items-center justify-center">
-                  <Sparkles className="h-6 w-6 text-white" />
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isRequest ? "bg-accent" : "bg-gradient-hero"}`}>
+                  {isRequest ? (
+                    <Search className="h-6 w-6 text-accent-foreground" />
+                  ) : (
+                    <Sparkles className="h-6 w-6 text-white" />
+                  )}
                 </div>
                 <div>
-                  <CardTitle className="text-2xl">Post a Service</CardTitle>
+                  <CardTitle className="text-2xl">
+                    {isRequest ? "Request a Service" : "Offer a Service"}
+                  </CardTitle>
                   <CardDescription>
-                    Share your skills with the community
+                    {isRequest 
+                      ? "Tell the community what you need help with"
+                      : "Share your skills with the community"
+                    }
                   </CardDescription>
                 </div>
               </div>
@@ -156,12 +171,17 @@ export default function NewService() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Title */}
                 <div className="space-y-2">
-                  <Label htmlFor="title">Service Title *</Label>
+                  <Label htmlFor="title">
+                    {isRequest ? "What do you need? *" : "Service Title *"}
+                  </Label>
                   <Input
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g., Guitar Lessons for Beginners"
+                    placeholder={isRequest 
+                      ? "e.g., Need help with garden landscaping"
+                      : "e.g., Guitar Lessons for Beginners"
+                    }
                     disabled={isSubmitting}
                     maxLength={100}
                   />
@@ -170,7 +190,9 @@ export default function NewService() {
 
                 {/* Category */}
                 <div className="space-y-2">
-                  <Label htmlFor="category">Category *</Label>
+                  <Label htmlFor="category">
+                    {isRequest ? "Category of service needed *" : "Category *"}
+                  </Label>
                   <Select
                     value={category}
                     onValueChange={(value) => setCategory(value as ServiceCategory)}
@@ -196,7 +218,10 @@ export default function NewService() {
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe your service in detail. Include your experience, what's included, and any requirements..."
+                    placeholder={isRequest
+                      ? "Describe what you need in detail. Include any specific requirements, timeline, or preferences..."
+                      : "Describe your service in detail. Include your experience, what's included, and any requirements..."
+                    }
                     rows={5}
                     disabled={isSubmitting}
                     maxLength={1000}
@@ -289,11 +314,16 @@ export default function NewService() {
                   </div>
                 )}
 
-                {/* Accepted Categories in Return */}
+                {/* Categories - different label based on type */}
                 <div className="space-y-3">
-                  <Label>Accept in Return (optional)</Label>
+                  <Label>
+                    {isRequest ? "Services I Can Offer in Return (optional)" : "Accept in Return (optional)"}
+                  </Label>
                   <p className="text-sm text-muted-foreground">
-                    Select which types of services you would accept as a trade
+                    {isRequest
+                      ? "Select which services you can offer as a trade"
+                      : "Select which types of services you would accept as a trade"
+                    }
                   </p>
                   <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto p-1">
                     {allCategories.map((cat) => (
@@ -321,7 +351,7 @@ export default function NewService() {
                   </div>
                   {acceptedCategories.length > 0 && (
                     <p className="text-xs text-muted-foreground">
-                      {acceptedCategories.length} categor{acceptedCategories.length === 1 ? 'y' : 'ies'} selected
+                      {acceptedCategories.length} categor{acceptedCategories.length === 1 ? "y" : "ies"} selected
                     </p>
                   )}
                 </div>
@@ -338,6 +368,11 @@ export default function NewService() {
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Posting...
+                      </>
+                    ) : isRequest ? (
+                      <>
+                        <Search className="h-4 w-4 mr-2" />
+                        Post Request
                       </>
                     ) : (
                       <>

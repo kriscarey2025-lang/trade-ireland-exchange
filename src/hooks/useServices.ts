@@ -9,11 +9,13 @@ export interface DatabaseService {
   title: string;
   description: string | null;
   category: string;
+  type: string | null;
   price: number | null;
   price_type: string | null;
   location: string | null;
   images: string[] | null;
   status: string | null;
+  accepted_categories: string[] | null;
   created_at: string;
   updated_at: string;
   // Joined profile data
@@ -29,7 +31,7 @@ export interface ServiceWithUser {
   title: string;
   description: string;
   category: ServiceCategory;
-  type: "offer" | "need";
+  type: "offer" | "request";
   images?: string[];
   estimatedHours?: number;
   creditValue?: number;
@@ -53,7 +55,7 @@ function transformService(dbService: DatabaseService): ServiceWithUser {
     title: dbService.title,
     description: dbService.description || "",
     category: dbService.category as ServiceCategory,
-    type: "offer", // Default to offer for now
+    type: (dbService.type as "offer" | "request") || "offer",
     images: dbService.images || undefined,
     creditValue: dbService.price ? Number(dbService.price) : undefined,
     createdAt: new Date(dbService.created_at),

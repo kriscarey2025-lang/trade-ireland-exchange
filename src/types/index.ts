@@ -28,7 +28,7 @@ export interface Service {
   title: string;
   description: string;
   category: ServiceCategory;
-  type: 'offer' | 'need';
+  type: 'offer' | 'request';
   images?: string[];
   qualifications?: string[];
   estimatedHours?: number;

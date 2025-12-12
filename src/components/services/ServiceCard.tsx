@@ -21,7 +21,7 @@ interface ServiceData {
   title: string;
   description: string;
   category: ServiceCategory;
-  type: "offer" | "need";
+  type: "offer" | "request";
   location: string;
   estimatedHours?: number;
   creditValue?: number;

@@ -36,6 +36,7 @@ interface ServiceDetail {
   title: string;
   description: string | null;
   category: string;
+  type: string | null;
   price: number | null;
   price_type: string | null;
   location: string | null;
@@ -190,17 +191,23 @@ export default function ServiceDetail() {
               <Card className="shadow-elevated border-border/50 overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex flex-wrap items-center gap-3 mb-4">
-                    <Badge variant="default" className="rounded-lg">
+                    <Badge 
+                      variant={service.type === "request" ? "accent" : "default"} 
+                      className="rounded-lg"
+                    >
+                      {service.type === "request" ? "🔍 Looking for" : "✨ Offering"}
+                    </Badge>
+                    <Badge variant="secondary" className="rounded-lg">
                       {categoryIcons[service.category as ServiceCategory]} {categoryLabels[service.category as ServiceCategory]}
                     </Badge>
                     {service.status === "active" && (
-                      <Badge variant="secondary" className="rounded-lg bg-success/10 text-success">
+                      <Badge variant="outline" className="rounded-lg bg-success/10 text-success border-success/20">
                         Active
                       </Badge>
                     )}
                     {isOwner && (
                       <Badge variant="outline" className="rounded-lg">
-                        Your Service
+                        Your {service.type === "request" ? "Request" : "Service"}
                       </Badge>
                     )}
                   </div>
@@ -287,10 +294,15 @@ export default function ServiceDetail() {
                   <CardContent className="p-6">
                     <div className="flex items-center gap-2 mb-4">
                       <Repeat className="h-5 w-5 text-primary" />
-                      <h2 className="text-lg font-semibold">Accepts in Return</h2>
+                      <h2 className="text-lg font-semibold">
+                        {service.type === "request" ? "Can Offer in Return" : "Accepts in Return"}
+                      </h2>
                     </div>
                     <p className="text-sm text-muted-foreground mb-3">
-                      The provider is open to trading for these services:
+                      {service.type === "request" 
+                        ? "This person can offer these services as a trade:"
+                        : "The provider is open to trading for these services:"
+                      }
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {service.accepted_categories.map((cat) => (
