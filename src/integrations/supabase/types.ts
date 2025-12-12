@@ -81,6 +81,24 @@ export type Database = {
           },
         ]
       }
+      message_rate_limits: {
+        Row: {
+          message_count: number | null
+          user_id: string
+          window_start: string | null
+        }
+        Insert: {
+          message_count?: number | null
+          user_id: string
+          window_start?: string | null
+        }
+        Update: {
+          message_count?: number | null
+          user_id?: string
+          window_start?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
