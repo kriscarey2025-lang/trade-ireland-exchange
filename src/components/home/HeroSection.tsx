@@ -10,8 +10,13 @@ export function HeroSection() {
       
       <div className="container relative">
         <div className="py-20 md:py-32 text-center max-w-4xl mx-auto">
+          {/* Launch Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 border border-accent text-accent-foreground text-sm font-bold mb-4 animate-fade-up">
+            🚀 NEW LAUNCH — FREE FOR THE FIRST YEAR!
+          </div>
+
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8 animate-fade-up">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8 animate-fade-up" style={{ animationDelay: "0.05s" }}>
             <Sparkles className="h-4 w-4" />
             Ireland's First Skills Trading Community
           </div>
@@ -45,7 +50,7 @@ export function HeroSection() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: "0.4s" }}>
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <Users className="h-5 w-5 text-primary" />
-              <span className="text-sm">500+ Members</span>
+              <span className="text-sm">Early Adopters Welcome</span>
             </div>
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <Shield className="h-5 w-5 text-primary" />
@@ -53,7 +58,7 @@ export function HeroSection() {
             </div>
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <Sparkles className="h-5 w-5 text-primary" />
-              <span className="text-sm">100% Free to Join</span>
+              <span className="text-sm">Free for 12 Months</span>
             </div>
           </div>
         </div>
