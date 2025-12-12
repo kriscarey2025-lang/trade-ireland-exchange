@@ -1,0 +1,98 @@
+import { Link } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MapPin, Clock, Coins, Star, CheckCircle2 } from "lucide-react";
+import { Service } from "@/types";
+import { categoryLabels, categoryIcons } from "@/lib/categories";
+import { cn } from "@/lib/utils";
+
+interface ServiceCardProps {
+  service: Service;
+  className?: string;
+}
+
+export function ServiceCard({ service, className }: ServiceCardProps) {
+  const isOffer = service.type === "offer";
+
+  return (
+    <Link to={`/services/${service.id}`}>
+      <Card className={cn(
+        "group overflow-hidden hover-lift cursor-pointer border-border/50 bg-gradient-card",
+        className
+      )}>
+        <CardContent className="p-5">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <Badge 
+              variant={isOffer ? "default" : "accent"}
+              className="shrink-0"
+            >
+              {isOffer ? "Offering" : "Looking for"}
+            </Badge>
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              <span>{categoryIcons[service.category]}</span>
+              <span className="hidden sm:inline">{categoryLabels[service.category]}</span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+            {service.title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+            {service.description}
+          </p>
+
+          {/* Meta Info */}
+          <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mb-4">
+            <div className="flex items-center gap-1">
+              <MapPin className="h-3.5 w-3.5" />
+              {service.location}
+            </div>
+            {service.estimatedHours && (
+              <div className="flex items-center gap-1">
+                <Clock className="h-3.5 w-3.5" />
+                ~{service.estimatedHours}h
+              </div>
+            )}
+            {service.creditValue && (
+              <div className="flex items-center gap-1">
+                <Coins className="h-3.5 w-3.5" />
+                {service.creditValue} credits
+              </div>
+            )}
+          </div>
+
+          {/* User */}
+          {service.user && (
+            <div className="flex items-center gap-3 pt-4 border-t border-border/50">
+              <Avatar className="h-9 w-9">
+                <AvatarImage src={service.user.avatar} alt={service.user.name} />
+                <AvatarFallback>{service.user.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-medium text-sm truncate">
+                    {service.user.name}
+                  </span>
+                  {service.user.verificationStatus === "verified" && (
+                    <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                  )}
+                </div>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Star className="h-3 w-3 fill-warning text-warning" />
+                  <span>{service.user.rating.toFixed(1)}</span>
+                  <span className="mx-1">·</span>
+                  <span>{service.user.completedTrades} trades</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}
