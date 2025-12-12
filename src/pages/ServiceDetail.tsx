@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { 
   ArrowLeft, 
@@ -21,7 +32,9 @@ import {
   Loader2,
   User,
   Mail,
-  Repeat
+  Repeat,
+  Pencil,
+  Trash2
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
@@ -55,8 +68,10 @@ interface SecureServiceDetail {
 export default function ServiceDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const [contactOpen, setContactOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: service, isLoading, error } = useQuery({
     queryKey: ["service", id],
@@ -99,10 +114,34 @@ export default function ServiceDetail() {
         url: window.location.href,
       });
     } catch {
-      // Fallback: copy to clipboard
       await navigator.clipboard.writeText(window.location.href);
       toast.success("Link copied to clipboard!");
     }
+  };
+
+  const handleDelete = async () => {
+    if (!user || !service) return;
+    
+    setIsDeleting(true);
+    
+    const { error } = await supabase
+      .from("services")
+      .delete()
+      .eq("id", service.id)
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error("Error deleting service:", error);
+      toast.error("Failed to delete. Please try again.");
+      setIsDeleting(false);
+      return;
+    }
+
+    queryClient.invalidateQueries({ queryKey: ["services"] });
+    queryClient.invalidateQueries({ queryKey: ["user-services"] });
+    
+    toast.success("Service deleted successfully");
+    navigate("/browse");
   };
 
   const getInitials = (name: string | null) => {
@@ -364,16 +403,52 @@ export default function ServiceDetail() {
                         Contact Provider
                       </Button>
                     ) : (
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        asChild
-                      >
-                        <Link to="/profile">
-                          <User className="h-4 w-4 mr-2" />
-                          Edit in Profile
-                        </Link>
-                      </Button>
+                      <>
+                        <Button
+                          variant="hero"
+                          className="w-full"
+                          asChild
+                        >
+                          <Link to={`/services/${service.id}/edit`}>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Edit {service.type === "request" ? "Request" : "Service"}
+                          </Link>
+                        </Button>
+                        
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              className="w-full"
+                              disabled={isDeleting}
+                            >
+                              {isDeleting ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-4 w-4 mr-2" />
+                              )}
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete this {service.type === "request" ? "request" : "service"}?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete your {service.type === "request" ? "request" : "service"} and remove it from the marketplace.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={handleDelete}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </>
                     )}
 
                     <div className="flex gap-3">
