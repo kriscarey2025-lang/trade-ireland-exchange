@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import NewService from "./pages/NewService";
+import ServiceDetail from "./pages/ServiceDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/services/new" element={<NewService />} />
+            <Route path="/services/:id" element={<ServiceDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
