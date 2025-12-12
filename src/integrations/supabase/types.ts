@@ -210,6 +210,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_basic_profile: {
+        Args: { _profile_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          full_name: string
+          id: string
+          location: string
+        }[]
+      }
       get_profile_for_conversation: {
         Args: { _profile_id: string }
         Returns: {

@@ -61,12 +61,10 @@ export function useConversations() {
         (data || []).map(async (conv) => {
           const otherUserId = conv.participant_1 === user.id ? conv.participant_2 : conv.participant_1;
           
+          // Use RPC function to get basic profile info (excludes email/phone for security)
           const [profileResult, lastMessageResult, unreadResult] = await Promise.all([
             supabase
-              .from("profiles")
-              .select("id, full_name, avatar_url")
-              .eq("id", otherUserId)
-              .single(),
+              .rpc("get_basic_profile", { _profile_id: otherUserId }),
             supabase
               .from("messages")
               .select("content, created_at, sender_id")
@@ -82,9 +80,12 @@ export function useConversations() {
               .neq("sender_id", user.id),
           ]);
 
+          // RPC returns an array, get the first element
+          const profile = profileResult.data?.[0] || null;
+          
           return {
             ...conv,
-            other_profile: profileResult.data,
+            other_profile: profile,
             last_message: lastMessageResult.data,
             unread_count: unreadResult.count || 0,
           } as Conversation;
