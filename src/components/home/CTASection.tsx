@@ -1,10 +1,11 @@
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 
-export function CTASection() {
+export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section ref={ref} className="py-24 relative overflow-hidden">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-hero" />
       
@@ -51,4 +52,4 @@ export function CTASection() {
       </div>
     </section>
   );
-}
+});
