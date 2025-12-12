@@ -3,12 +3,33 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Clock, Coins, Star, CheckCircle2, ArrowUpRight } from "lucide-react";
-import { Service } from "@/types";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn } from "@/lib/utils";
+import { ServiceCategory } from "@/types";
+
+interface ServiceUser {
+  id?: string;
+  name: string;
+  avatar?: string;
+  rating: number;
+  completedTrades: number;
+  verificationStatus: "verified" | "pending" | "unverified";
+}
+
+interface ServiceData {
+  id: string;
+  title: string;
+  description: string;
+  category: ServiceCategory;
+  type: "offer" | "need";
+  location: string;
+  estimatedHours?: number;
+  creditValue?: number;
+  user?: ServiceUser;
+}
 
 interface ServiceCardProps {
-  service: Service;
+  service: ServiceData;
   className?: string;
 }
 

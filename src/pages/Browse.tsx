@@ -13,10 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, SlidersHorizontal, X } from "lucide-react";
-import { mockServices } from "@/lib/mockData";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
+import { useServices } from "@/hooks/useServices";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const locations = ["All Ireland", "Dublin", "Cork", "Galway", "Limerick", "Waterford"];
 
@@ -27,49 +28,27 @@ export default function Browse() {
     (searchParams.get("category") as ServiceCategory) || "all"
   );
   const [selectedLocation, setSelectedLocation] = useState("All Ireland");
-  const [selectedType, setSelectedType] = useState<"all" | "offer" | "need">("all");
   const [showFilters, setShowFilters] = useState(false);
 
-  const filteredServices = useMemo(() => {
-    return mockServices.filter((service) => {
-      // Search query
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        const matchesSearch =
-          service.title.toLowerCase().includes(query) ||
-          service.description.toLowerCase().includes(query);
-        if (!matchesSearch) return false;
-      }
+  // Debounce search query to avoid too many API calls
+  const debouncedSearch = useDebounce(searchQuery, 300);
 
-      // Category
-      if (selectedCategory !== "all" && service.category !== selectedCategory) {
-        return false;
-      }
-
-      // Location
-      if (selectedLocation !== "All Ireland" && service.location !== selectedLocation) {
-        return false;
-      }
-
-      // Type
-      if (selectedType !== "all" && service.type !== selectedType) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [searchQuery, selectedCategory, selectedLocation, selectedType]);
+  // Fetch services from database
+  const { data: services = [], isLoading, error } = useServices({
+    category: selectedCategory,
+    location: selectedLocation,
+    search: debouncedSearch || undefined,
+  });
 
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("all");
     setSelectedLocation("All Ireland");
-    setSelectedType("all");
     setSearchParams({});
   };
 
   const hasActiveFilters =
-    searchQuery || selectedCategory !== "all" || selectedLocation !== "All Ireland" || selectedType !== "all";
+    searchQuery || selectedCategory !== "all" || selectedLocation !== "All Ireland";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -100,20 +79,6 @@ export default function Browse() {
 
               {/* Quick Filters */}
               <div className="flex flex-wrap gap-3">
-                <Select
-                  value={selectedType}
-                  onValueChange={(value: "all" | "offer" | "need") => setSelectedType(value)}
-                >
-                  <SelectTrigger className="w-[140px]">
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="offer">Offerings</SelectItem>
-                    <SelectItem value="need">Looking For</SelectItem>
-                  </SelectContent>
-                </Select>
-
                 <Select
                   value={selectedLocation}
                   onValueChange={setSelectedLocation}
@@ -176,13 +141,24 @@ export default function Browse() {
           {/* Results */}
           <div className="mb-4">
             <p className="text-sm text-muted-foreground">
-              {filteredServices.length} service{filteredServices.length !== 1 ? "s" : ""} found
+              {isLoading ? "Loading..." : `${services.length} service${services.length !== 1 ? "s" : ""} found`}
             </p>
           </div>
 
-          {filteredServices.length > 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-16">
+              <p className="text-xl font-medium mb-2 text-destructive">Error loading services</p>
+              <p className="text-muted-foreground mb-4">
+                Please try again later
+              </p>
+            </div>
+          ) : services.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredServices.map((service, index) => (
+              {services.map((service, index) => (
                 <div
                   key={service.id}
                   className="animate-fade-up"
@@ -194,13 +170,18 @@ export default function Browse() {
             </div>
           ) : (
             <div className="text-center py-16">
+              <PackageOpen className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
               <p className="text-xl font-medium mb-2">No services found</p>
               <p className="text-muted-foreground mb-4">
-                Try adjusting your filters or search query
+                {hasActiveFilters 
+                  ? "Try adjusting your filters or search query"
+                  : "Be the first to post a service!"}
               </p>
-              <Button variant="outline" onClick={clearFilters}>
-                Clear all filters
-              </Button>
+              {hasActiveFilters && (
+                <Button variant="outline" onClick={clearFilters}>
+                  Clear all filters
+                </Button>
+              )}
             </div>
           )}
         </div>
