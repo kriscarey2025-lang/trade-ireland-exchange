@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
 import { z } from "zod";
-import { useEffect } from "react";
+import { ImageUpload } from "@/components/services/ImageUpload";
 
 const serviceSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
@@ -47,6 +47,7 @@ export default function NewService() {
   const [location, setLocation] = useState("");
   const [price, setPrice] = useState("");
   const [priceType, setPriceType] = useState<"fixed" | "hourly" | "negotiable">("negotiable");
+  const [images, setImages] = useState<string[]>([]);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -91,6 +92,7 @@ export default function NewService() {
       price: price ? parseFloat(price) : null,
       price_type: priceType,
       status: "active",
+      images: images.length > 0 ? images : null,
     });
 
     if (error) {
@@ -191,6 +193,20 @@ export default function NewService() {
                     maxLength={1000}
                   />
                   <p className="text-xs text-muted-foreground">{description.length}/1000 characters</p>
+                </div>
+
+                {/* Images */}
+                <div className="space-y-2">
+                  <Label>Photos (optional)</Label>
+                  {user && (
+                    <ImageUpload
+                      userId={user.id}
+                      images={images}
+                      onImagesChange={setImages}
+                      maxImages={4}
+                      disabled={isSubmitting}
+                    />
+                  )}
                 </div>
 
                 {/* Location */}

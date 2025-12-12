@@ -221,6 +221,29 @@ export default function ServiceDetail() {
                 </CardContent>
               </Card>
 
+              {/* Images */}
+              {service.images && service.images.length > 0 && (
+                <Card className="shadow-elevated border-border/50 overflow-hidden">
+                  <CardContent className="p-6">
+                    <h2 className="text-lg font-semibold mb-4">Photos</h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {service.images.map((url, index) => (
+                        <div 
+                          key={index}
+                          className="aspect-square rounded-xl overflow-hidden border border-border"
+                        >
+                          <img
+                            src={url}
+                            alt={`${service.title} - Photo ${index + 1}`}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Description */}
               <Card className="shadow-elevated border-border/50">
                 <CardContent className="p-6">
