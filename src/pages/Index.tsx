@@ -5,6 +5,7 @@ import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { FeaturedServicesSection } from "@/components/home/FeaturedServicesSection";
 import { TrustSection } from "@/components/home/TrustSection";
+import { FounderStorySection } from "@/components/home/FounderStorySection";
 import { CTASection } from "@/components/home/CTASection";
 
 const Index = () => {
@@ -17,6 +18,7 @@ const Index = () => {
         <CategoriesSection />
         <FeaturedServicesSection />
         <TrustSection />
+        <FounderStorySection />
         <CTASection />
       </main>
       <Footer />
