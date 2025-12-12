@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_shares: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          owner_id: string
+          shared_with_id: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          owner_id: string
+          shared_with_id: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          shared_with_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_shares_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversations: {
         Row: {
           created_at: string
@@ -178,7 +210,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_profile_for_conversation: {
+        Args: { _profile_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          contact_shared: boolean
+          email: string
+          full_name: string
+          id: string
+          location: string
+          phone: string
+        }[]
+      }
+      has_contact_access: {
+        Args: { _profile_id: string; _viewer_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
