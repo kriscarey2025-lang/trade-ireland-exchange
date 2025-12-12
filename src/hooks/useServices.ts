@@ -3,6 +3,26 @@ import { supabase } from "@/integrations/supabase/client";
 import { ServiceCategory } from "@/types";
 import { formatDisplayName } from "@/lib/utils";
 
+// Response from secure database function
+interface SecureServiceResponse {
+  id: string;
+  user_id: string | null; // null for unauthenticated users
+  title: string;
+  description: string | null;
+  category: string;
+  type: string | null;
+  price: number | null;
+  price_type: string | null;
+  location: string | null;
+  images: string[] | null;
+  status: string | null;
+  accepted_categories: string[] | null;
+  created_at: string;
+  updated_at: string;
+  provider_name: string | null; // null for unauthenticated users
+  provider_avatar: string | null; // null for unauthenticated users
+}
+
 export interface DatabaseService {
   id: string;
   user_id: string;
@@ -27,7 +47,7 @@ export interface DatabaseService {
 
 export interface ServiceWithUser {
   id: string;
-  userId: string;
+  userId: string | null; // null for unauthenticated users (protected)
   title: string;
   description: string;
   category: ServiceCategory;
@@ -39,12 +59,36 @@ export interface ServiceWithUser {
   location: string;
   status: "active" | "paused" | "completed";
   user?: {
-    id: string;
+    id: string | null;
     name: string;
     avatar?: string;
     rating: number | null;
     completedTrades: number;
     verificationStatus: "verified" | "pending" | "unverified";
+  };
+}
+
+function transformSecureService(service: SecureServiceResponse): ServiceWithUser {
+  return {
+    id: service.id,
+    userId: service.user_id, // Will be null for unauthenticated users
+    title: service.title,
+    description: service.description || "",
+    category: service.category as ServiceCategory,
+    type: (service.type as "offer" | "request") || "offer",
+    images: service.images || undefined,
+    creditValue: service.price ? Number(service.price) : undefined,
+    createdAt: new Date(service.created_at),
+    location: service.location || "Ireland",
+    status: (service.status as "active" | "paused" | "completed") || "active",
+    user: service.provider_name ? {
+      id: service.user_id,
+      name: formatDisplayName(service.provider_name),
+      avatar: service.provider_avatar || undefined,
+      rating: null,
+      completedTrades: 0,
+      verificationStatus: "pending",
+    } : undefined,
   };
 }
 
@@ -65,7 +109,7 @@ function transformService(dbService: DatabaseService): ServiceWithUser {
       id: dbService.user_id,
       name: formatDisplayName(dbService.profiles.full_name),
       avatar: dbService.profiles.avatar_url || undefined,
-      rating: null, // No reviews yet
+      rating: null,
       completedTrades: 0,
       verificationStatus: "pending",
     } : undefined,
@@ -83,43 +127,19 @@ export function useServices(options: UseServicesOptions = {}) {
   return useQuery({
     queryKey: ["services", options],
     queryFn: async () => {
-      let query = supabase
-        .from("services")
-        .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            avatar_url
-          )
-        `)
-        .order("created_at", { ascending: false });
-
-      // Apply filters
-      if (options.status) {
-        query = query.eq("status", options.status);
-      } else {
-        query = query.eq("status", "active");
-      }
-
-      if (options.category && options.category !== "all") {
-        query = query.eq("category", options.category);
-      }
-
-      if (options.location && options.location !== "All Ireland") {
-        query = query.ilike("location", `%${options.location}%`);
-      }
-
-      if (options.search) {
-        query = query.or(`title.ilike.%${options.search}%,description.ilike.%${options.search}%`);
-      }
-
-      const { data, error } = await query;
+      // Use secure RPC function that conditionally exposes user_id
+      const { data, error } = await supabase.rpc("get_public_services", {
+        _category: options.category && options.category !== "all" ? options.category : null,
+        _location: options.location && options.location !== "All Ireland" ? options.location : null,
+        _search: options.search || null,
+        _status: options.status || "active",
+      });
 
       if (error) {
         throw error;
       }
 
-      return (data as DatabaseService[]).map(transformService);
+      return (data as SecureServiceResponse[]).map(transformSecureService);
     },
   });
 }

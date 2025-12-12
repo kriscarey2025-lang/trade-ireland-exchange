@@ -30,9 +30,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { ContactDialog } from "@/components/messaging/ContactDialog";
 import { formatDisplayName } from "@/lib/utils";
 
-interface ServiceDetail {
+// Response from secure database function
+interface SecureServiceDetail {
   id: string;
-  user_id: string;
+  user_id: string | null; // null for unauthenticated users
   title: string;
   description: string | null;
   category: string;
@@ -42,16 +43,13 @@ interface ServiceDetail {
   location: string | null;
   images: string[] | null;
   status: string | null;
-  created_at: string;
   accepted_categories: string[] | null;
-  profiles: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-    bio: string | null;
-    location: string | null;
-    created_at: string;
-  } | null;
+  created_at: string;
+  updated_at: string;
+  provider_name: string | null;
+  provider_avatar: string | null;
+  provider_bio: string | null;
+  provider_location: string | null;
 }
 
 export default function ServiceDetail() {
@@ -65,26 +63,15 @@ export default function ServiceDetail() {
     queryFn: async () => {
       if (!id) throw new Error("Service ID is required");
 
-      const { data, error } = await supabase
-        .from("services")
-        .select(`
-          *,
-          profiles:user_id (
-            id,
-            full_name,
-            avatar_url,
-            bio,
-            location,
-            created_at
-          )
-        `)
-        .eq("id", id)
-        .maybeSingle();
+      // Use secure RPC function that conditionally exposes user_id
+      const { data, error } = await supabase.rpc("get_service_by_id", {
+        _service_id: id,
+      });
 
       if (error) throw error;
-      if (!data) throw new Error("Service not found");
+      if (!data || data.length === 0) throw new Error("Service not found");
 
-      return data as ServiceDetail;
+      return data[0] as SecureServiceDetail;
     },
     enabled: !!id,
   });
@@ -323,35 +310,45 @@ export default function ServiceDetail() {
                 <CardContent className="p-6">
                   <h2 className="text-lg font-semibold mb-4">Service Provider</h2>
                   
-                  <div className="flex items-center gap-4 mb-4">
-                    <Avatar className="h-16 w-16 ring-2 ring-primary/20">
-                      <AvatarImage src={service.profiles?.avatar_url || undefined} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                        {getInitials(service.profiles?.full_name)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold text-lg">
-                        {formatDisplayName(service.profiles?.full_name)}
-                      </p>
-                      {service.profiles?.location && (
-                        <p className="text-sm text-muted-foreground flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {service.profiles.location}
+                  {/* Show provider info only for authenticated users */}
+                  {service.provider_name ? (
+                    <>
+                      <div className="flex items-center gap-4 mb-4">
+                        <Avatar className="h-16 w-16 ring-2 ring-primary/20">
+                          <AvatarImage src={service.provider_avatar || undefined} />
+                          <AvatarFallback className="bg-primary/10 text-primary text-lg">
+                            {getInitials(service.provider_name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold text-lg">
+                            {formatDisplayName(service.provider_name)}
+                          </p>
+                          {service.provider_location && (
+                            <p className="text-sm text-muted-foreground flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {service.provider_location}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {service.provider_bio && (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                          {service.provider_bio}
                         </p>
                       )}
+                    </>
+                  ) : (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Sign in to see provider details
+                      </p>
+                      <Button variant="outline" size="sm" onClick={() => navigate('/auth')}>
+                        Sign In
+                      </Button>
                     </div>
-                  </div>
-
-                  {service.profiles?.bio && (
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                      {service.profiles.bio}
-                    </p>
                   )}
-
-                  <p className="text-xs text-muted-foreground mb-4">
-                    Member since {service.profiles?.created_at ? formatDate(service.profiles.created_at) : "—"}
-                  </p>
 
                   <Separator className="my-4" />
 
@@ -406,14 +403,14 @@ export default function ServiceDetail() {
       </main>
       <Footer />
 
-      {service && (
+      {service && service.user_id && (
         <ContactDialog
           open={contactOpen}
           onOpenChange={setContactOpen}
           serviceId={service.id}
           serviceTitle={service.title}
           providerId={service.user_id}
-          providerName={formatDisplayName(service.profiles?.full_name)}
+          providerName={formatDisplayName(service.provider_name)}
         />
       )}
     </div>

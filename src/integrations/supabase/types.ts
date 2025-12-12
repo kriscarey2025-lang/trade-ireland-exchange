@@ -280,6 +280,55 @@ export type Database = {
           phone: string
         }[]
       }
+      get_public_services: {
+        Args: {
+          _category?: string
+          _location?: string
+          _search?: string
+          _status?: string
+        }
+        Returns: {
+          accepted_categories: string[]
+          category: string
+          created_at: string
+          description: string
+          id: string
+          images: string[]
+          location: string
+          price: number
+          price_type: string
+          provider_avatar: string
+          provider_name: string
+          status: string
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
+      get_service_by_id: {
+        Args: { _service_id: string }
+        Returns: {
+          accepted_categories: string[]
+          category: string
+          created_at: string
+          description: string
+          id: string
+          images: string[]
+          location: string
+          price: number
+          price_type: string
+          provider_avatar: string
+          provider_bio: string
+          provider_location: string
+          provider_name: string
+          status: string
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
       has_contact_access: {
         Args: { _profile_id: string; _viewer_id: string }
         Returns: boolean
