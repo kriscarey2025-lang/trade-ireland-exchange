@@ -9,6 +9,7 @@ import { Loader2, MessageCircle, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useConversations } from "@/hooks/useMessaging";
 import { formatDistanceToNow } from "date-fns";
+import { formatDisplayName } from "@/lib/utils";
 
 export default function Messages() {
   const navigate = useNavigate();
@@ -94,7 +95,7 @@ export default function Messages() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <p className="font-semibold truncate">
-                            {conversation.other_profile?.full_name || "User"}
+                            {formatDisplayName(conversation.other_profile?.full_name)}
                           </p>
                           <div className="flex items-center gap-2 shrink-0">
                             {conversation.unread_count && conversation.unread_count > 0 && (
