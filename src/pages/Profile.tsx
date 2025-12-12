@@ -13,6 +13,7 @@ import { Loader2, User, MapPin, Phone, Mail, Edit2, Save, X } from "lucide-react
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import { UserListings } from "@/components/profile/UserListings";
 
 const profileSchema = z.object({
   full_name: z.string().trim().min(1, "Name is required").max(100),
@@ -328,6 +329,9 @@ export default function Profile() {
               )}
             </CardContent>
           </Card>
+
+          {/* User Listings */}
+          {user && <UserListings userId={user.id} />}
 
           {/* Member Since */}
           <p className="text-center text-sm text-muted-foreground">
