@@ -7,7 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle } from "lucide-react";
+import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle, MoreVertical } from "lucide-react";
+import { ReportUserDialog } from "@/components/reports/ReportUserDialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useMessages, useSendMessage, useMarkAsRead } from "@/hooks/useMessaging";
@@ -250,15 +257,34 @@ export default function Conversation() {
                   <ExternalLink className="h-3 w-3" />
                 </Link>
               )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowContactCard(!showContactCard)}
-                className="ml-auto"
-              >
-                <Info className="h-4 w-4 mr-1" />
-                Contact
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowContactCard(!showContactCard)}
+                >
+                  <Info className="h-4 w-4 mr-1" />
+                  Contact
+                </Button>
+                
+                {conversation.other_profile && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <ReportUserDialog
+                          reportedUserId={conversation.other_profile.id}
+                          reportedUserName={formatDisplayName(conversation.other_profile.full_name)}
+                        />
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
             </div>
           </div>
 
