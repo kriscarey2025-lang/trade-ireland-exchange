@@ -55,6 +55,8 @@ export default function Auth() {
   const [signupPassword, setSignupPassword] = useState("");
   const [signupLocation, setSignupLocation] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
+  const [agreedToConduct, setAgreedToConduct] = useState(false);
 
   // Redirect if already logged in - check if onboarding is complete
   useEffect(() => {
@@ -118,8 +120,8 @@ export default function Auth() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!agreedToTerms) {
-      toast.error("Please agree to the terms and conditions");
+    if (!agreedToTerms || !agreedToDisclaimer || !agreedToConduct) {
+      toast.error("Please agree to all required conditions before signing up");
       return;
     }
 
@@ -414,25 +416,60 @@ export default function Auth() {
                         </Button>
                       </div>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <Checkbox
-                        id="terms"
-                        checked={agreedToTerms}
-                        onCheckedChange={(checked) =>
-                          setAgreedToTerms(checked as boolean)
-                        }
-                        disabled={isLoading}
-                      />
-                      <Label htmlFor="terms" className="text-sm leading-tight">
-                        I agree to the{" "}
-                        <Link to="/terms" className="text-primary hover:underline">
-                          Terms of Service
-                        </Link>{" "}
-                        and{" "}
-                        <Link to="/privacy" className="text-primary hover:underline">
-                          Privacy Policy
-                        </Link>
-                      </Label>
+                    <div className="space-y-3 rounded-lg border border-border p-4 bg-muted/30">
+                      <p className="text-sm font-medium text-foreground">Before signing up, please confirm:</p>
+                      
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="terms"
+                          checked={agreedToTerms}
+                          onCheckedChange={(checked) =>
+                            setAgreedToTerms(checked as boolean)
+                          }
+                          disabled={isLoading}
+                          className="mt-0.5"
+                        />
+                        <Label htmlFor="terms" className="text-sm leading-tight font-normal">
+                          I have read and understood the{" "}
+                          <Link to="/terms" className="text-primary hover:underline">
+                            Terms of Service
+                          </Link>{" "}
+                          and{" "}
+                          <Link to="/privacy" className="text-primary hover:underline">
+                            Privacy Policy
+                          </Link>
+                        </Label>
+                      </div>
+
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="disclaimer"
+                          checked={agreedToDisclaimer}
+                          onCheckedChange={(checked) =>
+                            setAgreedToDisclaimer(checked as boolean)
+                          }
+                          disabled={isLoading}
+                          className="mt-0.5"
+                        />
+                        <Label htmlFor="disclaimer" className="text-sm leading-tight font-normal">
+                          I understand that SkillSwap is not responsible for the content of services listed or for my personal safety when meeting other users
+                        </Label>
+                      </div>
+
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="conduct"
+                          checked={agreedToConduct}
+                          onCheckedChange={(checked) =>
+                            setAgreedToConduct(checked as boolean)
+                          }
+                          disabled={isLoading}
+                          className="mt-0.5"
+                        />
+                        <Label htmlFor="conduct" className="text-sm leading-tight font-normal">
+                          I commit to being kind and respectful in all my interactions on this platform
+                        </Label>
+                      </div>
                     </div>
                     <Button
                       type="submit"
