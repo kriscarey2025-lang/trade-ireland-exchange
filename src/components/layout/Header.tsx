@@ -2,17 +2,21 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown, Bell } from "lucide-react";
+import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown, Bell, Shield, Users, Flag, CheckCircle, Megaphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useCredits } from "@/hooks/useCredits";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [postMenuOpen, setPostMenuOpen] = useState(false);
+  const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const postMenuRef = useRef<HTMLDivElement>(null);
+  const adminMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -20,11 +24,25 @@ export function Header() {
   
   const isLoggedIn = !!user;
 
-  // Close post menu when clicking outside
+  // Check if user is admin
+  const { data: isAdmin } = useQuery({
+    queryKey: ['user-is-admin', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return false;
+      const { data } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+      return data ?? false;
+    },
+    enabled: !!user?.id,
+  });
+
+  // Close menus when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (postMenuRef.current && !postMenuRef.current.contains(event.target as Node)) {
         setPostMenuOpen(false);
+      }
+      if (adminMenuRef.current && !adminMenuRef.current.contains(event.target as Node)) {
+        setAdminMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -43,6 +61,12 @@ export function Header() {
     { href: "/matches", label: "AI Matches", icon: Sparkles },
     { href: "/how-it-works", label: "How It Works" },
     { href: "/about", label: "About" },
+  ];
+
+  const adminLinks = [
+    { href: "/admin/advertisers", label: "Advertisers", icon: Megaphone },
+    { href: "/admin/reports", label: "Reports", icon: Flag },
+    { href: "/admin/verification", label: "Verification", icon: CheckCircle },
   ];
 
   return (
@@ -74,6 +98,43 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          
+          {/* Admin Dropdown */}
+          {isAdmin && (
+            <div className="relative" ref={adminMenuRef}>
+              <button
+                onClick={() => setAdminMenuOpen(!adminMenuOpen)}
+                className={cn(
+                  "flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium transition-all",
+                  adminLinks.some(l => location.pathname === l.href)
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                )}
+              >
+                <Shield className="h-4 w-4" />
+                Admin
+                <ChevronDown className="h-3 w-3" />
+              </button>
+              {adminMenuOpen && (
+                <div className="absolute left-0 mt-2 w-48 bg-background rounded-xl border border-border shadow-lg py-1 z-50">
+                  {adminLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors",
+                        location.pathname === link.href && "bg-muted text-primary"
+                      )}
+                      onClick={() => setAdminMenuOpen(false)}
+                    >
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </nav>
 
         {/* Desktop Actions */}
@@ -182,6 +243,32 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            
+            {/* Mobile Admin Links */}
+            {isAdmin && (
+              <div className="pt-4 border-t border-border space-y-2">
+                <div className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-foreground">
+                  <Shield className="h-4 w-4" />
+                  Admin
+                </div>
+                {adminLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                      location.pathname === link.href
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-muted"
+                    )}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <link.icon className="h-4 w-4" />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
             <div className="pt-4 border-t border-border space-y-2">
               {isLoggedIn ? (
                 <>
