@@ -35,7 +35,7 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo: `${window.location.origin}/onboarding`,
       },
     });
     
@@ -56,10 +56,26 @@ export default function Auth() {
   const [signupLocation, setSignupLocation] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  // Redirect if already logged in
+  // Redirect if already logged in - check if onboarding is complete
   useEffect(() => {
+    const checkOnboarding = async () => {
+      if (!user || authLoading) return;
+      
+      const { data } = await supabase
+        .from("user_preferences")
+        .select("onboarding_completed")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      if (data?.onboarding_completed) {
+        navigate('/');
+      } else {
+        navigate('/onboarding');
+      }
+    };
+    
     if (user && !authLoading) {
-      navigate('/');
+      checkOnboarding();
     }
   }, [user, authLoading, navigate]);
 
