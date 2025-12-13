@@ -21,7 +21,7 @@ export function SideAd({ position, className = "" }: SideAdProps) {
   return (
     <div 
       className={`
-        hidden xl:flex flex-col gap-3 w-[160px] flex-shrink-0 sticky top-24
+        hidden xl:flex flex-col gap-3 w-[160px] flex-shrink-0 sticky top-24 mt-32
         ${position === "left" ? "mr-3" : "ml-3"}
         ${className}
       `}
