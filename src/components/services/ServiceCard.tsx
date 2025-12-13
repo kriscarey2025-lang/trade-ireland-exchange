@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, CheckCircle2, ArrowUpRight } from "lucide-react";
+import { MapPin, Clock, Star, CheckCircle2, ArrowUpRight, Linkedin, Facebook, Instagram } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 import { ServiceCategory } from "@/types";
@@ -14,6 +14,9 @@ interface ServiceUser {
   rating: number | null;
   completedTrades: number;
   verificationStatus: "verified" | "pending" | "unverified";
+  linkedinUrl?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
 }
 
 interface ServiceData {
@@ -98,6 +101,20 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
                   </span>
                   {service.user.verificationStatus === "verified" && (
                     <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  )}
+                  {/* Social Media Icons */}
+                  {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
+                    <div className="flex items-center gap-1 ml-1">
+                      {service.user.linkedinUrl && (
+                        <Linkedin className="h-3.5 w-3.5 text-[#0A66C2] shrink-0" />
+                      )}
+                      {service.user.facebookUrl && (
+                        <Facebook className="h-3.5 w-3.5 text-[#1877F2] shrink-0" />
+                      )}
+                      {service.user.instagramUrl && (
+                        <Instagram className="h-3.5 w-3.5 text-[#E4405F] shrink-0" />
+                      )}
+                    </div>
                   )}
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
