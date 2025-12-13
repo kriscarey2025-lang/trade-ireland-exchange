@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Coins, Star, CheckCircle2, ArrowUpRight } from "lucide-react";
+import { MapPin, Clock, Star, CheckCircle2, ArrowUpRight } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 import { ServiceCategory } from "@/types";
@@ -78,12 +78,6 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
               <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary text-xs font-medium text-secondary-foreground">
                 <Clock className="h-3 w-3" />
                 ~{service.estimatedHours}h
-              </div>
-            )}
-            {service.creditValue && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-warning/10 text-xs font-medium text-warning">
-                <Coins className="h-3 w-3" />
-                {service.creditValue} credits
               </div>
             )}
           </div>

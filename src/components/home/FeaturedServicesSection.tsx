@@ -5,8 +5,8 @@ import { mockServices } from "@/lib/mockData";
 import { ArrowRight } from "lucide-react";
 
 export function FeaturedServicesSection() {
-  // Show first 6 services
-  const featuredServices = mockServices.slice(0, 6);
+  // Show first 3 services
+  const featuredServices = mockServices.slice(0, 3);
 
   return (
     <section className="py-20 bg-secondary/20">
