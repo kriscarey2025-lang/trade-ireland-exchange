@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Leaf, Shield, ArrowRight } from "lucide-react";
+import founderImage from "@/assets/founder-kristina.png";
 
 const values = [
   {
@@ -61,7 +62,7 @@ export default function About() {
                 <div className="md:w-1/3 flex-shrink-0">
                   <div className="relative">
                     <img 
-                      src="/src/assets/founder-kristina.png" 
+                      src={founderImage} 
                       alt="Kristina, founder of SkillSwap Ireland"
                       className="w-full rounded-2xl shadow-lg object-cover aspect-[3/4] grayscale"
                     />
