@@ -14,11 +14,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone, Eye, MousePointer, BarChart3 } from "lucide-react";
+import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone, Eye, MousePointer, BarChart3, CalendarIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AdImageUpload } from "@/components/ads/AdImageUpload";
 import { AdAnalyticsDashboard } from "@/components/ads/AdAnalyticsDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface Advertiser {
   id: string;
@@ -57,6 +61,8 @@ const AdminAdvertisers = () => {
   const [adImageUrl, setAdImageUrl] = useState("");
   const [adTitle, setAdTitle] = useState("");
   const [adDescription, setAdDescription] = useState("");
+  const [adStartDate, setAdStartDate] = useState<Date | undefined>(undefined);
+  const [adEndDate, setAdEndDate] = useState<Date | undefined>(undefined);
   const { user, loading } = useAuth();
   const queryClient = useQueryClient();
   const [isAdvertiserDialogOpen, setIsAdvertiserDialogOpen] = useState(false);
@@ -180,6 +186,8 @@ const AdminAdvertisers = () => {
         image_url: adImageUrl || null,
         link_url: formData.get("link_url") as string || null,
         placement: formData.get("placement") as string || "side",
+        starts_at: adStartDate?.toISOString() || null,
+        ends_at: adEndDate?.toISOString() || null,
       });
       if (error) throw error;
     },
@@ -189,6 +197,8 @@ const AdminAdvertisers = () => {
       setAdImageUrl("");
       setAdTitle("");
       setAdDescription("");
+      setAdStartDate(undefined);
+      setAdEndDate(undefined);
       toast.success("Ad created successfully");
     },
     onError: (error) => {
@@ -460,6 +470,72 @@ const AdminAdvertisers = () => {
                           </SelectContent>
                         </Select>
                       </div>
+
+                      {/* Scheduling Section */}
+                      <div className="space-y-3 pt-2 border-t border-border">
+                        <Label className="text-sm font-medium flex items-center gap-2">
+                          <CalendarIcon className="h-4 w-4" />
+                          Campaign Schedule
+                        </Label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Start Date</Label>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !adStartDate && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {adStartDate ? format(adStartDate, "MMM d, yyyy") : "Now"}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                  mode="single"
+                                  selected={adStartDate}
+                                  onSelect={setAdStartDate}
+                                  initialFocus
+                                  className={cn("p-3 pointer-events-auto")}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">End Date</Label>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !adEndDate && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {adEndDate ? format(adEndDate, "MMM d, yyyy") : "No end"}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                  mode="single"
+                                  selected={adEndDate}
+                                  onSelect={setAdEndDate}
+                                  disabled={(date) => adStartDate ? date < adStartDate : false}
+                                  initialFocus
+                                  className={cn("p-3 pointer-events-auto")}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Leave dates empty to run indefinitely starting now
+                        </p>
+                      </div>
                       <Button type="submit" className="w-full" disabled={createAd.isPending || !adTitle.trim()}>
                         {createAd.isPending ? "Creating..." : "Create Ad"}
                       </Button>
@@ -498,8 +574,21 @@ const AdminAdvertisers = () => {
                                 {ad.description}
                               </p>
                             )}
-                            <div className="flex gap-2 mt-2">
+                            <div className="flex flex-wrap gap-2 mt-2">
                               <Badge variant="outline">{ad.placement}</Badge>
+                              {ad.starts_at && (
+                                <Badge variant="outline" className="text-xs">
+                                  <CalendarIcon className="h-3 w-3 mr-1" />
+                                  {format(new Date(ad.starts_at), "MMM d")}
+                                  {ad.ends_at ? ` - ${format(new Date(ad.ends_at), "MMM d")}` : "+"}
+                                </Badge>
+                              )}
+                              {ad.ends_at && new Date(ad.ends_at) < new Date() && (
+                                <Badge variant="secondary" className="text-xs">Ended</Badge>
+                              )}
+                              {ad.starts_at && new Date(ad.starts_at) > new Date() && (
+                                <Badge variant="secondary" className="text-xs">Scheduled</Badge>
+                              )}
                             </div>
                             {/* Ad Stats */}
                             {(() => {
