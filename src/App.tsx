@@ -9,6 +9,7 @@ import Browse from "./pages/Browse";
 import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
+import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import NewService from "./pages/NewService";
 import EditService from "./pages/EditService";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/about" element={<About />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/services/new" element={<NewService />} />
             <Route path="/services/:id/edit" element={<EditService />} />

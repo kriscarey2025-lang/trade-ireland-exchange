@@ -147,7 +147,7 @@ export default function Auth() {
     }
 
     toast.success("Account created successfully!");
-    navigate('/');
+    navigate('/onboarding');
   };
 
   if (authLoading) {
