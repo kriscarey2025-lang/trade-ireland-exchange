@@ -51,10 +51,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const handleBanCheck = async (userId: string) => {
+    const banned = await checkBanStatus(userId);
+    if (banned) {
+      setIsBanned(true);
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setLoading(false);
+      return true;
+    }
+    
+    const { ipBanned } = await logIpAndCheckBan();
+    if (ipBanned) {
+      setIsBanned(true);
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setLoading(false);
+      return true;
+    }
+    
+    setIsBanned(false);
+    return false;
+  };
+
   useEffect(() => {
     // Prevent double initialization
     if (initializedRef.current) return;
     initializedRef.current = true;
+
+    // Listen for auth changes - SYNC only, defer async work
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        // Synchronous state updates only
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (event === 'SIGNED_OUT') {
+          setIsBanned(false);
+          ipLoggedRef.current = false;
+          setLoading(false);
+        }
+      }
+    );
 
     // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -62,70 +102,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        const banned = await checkBanStatus(session.user.id);
-        if (banned) {
-          setIsBanned(true);
-          await supabase.auth.signOut();
-          setUser(null);
-          setSession(null);
-          setLoading(false);
-          return;
-        }
-        
-        const { ipBanned } = await logIpAndCheckBan();
-        if (ipBanned) {
-          setIsBanned(true);
-          await supabase.auth.signOut();
-          setUser(null);
-          setSession(null);
-          setLoading(false);
-          return;
-        }
+        const wasBanned = await handleBanCheck(session.user.id);
+        if (wasBanned) return;
       }
       
       setLoading(false);
     });
-
-    // Listen for auth changes (login/logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        // Only process actual auth events, not initial session
-        if (event === 'SIGNED_IN') {
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          if (session?.user) {
-            const banned = await checkBanStatus(session.user.id);
-            if (banned) {
-              setIsBanned(true);
-              await supabase.auth.signOut();
-              setUser(null);
-              setSession(null);
-              return;
-            }
-            
-            const { ipBanned } = await logIpAndCheckBan();
-            if (ipBanned) {
-              setIsBanned(true);
-              await supabase.auth.signOut();
-              setUser(null);
-              setSession(null);
-              return;
-            }
-            
-            setIsBanned(false);
-          }
-        } else if (event === 'SIGNED_OUT') {
-          setSession(null);
-          setUser(null);
-          setIsBanned(false);
-          ipLoggedRef.current = false;
-        } else if (event === 'TOKEN_REFRESHED') {
-          setSession(session);
-          setUser(session?.user ?? null);
-        }
-      }
-    );
 
     return () => subscription.unsubscribe();
   }, []);
