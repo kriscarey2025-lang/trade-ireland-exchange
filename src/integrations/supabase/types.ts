@@ -378,6 +378,45 @@ export type Database = {
           },
         ]
       }
+      user_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          onboarding_completed: boolean | null
+          service_radius_km: number
+          skills_offered: string[] | null
+          skills_offered_custom: string[] | null
+          skills_wanted: string[] | null
+          skills_wanted_custom: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          onboarding_completed?: boolean | null
+          service_radius_km?: number
+          skills_offered?: string[] | null
+          skills_offered_custom?: string[] | null
+          skills_wanted?: string[] | null
+          skills_wanted_custom?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          onboarding_completed?: boolean | null
+          service_radius_km?: number
+          skills_offered?: string[] | null
+          skills_offered_custom?: string[] | null
+          skills_wanted?: string[] | null
+          skills_wanted_custom?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
