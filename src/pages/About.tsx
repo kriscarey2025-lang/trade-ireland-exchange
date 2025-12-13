@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Leaf, Shield, ArrowRight, Sparkles, Gift } from "lucide-react";
+import { SEO } from "@/components/SEO";
 import founderImage from "@/assets/founder-kristina.png";
 
 const values = [
@@ -35,9 +36,16 @@ const values = [
 
 export default function About() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
+    <>
+      <SEO 
+        title="About Us"
+        description="Learn about Swap Skills - Ireland's community-driven platform for trading skills and services without money. Founded by Kristina Carey to help neighbours help each other."
+        keywords="about swap skills, skill exchange Ireland, Kristina Carey, community trading, barter Ireland"
+        url="https://swap-skills.com/about"
+      />
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">
         {/* Hero */}
         <section className="bg-gradient-to-b from-secondary/50 to-background py-16 md:py-24">
           <div className="container">
@@ -192,5 +200,6 @@ export default function About() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }
