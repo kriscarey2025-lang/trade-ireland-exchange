@@ -124,29 +124,6 @@ export default function About() {
           </div>
         </section>
 
-        {/* Stats */}
-        <section className="py-16">
-          <div className="container">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-4xl font-bold text-primary mb-2">500+</div>
-                <p className="text-muted-foreground">Community Members</p>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-primary mb-2">1,200+</div>
-                <p className="text-muted-foreground">Trades Completed</p>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-primary mb-2">26</div>
-                <p className="text-muted-foreground">Counties Covered</p>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-primary mb-2">98%</div>
-                <p className="text-muted-foreground">Satisfaction Rate</p>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* CTA */}
         <section className="py-16 bg-gradient-hero text-primary-foreground">
