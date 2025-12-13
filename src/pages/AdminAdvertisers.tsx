@@ -48,8 +48,13 @@ interface AdStats {
   clicks: number;
 }
 
+const AD_TITLE_LIMIT = 60;
+const AD_DESCRIPTION_LIMIT = 150;
+
 const AdminAdvertisers = () => {
   const [adImageUrl, setAdImageUrl] = useState("");
+  const [adTitle, setAdTitle] = useState("");
+  const [adDescription, setAdDescription] = useState("");
   const { user, loading } = useAuth();
   const queryClient = useQueryClient();
   const [isAdvertiserDialogOpen, setIsAdvertiserDialogOpen] = useState(false);
@@ -168,8 +173,8 @@ const AdminAdvertisers = () => {
       
       const { error } = await supabase.from("ads").insert({
         advertiser_id: selectedAdvertiser.id,
-        title: formData.get("title") as string,
-        description: formData.get("description") as string || null,
+        title: adTitle,
+        description: adDescription || null,
         image_url: adImageUrl || null,
         link_url: formData.get("link_url") as string || null,
         placement: formData.get("placement") as string || "side",
@@ -180,6 +185,8 @@ const AdminAdvertisers = () => {
       queryClient.invalidateQueries({ queryKey: ["ads", selectedAdvertiser?.id] });
       setIsAdDialogOpen(false);
       setAdImageUrl("");
+      setAdTitle("");
+      setAdDescription("");
       toast.success("Ad created successfully");
     },
     onError: (error) => {
@@ -377,12 +384,38 @@ const AdminAdvertisers = () => {
                       className="space-y-4"
                     >
                       <div className="space-y-2">
-                        <Label htmlFor="title">Ad Title *</Label>
-                        <Input id="title" name="title" required />
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="title">Ad Title *</Label>
+                          <span className={`text-xs ${adTitle.length > AD_TITLE_LIMIT ? "text-destructive" : "text-muted-foreground"}`}>
+                            {adTitle.length}/{AD_TITLE_LIMIT}
+                          </span>
+                        </div>
+                        <Input 
+                          id="title" 
+                          name="title" 
+                          value={adTitle}
+                          onChange={(e) => setAdTitle(e.target.value.slice(0, AD_TITLE_LIMIT))}
+                          maxLength={AD_TITLE_LIMIT}
+                          placeholder="Short, catchy headline"
+                          required 
+                        />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" name="description" rows={3} />
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="description">Description</Label>
+                          <span className={`text-xs ${adDescription.length > AD_DESCRIPTION_LIMIT ? "text-destructive" : "text-muted-foreground"}`}>
+                            {adDescription.length}/{AD_DESCRIPTION_LIMIT}
+                          </span>
+                        </div>
+                        <Textarea 
+                          id="description" 
+                          name="description" 
+                          value={adDescription}
+                          onChange={(e) => setAdDescription(e.target.value.slice(0, AD_DESCRIPTION_LIMIT))}
+                          maxLength={AD_DESCRIPTION_LIMIT}
+                          placeholder="Brief description of your offer"
+                          rows={3} 
+                        />
                       </div>
                       <AdImageUpload 
                         value={adImageUrl} 
@@ -390,11 +423,11 @@ const AdminAdvertisers = () => {
                       />
                       <div className="space-y-2">
                         <Label htmlFor="link_url">Link URL</Label>
-                        <Input id="link_url" name="link_url" type="url" placeholder="https://" />
+                        <Input id="link_url" name="link_url" type="url" placeholder="https://your-website.com" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="placement">Placement</Label>
-                        <Select name="placement" defaultValue="side">
+                        <Select name="placement" defaultValue="both">
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
@@ -405,7 +438,7 @@ const AdminAdvertisers = () => {
                           </SelectContent>
                         </Select>
                       </div>
-                      <Button type="submit" className="w-full" disabled={createAd.isPending}>
+                      <Button type="submit" className="w-full" disabled={createAd.isPending || !adTitle.trim()}>
                         {createAd.isPending ? "Creating..." : "Create Ad"}
                       </Button>
                     </form>
