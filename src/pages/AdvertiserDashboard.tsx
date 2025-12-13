@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Building2, Megaphone, Eye, MousePointer, CalendarIcon, BarChart3, TrendingUp } from "lucide-react";
+import { Plus, Building2, Megaphone, Eye, MousePointer, CalendarIcon, BarChart3, TrendingUp, Pencil } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AdImageUpload } from "@/components/ads/AdImageUpload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -48,12 +48,15 @@ const AD_TITLE_LIMIT = 60;
 const AD_DESCRIPTION_LIMIT = 150;
 
 const AdvertiserDashboard = () => {
-  const [adImageUrl, setAdImageUrl] = useState("");
+const [adImageUrl, setAdImageUrl] = useState("");
   const [adTitle, setAdTitle] = useState("");
   const [adDescription, setAdDescription] = useState("");
+  const [adLinkUrl, setAdLinkUrl] = useState("");
+  const [adPlacement, setAdPlacement] = useState("both");
   const [adStartDate, setAdStartDate] = useState<Date | undefined>(undefined);
   const [adEndDate, setAdEndDate] = useState<Date | undefined>(undefined);
   const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
+  const [editingAd, setEditingAd] = useState<Ad | null>(null);
   const [dateRange, setDateRange] = useState("30");
   
   const { user, loading } = useAuth();
@@ -160,9 +163,32 @@ const AdvertiserDashboard = () => {
     return data;
   })();
 
+  const resetForm = () => {
+    setAdImageUrl("");
+    setAdTitle("");
+    setAdDescription("");
+    setAdLinkUrl("");
+    setAdPlacement("both");
+    setAdStartDate(undefined);
+    setAdEndDate(undefined);
+    setEditingAd(null);
+  };
+
+  const openEditDialog = (ad: Ad) => {
+    setEditingAd(ad);
+    setAdTitle(ad.title);
+    setAdDescription(ad.description || "");
+    setAdImageUrl(ad.image_url || "");
+    setAdLinkUrl(ad.link_url || "");
+    setAdPlacement(ad.placement);
+    setAdStartDate(ad.starts_at ? new Date(ad.starts_at) : undefined);
+    setAdEndDate(ad.ends_at ? new Date(ad.ends_at) : undefined);
+    setIsAdDialogOpen(true);
+  };
+
   // Create ad mutation
   const createAd = useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async () => {
       if (!advertiser) throw new Error("No advertiser account found");
       
       const { error } = await supabase.from("ads").insert({
@@ -170,8 +196,8 @@ const AdvertiserDashboard = () => {
         title: adTitle,
         description: adDescription || null,
         image_url: adImageUrl || null,
-        link_url: formData.get("link_url") as string || null,
-        placement: formData.get("placement") as string || "side",
+        link_url: adLinkUrl || null,
+        placement: adPlacement,
         starts_at: adStartDate?.toISOString() || null,
         ends_at: adEndDate?.toISOString() || null,
       });
@@ -180,15 +206,38 @@ const AdvertiserDashboard = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myAds", advertiser?.id] });
       setIsAdDialogOpen(false);
-      setAdImageUrl("");
-      setAdTitle("");
-      setAdDescription("");
-      setAdStartDate(undefined);
-      setAdEndDate(undefined);
+      resetForm();
       toast.success("Ad created successfully");
     },
     onError: (error) => {
       toast.error("Failed to create ad: " + error.message);
+    },
+  });
+
+  // Update ad mutation
+  const updateAd = useMutation({
+    mutationFn: async () => {
+      if (!editingAd) throw new Error("No ad selected for editing");
+      
+      const { error } = await supabase.from("ads").update({
+        title: adTitle,
+        description: adDescription || null,
+        image_url: adImageUrl || null,
+        link_url: adLinkUrl || null,
+        placement: adPlacement,
+        starts_at: adStartDate?.toISOString() || null,
+        ends_at: adEndDate?.toISOString() || null,
+      }).eq("id", editingAd.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myAds", advertiser?.id] });
+      setIsAdDialogOpen(false);
+      resetForm();
+      toast.success("Ad updated successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to update ad: " + error.message);
     },
   });
 
@@ -398,21 +447,28 @@ const AdvertiserDashboard = () => {
 
           <TabsContent value="ads" className="space-y-6">
             <div className="flex justify-end">
-              <Dialog open={isAdDialogOpen} onOpenChange={setIsAdDialogOpen}>
+              <Dialog open={isAdDialogOpen} onOpenChange={(open) => {
+                setIsAdDialogOpen(open);
+                if (!open) resetForm();
+              }}>
                 <DialogTrigger asChild>
-                  <Button>
+                  <Button onClick={() => resetForm()}>
                     <Plus className="h-4 w-4 mr-2" />
                     Create Ad
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create New Ad</DialogTitle>
+                    <DialogTitle>{editingAd ? "Edit Ad" : "Create New Ad"}</DialogTitle>
                   </DialogHeader>
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
-                      createAd.mutate(new FormData(e.currentTarget));
+                      if (editingAd) {
+                        updateAd.mutate();
+                      } else {
+                        createAd.mutate();
+                      }
                     }}
                     className="space-y-4"
                   >
@@ -456,11 +512,18 @@ const AdvertiserDashboard = () => {
                     />
                     <div className="space-y-2">
                       <Label htmlFor="link_url">Link URL</Label>
-                      <Input id="link_url" name="link_url" type="url" placeholder="https://your-website.com" />
+                      <Input 
+                        id="link_url" 
+                        name="link_url" 
+                        type="url" 
+                        value={adLinkUrl}
+                        onChange={(e) => setAdLinkUrl(e.target.value)}
+                        placeholder="https://your-website.com" 
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="placement">Placement</Label>
-                      <Select name="placement" defaultValue="both">
+                      <Select value={adPlacement} onValueChange={setAdPlacement}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -537,8 +600,11 @@ const AdvertiserDashboard = () => {
                         Leave dates empty to run indefinitely starting now
                       </p>
                     </div>
-                    <Button type="submit" className="w-full" disabled={createAd.isPending || !adTitle.trim()}>
-                      {createAd.isPending ? "Creating..." : "Create Ad"}
+                    <Button type="submit" className="w-full" disabled={createAd.isPending || updateAd.isPending || !adTitle.trim()}>
+                      {editingAd 
+                        ? (updateAd.isPending ? "Saving..." : "Save Changes")
+                        : (createAd.isPending ? "Creating..." : "Create Ad")
+                      }
                     </Button>
                   </form>
                 </DialogContent>
@@ -617,6 +683,14 @@ const AdvertiserDashboard = () => {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => openEditDialog(ad)}
+                            >
+                              <Pencil className="h-4 w-4 mr-1" />
+                              Edit
+                            </Button>
                             <Badge variant={ad.is_active ? "default" : "secondary"}>
                               {ad.is_active ? "Active" : "Inactive"}
                             </Badge>
