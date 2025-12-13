@@ -50,7 +50,7 @@ export function FounderStorySection() {
               <p className="mb-6">
                 We've forgotten how to be neighbours. We order strangers on apps instead of asking the 
                 person next door. But here's the thing — <span className="text-foreground font-semibold">your community is full of hidden superpowers</span>. 
-                We just need a wee nudge to share them.
+                We just need a little nudge to share them.
               </p>
             </div>
 
@@ -100,7 +100,7 @@ export function FounderStorySection() {
             {/* Closing */}
             <div className="mt-10 pt-8 border-t border-border/30 text-center">
               <p className="text-lg text-foreground font-medium font-display">
-                This isn't a startup chasing millions. It's a wee project from rural Carlow, 
+                This isn't a startup chasing millions. It's a small project from rural Carlow, 
                 hoping to make Ireland a bit friendlier.
               </p>
               <p className="text-muted-foreground mt-4">
