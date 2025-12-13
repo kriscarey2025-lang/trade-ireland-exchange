@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { Plus, Building2, Megaphone, Eye, MousePointer, CalendarIcon, BarChart3, TrendingUp, Pencil, Trash2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AdImageUpload } from "@/components/ads/AdImageUpload";
+import { AdDisplay } from "@/components/ads/AdDisplay";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -622,6 +623,51 @@ const [adImageUrl, setAdImageUrl] = useState("");
                         Leave dates empty to run indefinitely starting now
                       </p>
                     </div>
+
+                    {/* Ad Preview Section */}
+                    {adTitle.trim() && (
+                      <div className="space-y-3 pt-2 border-t border-border">
+                        <Label className="text-sm font-medium flex items-center gap-2">
+                          <Eye className="h-4 w-4" />
+                          Ad Preview
+                        </Label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <p className="text-xs text-muted-foreground text-center">Side (Desktop)</p>
+                            <div className="w-[140px] mx-auto">
+                              <AdDisplay 
+                                ad={{
+                                  id: "preview",
+                                  title: adTitle,
+                                  description: adDescription || null,
+                                  image_url: adImageUrl || null,
+                                  link_url: adLinkUrl || null,
+                                }}
+                                variant="side"
+                                showPlaceholder={false}
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-xs text-muted-foreground text-center">Inline (Mobile)</p>
+                            <div className="max-w-[180px] mx-auto">
+                              <AdDisplay 
+                                ad={{
+                                  id: "preview",
+                                  title: adTitle,
+                                  description: adDescription || null,
+                                  image_url: adImageUrl || null,
+                                  link_url: adLinkUrl || null,
+                                }}
+                                variant="inline"
+                                showPlaceholder={false}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <Button type="submit" className="w-full" disabled={createAd.isPending || updateAd.isPending || !adTitle.trim()}>
                       {editingAd 
                         ? (updateAd.isPending ? "Saving..." : "Save Changes")
