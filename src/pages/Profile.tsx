@@ -70,6 +70,10 @@ export default function Profile() {
     if (!authLoading && !user) {
       navigate('/auth');
     }
+    // Also set loading to false if auth is done but no user
+    if (!authLoading && !user) {
+      setLoading(false);
+    }
   }, [user, authLoading, navigate]);
 
   // Fetch profile data and verification request
