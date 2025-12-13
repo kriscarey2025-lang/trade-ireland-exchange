@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Shield, Ban, CheckCircle, XCircle, AlertTriangle, UserX } from "lucide-react";
+import { Loader2, Shield, Ban, CheckCircle, XCircle, AlertTriangle, UserX, Globe, Wifi } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -50,6 +50,23 @@ interface BannedUser {
   user?: { full_name: string | null; avatar_url: string | null; email: string | null };
 }
 
+interface BannedIP {
+  id: string;
+  ip_address: string;
+  banned_by: string;
+  reason: string;
+  related_user_id: string | null;
+  created_at: string;
+}
+
+interface UserIPLog {
+  id: string;
+  user_id: string;
+  ip_address: string;
+  user_agent: string | null;
+  created_at: string;
+}
+
 export default function AdminReports() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -57,6 +74,34 @@ export default function AdminReports() {
   const { toast } = useToast();
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [adminNotes, setAdminNotes] = useState("");
+  const [userIPs, setUserIPs] = useState<Record<string, UserIPLog[]>>({});
+  const [loadingIPs, setLoadingIPs] = useState<Record<string, boolean>>({});
+  const [ipBanReason, setIpBanReason] = useState("");
+
+  const loadUserIPs = async (userId: string) => {
+    if (userIPs[userId] || loadingIPs[userId]) return;
+    setLoadingIPs(prev => ({ ...prev, [userId]: true }));
+    try {
+      const ips = await fetchUserIPs(userId);
+      setUserIPs(prev => ({ ...prev, [userId]: ips }));
+    } catch (e) {
+      console.error('Failed to load IPs:', e);
+    } finally {
+      setLoadingIPs(prev => ({ ...prev, [userId]: false }));
+    }
+  };
+
+  const fetchUserIPs = async (userId: string) => {
+    const { data, error } = await supabase
+      .from("user_ip_logs")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(10);
+    
+    if (error) throw error;
+    return data as UserIPLog[];
+  };
 
   // Check admin role
   const { data: isAdmin, isLoading: roleLoading } = useQuery({
@@ -130,6 +175,20 @@ export default function AdminReports() {
     enabled: isAdmin === true,
   });
 
+  // Fetch banned IPs
+  const { data: bannedIPs, isLoading: bannedIPsLoading } = useQuery({
+    queryKey: ["banned-ips"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("banned_ips")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data as BannedIP[];
+    },
+    enabled: isAdmin === true,
+  });
   // Ban user mutation
   const banUser = useMutation({
     mutationFn: async ({ userId, reason, reportId }: { userId: string; reason: string; reportId?: string }) => {
@@ -208,6 +267,49 @@ export default function AdminReports() {
       toast({ title: "Report dismissed" });
       setSelectedReport(null);
       setAdminNotes("");
+    },
+  });
+
+  // Ban IP mutation
+  const banIP = useMutation({
+    mutationFn: async ({ ipAddress, reason, userId }: { ipAddress: string; reason: string; userId?: string }) => {
+      const { error } = await supabase.from("banned_ips").insert({
+        ip_address: ipAddress,
+        banned_by: user!.id,
+        reason,
+        related_user_id: userId || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["banned-ips"] });
+      toast({ title: "IP banned successfully" });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to ban IP",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Unban IP mutation
+  const unbanIP = useMutation({
+    mutationFn: async (banId: string) => {
+      const { error } = await supabase.from("banned_ips").delete().eq("id", banId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["banned-ips"] });
+      toast({ title: "IP unbanned successfully" });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to unban IP",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
@@ -298,6 +400,10 @@ export default function AdminReports() {
               <TabsTrigger value="banned" className="gap-2">
                 <UserX className="h-4 w-4" />
                 Banned Users ({bannedUsers?.length || 0})
+              </TabsTrigger>
+              <TabsTrigger value="banned-ips" className="gap-2">
+                <Globe className="h-4 w-4" />
+                Banned IPs ({bannedIPs?.length || 0})
               </TabsTrigger>
             </TabsList>
 
@@ -481,23 +587,90 @@ export default function AdminReports() {
                 bannedUsers?.map((ban) => (
                   <Card key={ban.id}>
                     <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-4">
                           <Avatar>
                             <AvatarImage src={ban.user?.avatar_url || undefined} />
                             <AvatarFallback>{getInitials(ban.user?.full_name)}</AvatarFallback>
                           </Avatar>
-                          <div>
-                            <p className="font-medium">{ban.user?.full_name || "Unknown"}</p>
-                            <p className="text-sm text-muted-foreground">{ban.user?.email}</p>
-                            <p className="text-xs text-muted-foreground">
-                              Banned on {format(new Date(ban.created_at), "dd MMM yyyy")}
-                            </p>
+                          <div className="space-y-2">
+                            <div>
+                              <p className="font-medium">{ban.user?.full_name || "Unknown"}</p>
+                              <p className="text-sm text-muted-foreground">{ban.user?.email}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Banned on {format(new Date(ban.created_at), "dd MMM yyyy")}
+                              </p>
+                            </div>
+                            
+                            {/* IP History */}
+                            <div className="pt-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="gap-1 text-xs h-7"
+                                onClick={() => loadUserIPs(ban.user_id)}
+                                disabled={loadingIPs[ban.user_id]}
+                              >
+                                <Wifi className="h-3 w-3" />
+                                {loadingIPs[ban.user_id] ? "Loading..." : "View IPs"}
+                              </Button>
+                              
+                              {userIPs[ban.user_id] && userIPs[ban.user_id].length > 0 && (
+                                <div className="mt-2 space-y-1">
+                                  {userIPs[ban.user_id].map((ipLog) => (
+                                    <div key={ipLog.id} className="flex items-center gap-2 text-xs">
+                                      <code className="bg-muted px-2 py-0.5 rounded">{ipLog.ip_address}</code>
+                                      <span className="text-muted-foreground">
+                                        {format(new Date(ipLog.created_at), "dd MMM, HH:mm")}
+                                      </span>
+                                      <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                          <Button variant="ghost" size="sm" className="h-6 px-2 text-destructive hover:text-destructive">
+                                            <Ban className="h-3 w-3" />
+                                          </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                          <AlertDialogHeader>
+                                            <AlertDialogTitle>Ban IP {ipLog.ip_address}?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                              This will block anyone from this IP address from accessing the platform.
+                                            </AlertDialogDescription>
+                                          </AlertDialogHeader>
+                                          <div className="space-y-2">
+                                            <Textarea
+                                              placeholder="Reason for ban"
+                                              value={ipBanReason}
+                                              onChange={(e) => setIpBanReason(e.target.value)}
+                                            />
+                                          </div>
+                                          <AlertDialogFooter>
+                                            <AlertDialogCancel onClick={() => setIpBanReason("")}>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                              onClick={() => {
+                                                banIP.mutate({
+                                                  ipAddress: ipLog.ip_address,
+                                                  reason: ipBanReason || `Associated with banned user: ${ban.user?.full_name}`,
+                                                  userId: ban.user_id,
+                                                });
+                                                setIpBanReason("");
+                                              }}
+                                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                            >
+                                              Ban IP
+                                            </AlertDialogAction>
+                                          </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                      </AlertDialog>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
 
                         <div className="text-right">
-                          <p className="text-sm text-muted-foreground mb-2">{ban.reason}</p>
+                          <p className="text-sm text-muted-foreground mb-2 max-w-xs">{ban.reason}</p>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button variant="outline" size="sm">
@@ -514,6 +687,66 @@ export default function AdminReports() {
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction onClick={() => unbanUser.mutate(ban.id)}>
+                                  Confirm Unban
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
+
+            <TabsContent value="banned-ips" className="space-y-4">
+              {bannedIPsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+              ) : bannedIPs?.length === 0 ? (
+                <Card>
+                  <CardContent className="p-8 text-center text-muted-foreground">
+                    <Globe className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <p>No banned IPs.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                bannedIPs?.map((ipBan) => (
+                  <Card key={ipBan.id}>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                            <Globe className="h-5 w-5 text-destructive" />
+                          </div>
+                          <div>
+                            <code className="text-lg font-mono font-medium">{ipBan.ip_address}</code>
+                            <p className="text-sm text-muted-foreground">
+                              Banned on {format(new Date(ipBan.created_at), "dd MMM yyyy, HH:mm")}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <p className="text-sm text-muted-foreground mb-2 max-w-xs">{ipBan.reason}</p>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                Unban IP
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Unban IP {ipBan.ip_address}?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will restore access for anyone using this IP address.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => unbanIP.mutate(ipBan.id)}>
                                   Confirm Unban
                                 </AlertDialogAction>
                               </AlertDialogFooter>

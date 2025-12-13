@@ -25,6 +25,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return data === true;
   };
 
+  const logIpAndCheckBan = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('log-ip');
+      if (error) {
+        console.error('Failed to log IP:', error);
+        return { ipBanned: false };
+      }
+      return { ipBanned: data?.banned === true };
+    } catch (e) {
+      console.error('IP logging error:', e);
+      return { ipBanned: false };
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -33,13 +47,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          // Check user ban status
           const banned = await checkBanStatus(session.user.id);
-          setIsBanned(banned);
           if (banned) {
+            setIsBanned(true);
             await supabase.auth.signOut();
             setUser(null);
             setSession(null);
+            setLoading(false);
+            return;
           }
+          
+          // Log IP and check IP ban
+          const { ipBanned } = await logIpAndCheckBan();
+          if (ipBanned) {
+            setIsBanned(true);
+            await supabase.auth.signOut();
+            setUser(null);
+            setSession(null);
+            setLoading(false);
+            return;
+          }
+          
+          setIsBanned(false);
         } else {
           setIsBanned(false);
         }
@@ -55,11 +85,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (session?.user) {
         const banned = await checkBanStatus(session.user.id);
-        setIsBanned(banned);
         if (banned) {
+          setIsBanned(true);
           await supabase.auth.signOut();
           setUser(null);
           setSession(null);
+          setLoading(false);
+          return;
+        }
+        
+        // Log IP and check IP ban
+        const { ipBanned } = await logIpAndCheckBan();
+        if (ipBanned) {
+          setIsBanned(true);
+          await supabase.auth.signOut();
+          setUser(null);
+          setSession(null);
+          setLoading(false);
+          return;
         }
       }
       

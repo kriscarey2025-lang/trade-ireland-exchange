@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      banned_ips: {
+        Row: {
+          banned_by: string
+          created_at: string
+          id: string
+          ip_address: string
+          reason: string
+          related_user_id: string | null
+        }
+        Insert: {
+          banned_by: string
+          created_at?: string
+          id?: string
+          ip_address: string
+          reason: string
+          related_user_id?: string | null
+        }
+        Update: {
+          banned_by?: string
+          created_at?: string
+          id?: string
+          ip_address?: string
+          reason?: string
+          related_user_id?: string | null
+        }
+        Relationships: []
+      }
       banned_users: {
         Row: {
           banned_by: string
@@ -452,6 +479,30 @@ export type Database = {
           },
         ]
       }
+      user_ip_logs: {
+        Row: {
+          created_at: string
+          id: string
+          ip_address: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_address: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_address?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_preferences: {
         Row: {
           created_at: string
@@ -691,7 +742,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_ip_banned: { Args: { _ip_address: string }; Returns: boolean }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
+      log_user_ip: {
+        Args: { _ip_address: string; _user_agent?: string; _user_id: string }
+        Returns: undefined
+      }
       review_verification: {
         Args: { _approved: boolean; _notes?: string; _request_id: string }
         Returns: undefined
