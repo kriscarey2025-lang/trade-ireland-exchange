@@ -295,8 +295,11 @@ export type Database = {
           created_at: string
           credits: number
           email: string | null
+          facebook_url: string | null
           full_name: string | null
           id: string
+          instagram_url: string | null
+          linkedin_url: string | null
           location: string | null
           phone: string | null
           updated_at: string
@@ -308,8 +311,11 @@ export type Database = {
           created_at?: string
           credits?: number
           email?: string | null
+          facebook_url?: string | null
           full_name?: string | null
           id: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
           location?: string | null
           phone?: string | null
           updated_at?: string
@@ -321,8 +327,11 @@ export type Database = {
           created_at?: string
           credits?: number
           email?: string | null
+          facebook_url?: string | null
           full_name?: string | null
           id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
           location?: string | null
           phone?: string | null
           updated_at?: string
