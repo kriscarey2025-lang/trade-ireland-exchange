@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
+import { AlertTriangle } from "lucide-react";
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   return (
@@ -88,7 +89,20 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border text-center text-sm text-muted-foreground">
+        {/* Disclaimer */}
+        <div className="mt-8 pt-6 border-t border-border">
+          <div className="flex items-start gap-2 max-w-2xl mx-auto text-center">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <AlertTriangle className="h-3 w-3 inline mr-1" />
+              <strong>Disclaimer:</strong> SwapSkills facilitates connections between community members but cannot guarantee 
+              the outcome of any exchange. While we provide safety features like ID verification and reviews, 
+              users are responsible for their own safety and due diligence. 
+              <Link to="/safety" className="text-primary hover:underline ml-1">Learn more</Link>
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} SkillSwap Ireland. All rights reserved.</p>
           <p className="mt-1">Made with ❤️ for Irish communities</p>
         </div>

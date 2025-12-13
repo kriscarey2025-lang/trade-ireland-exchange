@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star } from "lucide-react";
+import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useMessages, useSendMessage, useMarkAsRead } from "@/hooks/useMessaging";
@@ -325,6 +325,16 @@ export default function Conversation() {
                 Review submitted
               </span>
             )}
+          </div>
+
+          {/* Safety Reminder */}
+          <div className="mb-4 p-3 rounded-lg bg-muted/50 border border-border">
+            <p className="text-xs text-muted-foreground">
+              <AlertTriangle className="h-3 w-3 inline mr-1" />
+              <strong>Safety reminder:</strong> Meet in public places when possible. SwapSkills facilitates 
+              connections but cannot guarantee exchange outcomes.{" "}
+              <Link to="/safety" className="text-primary hover:underline">Stay safe</Link>
+            </p>
           </div>
 
           {/* Messages */}
