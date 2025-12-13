@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Users, Leaf, Shield, ArrowRight } from "lucide-react";
+import { Heart, Users, Leaf, Shield, ArrowRight, Sparkles, Gift } from "lucide-react";
 import founderImage from "@/assets/founder-kristina.png";
 
 const values = [
@@ -49,6 +49,50 @@ export default function About() {
                 We're building Ireland's first community-driven platform for trading skills and services 
                 without money. Because sometimes the best currency is helping each other.
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Credits Announcement */}
+        <section className="py-8 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-y border-primary/20">
+          <div className="container">
+            <div className="max-w-3xl mx-auto">
+              <Card className="bg-background/80 backdrop-blur-sm border-primary/30 shadow-lg overflow-hidden">
+                <CardContent className="p-6 md:p-8">
+                  <div className="flex flex-col md:flex-row gap-6 items-center text-center md:text-left">
+                    <div className="flex-shrink-0">
+                      <div className="relative">
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg">
+                          <Gift className="h-10 w-10 text-primary-foreground" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-accent flex items-center justify-center">
+                          <Sparkles className="h-3.5 w-3.5 text-accent-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
+                        <Sparkles className="h-3.5 w-3.5" />
+                        Coming Soon
+                      </div>
+                      <h3 className="text-xl md:text-2xl font-bold mb-2">
+                        Credits System Launching Soon
+                      </h3>
+                      <p className="text-muted-foreground mb-4">
+                        We're rolling out a new credits system to make trading skills even easier. 
+                        For a <span className="text-foreground font-semibold">limited time</span>, all new members 
+                        receive <span className="text-primary font-bold">45 free credits</span> to get started!
+                      </p>
+                      <Button asChild>
+                        <Link to="/auth?mode=signup">
+                          Claim Your 45 Free Credits
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
