@@ -2,3 +2,6 @@ project_id = "lporltdxjhouspwmmrjd"
 
 [functions.skill-match]
 verify_jwt = false
+
+[functions.conversation-prompts]
+verify_jwt = false
