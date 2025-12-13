@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone } from "lucide-react";
+import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone, Eye, MousePointer } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Advertiser {
@@ -39,6 +39,12 @@ interface Ad {
   is_active: boolean;
   starts_at: string | null;
   ends_at: string | null;
+}
+
+interface AdStats {
+  ad_id: string;
+  impressions: number;
+  clicks: number;
 }
 
 const AdminAdvertisers = () => {
@@ -92,6 +98,42 @@ const AdminAdvertisers = () => {
       return data as Ad[];
     },
     enabled: !!selectedAdvertiser,
+  });
+
+  // Fetch ad stats (impressions and clicks)
+  const { data: adStats } = useQuery({
+    queryKey: ["adStats", ads?.map(a => a.id)],
+    queryFn: async () => {
+      if (!ads || ads.length === 0) return [];
+      
+      const adIds = ads.map(a => a.id);
+      
+      // Get impressions count per ad
+      const { data: impressionsData, error: impError } = await supabase
+        .from("ad_impressions")
+        .select("ad_id")
+        .in("ad_id", adIds);
+      
+      if (impError) throw impError;
+      
+      // Get clicks count per ad
+      const { data: clicksData, error: clickError } = await supabase
+        .from("ad_clicks")
+        .select("ad_id")
+        .in("ad_id", adIds);
+      
+      if (clickError) throw clickError;
+      
+      // Aggregate counts
+      const stats: AdStats[] = adIds.map(adId => ({
+        ad_id: adId,
+        impressions: impressionsData?.filter(i => i.ad_id === adId).length || 0,
+        clicks: clicksData?.filter(c => c.ad_id === adId).length || 0,
+      }));
+      
+      return stats;
+    },
+    enabled: !!ads && ads.length > 0,
   });
 
   // Create advertiser mutation
@@ -401,6 +443,28 @@ const AdminAdvertisers = () => {
                             <div className="flex gap-2 mt-2">
                               <Badge variant="outline">{ad.placement}</Badge>
                             </div>
+                            {/* Ad Stats */}
+                            {(() => {
+                              const stats = adStats?.find(s => s.ad_id === ad.id);
+                              const ctr = stats && stats.impressions > 0 
+                                ? ((stats.clicks / stats.impressions) * 100).toFixed(1) 
+                                : "0.0";
+                              return (
+                                <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+                                  <div className="flex items-center gap-1">
+                                    <Eye className="h-3 w-3" />
+                                    <span>{stats?.impressions || 0} views</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <MousePointer className="h-3 w-3" />
+                                    <span>{stats?.clicks || 0} clicks</span>
+                                  </div>
+                                  <div className="text-primary font-medium">
+                                    {ctr}% CTR
+                                  </div>
+                                </div>
+                              );
+                            })()}
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
