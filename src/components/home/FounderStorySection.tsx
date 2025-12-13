@@ -24,30 +24,33 @@ export function FounderStorySection() {
           <div className="bg-card/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-border/50 cozy-shadow">
             <div className="prose prose-lg max-w-none text-muted-foreground">
               <p className="text-xl md:text-2xl font-medium text-foreground mb-6 leading-relaxed font-display">
-                It all started over a cuppa with my neighbour.
+                Here's a confession: I can build you a website, but I'm absolutely hopeless with a drill.
               </p>
               
               <p className="mb-6">
-                She was telling me about her garden — overgrown, neglected, driving her mad. "I'd do anything 
-                for someone to sort it," she said. Meanwhile, I was dreading setting up my new laptop. 
-                Technology and me? Not exactly best friends.
+                Seriously. Last time I tried to put up a shelf, let's just say... the shelf won. I can fix your 
+                laptop, sort out your WiFi, or rescue your photos from that ancient hard drive. But ask me to 
+                hang a picture frame? Disaster waiting to happen.
               </p>
 
               <p className="mb-6">
-                Then it clicked. She loves gardening. I'm grand with computers. 
-                Why were we both planning to pay strangers when we could just... help each other?
+                And then there's my cat, Milo. Gorgeous wee fella, but he needs someone to check on him when I'm away. 
+                I'd also love an extra pair of hands with the kids sometimes — someone to help with homework or 
+                take them to the park while I tackle that mountain of emails.
               </p>
 
               <div className="my-10 p-6 bg-gradient-to-r from-primary/10 via-accent/10 to-highlight/10 rounded-2xl border border-primary/20">
                 <p className="text-lg md:text-xl font-medium text-foreground italic mb-0 font-display">
-                  "What if there was a place where skills were the currency? Where your talents actually meant something?"
+                  "What if I could help someone with their tech headaches, and in return, they'd help me put together 
+                  that flat-pack furniture that's been haunting my hallway?"
                 </p>
               </div>
 
               <p className="mb-6">
-                I met a single mum who's a brilliant gardener but couldn't afford childcare to go back to college. 
-                A retired electrician who'd love to help but didn't know anyone who needed him. 
-                A student brilliant at web design, drowning in rent.
+                That's how Swap Skills was born. I realised we're all walking around with brilliant skills that 
+                someone else desperately needs. The retired teacher next door who'd love to help with maths homework. 
+                The teenager who's magic with animals. The neighbour who actually knows which end of a screwdriver 
+                to hold.
               </p>
 
               <p className="mb-6">
