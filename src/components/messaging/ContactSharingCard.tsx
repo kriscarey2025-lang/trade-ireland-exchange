@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -8,6 +9,8 @@ import {
 } from "@/hooks/useContactSharing";
 import { Share2, ShieldCheck, ShieldOff, Mail, Phone, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { SafetyChecklist } from "./SafetyChecklist";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ContactSharingCardProps {
   conversationId: string;
@@ -24,6 +27,8 @@ export function ContactSharingCard({
   const { data: otherProfile } = useProfileForConversation(otherUserId);
   const shareContact = useShareContact();
   const revokeShare = useRevokeContactShare();
+  const [safetyComplete, setSafetyComplete] = useState(false);
+  const [showChecklist, setShowChecklist] = useState(false);
 
   const handleShare = () => {
     shareContact.mutate({ conversationId, sharedWithId: otherUserId });
@@ -31,6 +36,14 @@ export function ContactSharingCard({
 
   const handleRevoke = () => {
     revokeShare.mutate({ conversationId, sharedWithId: otherUserId });
+  };
+
+  const handleShareClick = () => {
+    if (!safetyComplete) {
+      setShowChecklist(true);
+    } else {
+      handleShare();
+    }
   };
 
   if (isLoading) {
@@ -84,20 +97,29 @@ export function ContactSharingCard({
               Revoke Access
             </Button>
           ) : (
-            <Button 
-              variant="default" 
-              size="sm" 
-              className="w-full"
-              onClick={handleShare}
-              disabled={shareContact.isPending}
-            >
-              {shareContact.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              ) : (
-                <ShieldCheck className="h-4 w-4 mr-2" />
-              )}
-              Share My Contact Info
-            </Button>
+            <>
+              {/* Safety Checklist - shown before sharing */}
+              <Collapsible open={showChecklist} onOpenChange={setShowChecklist}>
+                <CollapsibleContent className="mb-3">
+                  <SafetyChecklist onComplete={setSafetyComplete} />
+                </CollapsibleContent>
+              </Collapsible>
+
+              <Button 
+                variant={safetyComplete ? "default" : "secondary"}
+                size="sm" 
+                className="w-full"
+                onClick={safetyComplete ? handleShare : handleShareClick}
+                disabled={shareContact.isPending}
+              >
+                {shareContact.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <ShieldCheck className="h-4 w-4 mr-2" />
+                )}
+                {safetyComplete ? "Share My Contact Info" : "Review Safety Checklist First"}
+              </Button>
+            </>
           )}
         </div>
 

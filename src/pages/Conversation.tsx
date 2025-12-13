@@ -16,6 +16,7 @@ import { cn, formatDisplayName } from "@/lib/utils";
 import { ContactSharingCard } from "@/components/messaging/ContactSharingCard";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ReviewDialog } from "@/components/reviews/ReviewDialog";
+import { ConversationPrompts } from "@/components/messaging/ConversationPrompts";
 import { useToast } from "@/hooks/use-toast";
 
 interface ConversationDetails {
@@ -25,7 +26,7 @@ interface ConversationDetails {
   participant_2: string;
   completed_by_1: boolean;
   completed_by_2: boolean;
-  service?: { id: string; title: string } | null;
+  service?: { id: string; title: string; category?: string; type?: string } | null;
   other_profile?: { id: string; full_name: string | null; avatar_url: string | null } | null;
 }
 
@@ -50,7 +51,7 @@ export default function Conversation() {
         .from("conversations")
         .select(`
           *,
-          service:service_id (id, title)
+          service:service_id (id, title, category, type)
         `)
         .eq("id", id)
         .single();
@@ -376,7 +377,15 @@ export default function Conversation() {
             </CardContent>
 
             {/* Input */}
-            <div className="p-4 border-t">
+            <div className="p-4 border-t space-y-3">
+              {/* AI Suggested Prompts */}
+              <ConversationPrompts
+                serviceTitle={conversation.service?.title}
+                serviceCategory={conversation.service?.category}
+                serviceType={conversation.service?.type}
+                onSelectPrompt={(prompt) => setNewMessage(prompt)}
+              />
+              
               <div className="flex gap-2">
                 <div className="flex-1 space-y-1">
                   <Textarea
