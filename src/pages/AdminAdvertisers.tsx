@@ -75,7 +75,7 @@ const AdminAdvertisers = () => {
   const [isAdvertiserDialogOpen, setIsAdvertiserDialogOpen] = useState(false);
   const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
   const [selectedAdvertiser, setSelectedAdvertiser] = useState<Advertiser | null>(null);
-  const [selectedUserId, setSelectedUserId] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("");
 
   // Check admin status
   const { data: isAdmin, isLoading: isAdminLoading } = useQuery({
@@ -91,20 +91,6 @@ const AdminAdvertisers = () => {
     enabled: !!user?.id,
   });
 
-  // Fetch all users for the dropdown
-  const { data: users } = useQuery({
-    queryKey: ["allUsers"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, email, full_name")
-        .order("full_name", { ascending: true });
-      
-      if (error) throw error;
-      return data as UserProfile[];
-    },
-    enabled: isAdmin === true,
-  });
 
   // Fetch all advertisers (admin function needed)
   const { data: advertisers, isLoading: advertisersLoading } = useQuery({
@@ -177,20 +163,42 @@ const AdminAdvertisers = () => {
   // Create advertiser mutation
   const createAdvertiser = useMutation({
     mutationFn: async (formData: FormData) => {
-      const { error } = await supabase.from("advertisers").insert({
-        business_name: formData.get("business_name") as string,
-        business_email: formData.get("business_email") as string,
-        business_phone: formData.get("business_phone") as string || null,
-        business_website: formData.get("business_website") as string || null,
-        location: formData.get("location") as string || null,
-        user_id: selectedUserId || null,
-      });
-      if (error) throw error;
+      const email = userEmail.trim();
+      const businessName = formData.get("business_name") as string;
+      const businessEmail = formData.get("business_email") as string;
+      const businessPhone = formData.get("business_phone") as string || null;
+      const businessWebsite = formData.get("business_website") as string || null;
+      const location = formData.get("location") as string || null;
+
+      if (email) {
+        // Use the RPC function to create advertiser linked to user by email
+        const { data, error } = await supabase.rpc("create_advertiser_by_email", {
+          _email: email,
+          _business_name: businessName,
+          _business_email: businessEmail,
+          _business_phone: businessPhone,
+          _business_website: businessWebsite,
+          _location: location,
+        });
+        if (error) throw error;
+        return data;
+      } else {
+        // Create advertiser without user link
+        const { error } = await supabase.from("advertisers").insert({
+          business_name: businessName,
+          business_email: businessEmail,
+          business_phone: businessPhone,
+          business_website: businessWebsite,
+          location: location,
+          user_id: null,
+        });
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["advertisers"] });
       setIsAdvertiserDialogOpen(false);
-      setSelectedUserId("");
+      setUserEmail("");
       toast.success("Advertiser created successfully");
     },
     onError: (error) => {
@@ -341,23 +349,16 @@ const AdminAdvertisers = () => {
                   <Input id="location" name="location" placeholder="e.g., Dublin, Cork" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="user_id">Link to User Account (Optional)</Label>
-                  <Select value={selectedUserId} onValueChange={setSelectedUserId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a user..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">No user linked</SelectItem>
-                      {users?.map((u) => (
-                        <SelectItem key={u.id} value={u.id}>
-                          {u.full_name || u.email || "Unknown user"}
-                          {u.email && u.full_name && ` (${u.email})`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="user_email">Link to User by Email (Optional)</Label>
+                  <Input
+                    id="user_email"
+                    type="email"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    placeholder="user@example.com"
+                  />
                   <p className="text-xs text-muted-foreground">
-                    Linking a user allows them to access the advertiser dashboard
+                    Enter the email of an existing user to give them advertiser dashboard access
                   </p>
                 </div>
                 <Button type="submit" className="w-full" disabled={createAdvertiser.isPending}>

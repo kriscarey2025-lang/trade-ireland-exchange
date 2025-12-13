@@ -803,6 +803,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_advertiser_by_email: {
+        Args: {
+          _business_email: string
+          _business_name: string
+          _business_phone?: string
+          _business_website?: string
+          _email: string
+          _location?: string
+        }
+        Returns: string
+      }
       earn_credits: {
         Args: {
           _amount: number
