@@ -62,15 +62,15 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
       `}
     >
       {ad.image_url ? (
-        <div className={`relative ${variant === "side" ? "h-20" : "h-20"} overflow-hidden`}>
+        <div className={`relative overflow-hidden ${variant === "side" ? "h-20" : "aspect-[3/2] max-h-32"}`}>
           <img
             src={ad.image_url}
             alt={ad.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain bg-muted/20"
           />
         </div>
       ) : (
-        <div className={`${variant === "side" ? "h-14" : "h-12"} bg-muted/50 flex items-center justify-center`}>
+        <div className={`${variant === "side" ? "h-14" : "h-20"} bg-muted/50 flex items-center justify-center`}>
           <Megaphone className="w-5 h-5 text-muted-foreground/30" />
         </div>
       )}
