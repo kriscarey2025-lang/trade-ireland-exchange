@@ -33,6 +33,13 @@ interface Advertiser {
   location: string | null;
   is_active: boolean;
   created_at: string;
+  user_id: string | null;
+}
+
+interface UserProfile {
+  id: string;
+  email: string | null;
+  full_name: string | null;
 }
 
 interface Ad {
@@ -68,6 +75,7 @@ const AdminAdvertisers = () => {
   const [isAdvertiserDialogOpen, setIsAdvertiserDialogOpen] = useState(false);
   const [isAdDialogOpen, setIsAdDialogOpen] = useState(false);
   const [selectedAdvertiser, setSelectedAdvertiser] = useState<Advertiser | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
 
   // Check admin status
   const { data: isAdmin, isLoading: isAdminLoading } = useQuery({
@@ -81,6 +89,21 @@ const AdminAdvertisers = () => {
       return data ?? false;
     },
     enabled: !!user?.id,
+  });
+
+  // Fetch all users for the dropdown
+  const { data: users } = useQuery({
+    queryKey: ["allUsers"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, email, full_name")
+        .order("full_name", { ascending: true });
+      
+      if (error) throw error;
+      return data as UserProfile[];
+    },
+    enabled: isAdmin === true,
   });
 
   // Fetch all advertisers (admin function needed)
@@ -160,13 +183,14 @@ const AdminAdvertisers = () => {
         business_phone: formData.get("business_phone") as string || null,
         business_website: formData.get("business_website") as string || null,
         location: formData.get("location") as string || null,
-        user_id: null, // Admin-created, no user association
+        user_id: selectedUserId || null,
       });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["advertisers"] });
       setIsAdvertiserDialogOpen(false);
+      setSelectedUserId("");
       toast.success("Advertiser created successfully");
     },
     onError: (error) => {
@@ -315,6 +339,26 @@ const AdminAdvertisers = () => {
                 <div className="space-y-2">
                   <Label htmlFor="location">Location</Label>
                   <Input id="location" name="location" placeholder="e.g., Dublin, Cork" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="user_id">Link to User Account (Optional)</Label>
+                  <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a user..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">No user linked</SelectItem>
+                      {users?.map((u) => (
+                        <SelectItem key={u.id} value={u.id}>
+                          {u.full_name || u.email || "Unknown user"}
+                          {u.email && u.full_name && ` (${u.email})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Linking a user allows them to access the advertiser dashboard
+                  </p>
                 </div>
                 <Button type="submit" className="w-full" disabled={createAdvertiser.isPending}>
                   {createAdvertiser.isPending ? "Creating..." : "Create Advertiser"}

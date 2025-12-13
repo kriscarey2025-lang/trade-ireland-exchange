@@ -58,11 +58,24 @@ export default function Auth() {
   const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
   const [agreedToConduct, setAgreedToConduct] = useState(false);
 
-  // Redirect if already logged in - check if onboarding is complete
+  // Redirect if already logged in - check if onboarding is complete and advertiser status
   useEffect(() => {
-    const checkOnboarding = async () => {
+    const checkUserStatus = async () => {
       if (!user || authLoading) return;
       
+      // Check if user is an advertiser
+      const { data: advertiser } = await supabase
+        .from("advertisers")
+        .select("id, is_active")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      if (advertiser?.is_active) {
+        navigate('/advertiser');
+        return;
+      }
+      
+      // Check onboarding status
       const { data } = await supabase
         .from("user_preferences")
         .select("onboarding_completed")
@@ -77,7 +90,7 @@ export default function Auth() {
     };
     
     if (user && !authLoading) {
-      checkOnboarding();
+      checkUserStatus();
     }
   }, [user, authLoading, navigate]);
 
