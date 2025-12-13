@@ -43,6 +43,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { ContactDialog } from "@/components/messaging/ContactDialog";
 import { formatDisplayName } from "@/lib/utils";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
+import { Disclaimer } from "@/components/shared/Disclaimer";
 
 // Response from secure database function
 interface SecureServiceDetail {
@@ -473,6 +474,8 @@ export default function ServiceDetail() {
                         Save
                       </Button>
                     </div>
+
+                    <Disclaimer variant="full" className="mt-4" />
                   </div>
                 </CardContent>
               </Card>
