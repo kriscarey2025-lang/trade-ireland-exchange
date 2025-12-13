@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      banned_users: {
+        Row: {
+          banned_by: string
+          created_at: string
+          id: string
+          reason: string
+          related_report_id: string | null
+          user_id: string
+        }
+        Insert: {
+          banned_by: string
+          created_at?: string
+          id?: string
+          reason: string
+          related_report_id?: string | null
+          user_id: string
+        }
+        Update: {
+          banned_by?: string
+          created_at?: string
+          id?: string
+          reason?: string
+          related_report_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "banned_users_related_report_id_fkey"
+            columns: ["related_report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_shares: {
         Row: {
           conversation_id: string
@@ -277,6 +312,7 @@ export type Database = {
           reason: string
           reported_user_id: string
           reporter_id: string
+          resolved_by: string | null
           reviewed_at: string | null
           status: string
         }
@@ -288,6 +324,7 @@ export type Database = {
           reason: string
           reported_user_id: string
           reporter_id: string
+          resolved_by?: string | null
           reviewed_at?: string | null
           status?: string
         }
@@ -299,6 +336,7 @@ export type Database = {
           reason?: string
           reported_user_id?: string
           reporter_id?: string
+          resolved_by?: string | null
           reviewed_at?: string | null
           status?: string
         }
@@ -653,6 +691,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_user_banned: { Args: { _user_id: string }; Returns: boolean }
       review_verification: {
         Args: { _approved: boolean; _notes?: string; _request_id: string }
         Returns: undefined
