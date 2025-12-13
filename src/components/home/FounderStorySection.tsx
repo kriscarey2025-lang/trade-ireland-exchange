@@ -101,7 +101,7 @@ export function FounderStorySection() {
             <div className="mt-10 pt-8 border-t border-border/30 text-center">
               <p className="text-lg text-foreground font-medium font-display">
                 This isn't a startup chasing millions. It's a small project from rural Carlow, 
-                hoping to make Ireland a bit friendlier.
+                hoping to bring Ireland closer together one exchange at a time.
               </p>
               <p className="text-muted-foreground mt-4">
                 Fancy giving it a go? We'd love to have you. ☕
