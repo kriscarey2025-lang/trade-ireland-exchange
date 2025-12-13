@@ -38,6 +38,24 @@ serve(async (req) => {
 
     console.log('Finding matches for user:', user.id);
 
+    // Get user's preferences
+    const { data: userPrefs, error: prefsError } = await supabase
+      .from('user_preferences')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (prefsError) {
+      console.error('Error fetching user preferences:', prefsError);
+    }
+
+    // Get user's profile for location
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('location')
+      .eq('id', user.id)
+      .maybeSingle();
+
     // Get user's services
     const { data: userServices, error: servicesError } = await supabase
       .from('services')
@@ -50,16 +68,25 @@ serve(async (req) => {
       throw servicesError;
     }
 
-    if (!userServices || userServices.length === 0) {
+    // Check if user has services OR preferences set
+    const hasServices = userServices && userServices.length > 0;
+    const hasPreferences = userPrefs && (
+      (userPrefs.skills_offered && userPrefs.skills_offered.length > 0) ||
+      (userPrefs.skills_wanted && userPrefs.skills_wanted.length > 0) ||
+      (userPrefs.skills_offered_custom && userPrefs.skills_offered_custom.length > 0) ||
+      (userPrefs.skills_wanted_custom && userPrefs.skills_wanted_custom.length > 0)
+    );
+
+    if (!hasServices && !hasPreferences) {
       return new Response(JSON.stringify({ 
         matches: [],
-        message: 'Create some services first to get AI-powered matches!' 
+        message: 'Complete your profile preferences or create services to get AI-powered matches!' 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Get all other users' active services
+    // Get all other users' active services with their preferences
     const { data: otherServices, error: otherError } = await supabase
       .from('services')
       .select(`
@@ -91,26 +118,38 @@ serve(async (req) => {
     }
 
     // Prepare data for AI analysis
-    const userOffers = userServices.filter(s => s.type === 'offer');
-    const userRequests = userServices.filter(s => s.type === 'request');
+    const userOffers = userServices?.filter(s => s.type === 'offer') || [];
+    const userRequests = userServices?.filter(s => s.type === 'request') || [];
+
+    // Build preference context
+    const prefsContext = userPrefs ? `
+USER'S PREFERENCES (from onboarding questionnaire):
+- Service radius: ${userPrefs.service_radius_km || 25}km from ${userProfile?.location || 'their location'}
+- Skills they can offer: ${[...(userPrefs.skills_offered || []), ...(userPrefs.skills_offered_custom || [])].join(', ') || 'Not specified'}
+- Skills they are looking for: ${[...(userPrefs.skills_wanted || []), ...(userPrefs.skills_wanted_custom || [])].join(', ') || 'Not specified'}
+` : '';
 
     const prompt = `You are a skill matching assistant for a skill-swap platform in Ireland. Analyze the following data and find the best matches.
 
-USER'S SERVICES:
-Offers (what they can provide):
-${userOffers.map(s => `- ${s.title} (${s.category}): ${s.description || 'No description'}`).join('\n') || 'None'}
+${prefsContext}
+USER'S ACTIVE SERVICES:
+Offers (what they currently provide):
+${userOffers.map(s => `- ${s.title} (${s.category}): ${s.description || 'No description'}`).join('\n') || 'None listed'}
 
-Requests (what they need):
-${userRequests.map(s => `- ${s.title} (${s.category}): ${s.description || 'No description'}`).join('\n') || 'None'}
+Requests (what they currently need):
+${userRequests.map(s => `- ${s.title} (${s.category}): ${s.description || 'No description'}`).join('\n') || 'None listed'}
 
 AVAILABLE SERVICES FROM OTHER USERS:
 ${otherServices.map(s => `- ID: ${s.id}, Type: ${s.type}, Title: ${s.title}, Category: ${s.category}, Description: ${s.description || 'None'}, Location: ${s.location || 'Not specified'}, User: ${s.profiles?.full_name || 'Anonymous'}`).join('\n')}
 
-Find up to 5 best matches considering:
-1. Direct matches: Their offers match user's requests, or their requests match user's offers
-2. Complementary skills that could lead to good swaps
-3. Location proximity when possible
-4. Potential for mutually beneficial exchanges
+Find up to 5 best matches considering these priorities:
+1. **Preference matching**: Services that match the user's stated skills they're looking for (from preferences)
+2. **Direct service matches**: Their offers match user's requests, or their requests match user's offers
+3. **Complementary skills**: The user can offer something back based on their skills_offered preferences
+4. **Location proximity**: Prefer matches within the user's service radius (${userPrefs?.service_radius_km || 25}km)
+5. **Mutual benefit potential**: Matches where both parties clearly benefit
+
+IMPORTANT: Prioritize matches based on the user's stated preferences (skills_wanted) even if they haven't created a formal service request for it.
 
 Return a JSON array with this exact format (no markdown, just raw JSON):
 [
@@ -118,7 +157,7 @@ Return a JSON array with this exact format (no markdown, just raw JSON):
     "service_id": "the service id",
     "match_score": 85,
     "match_reason": "Brief explanation of why this is a good match",
-    "swap_potential": "What the user could offer in return"
+    "swap_potential": "What the user could offer in return based on their skills"
   }
 ]
 
