@@ -14,6 +14,177 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_clicks: {
+        Row: {
+          ad_id: string
+          created_at: string
+          id: string
+          ip_hash: string | null
+          page_url: string | null
+          user_agent: string | null
+          viewer_id: string | null
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          page_url?: string | null
+          user_agent?: string | null
+          viewer_id?: string | null
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          page_url?: string | null
+          user_agent?: string | null
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_clicks_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_impressions: {
+        Row: {
+          ad_id: string
+          created_at: string
+          id: string
+          ip_hash: string | null
+          page_url: string | null
+          user_agent: string | null
+          viewer_id: string | null
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          page_url?: string | null
+          user_agent?: string | null
+          viewer_id?: string | null
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          page_url?: string | null
+          user_agent?: string | null
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_impressions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ads: {
+        Row: {
+          advertiser_id: string
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          link_url: string | null
+          placement: string
+          starts_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          advertiser_id: string
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link_url?: string | null
+          placement?: string
+          starts_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          advertiser_id?: string
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link_url?: string | null
+          placement?: string
+          starts_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ads_advertiser_id_fkey"
+            columns: ["advertiser_id"]
+            isOneToOne: false
+            referencedRelation: "advertisers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      advertisers: {
+        Row: {
+          business_email: string
+          business_name: string
+          business_phone: string | null
+          business_website: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          location: string | null
+          logo_url: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          business_email: string
+          business_name: string
+          business_phone?: string | null
+          business_website?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          business_email?: string
+          business_name?: string
+          business_phone?: string | null
+          business_website?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       banned_ips: {
         Row: {
           banned_by: string
