@@ -1,1 +1,4 @@
 project_id = "lporltdxjhouspwmmrjd"
+
+[functions.skill-match]
+verify_jwt = false

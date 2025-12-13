@@ -38,6 +38,7 @@ export function Header() {
 
   const navLinks = [
     { href: "/browse", label: "Browse" },
+    { href: "/matches", label: "AI Matches", icon: Sparkles },
     { href: "/how-it-works", label: "How It Works" },
     { href: "/about", label: "About" },
   ];
