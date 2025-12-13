@@ -465,15 +465,18 @@ const [adImageUrl, setAdImageUrl] = useState("");
           </TabsContent>
 
           <TabsContent value="ads" className="space-y-6">
-            <div className="flex justify-end">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                {ads?.length || 0} of 3 ads used
+              </p>
               <Dialog open={isAdDialogOpen} onOpenChange={(open) => {
                 setIsAdDialogOpen(open);
                 if (!open) resetForm();
               }}>
                 <DialogTrigger asChild>
-                  <Button onClick={() => resetForm()}>
+                  <Button onClick={() => resetForm()} disabled={(ads?.length || 0) >= 3}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Create Ad
+                    Create Ad {(ads?.length || 0) >= 3 && "(Limit reached)"}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
