@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone, Eye, MousePointer } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AdImageUpload } from "@/components/ads/AdImageUpload";
 
 interface Advertiser {
   id: string;
@@ -48,6 +49,7 @@ interface AdStats {
 }
 
 const AdminAdvertisers = () => {
+  const [adImageUrl, setAdImageUrl] = useState("");
   const { user, loading } = useAuth();
   const queryClient = useQueryClient();
   const [isAdvertiserDialogOpen, setIsAdvertiserDialogOpen] = useState(false);
@@ -168,7 +170,7 @@ const AdminAdvertisers = () => {
         advertiser_id: selectedAdvertiser.id,
         title: formData.get("title") as string,
         description: formData.get("description") as string || null,
-        image_url: formData.get("image_url") as string || null,
+        image_url: adImageUrl || null,
         link_url: formData.get("link_url") as string || null,
         placement: formData.get("placement") as string || "side",
       });
@@ -177,6 +179,7 @@ const AdminAdvertisers = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ads", selectedAdvertiser?.id] });
       setIsAdDialogOpen(false);
+      setAdImageUrl("");
       toast.success("Ad created successfully");
     },
     onError: (error) => {
@@ -381,10 +384,10 @@ const AdminAdvertisers = () => {
                         <Label htmlFor="description">Description</Label>
                         <Textarea id="description" name="description" rows={3} />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="image_url">Image URL</Label>
-                        <Input id="image_url" name="image_url" type="url" placeholder="https://" />
-                      </div>
+                      <AdImageUpload 
+                        value={adImageUrl} 
+                        onChange={setAdImageUrl} 
+                      />
                       <div className="space-y-2">
                         <Label htmlFor="link_url">Link URL</Label>
                         <Input id="link_url" name="link_url" type="url" placeholder="https://" />
