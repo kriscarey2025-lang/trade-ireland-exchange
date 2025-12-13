@@ -106,9 +106,6 @@ export function FounderStorySection() {
               <p className="text-muted-foreground mt-4">
                 Fancy giving it a go? We'd love to have you. ☕
               </p>
-              <p className="text-sm text-primary mt-4 font-semibold">
-                — Kristina, from Killeshin
-              </p>
             </div>
           </div>
         </div>
