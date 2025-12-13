@@ -13,8 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft, Sparkles, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -29,8 +27,7 @@ const serviceSchema = z.object({
   description: z.string().trim().min(20, "Description must be at least 20 characters").max(1000, "Description must be less than 1000 characters"),
   category: z.string().min(1, "Please select a category"),
   location: z.string().trim().min(2, "Location is required").max(100),
-  price: z.number().min(0, "Price must be 0 or greater").max(10000).optional(),
-  price_type: z.enum(["fixed", "hourly", "negotiable"]),
+  acceptInReturn: z.string().trim().min(10, "Please describe what you'd accept in return (at least 10 characters)").max(500, "Maximum 500 characters"),
 });
 
 const locations = [
@@ -57,10 +54,8 @@ export default function NewService() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<ServiceCategory | "">("");
   const [location, setLocation] = useState("");
-  const [price, setPrice] = useState("");
-  const [priceType, setPriceType] = useState<"fixed" | "hourly" | "negotiable">("negotiable");
   const [images, setImages] = useState<string[]>([]);
-  const [acceptedCategories, setAcceptedCategories] = useState<ServiceCategory[]>([]);
+  const [acceptInReturn, setAcceptInReturn] = useState("");
 
   // Redirect if not logged in
   useEffect(() => {
@@ -79,8 +74,7 @@ export default function NewService() {
       description,
       category,
       location,
-      price: price ? parseFloat(price) : undefined,
-      price_type: priceType,
+      acceptInReturn,
     });
 
     if (!result.success) {
@@ -99,14 +93,14 @@ export default function NewService() {
     const { error } = await supabase.from("services").insert({
       user_id: user.id,
       title: title.trim(),
-      description: description.trim(),
+      description: `${description.trim()}\n\n**What I'd accept in return:** ${acceptInReturn.trim()}`,
       category,
       location: location.trim(),
-      price: price ? parseFloat(price) : null,
-      price_type: priceType,
+      price: null,
+      price_type: "negotiable",
       status: "active",
       images: images.length > 0 ? images : null,
-      accepted_categories: acceptedCategories.length > 0 ? acceptedCategories : null,
+      accepted_categories: null,
       type: serviceType,
     });
 
@@ -264,63 +258,15 @@ export default function NewService() {
                   </Select>
                 </div>
 
-                {/* Pricing Type */}
-                <div className="space-y-3">
-                  <Label>Pricing Type *</Label>
-                  <RadioGroup
-                    value={priceType}
-                    onValueChange={(value) => setPriceType(value as "fixed" | "hourly" | "negotiable")}
-                    disabled={isSubmitting}
-                    className="flex flex-wrap gap-4"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="negotiable" id="negotiable" />
-                      <Label htmlFor="negotiable" className="font-normal cursor-pointer">
-                        Negotiable / Trade
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="fixed" id="fixed" />
-                      <Label htmlFor="fixed" className="font-normal cursor-pointer">
-                        Fixed Price
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="hourly" id="hourly" />
-                      <Label htmlFor="hourly" className="font-normal cursor-pointer">
-                        Hourly Rate
-                      </Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                {/* Price (optional) */}
-                {priceType !== "negotiable" && (
-                  <div className="space-y-2">
-                    <Label htmlFor="price">
-                      {priceType === "hourly" ? "Hourly Rate (€)" : "Price (€)"}
-                    </Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      placeholder="0.00"
-                      min="0"
-                      max="10000"
-                      step="0.01"
-                      disabled={isSubmitting}
-                    />
-                  </div>
-                )}
-
-                {/* What I can offer in return */}
-                <div className="space-y-3">
-                  <Label htmlFor="returnDescription">
-                    {isRequest ? "What I Can Offer in Return (optional)" : "What I'd Accept in Return (optional)"}
+                {/* What I'd Accept in Return */}
+                <div className="space-y-2">
+                  <Label htmlFor="acceptInReturn">
+                    {isRequest ? "What I Can Offer in Return *" : "What I'd Accept in Return *"}
                   </Label>
                   <Textarea
-                    id="returnDescription"
+                    id="acceptInReturn"
+                    value={acceptInReturn}
+                    onChange={(e) => setAcceptInReturn(e.target.value)}
                     placeholder={isRequest
                       ? "Describe what skills or services you can offer as a trade..."
                       : "Describe what you'd be open to receiving as a trade..."
@@ -328,43 +274,8 @@ export default function NewService() {
                     rows={3}
                     disabled={isSubmitting}
                     maxLength={500}
-                    className="mb-2"
                   />
-                  <p className="text-sm text-muted-foreground">
-                    {isRequest
-                      ? "Or select specific categories you can offer:"
-                      : "Or select specific categories you'd accept:"
-                    }
-                  </p>
-                  <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto p-1">
-                    {allCategories.map((cat) => (
-                      <div key={cat} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`accept-${cat}`}
-                          checked={acceptedCategories.includes(cat)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setAcceptedCategories([...acceptedCategories, cat]);
-                            } else {
-                              setAcceptedCategories(acceptedCategories.filter(c => c !== cat));
-                            }
-                          }}
-                          disabled={isSubmitting}
-                        />
-                        <Label 
-                          htmlFor={`accept-${cat}`} 
-                          className="font-normal cursor-pointer text-sm"
-                        >
-                          {categoryIcons[cat]} {categoryLabels[cat]}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                  {acceptedCategories.length > 0 && (
-                    <p className="text-xs text-muted-foreground">
-                      {acceptedCategories.length} categor{acceptedCategories.length === 1 ? "y" : "ies"} selected
-                    </p>
-                  )}
+                  <p className="text-xs text-muted-foreground">{acceptInReturn.length}/500 characters</p>
                 </div>
 
                 {/* Submit */}
