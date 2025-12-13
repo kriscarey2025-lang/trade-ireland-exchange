@@ -498,6 +498,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      earn_credits: {
+        Args: {
+          _amount: number
+          _conversation_id?: string
+          _description: string
+        }
+        Returns: boolean
+      }
       get_basic_profile: {
         Args: { _profile_id: string }
         Returns: {
@@ -612,6 +620,14 @@ export type Database = {
       review_verification: {
         Args: { _approved: boolean; _notes?: string; _request_id: string }
         Returns: undefined
+      }
+      spend_credits: {
+        Args: {
+          _amount: number
+          _conversation_id?: string
+          _description: string
+        }
+        Returns: boolean
       }
     }
     Enums: {

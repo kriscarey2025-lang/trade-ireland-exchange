@@ -46,7 +46,6 @@ export function useCreditTransactions() {
 }
 
 export function useSpendCredits() {
-  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -60,40 +59,14 @@ export function useSpendCredits() {
       description: string; 
       conversationId?: string;
     }) => {
-      if (!user) throw new Error("Not authenticated");
-
-      // Get current credits
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("credits")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError) throw profileError;
-      if ((profile?.credits ?? 0) < amount) {
-        throw new Error("Insufficient credits");
-      }
-
-      // Deduct credits
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({ credits: (profile?.credits ?? 0) - amount })
-        .eq("id", user.id);
-
-      if (updateError) throw updateError;
-
-      // Record transaction
-      const { error: transactionError } = await supabase
-        .from("credit_transactions")
-        .insert({
-          user_id: user.id,
-          amount: -amount,
-          type: "spent",
-          description,
-          related_conversation_id: conversationId,
-        });
-
-      if (transactionError) throw transactionError;
+      const { data, error } = await supabase.rpc('spend_credits', {
+        _amount: amount,
+        _description: description,
+        _conversation_id: conversationId || null,
+      });
+      
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["credits"] });
@@ -110,7 +83,6 @@ export function useSpendCredits() {
 }
 
 export function useEarnCredits() {
-  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -123,37 +95,14 @@ export function useEarnCredits() {
       description: string; 
       conversationId?: string;
     }) => {
-      if (!user) throw new Error("Not authenticated");
-
-      // Get current credits
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("credits")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError) throw profileError;
-
-      // Add credits
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({ credits: (profile?.credits ?? 0) + amount })
-        .eq("id", user.id);
-
-      if (updateError) throw updateError;
-
-      // Record transaction
-      const { error: transactionError } = await supabase
-        .from("credit_transactions")
-        .insert({
-          user_id: user.id,
-          amount,
-          type: "earned",
-          description,
-          related_conversation_id: conversationId,
-        });
-
-      if (transactionError) throw transactionError;
+      const { data, error } = await supabase.rpc('earn_credits', {
+        _amount: amount,
+        _description: description,
+        _conversation_id: conversationId || null,
+      });
+      
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["credits"] });
