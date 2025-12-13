@@ -119,16 +119,16 @@ export function ImageUpload({
   return (
     <div className="space-y-3">
       {/* Image Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {images.map((url, index) => (
           <div 
             key={url} 
-            className="relative aspect-square rounded-xl overflow-hidden border border-border bg-muted group"
+            className="relative aspect-[4/3] rounded-xl overflow-hidden border border-border bg-muted group"
           >
             <img
               src={url}
               alt={`Service image ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain bg-muted"
             />
             {!disabled && (
               <button
