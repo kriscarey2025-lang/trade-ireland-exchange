@@ -55,24 +55,39 @@ export default function About() {
         {/* Story */}
         <section className="py-16">
           <div className="container">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-              <div className="prose prose-lg text-muted-foreground">
-                <p>
-                  SkillSwap was born from a simple observation: everyone has skills to offer, 
-                  but not everyone has money to spare. In communities across Ireland, we saw 
-                  talented people who could help each other — if only they had a way to connect.
-                </p>
-                <p>
-                  A tiler who needs help with childcare. A teacher who wants their garden sorted. 
-                  A gardener who needs tech support. The skills are there; we just needed to 
-                  create the connections.
-                </p>
-                <p>
-                  That's why we built SkillSwap — a platform where you can trade what you're 
-                  good at for what you need. No money changes hands. Just skills, time, and 
-                  the satisfaction of helping your neighbours.
-                </p>
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold mb-8">Our Story</h2>
+              <div className="flex flex-col md:flex-row gap-8 items-start">
+                <div className="md:w-1/3 flex-shrink-0">
+                  <div className="relative">
+                    <img 
+                      src="/src/assets/founder-kristina.png" 
+                      alt="Kristina, founder of SkillSwap Ireland"
+                      className="w-full rounded-2xl shadow-lg object-cover aspect-[3/4]"
+                    />
+                    <div className="absolute -bottom-3 -right-3 bg-primary/10 rounded-2xl w-full h-full -z-10" />
+                  </div>
+                  <p className="text-center mt-4 text-sm text-muted-foreground font-medium">
+                    Kristina, Founder
+                  </p>
+                </div>
+                <div className="md:w-2/3 prose prose-lg text-muted-foreground">
+                  <p>
+                    SkillSwap was born from a simple observation: everyone has skills to offer, 
+                    but not everyone has money to spare. In communities across Ireland, we saw 
+                    talented people who could help each other — if only they had a way to connect.
+                  </p>
+                  <p>
+                    A tiler who needs help with childcare. A teacher who wants their garden sorted. 
+                    A gardener who needs tech support. The skills are there; we just needed to 
+                    create the connections.
+                  </p>
+                  <p>
+                    That's why we built SkillSwap — a platform where you can trade what you're 
+                    good at for what you need. No money changes hands. Just skills, time, and 
+                    the satisfaction of helping your neighbours.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
