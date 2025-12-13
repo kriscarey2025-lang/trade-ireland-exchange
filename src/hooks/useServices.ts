@@ -21,6 +21,9 @@ interface SecureServiceResponse {
   updated_at: string;
   provider_name: string | null; // null for unauthenticated users
   provider_avatar: string | null; // null for unauthenticated users
+  provider_linkedin: string | null;
+  provider_facebook: string | null;
+  provider_instagram: string | null;
 }
 
 export interface DatabaseService {
@@ -65,6 +68,9 @@ export interface ServiceWithUser {
     rating: number | null;
     completedTrades: number;
     verificationStatus: "verified" | "pending" | "unverified";
+    linkedinUrl?: string;
+    facebookUrl?: string;
+    instagramUrl?: string;
   };
 }
 
@@ -88,6 +94,9 @@ function transformSecureService(service: SecureServiceResponse): ServiceWithUser
       rating: null,
       completedTrades: 0,
       verificationStatus: "pending",
+      linkedinUrl: service.provider_linkedin || undefined,
+      facebookUrl: service.provider_facebook || undefined,
+      instagramUrl: service.provider_instagram || undefined,
     } : undefined,
   };
 }
