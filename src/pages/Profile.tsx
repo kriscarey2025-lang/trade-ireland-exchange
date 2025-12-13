@@ -9,7 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2, User, MapPin, Phone, Mail, Edit2, Save, X } from "lucide-react";
+import { Loader2, User, MapPin, Phone, Mail, Edit2, Save, X, AlertTriangle } from "lucide-react";
+import { DeleteAccountDialog } from "@/components/profile/DeleteAccountDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
@@ -396,6 +397,30 @@ export default function Profile() {
               </CardContent>
             </Card>
           )}
+
+          {/* Danger Zone */}
+          <Card className="shadow-elevated border-destructive/30">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2 text-destructive">
+                <AlertTriangle className="h-5 w-5" />
+                Danger Zone
+              </CardTitle>
+              <CardDescription>
+                Irreversible actions for your account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Delete your account</p>
+                  <p className="text-sm text-muted-foreground">
+                    Permanently remove your account and all associated data
+                  </p>
+                </div>
+                <DeleteAccountDialog userEmail={profile?.email || null} />
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Member Since */}
           <p className="text-center text-sm text-muted-foreground">
