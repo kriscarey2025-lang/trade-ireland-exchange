@@ -1,25 +1,25 @@
-import { Shield, CheckCircle2, Star, Users } from "lucide-react";
+import { Shield, CheckCircle2, Star, Users, Heart } from "lucide-react";
 
 const trustFeatures = [
   {
     icon: Shield,
-    title: "Verified Members",
-    description: "Upload qualifications and ID for verification. Manual review ensures trust.",
+    title: "Real people, verified",
+    description: "We check IDs so you know who you're dealing with. Peace of mind, sorted.",
   },
   {
     icon: Star,
-    title: "Earned Badges",
-    description: "Build your reputation through successful trades and positive reviews.",
+    title: "Reputation matters",
+    description: "Build trust through honest reviews. Good deeds get noticed around here.",
   },
   {
-    icon: CheckCircle2,
-    title: "Quality Assurance",
-    description: "Every trade is reviewed. Our community standards keep everyone safe.",
+    icon: Heart,
+    title: "Community first",
+    description: "This isn't a faceless app. It's your neighbours looking out for each other.",
   },
   {
     icon: Users,
-    title: "Community Driven",
-    description: "Built for Irish communities, by Irish communities. We're all neighbours here.",
+    title: "Made for Ireland",
+    description: "Built right here in Killeshin. We understand what Irish communities need.",
   },
 ];
 
@@ -30,12 +30,16 @@ export function TrustSection() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Content */}
           <div>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-semibold mb-4">
+              Safe as houses
+            </span>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Built on Trust & Transparency
+              We've got your back
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              We combine manual verification with a community-driven badge system. 
-              Start unverified, earn trust through trades, or fast-track with document verification.
+              Look, we know trusting strangers can be scary. That's why we've built 
+              this whole thing around keeping you safe. Verified profiles, honest reviews, 
+              and a community that actually cares about each other.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6">
@@ -67,28 +71,29 @@ export function TrustSection() {
               {/* Center Content */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-6xl font-bold text-primary mb-2">98%</div>
-                  <p className="text-muted-foreground">Satisfaction Rate</p>
+                  <div className="text-5xl mb-3">🤝</div>
+                  <p className="text-lg font-medium text-foreground">Real connections</p>
+                  <p className="text-sm text-muted-foreground">Not just transactions</p>
                 </div>
               </div>
 
               {/* Floating Badges */}
-              <div className="absolute top-8 right-8 bg-card rounded-xl p-3 shadow-elevated animate-float" style={{ animationDelay: "0.2s" }}>
+              <div className="absolute top-8 right-8 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{ animationDelay: "0.2s" }}>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">⭐</span>
-                  <span className="font-medium">5-Star</span>
+                  <span className="text-xl">🍀</span>
+                  <span className="font-medium text-sm">Irish made</span>
                 </div>
               </div>
-              <div className="absolute bottom-12 left-4 bg-card rounded-xl p-3 shadow-elevated animate-float" style={{ animationDelay: "0.4s" }}>
+              <div className="absolute bottom-12 left-4 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{ animationDelay: "0.4s" }}>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">✅</span>
-                  <span className="font-medium">Verified</span>
+                  <span className="text-xl">✅</span>
+                  <span className="font-medium text-sm">ID checked</span>
                 </div>
               </div>
-              <div className="absolute bottom-24 right-0 bg-card rounded-xl p-3 shadow-elevated animate-float" style={{ animationDelay: "0.6s" }}>
+              <div className="absolute bottom-24 right-0 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{ animationDelay: "0.6s" }}>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">🏆</span>
-                  <span className="font-medium">Trusted</span>
+                  <span className="text-xl">💬</span>
+                  <span className="font-medium text-sm">Real chats</span>
                 </div>
               </div>
             </div>
