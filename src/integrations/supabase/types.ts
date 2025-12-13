@@ -883,6 +883,7 @@ export type Database = {
           provider_instagram: string
           provider_linkedin: string
           provider_name: string
+          provider_verification_status: string
           status: string
           title: string
           type: string
@@ -909,6 +910,7 @@ export type Database = {
           provider_linkedin: string
           provider_location: string
           provider_name: string
+          provider_verification_status: string
           status: string
           title: string
           type: string

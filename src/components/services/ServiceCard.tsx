@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, CheckCircle2, ArrowUpRight, Linkedin, Facebook, Instagram } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 import { ServiceCategory } from "@/types";
+import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 
 interface ServiceUser {
   id?: string;
@@ -99,9 +100,10 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
                   <span className="font-medium text-sm truncate">
                     {service.user.name}
                   </span>
-                  {service.user.verificationStatus === "verified" && (
-                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                  )}
+                  <VerifiedBadge 
+                    status={service.user.verificationStatus} 
+                    size="sm" 
+                  />
                   {/* Social Media Icons */}
                   {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
                     <div className="flex items-center gap-1 ml-1">

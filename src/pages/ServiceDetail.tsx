@@ -47,6 +47,7 @@ import { ContactDialog } from "@/components/messaging/ContactDialog";
 import { formatDisplayName } from "@/lib/utils";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { Disclaimer } from "@/components/shared/Disclaimer";
+import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 
 // Response from secure database function
 interface SecureServiceDetail {
@@ -71,6 +72,7 @@ interface SecureServiceDetail {
   provider_linkedin: string | null;
   provider_facebook: string | null;
   provider_instagram: string | null;
+  provider_verification_status: string | null;
 }
 
 export default function ServiceDetail() {
@@ -368,9 +370,15 @@ export default function ServiceDetail() {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-semibold text-lg">
-                            {formatDisplayName(service.provider_name)}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-lg">
+                              {formatDisplayName(service.provider_name)}
+                            </p>
+                            <VerifiedBadge 
+                              status={(service.provider_verification_status as "verified" | "pending" | "unverified" | "rejected") || "unverified"} 
+                              size="md" 
+                            />
+                          </div>
                           {service.user_id && (
                             <UserRatingBadge userId={service.user_id} size="sm" />
                           )}
