@@ -1,10 +1,18 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 
 export default function Terms() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
+    <>
+      <SEO 
+        title="Terms of Service"
+        description="Read the Terms of Service for Swap Skills - Ireland's community platform for trading skills and services."
+        keywords="swap skills terms, service agreement, skill exchange terms Ireland"
+        url="https://swap-skills.com/terms"
+      />
+      <div className="flex min-h-screen flex-col">
+        <Header />
       <main className="flex-1">
         <section className="py-16 bg-gradient-to-b from-secondary/30 to-background">
           <div className="container">
@@ -126,5 +134,6 @@ export default function Terms() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 import {
   Accordion,
   AccordionContent,
@@ -44,8 +45,15 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
+    <>
+      <SEO 
+        title="FAQ"
+        description="Find answers to frequently asked questions about Swap Skills - how skill swapping works, safety tips, getting started, and more."
+        keywords="swap skills FAQ, skill exchange questions, barter Ireland help, how to swap services"
+        url="https://swap-skills.com/faq"
+      />
+      <div className="flex min-h-screen flex-col">
+        <Header />
       <main className="flex-1">
         <section className="py-16 bg-gradient-to-b from-secondary/30 to-background">
           <div className="container">
@@ -89,5 +97,6 @@ export default function FAQ() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }

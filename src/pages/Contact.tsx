@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,8 +31,15 @@ export default function Contact() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
+    <>
+      <SEO 
+        title="Contact Us"
+        description="Get in touch with the Swap Skills team. We'd love to hear your questions, feedback, or ideas about skill swapping in Ireland."
+        keywords="contact swap skills, skill exchange support, Ireland community help"
+        url="https://swap-skills.com/contact"
+      />
+      <div className="flex min-h-screen flex-col">
+        <Header />
       <main className="flex-1">
         <section className="py-16 bg-gradient-to-b from-secondary/30 to-background">
           <div className="container">
@@ -160,5 +168,6 @@ export default function Contact() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }
