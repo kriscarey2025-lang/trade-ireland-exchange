@@ -34,7 +34,10 @@ import {
   Mail,
   Repeat,
   Pencil,
-  Trash2
+  Trash2,
+  Linkedin,
+  Facebook,
+  Instagram
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
@@ -65,6 +68,9 @@ interface SecureServiceDetail {
   provider_avatar: string | null;
   provider_bio: string | null;
   provider_location: string | null;
+  provider_linkedin: string | null;
+  provider_facebook: string | null;
+  provider_instagram: string | null;
 }
 
 export default function ServiceDetail() {
@@ -381,6 +387,45 @@ export default function ServiceDetail() {
                         <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                           {service.provider_bio}
                         </p>
+                      )}
+
+                      {/* Social Links */}
+                      {(service.provider_linkedin || service.provider_facebook || service.provider_instagram) && (
+                        <div className="flex items-center gap-2 mb-4">
+                          {service.provider_linkedin && (
+                            <a 
+                              href={service.provider_linkedin} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
+                              title="LinkedIn"
+                            >
+                              <Linkedin className="h-4 w-4 text-muted-foreground" />
+                            </a>
+                          )}
+                          {service.provider_facebook && (
+                            <a 
+                              href={service.provider_facebook} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
+                              title="Facebook"
+                            >
+                              <Facebook className="h-4 w-4 text-muted-foreground" />
+                            </a>
+                          )}
+                          {service.provider_instagram && (
+                            <a 
+                              href={service.provider_instagram} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
+                              title="Instagram"
+                            >
+                              <Instagram className="h-4 w-4 text-muted-foreground" />
+                            </a>
+                          )}
+                        </div>
                       )}
                     </>
                   ) : (

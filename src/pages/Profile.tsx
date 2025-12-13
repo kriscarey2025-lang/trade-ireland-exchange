@@ -408,7 +408,13 @@ export default function Profile() {
                   <Separator />
 
                   <div className="space-y-4">
-                    <p className="text-sm font-medium text-muted-foreground">Social Media Links (optional)</p>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Social Media Links (optional)</p>
+                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
+                        <AlertTriangle className="h-3 w-3" />
+                        These links will be visible to other users when you post a service or request.
+                      </p>
+                    </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="linkedin" className="flex items-center gap-2">

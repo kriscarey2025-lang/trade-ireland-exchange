@@ -719,6 +719,9 @@ export type Database = {
           price_type: string
           provider_avatar: string
           provider_bio: string
+          provider_facebook: string
+          provider_instagram: string
+          provider_linkedin: string
           provider_location: string
           provider_name: string
           status: string
