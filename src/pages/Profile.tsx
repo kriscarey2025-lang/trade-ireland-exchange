@@ -16,6 +16,8 @@ import { z } from "zod";
 import { UserListings } from "@/components/profile/UserListings";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { VerificationRequestCard } from "@/components/profile/VerificationRequestCard";
+import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
+import { ReviewsList } from "@/components/reviews/ReviewsList";
 
 const profileSchema = z.object({
   full_name: z.string().trim().min(1, "Name is required").max(100),
@@ -210,6 +212,11 @@ export default function Profile() {
                     <Mail className="h-3.5 w-3.5" />
                     {profile?.email}
                   </CardDescription>
+                  {user && (
+                    <div className="mt-2">
+                      <UserRatingBadge userId={user.id} />
+                    </div>
+                  )}
                 </div>
                 {!isEditing && (
                   <Button 
@@ -376,6 +383,19 @@ export default function Profile() {
 
           {/* User Listings */}
           {user && <UserListings userId={user.id} />}
+
+          {/* Reviews Section */}
+          {user && (
+            <Card className="shadow-elevated border-border/50">
+              <CardHeader>
+                <CardTitle className="text-lg">Reviews</CardTitle>
+                <CardDescription>What others are saying about you</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ReviewsList userId={user.id} />
+              </CardContent>
+            </Card>
+          )}
 
           {/* Member Since */}
           <p className="text-center text-sm text-muted-foreground">

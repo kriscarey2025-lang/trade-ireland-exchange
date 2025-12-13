@@ -48,6 +48,8 @@ export type Database = {
       }
       conversations: {
         Row: {
+          completed_by_1: boolean | null
+          completed_by_2: boolean | null
           created_at: string
           id: string
           participant_1: string
@@ -56,6 +58,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          completed_by_1?: boolean | null
+          completed_by_2?: boolean | null
           created_at?: string
           id?: string
           participant_1: string
@@ -64,6 +68,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          completed_by_1?: boolean | null
+          completed_by_2?: boolean | null
           created_at?: string
           id?: string
           participant_1?: string
@@ -213,6 +219,57 @@ export type Database = {
           verification_status?: string | null
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          review_text: string | null
+          reviewed_user_id: string
+          reviewer_id: string
+          service_id: string | null
+          service_rating: number | null
+          user_rating: number
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          review_text?: string | null
+          reviewed_user_id: string
+          reviewer_id: string
+          service_id?: string | null
+          service_rating?: number | null
+          user_rating: number
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          review_text?: string | null
+          reviewed_user_id?: string
+          reviewer_id?: string
+          service_id?: string | null
+          service_rating?: number | null
+          user_rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       services: {
         Row: {
@@ -440,6 +497,14 @@ export type Database = {
           type: string
           updated_at: string
           user_id: string
+        }[]
+      }
+      get_user_ratings: {
+        Args: { _user_id: string }
+        Returns: {
+          avg_service_rating: number
+          avg_user_rating: number
+          total_reviews: number
         }[]
       }
       get_verification_document_url: {

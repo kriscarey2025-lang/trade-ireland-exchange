@@ -42,6 +42,7 @@ import { ServiceCategory } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import { ContactDialog } from "@/components/messaging/ContactDialog";
 import { formatDisplayName } from "@/lib/utils";
+import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 
 // Response from secure database function
 interface SecureServiceDetail {
@@ -363,8 +364,11 @@ export default function ServiceDetail() {
                           <p className="font-semibold text-lg">
                             {formatDisplayName(service.provider_name)}
                           </p>
+                          {service.user_id && (
+                            <UserRatingBadge userId={service.user_id} size="sm" />
+                          )}
                           {service.provider_location && (
-                            <p className="text-sm text-muted-foreground flex items-center gap-1">
+                            <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                               <MapPin className="h-3 w-3" />
                               {service.provider_location}
                             </p>

@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, ArrowLeft, Send, ExternalLink, Info } from "lucide-react";
+import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useMessages, useSendMessage, useMarkAsRead } from "@/hooks/useMessaging";
@@ -15,12 +15,16 @@ import { format, isToday, isYesterday } from "date-fns";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ContactSharingCard } from "@/components/messaging/ContactSharingCard";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ReviewDialog } from "@/components/reviews/ReviewDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface ConversationDetails {
   id: string;
   service_id: string | null;
   participant_1: string;
   participant_2: string;
+  completed_by_1: boolean;
+  completed_by_2: boolean;
   service?: { id: string; title: string } | null;
   other_profile?: { id: string; full_name: string | null; avatar_url: string | null } | null;
 }
@@ -28,9 +32,13 @@ interface ConversationDetails {
 export default function Conversation() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user, loading: authLoading } = useAuth();
+  const { toast } = useToast();
   const [newMessage, setNewMessage] = useState("");
   const [showContactCard, setShowContactCard] = useState(false);
+  const [showReviewDialog, setShowReviewDialog] = useState(false);
+  const [isMarkingComplete, setIsMarkingComplete] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: conversation, isLoading: convLoading } = useQuery({
@@ -63,6 +71,66 @@ export default function Conversation() {
   });
 
   const { data: messages, isLoading: messagesLoading } = useMessages(id);
+
+  // Check if user has already reviewed
+  const { data: existingReview } = useQuery({
+    queryKey: ["existing-review", id, user?.id],
+    queryFn: async () => {
+      if (!id || !user) return null;
+      const { data } = await supabase
+        .from("reviews")
+        .select("id")
+        .eq("conversation_id", id)
+        .eq("reviewer_id", user.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!id && !!user,
+  });
+
+  // Determine if current user is participant 1 or 2
+  const isParticipant1 = conversation?.participant_1 === user?.id;
+  const hasMarkedComplete = isParticipant1 
+    ? conversation?.completed_by_1 
+    : conversation?.completed_by_2;
+  const otherHasMarkedComplete = isParticipant1 
+    ? conversation?.completed_by_2 
+    : conversation?.completed_by_1;
+  const canReview = (hasMarkedComplete || otherHasMarkedComplete) && !existingReview;
+
+  const handleMarkComplete = async () => {
+    if (!id || !user || !conversation) return;
+    
+    setIsMarkingComplete(true);
+    try {
+      const updateField = isParticipant1 ? "completed_by_1" : "completed_by_2";
+      const { error } = await supabase
+        .from("conversations")
+        .update({ [updateField]: true })
+        .eq("id", id);
+      
+      if (error) throw error;
+      
+      await queryClient.invalidateQueries({ queryKey: ["conversation", id] });
+      
+      toast({
+        title: "Trade marked complete",
+        description: "You can now leave a review for this trade.",
+      });
+      
+      // Open review dialog
+      setShowReviewDialog(true);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to mark complete",
+        variant: "destructive",
+      });
+    } finally {
+      setIsMarkingComplete(false);
+    }
+  };
+
   const sendMessage = useSendMessage();
   const markAsRead = useMarkAsRead();
 
@@ -206,6 +274,58 @@ export default function Conversation() {
             </CollapsibleContent>
           </Collapsible>
 
+          {/* Trade Completion & Review Actions */}
+          <div className="mb-4 flex flex-wrap gap-2">
+            {!hasMarkedComplete && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleMarkComplete}
+                disabled={isMarkingComplete}
+                className="gap-2"
+              >
+                {isMarkingComplete ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="h-4 w-4" />
+                )}
+                Mark Trade Complete
+              </Button>
+            )}
+            
+            {hasMarkedComplete && !existingReview && (
+              <Button
+                size="sm"
+                onClick={() => setShowReviewDialog(true)}
+                className="gap-2"
+              >
+                <Star className="h-4 w-4" />
+                Leave a Review
+              </Button>
+            )}
+            
+            {hasMarkedComplete && (
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                <CheckCircle2 className="h-3 w-3 text-green-500" />
+                You marked this complete
+              </span>
+            )}
+            
+            {otherHasMarkedComplete && (
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                <CheckCircle2 className="h-3 w-3 text-green-500" />
+                {formatDisplayName(conversation.other_profile?.full_name)} marked complete
+              </span>
+            )}
+            
+            {existingReview && (
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                Review submitted
+              </span>
+            )}
+          </div>
+
           {/* Messages */}
           <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
             <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -291,6 +411,22 @@ export default function Conversation() {
         </div>
       </main>
       <Footer />
+      
+      {/* Review Dialog */}
+      {conversation.other_profile && (
+        <ReviewDialog
+          open={showReviewDialog}
+          onOpenChange={setShowReviewDialog}
+          conversationId={conversation.id}
+          reviewedUserId={conversation.other_profile.id}
+          reviewedUserName={formatDisplayName(conversation.other_profile.full_name)}
+          serviceId={conversation.service_id}
+          serviceTitle={conversation.service?.title}
+          onReviewSubmitted={() => {
+            queryClient.invalidateQueries({ queryKey: ["existing-review", id, user?.id] });
+          }}
+        />
+      )}
     </div>
   );
 }
