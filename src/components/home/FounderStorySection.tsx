@@ -33,12 +33,6 @@ export function FounderStorySection() {
                 hang a picture frame? Disaster waiting to happen.
               </p>
 
-              <p className="mb-6">
-                And then there's my cat, Milo. Gorgeous wee fella, but he needs someone to check on him when I'm away. 
-                I'd also love an extra pair of hands with the kids sometimes — someone to help with homework or 
-                take them to the park while I tackle that mountain of emails.
-              </p>
-
               <div className="my-10 p-6 bg-gradient-to-r from-primary/10 via-accent/10 to-highlight/10 rounded-2xl border border-primary/20">
                 <p className="text-lg md:text-xl font-medium text-foreground italic mb-0 font-display">
                   "What if I could help someone with their tech headaches, and in return, they'd help me put together 
