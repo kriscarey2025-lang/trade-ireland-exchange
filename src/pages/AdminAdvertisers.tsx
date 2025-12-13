@@ -14,9 +14,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone, Eye, MousePointer } from "lucide-react";
+import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone, Eye, MousePointer, BarChart3 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AdImageUpload } from "@/components/ads/AdImageUpload";
+import { AdAnalyticsDashboard } from "@/components/ads/AdAnalyticsDashboard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Advertiser {
   id: string;
@@ -240,11 +242,31 @@ const AdminAdvertisers = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Advertiser Management</h1>
             <p className="text-muted-foreground mt-1">Create and manage local advertisers and their ads</p>
           </div>
+        </div>
+
+        <Tabs defaultValue="manage" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="manage" className="flex items-center gap-2">
+              <Building2 className="h-4 w-4" />
+              Manage
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="analytics">
+            <AdAnalyticsDashboard advertisers={advertisers} />
+          </TabsContent>
+
+          <TabsContent value="manage">
+            <div className="flex justify-end mb-6">
           
           <Dialog open={isAdvertiserDialogOpen} onOpenChange={setIsAdvertiserDialogOpen}>
             <DialogTrigger asChild>
@@ -522,6 +544,8 @@ const AdminAdvertisers = () => {
             )}
           </div>
         </div>
+          </TabsContent>
+        </Tabs>
       </main>
       <Footer />
     </div>
