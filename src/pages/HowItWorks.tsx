@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -79,8 +80,15 @@ const tradingModes = [
 
 export default function HowItWorks() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
+    <>
+      <SEO 
+        title="How It Works"
+        description="Learn how Swap Skills works - create your account, post services, browse listings, connect with neighbours, and start trading skills in Ireland."
+        keywords="how swap skills works, skill exchange tutorial, barter services Ireland guide, trade skills step by step"
+        url="https://swap-skills.com/how-it-works"
+      />
+      <div className="min-h-screen flex flex-col">
+        <Header />
       <main className="flex-1">
         {/* Hero */}
         <section className="bg-gradient-to-b from-secondary/50 to-background py-16 md:py-24">
@@ -177,5 +185,6 @@ export default function HowItWorks() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }

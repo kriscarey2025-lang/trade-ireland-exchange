@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Users, MapPin, MessageCircle, Heart, AlertTriangle } from "lucide-react";
 
@@ -38,8 +39,15 @@ const safetyTips = [
 
 export default function Safety() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
+    <>
+      <SEO 
+        title="Safety Guidelines"
+        description="Stay safe while swapping skills on Swap Skills. Learn our safety tips for meeting new people, exchanging services, and building trust in your community."
+        keywords="swap skills safety, safe skill exchange, meeting strangers safely Ireland, community trading safety"
+        url="https://swap-skills.com/safety"
+      />
+      <div className="flex min-h-screen flex-col">
+        <Header />
       <main className="flex-1">
         <section className="py-16 bg-gradient-to-b from-secondary/30 to-background">
           <div className="container">
@@ -116,5 +124,6 @@ export default function Safety() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }

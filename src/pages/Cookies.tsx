@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const cookieTypes = [
@@ -22,8 +23,15 @@ const cookieTypes = [
 
 export default function Cookies() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
+    <>
+      <SEO 
+        title="Cookie Policy"
+        description="Learn about the cookies used on Swap Skills - essential, functional, and analytics cookies that help improve your experience."
+        keywords="swap skills cookies, cookie policy Ireland, website cookies"
+        url="https://swap-skills.com/cookies"
+      />
+      <div className="flex min-h-screen flex-col">
+        <Header />
       <main className="flex-1">
         <section className="py-16 bg-gradient-to-b from-secondary/30 to-background">
           <div className="container">
@@ -137,5 +145,6 @@ export default function Cookies() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }

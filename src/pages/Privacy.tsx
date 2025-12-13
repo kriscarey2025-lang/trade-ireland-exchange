@@ -1,10 +1,18 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 
 export default function Privacy() {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
+    <>
+      <SEO 
+        title="Privacy Policy"
+        description="Learn how Swap Skills protects your privacy and handles your personal data under GDPR and Irish data protection law."
+        keywords="swap skills privacy, data protection Ireland, GDPR compliance, skill exchange privacy policy"
+        url="https://swap-skills.com/privacy"
+      />
+      <div className="flex min-h-screen flex-col">
+        <Header />
       <main className="flex-1">
         <section className="py-16 bg-gradient-to-b from-secondary/30 to-background">
           <div className="container">
@@ -160,5 +168,6 @@ export default function Privacy() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }
