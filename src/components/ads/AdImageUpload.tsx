@@ -92,11 +92,16 @@ export function AdImageUpload({ value, onChange, className = "" }: AdImageUpload
       
       {value ? (
         <div className="mt-2 relative rounded-lg overflow-hidden border border-border">
-          <img
-            src={value}
-            alt="Ad preview"
-            className="w-full h-32 object-cover"
-          />
+          <div className="aspect-[16/9] w-full overflow-hidden bg-muted">
+            <img
+              src={value}
+              alt="Ad preview"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground p-2 bg-muted/50">
+            Image will be cropped to fit the ad space
+          </p>
           <Button
             type="button"
             variant="destructive"
