@@ -131,6 +131,7 @@ export function AdImageUpload({ value, onChange, className = "" }: AdImageUpload
             <>
               <ImageIcon className="h-8 w-8 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">Click to upload image</span>
+              <span className="text-xs text-muted-foreground/70">Recommended: 800×450px (16:9)</span>
               <span className="text-xs text-muted-foreground/70">Max 5MB, JPG/PNG/WebP</span>
             </>
           )}
