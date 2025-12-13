@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { useState, useEffect, createContext, useContext, ReactNode, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -19,14 +19,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isBanned, setIsBanned] = useState(false);
+  const initializedRef = useRef(false);
+  const ipLoggedRef = useRef(false);
 
   const checkBanStatus = async (userId: string) => {
-    const { data } = await supabase.rpc('is_user_banned', { _user_id: userId });
-    return data === true;
+    try {
+      const { data } = await supabase.rpc('is_user_banned', { _user_id: userId });
+      return data === true;
+    } catch {
+      return false;
+    }
   };
 
   const logIpAndCheckBan = async () => {
+    // Only log IP once per session
+    if (ipLoggedRef.current) {
+      return { ipBanned: false };
+    }
+    
     try {
+      ipLoggedRef.current = true;
       const { data, error } = await supabase.functions.invoke('log-ip');
       if (error) {
         console.error('Failed to log IP:', error);
@@ -40,45 +52,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Check user ban status
-          const banned = await checkBanStatus(session.user.id);
-          if (banned) {
-            setIsBanned(true);
-            await supabase.auth.signOut();
-            setUser(null);
-            setSession(null);
-            setLoading(false);
-            return;
-          }
-          
-          // Log IP and check IP ban
-          const { ipBanned } = await logIpAndCheckBan();
-          if (ipBanned) {
-            setIsBanned(true);
-            await supabase.auth.signOut();
-            setUser(null);
-            setSession(null);
-            setLoading(false);
-            return;
-          }
-          
-          setIsBanned(false);
-        } else {
-          setIsBanned(false);
-        }
-        
-        setLoading(false);
-      }
-    );
+    // Prevent double initialization
+    if (initializedRef.current) return;
+    initializedRef.current = true;
 
-    // THEN check for existing session
+    // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -94,7 +72,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
         
-        // Log IP and check IP ban
         const { ipBanned } = await logIpAndCheckBan();
         if (ipBanned) {
           setIsBanned(true);
@@ -108,6 +85,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       setLoading(false);
     });
+
+    // Listen for auth changes (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        // Only process actual auth events, not initial session
+        if (event === 'SIGNED_IN') {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            const banned = await checkBanStatus(session.user.id);
+            if (banned) {
+              setIsBanned(true);
+              await supabase.auth.signOut();
+              setUser(null);
+              setSession(null);
+              return;
+            }
+            
+            const { ipBanned } = await logIpAndCheckBan();
+            if (ipBanned) {
+              setIsBanned(true);
+              await supabase.auth.signOut();
+              setUser(null);
+              setSession(null);
+              return;
+            }
+            
+            setIsBanned(false);
+          }
+        } else if (event === 'SIGNED_OUT') {
+          setSession(null);
+          setUser(null);
+          setIsBanned(false);
+          ipLoggedRef.current = false;
+        } else if (event === 'TOKEN_REFRESHED') {
+          setSession(session);
+          setUser(session?.user ?? null);
+        }
+      }
+    );
 
     return () => subscription.unsubscribe();
   }, []);
