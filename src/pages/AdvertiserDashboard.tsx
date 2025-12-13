@@ -10,11 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Building2, Megaphone, Eye, MousePointer, CalendarIcon, BarChart3, TrendingUp, Pencil } from "lucide-react";
+import { Plus, Building2, Megaphone, Eye, MousePointer, CalendarIcon, BarChart3, TrendingUp, Pencil, Trash2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AdImageUpload } from "@/components/ads/AdImageUpload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -253,6 +254,24 @@ const [adImageUrl, setAdImageUrl] = useState("");
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myAds", advertiser?.id] });
       toast.success("Ad status updated");
+    },
+  });
+
+  // Delete ad mutation
+  const deleteAd = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("ads")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myAds", advertiser?.id] });
+      toast.success("Ad deleted successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to delete ad: " + error.message);
     },
   });
 
@@ -691,6 +710,30 @@ const [adImageUrl, setAdImageUrl] = useState("");
                               <Pencil className="h-4 w-4 mr-1" />
                               Edit
                             </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete Ad</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to delete "{ad.title}"? This action cannot be undone and all associated analytics data will be lost.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => deleteAd.mutate(ad.id)}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  >
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                             <Badge variant={ad.is_active ? "default" : "secondary"}>
                               {ad.is_active ? "Active" : "Inactive"}
                             </Badge>
