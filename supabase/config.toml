@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.conversation-prompts]
 verify_jwt = false
+
+[functions.log-ip]
+verify_jwt = false
