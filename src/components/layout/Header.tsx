@@ -35,6 +35,23 @@ export function Header() {
     enabled: !!user?.id,
   });
 
+  // Check if user is an advertiser
+  const { data: isAdvertiser } = useQuery({
+    queryKey: ['user-is-advertiser', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return false;
+      const { data, error } = await supabase
+        .from('advertisers')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (error) return false;
+      return !!data;
+    },
+    enabled: !!user?.id,
+  });
+
   // Close menus when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -61,6 +78,7 @@ export function Header() {
     { href: "/matches", label: "AI Matches", icon: Sparkles },
     { href: "/how-it-works", label: "How It Works" },
     { href: "/about", label: "About" },
+    ...(isAdvertiser ? [{ href: "/advertiser", label: "My Ads", icon: Megaphone }] : []),
   ];
 
   const adminLinks = [
