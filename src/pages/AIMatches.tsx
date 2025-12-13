@@ -89,8 +89,11 @@ export default function AIMatches() {
             Your Perfect Skill Matches
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Our AI analyzes your services and finds the best potential swap partners based on 
-            complementary skills, mutual benefits, and location.
+            Our AI analyzes your services, skill preferences, and location to find the best 
+            potential swap partners within your preferred radius.
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            <Link to="/onboarding" className="text-primary hover:underline">Update your preferences</Link> to improve your matches.
           </p>
         </div>
 
