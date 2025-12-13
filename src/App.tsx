@@ -26,6 +26,7 @@ import Privacy from "./pages/Privacy";
 import Cookies from "./pages/Cookies";
 import AdminVerification from "./pages/AdminVerification";
 import AdminReports from "./pages/AdminReports";
+import AdminAdvertisers from "./pages/AdminAdvertisers";
 import AIMatches from "./pages/AIMatches";
 import NotFound from "./pages/NotFound";
 
@@ -61,6 +62,7 @@ const App = () => (
             <Route path="/cookies" element={<Cookies />} />
             <Route path="/admin/verification" element={<AdminVerification />} />
             <Route path="/admin/reports" element={<AdminReports />} />
+            <Route path="/admin/advertisers" element={<AdminAdvertisers />} />
             <Route path="/matches" element={<AIMatches />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
