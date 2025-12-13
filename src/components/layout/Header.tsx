@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useCredits } from "@/hooks/useCredits";
 import { toast } from "sonner";
 
 export function Header() {
@@ -14,9 +15,9 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { data: credits } = useCredits();
   
   const isLoggedIn = !!user;
-  const userCredits = 45;
 
   // Close post menu when clicking outside
   useEffect(() => {
@@ -86,7 +87,7 @@ export function Header() {
             <>
               <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 rounded-xl">
                 <Coins className="h-3.5 w-3.5 text-warning" />
-                {userCredits} credits
+                {credits ?? 0} credits
               </Badge>
               <div className="relative" ref={postMenuRef}>
                 <Button 

@@ -87,6 +87,51 @@ export type Database = {
           },
         ]
       }
+      credit_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          related_conversation_id: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          related_conversation_id?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          related_conversation_id?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_transactions_related_conversation_id_fkey"
+            columns: ["related_conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       message_rate_limits: {
         Row: {
           message_count: number | null
@@ -186,6 +231,7 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          credits: number
           email: string | null
           full_name: string | null
           id: string
@@ -198,6 +244,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          credits?: number
           email?: string | null
           full_name?: string | null
           id: string
@@ -210,6 +257,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          credits?: number
           email?: string | null
           full_name?: string | null
           id?: string
