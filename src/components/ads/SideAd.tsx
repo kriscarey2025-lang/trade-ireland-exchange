@@ -21,13 +21,13 @@ export function SideAd({ position, className = "" }: SideAdProps) {
   return (
     <div 
       className={`
-        hidden xl:flex flex-col gap-4 w-[200px] flex-shrink-0 sticky top-24
-        ${position === "left" ? "mr-4" : "ml-4"}
+        hidden xl:flex flex-col gap-3 w-[160px] flex-shrink-0 sticky top-24
+        ${position === "left" ? "mr-3" : "ml-3"}
         ${className}
       `}
     >
       <AdDisplay ad={selectedAds[0]} variant="side" />
-      <AdDisplay ad={selectedAds[1]} variant="side" />
+      {selectedAds[1] && <AdDisplay ad={selectedAds[1]} variant="side" />}
     </div>
   );
 }
