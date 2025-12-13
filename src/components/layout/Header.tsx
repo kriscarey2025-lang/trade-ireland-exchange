@@ -2,10 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown } from "lucide-react";
+import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useCredits } from "@/hooks/useCredits";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { toast } from "sonner";
 
 export function Header() {
@@ -121,6 +122,7 @@ export function Header() {
                   </div>
                 )}
               </div>
+              <NotificationBell />
               <Button variant="ghost" size="icon" className="rounded-xl" asChild>
                 <Link to="/messages">
                   <MessageCircle className="h-5 w-5" />
