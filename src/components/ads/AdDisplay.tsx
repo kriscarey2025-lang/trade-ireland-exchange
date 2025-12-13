@@ -33,21 +33,18 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
     return (
       <div 
         className={`
-          bg-gradient-to-br from-muted/50 to-muted border border-border/50 rounded-lg
-          flex flex-col items-center justify-center text-center p-4
-          transition-all hover:border-primary/30 hover:shadow-sm
-          ${variant === "side" ? "min-h-[300px]" : "py-6"}
+          bg-muted/30 border border-border/30 rounded-md
+          flex flex-col items-center justify-center text-center p-3
+          transition-all hover:border-border/50
+          ${variant === "side" ? "min-h-[120px]" : "py-4"}
           ${className}
         `}
       >
-        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-          <Megaphone className="w-6 h-6 text-primary" />
+        <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center mb-2">
+          <Megaphone className="w-4 h-4 text-primary/40" />
         </div>
-        <p className="text-sm font-medium text-foreground mb-1">
-          Your Local Ad Space
-        </p>
-        <p className="text-xs text-muted-foreground max-w-[180px]">
-          Guaranteed to be your local businesses only
+        <p className="text-xs text-muted-foreground/70">
+          Ad Space
         </p>
       </div>
     );
@@ -58,14 +55,14 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
       ref={setAdRef}
       onClick={handleClick}
       className={`
-        bg-card border border-border rounded-lg overflow-hidden
-        cursor-pointer transition-all hover:shadow-md hover:border-primary/30
-        ${variant === "side" ? "min-h-[250px]" : ""}
+        bg-card/50 border border-border/40 rounded-md overflow-hidden
+        cursor-pointer transition-all hover:border-border hover:bg-card
+        ${variant === "side" ? "" : ""}
         ${className}
       `}
     >
       {ad.image_url ? (
-        <div className={`relative ${variant === "side" ? "h-32" : "h-24"} overflow-hidden`}>
+        <div className={`relative ${variant === "side" ? "h-20" : "h-20"} overflow-hidden`}>
           <img
             src={ad.image_url}
             alt={ad.title}
@@ -73,31 +70,31 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
           />
         </div>
       ) : (
-        <div className={`${variant === "side" ? "h-24" : "h-16"} bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center`}>
-          <Megaphone className="w-8 h-8 text-primary/50" />
+        <div className={`${variant === "side" ? "h-14" : "h-12"} bg-muted/50 flex items-center justify-center`}>
+          <Megaphone className="w-5 h-5 text-muted-foreground/30" />
         </div>
       )}
       
-      <div className="p-3">
-        <h4 className="font-medium text-sm text-foreground line-clamp-2 mb-1">
+      <div className="p-2">
+        <h4 className="font-medium text-xs text-foreground line-clamp-2 leading-tight">
           {ad.title}
         </h4>
-        {ad.description && (
-          <p className="text-xs text-muted-foreground line-clamp-2">
+        {ad.description && variant === "inline" && (
+          <p className="text-[10px] text-muted-foreground line-clamp-1 mt-0.5">
             {ad.description}
           </p>
         )}
         {ad.link_url && (
-          <div className="flex items-center gap-1 mt-2 text-xs text-primary">
+          <div className="flex items-center gap-0.5 mt-1 text-[10px] text-primary/70">
             <span>Learn more</span>
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="w-2.5 h-2.5" />
           </div>
         )}
       </div>
       
-      <div className="px-3 pb-2">
-        <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wide">
-          Sponsored
+      <div className="px-2 pb-1.5">
+        <span className="text-[9px] text-muted-foreground/50 uppercase tracking-wide">
+          Ad
         </span>
       </div>
     </div>
