@@ -39,7 +39,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     try {
       ipLoggedRef.current = true;
-      const { data, error } = await supabase.functions.invoke('log-ip');
+      
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const { data, error } = await supabase.functions.invoke('log-ip', {
+        body: {}
+      });
+      
+      clearTimeout(timeoutId);
+      
       if (error) {
         console.error('Failed to log IP:', error);
         return { ipBanned: false };
@@ -81,6 +91,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
+    // Safety timeout - ensure loading is set to false after 10 seconds max
+    const safetyTimeout = setTimeout(() => {
+      setLoading(false);
+    }, 10000);
+
     // Listen for auth changes - SYNC only, defer async work
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -103,13 +118,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (session?.user) {
         const wasBanned = await handleBanCheck(session.user.id);
-        if (wasBanned) return;
+        if (wasBanned) {
+          clearTimeout(safetyTimeout);
+          return;
+        }
       }
       
+      clearTimeout(safetyTimeout);
+      setLoading(false);
+    }).catch(() => {
+      clearTimeout(safetyTimeout);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(safetyTimeout);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string, location: string) => {
