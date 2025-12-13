@@ -24,6 +24,7 @@ interface SecureServiceResponse {
   provider_linkedin: string | null;
   provider_facebook: string | null;
   provider_instagram: string | null;
+  provider_verification_status: string | null;
 }
 
 export interface DatabaseService {
@@ -93,7 +94,7 @@ function transformSecureService(service: SecureServiceResponse): ServiceWithUser
       avatar: service.provider_avatar || undefined,
       rating: null,
       completedTrades: 0,
-      verificationStatus: "pending",
+      verificationStatus: (service.provider_verification_status as "verified" | "pending" | "unverified") || "unverified",
       linkedinUrl: service.provider_linkedin || undefined,
       facebookUrl: service.provider_facebook || undefined,
       instagramUrl: service.provider_instagram || undefined,
