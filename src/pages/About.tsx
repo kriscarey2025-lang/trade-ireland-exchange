@@ -63,7 +63,7 @@ export default function About() {
                     <img 
                       src="/src/assets/founder-kristina.png" 
                       alt="Kristina, founder of SkillSwap Ireland"
-                      className="w-full rounded-2xl shadow-lg object-cover aspect-[3/4]"
+                      className="w-full rounded-2xl shadow-lg object-cover aspect-[3/4] grayscale"
                     />
                     <div className="absolute -bottom-3 -right-3 bg-primary/10 rounded-2xl w-full h-full -z-10" />
                   </div>
