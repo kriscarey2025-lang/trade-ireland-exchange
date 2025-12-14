@@ -1,5 +1,8 @@
 project_id = "lporltdxjhouspwmmrjd"
 
+[functions.send-contact-email]
+verify_jwt = false
+
 [functions.skill-match]
 verify_jwt = false
 

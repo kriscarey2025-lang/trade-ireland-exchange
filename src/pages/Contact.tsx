@@ -18,16 +18,46 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Message sent!",
-      description: "Thank you for reaching out. We'll get back to you soon.",
-    });
-    
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      subject: formData.get("subject") as string,
+      message: formData.get("message") as string,
+    };
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. We'll get back to you soon.",
+      });
+      
+      (e.target as HTMLFormElement).reset();
+    } catch (error) {
+      console.error("Error sending contact form:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -63,21 +93,22 @@ export default function Contact() {
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
                         <Label htmlFor="name">Name</Label>
-                        <Input id="name" placeholder="Your name" required />
+                        <Input id="name" name="name" placeholder="Your name" required />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="your@email.com" required />
+                        <Input id="email" name="email" type="email" placeholder="your@email.com" required />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="subject">Subject</Label>
-                      <Input id="subject" placeholder="What's this about?" required />
+                      <Input id="subject" name="subject" placeholder="What's this about?" required />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="message">Message</Label>
                       <Textarea
                         id="message"
+                        name="message"
                         placeholder="Tell us what's on your mind..."
                         rows={5}
                         required
