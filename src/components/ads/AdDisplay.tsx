@@ -50,6 +50,57 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
     );
   }
 
+  // Inline variant: horizontal layout (image left, text right)
+  if (variant === "inline") {
+    return (
+      <div
+        ref={setAdRef}
+        onClick={handleClick}
+        className={`
+          bg-card/50 border border-border/40 rounded-lg overflow-hidden
+          cursor-pointer transition-all hover:border-border hover:bg-card
+          flex flex-row items-stretch w-full
+          ${className}
+        `}
+      >
+        {ad.image_url ? (
+          <div className="w-32 sm:w-40 flex-shrink-0 bg-muted/20 flex items-center justify-center">
+            <img
+              src={ad.image_url}
+              alt={ad.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <div className="w-32 sm:w-40 flex-shrink-0 bg-muted/50 flex items-center justify-center">
+            <Megaphone className="w-8 h-8 text-muted-foreground/30" />
+          </div>
+        )}
+        
+        <div className="flex-1 p-4 flex flex-col justify-center">
+          <h4 className="font-medium text-sm text-foreground line-clamp-2 leading-snug">
+            {ad.title}
+          </h4>
+          {ad.description && (
+            <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+              {ad.description}
+            </p>
+          )}
+          {ad.link_url && (
+            <div className="flex items-center gap-1 mt-2 text-xs text-primary">
+              <span>Learn more</span>
+              <ExternalLink className="w-3 h-3" />
+            </div>
+          )}
+          <span className="text-[10px] text-muted-foreground/50 uppercase tracking-wide mt-2">
+            Ad
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // Side variant: vertical layout (image top, text below)
   return (
     <div
       ref={setAdRef}
@@ -62,7 +113,7 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
       `}
     >
       {ad.image_url ? (
-        <div className={`relative overflow-hidden flex items-center justify-center ${variant === "side" ? "h-20" : "aspect-[3/2] max-h-32"}`}>
+        <div className="relative overflow-hidden flex items-center justify-center h-20">
           <img
             src={ad.image_url}
             alt={ad.title}
@@ -70,7 +121,7 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
           />
         </div>
       ) : (
-        <div className={`${variant === "side" ? "h-14" : "h-20"} bg-muted/50 flex items-center justify-center`}>
+        <div className="h-14 bg-muted/50 flex items-center justify-center">
           <Megaphone className="w-5 h-5 text-muted-foreground/30" />
         </div>
       )}
@@ -79,11 +130,6 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
         <h4 className="font-medium text-xs text-foreground line-clamp-2 leading-tight">
           {ad.title}
         </h4>
-        {ad.description && variant === "inline" && (
-          <p className="text-[10px] text-muted-foreground line-clamp-1 mt-0.5">
-            {ad.description}
-          </p>
-        )}
         {ad.link_url && (
           <div className="flex items-center gap-0.5 mt-1 text-[10px] text-primary/70">
             <span>Learn more</span>
