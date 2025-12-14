@@ -28,80 +28,132 @@ export default function Privacy() {
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Our Commitment to Your Privacy</h2>
                   <p className="text-muted-foreground">
-                    At Swap-Skills, we believe in transparency and respect for your personal data. 
-                    This policy explains what information we collect, how we use it, and your rights 
-                    under GDPR and Irish data protection law. We're committed to protecting your 
-                    privacy while helping you connect with your community.
+                    At Swap-Skills, we believe in transparency and respect for your personal data. This Privacy Policy explains what information we collect, how we use it, and your rights under the General Data Protection Regulation (GDPR) and Irish data protection law. We are committed to protecting your privacy while helping you connect with your community.
                   </p>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Who We Are</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Swap-Skills is operated by Swap Skills Limited, an Irish private limited company with a registered office in Ireland. Swap Skills Limited is the data controller for personal data collected through our website and applications.
+                  </p>
                   <p className="text-muted-foreground">
-                    Swap-Skills is operated by Kristina Carey, located at Sruth na Ghleanna, 
-                    Killeshin, Ireland. We are the data controller for information collected 
-                    through our platform.
+                    If you have any questions about this policy or how we handle your data, you can contact us at{' '}
+                    <a href="mailto:privacy@swap-skills.com" className="text-primary hover:underline">privacy@swap-skills.com</a>{' '}
+                    or via our <a href="/contact" className="text-primary hover:underline">Contact page</a>.
                   </p>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Information We Collect</h2>
+                  <h3 className="text-xl font-medium mb-3">Information you provide directly</h3>
                   <p className="text-muted-foreground mb-3">
-                    We collect information you provide directly:
+                    We collect information you choose to provide, including:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
                     <li><strong>Account information:</strong> Name, email address, and password when you register</li>
                     <li><strong>Profile information:</strong> Location, bio, phone number (optional), and profile photo</li>
                     <li><strong>Listings:</strong> Details about skills and services you offer</li>
-                    <li><strong>Messages:</strong> Communications with other users through our platform</li>
+                    <li><strong>Messages:</strong> Communications you send to other users through the platform</li>
                   </ul>
+                  <h3 className="text-xl font-medium mb-3">Information collected automatically</h3>
                   <p className="text-muted-foreground mb-3">
-                    We also collect some information automatically:
+                    When you use Swap-Skills, we may also collect:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                     <li>Device and browser information</li>
                     <li>IP address and general location</li>
-                    <li>How you use our platform (pages visited, features used)</li>
+                    <li>Usage data such as pages visited and features used</li>
                   </ul>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">How We Use Your Information</h2>
                   <p className="text-muted-foreground mb-3">
-                    We use your information to:
+                    We use your personal data to:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                    <li>Provide and improve our service</li>
-                    <li>Enable you to connect with other users</li>
-                    <li>Send important updates about your account</li>
-                    <li>Respond to your questions and requests</li>
-                    <li>Ensure platform safety and prevent abuse</li>
-                    <li>Comply with legal obligations</li>
+                    <li>Provide, operate, and improve the Swap-Skills platform</li>
+                    <li>Enable you to connect and communicate with other users</li>
+                    <li>Manage your account and send important service-related updates</li>
+                    <li>Respond to your questions and support requests</li>
+                    <li>Maintain platform safety, security, and prevent misuse</li>
+                    <li>Display listings and advertisements within the platform</li>
+                    <li>Comply with legal and regulatory obligations</li>
                   </ul>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Legal Basis for Processing</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Under GDPR, we process personal data based on one or more of the following lawful bases:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                    <li><strong>Contractual necessity:</strong> To provide the Swap-Skills service</li>
+                    <li><strong>Consent:</strong> For optional profile information and certain communications</li>
+                    <li><strong>Legitimate interests:</strong> To operate, improve, and secure our platform</li>
+                    <li><strong>Legal obligations:</strong> Where required by law</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-semibold mb-4">Advertising and Analytics</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Swap-Skills may display advertisements, listings, or promotions from local businesses or community members, including free or trial advertising periods.
+                  </p>
+                  <p className="text-muted-foreground mb-3">
+                    We may also use analytics tools to understand how users interact with the platform so we can improve functionality and user experience. These tools may collect aggregated usage data such as page views, device type, and interaction patterns.
+                  </p>
                   <p className="text-muted-foreground">
-                    Under GDPR, we process your data based on: your consent (for optional profile 
-                    information), contractual necessity (to provide our service), legitimate 
-                    interests (to improve and secure our platform), and legal obligations 
-                    (when required by law).
+                    We do not sell your personal data to third parties.
                   </p>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Sharing Your Information</h2>
                   <p className="text-muted-foreground mb-3">
-                    We share your information only:
+                    We share your information only in the following circumstances:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                    <li><strong>With other users:</strong> Your profile and listings are visible to other members. Contact details are only shared when you choose to share them.</li>
-                    <li><strong>With service providers:</strong> We use trusted third-party services to host our platform and provide functionality.</li>
-                    <li><strong>When required by law:</strong> We may disclose information to comply with legal obligations.</li>
+                    <li><strong>With other users:</strong> Information you choose to include in your profile or listings may be visible to other members. Contact details are shared only when you choose to share them.</li>
+                    <li><strong>With service providers:</strong> Trusted third-party providers who help us operate and maintain the platform (such as hosting and infrastructure services).</li>
+                    <li><strong>Legal requirements:</strong> Where disclosure is required to comply with legal obligations or enforce our terms.</li>
                   </ul>
-                  <p className="text-muted-foreground mt-3">
-                    We never sell your personal data to third parties.
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-semibold mb-4">Cookies</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Swap-Skills uses cookies and similar technologies to:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-3">
+                    <li>Operate the platform</li>
+                    <li>Keep users logged in</li>
+                    <li>Understand how the service is used</li>
+                  </ul>
+                  <p className="text-muted-foreground">
+                    You can control or disable cookies through your browser settings. Please note that some features may not function correctly without cookies.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-semibold mb-4">International Data Transfers</h2>
+                  <p className="text-muted-foreground">
+                    Some of our service providers may process personal data outside the European Economic Area (EEA). Where this occurs, we ensure appropriate safeguards are in place in accordance with GDPR requirements.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-semibold mb-4">Data Retention</h2>
+                  <p className="text-muted-foreground">
+                    We retain personal data for as long as your account remains active. If you delete your account, we will remove or anonymise your personal data within 30 days, unless we are required to retain certain information for legal or regulatory purposes.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-semibold mb-4">Data Security</h2>
+                  <p className="text-muted-foreground">
+                    We take reasonable technical and organisational measures to protect your personal data, including encryption, secure servers, and access controls. However, no system is completely secure, and we encourage you to use strong passwords and protect your login details.
                   </p>
                 </section>
 
@@ -111,54 +163,37 @@ export default function Privacy() {
                     Under GDPR, you have the right to:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                    <li><strong>Access:</strong> Request a copy of your personal data</li>
-                    <li><strong>Rectification:</strong> Correct inaccurate data</li>
-                    <li><strong>Erasure:</strong> Request deletion of your data</li>
-                    <li><strong>Portability:</strong> Receive your data in a portable format</li>
-                    <li><strong>Object:</strong> Object to certain processing</li>
-                    <li><strong>Withdraw consent:</strong> Where processing is based on consent</li>
+                    <li>Access your personal data</li>
+                    <li>Rectify inaccurate or incomplete data</li>
+                    <li>Erase your personal data in certain circumstances</li>
+                    <li>Restrict or object to certain processing</li>
+                    <li>Data portability</li>
+                    <li>Withdraw consent where processing is based on consent</li>
                   </ul>
                   <p className="text-muted-foreground mt-3">
-                    To exercise these rights, please contact us through our 
-                    <a href="/contact" className="text-primary hover:underline ml-1">Contact page</a>.
+                    To exercise these rights, please contact us at{' '}
+                    <a href="mailto:privacy@swap-skills.com" className="text-primary hover:underline">privacy@swap-skills.com</a>.
                   </p>
-                </section>
-
-                <section>
-                  <h2 className="text-2xl font-semibold mb-4">Data Retention</h2>
-                  <p className="text-muted-foreground">
-                    We keep your data for as long as your account is active. If you delete your 
-                    account, we'll remove your personal data within 30 days, except where we're 
-                    required to keep it for legal purposes.
-                  </p>
-                </section>
-
-                <section>
-                  <h2 className="text-2xl font-semibold mb-4">Data Security</h2>
-                  <p className="text-muted-foreground">
-                    We take reasonable measures to protect your data, including encryption, 
-                    secure servers, and access controls. However, no system is 100% secure, 
-                    so we encourage you to use strong passwords and keep your login details safe.
+                  <p className="text-muted-foreground mt-2">
+                    You also have the right to lodge a complaint with the Irish Data Protection Commission (
+                    <a href="https://www.dataprotection.ie" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">www.dataprotection.ie</a>
+                    ).
                   </p>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Changes to This Policy</h2>
                   <p className="text-muted-foreground">
-                    We may update this policy from time to time. We'll notify you of significant 
-                    changes through the platform or by email.
+                    We may update this Privacy Policy from time to time. We will notify users of significant changes through the platform or by email. Continued use of the service after changes take effect constitutes acceptance of the updated policy.
                   </p>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
                   <p className="text-muted-foreground">
-                    For privacy-related questions or to exercise your rights, please contact us 
-                    through our <a href="/contact" className="text-primary hover:underline">Contact page</a>.
-                  </p>
-                  <p className="text-muted-foreground mt-2">
-                    You also have the right to lodge a complaint with the Irish Data Protection 
-                    Commission (www.dataprotection.ie) if you're unhappy with how we handle your data.
+                    For privacy-related questions or to exercise your data protection rights, please contact us at{' '}
+                    <a href="mailto:hello@swap-skills.com" className="text-primary hover:underline">hello@swap-skills.com</a>{' '}
+                    or via the <a href="/contact" className="text-primary hover:underline">Contact page</a> on our website.
                   </p>
                 </section>
               </div>
