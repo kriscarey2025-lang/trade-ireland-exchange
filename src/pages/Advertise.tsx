@@ -101,7 +101,23 @@ export default function Advertise() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.functions.invoke("send-contact-email", {
+      // Store in database
+      const { error: dbError } = await supabase
+        .from("advertiser_interests")
+        .insert({
+          business_name: result.data.businessName,
+          contact_name: result.data.contactName,
+          email: result.data.email,
+          phone: result.data.phone || null,
+          location: result.data.location,
+          website: result.data.website || null,
+          message: result.data.message || null,
+        });
+
+      if (dbError) throw dbError;
+
+      // Also send email notification
+      await supabase.functions.invoke("send-contact-email", {
         body: {
           name: result.data.contactName,
           email: result.data.email,
@@ -121,8 +137,6 @@ Terms Accepted: Yes
           `.trim(),
         },
       });
-
-      if (error) throw error;
 
       setIsSubmitted(true);
       toast({
