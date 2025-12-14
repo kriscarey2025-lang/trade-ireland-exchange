@@ -14,7 +14,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                 <span className="text-lg">🤝</span>
               </div>
               <span>
-                Skill<span className="text-primary">Swap</span>
+                Swap<span className="text-primary">Skills</span>
               </span>
             </Link>
             <p className="text-sm text-muted-foreground">
