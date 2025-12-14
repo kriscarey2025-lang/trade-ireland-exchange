@@ -57,7 +57,7 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
       className={`
         bg-card/50 border border-border/40 rounded-md overflow-hidden
         cursor-pointer transition-all hover:border-border hover:bg-card
-        ${variant === "side" ? "" : ""}
+        w-full
         ${className}
       `}
     >
