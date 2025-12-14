@@ -15,6 +15,7 @@ export const categoryLabels: Record<ServiceCategory, string> = {
   crafts: "Arts & Crafts",
   music: "Music & Entertainment",
   photography: "Photography & Video",
+  holistic_wellness: "Holistic Wellness",
   other: "Other",
 };
 
@@ -33,6 +34,7 @@ export const categoryIcons: Record<ServiceCategory, string> = {
   crafts: "🎨",
   music: "🎵",
   photography: "📷",
+  holistic_wellness: "🧘",
   other: "✨",
 };
 
