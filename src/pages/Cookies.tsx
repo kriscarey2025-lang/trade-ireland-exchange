@@ -6,17 +6,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const cookieTypes = [
   {
     name: "Essential Cookies",
-    description: "These cookies are necessary for the website to function properly. They enable basic features like page navigation, secure login, and remembering your preferences. You cannot opt out of these cookies.",
+    description: "These cookies are necessary for the website and platform to function properly. They enable core features such as secure login, session management, and security. These cookies cannot be disabled, as the service would not function correctly without them.",
     examples: ["Session cookies", "Authentication cookies", "Security cookies"],
   },
   {
     name: "Functional Cookies",
-    description: "These cookies help us remember your choices and provide enhanced features. For example, remembering your location preference or how you've customised the site.",
-    examples: ["Preference cookies", "Language settings"],
+    description: "Functional cookies allow the website to remember choices you make and provide enhanced features and a more personalised experience.",
+    examples: ["Preference settings", "Language or location selections"],
   },
   {
     name: "Analytics Cookies",
-    description: "These cookies help us understand how visitors use our website. They collect anonymous information about page visits and user behaviour, helping us improve our service.",
+    description: "Analytics cookies help us understand how users interact with the platform by collecting aggregated information such as page visits, feature usage, and general interaction patterns. This information helps us improve the service. Where required by law, analytics cookies are used only with your consent.",
     examples: ["Page view tracking", "Feature usage statistics"],
   },
 ];
@@ -46,19 +46,28 @@ export default function Cookies() {
               <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">What Are Cookies?</h2>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground mb-3">
                     Cookies are small text files that are placed on your device when you visit 
-                    a website. They're widely used to make websites work more efficiently and 
-                    provide a better user experience. This policy explains how Swap-Skills uses 
-                    cookies and similar technologies.
+                    a website. They are widely used to make websites work efficiently, improve 
+                    user experience, and provide information to website operators.
+                  </p>
+                  <p className="text-muted-foreground">
+                    This Cookie Policy explains how Swap-Skills uses cookies and similar technologies.
                   </p>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Who We Are</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Swap-Skills is operated by Swap Skills Limited, an Irish private limited 
+                    company with a registered office in Ireland.
+                  </p>
                   <p className="text-muted-foreground">
-                    Swap-Skills is operated by Kristina Carey, located at Sruth na Ghleanna, 
-                    Killeshin, Ireland. We use cookies to provide and improve our service.
+                    If you have any questions about our use of cookies, you can contact us at{" "}
+                    <a href="mailto:privacy@swap-skills.com" className="text-primary hover:underline">
+                      privacy@swap-skills.com
+                    </a>{" "}
+                    or via our <a href="/contact" className="text-primary hover:underline">Contact page</a>.
                   </p>
                 </section>
 
@@ -83,26 +92,30 @@ export default function Cookies() {
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Third-Party Cookies</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Some third-party services we use to operate the platform may place their 
+                    own cookies on your device. These may include hosting, analytics, or 
+                    authentication providers.
+                  </p>
                   <p className="text-muted-foreground">
-                    We use some third-party services that may set their own cookies. These include 
-                    our hosting provider and authentication service. These third parties have their 
-                    own privacy policies governing how they use this information.
+                    These third parties process data in accordance with their own privacy and 
+                    cookie policies. We do not control these cookies directly.
                   </p>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Managing Cookies</h2>
                   <p className="text-muted-foreground mb-3">
-                    You can control cookies through your browser settings. Most browsers allow you to:
+                    You can control or delete cookies through your browser settings. Most browsers allow you to:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                    <li>View what cookies are stored on your device</li>
+                    <li>View which cookies are stored on your device</li>
                     <li>Delete all or specific cookies</li>
-                    <li>Block all cookies or cookies from specific sites</li>
-                    <li>Set preferences for certain types of cookies</li>
+                    <li>Block all cookies or cookies from certain websites</li>
+                    <li>Set preferences for different types of cookies</li>
                   </ul>
                   <p className="text-muted-foreground mt-3">
-                    Please note that blocking essential cookies may affect how the website functions.
+                    Please note that disabling essential cookies may affect how the website and platform function.
                   </p>
                 </section>
 
@@ -117,25 +130,32 @@ export default function Cookies() {
                 </section>
 
                 <section>
+                  <h2 className="text-2xl font-semibold mb-4">International Data Transfers</h2>
+                  <p className="text-muted-foreground">
+                    Some third-party service providers may process cookie-related data outside 
+                    the European Economic Area (EEA). Where this occurs, we ensure appropriate 
+                    safeguards are in place in accordance with applicable data protection laws.
+                  </p>
+                </section>
+
+                <section>
                   <h2 className="text-2xl font-semibold mb-4">Updates to This Policy</h2>
                   <p className="text-muted-foreground">
                     We may update this Cookie Policy from time to time to reflect changes in 
-                    technology or legislation. Any updates will be posted on this page.
+                    technology, legislation, or how we use cookies. Any updates will be posted 
+                    on this page with a revised "Last updated" date.
                   </p>
                 </section>
 
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">Questions?</h2>
                   <p className="text-muted-foreground">
-                    If you have any questions about our use of cookies, please contact us through 
-                    our <a href="/contact" className="text-primary hover:underline">Contact page</a>.
-                  </p>
-                </section>
-
-                <section className="pt-8 border-t border-border">
-                  <p className="text-muted-foreground text-sm">
-                    By continuing to use Swap-Skills, you consent to our use of cookies as 
-                    described in this policy. Thank you for being part of our community! 🍪
+                    If you have any questions about this Cookie Policy or our use of cookies, 
+                    please contact us at{" "}
+                    <a href="mailto:hello@swap-skills.com" className="text-primary hover:underline">
+                      hello@swap-skills.com
+                    </a>{" "}
+                    or via our <a href="/contact" className="text-primary hover:underline">Contact page</a>.
                   </p>
                 </section>
               </div>
