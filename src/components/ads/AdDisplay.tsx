@@ -62,11 +62,11 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
       `}
     >
       {ad.image_url ? (
-        <div className={`relative overflow-hidden ${variant === "side" ? "h-20" : "aspect-[3/2] max-h-32"}`}>
+        <div className={`relative overflow-hidden flex items-center justify-center ${variant === "side" ? "h-20" : "aspect-[3/2] max-h-32"}`}>
           <img
             src={ad.image_url}
             alt={ad.title}
-            className="w-full h-full object-contain bg-muted/20"
+            className="max-w-full max-h-full object-contain bg-muted/20"
           />
         </div>
       ) : (
