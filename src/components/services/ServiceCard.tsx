@@ -89,9 +89,9 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
           {/* User */}
           {service.user && (
             <div className="flex items-center gap-3 pt-4 border-t border-border">
-              <Avatar className="h-10 w-10 ring-2 ring-background shadow-md">
-                <AvatarImage src={service.user.avatar} alt={service.user.name} />
-                <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+              <Avatar className="h-12 w-12 ring-2 ring-background shadow-md">
+                <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover" />
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-base">
                   {service.user.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
