@@ -93,6 +93,7 @@ export type Database = {
       ads: {
         Row: {
           advertiser_id: string
+          approved: boolean | null
           created_at: string
           description: string | null
           ends_at: string | null
@@ -107,6 +108,7 @@ export type Database = {
         }
         Insert: {
           advertiser_id: string
+          approved?: boolean | null
           created_at?: string
           description?: string | null
           ends_at?: string | null
@@ -121,6 +123,7 @@ export type Database = {
         }
         Update: {
           advertiser_id?: string
+          approved?: boolean | null
           created_at?: string
           description?: string | null
           ends_at?: string | null

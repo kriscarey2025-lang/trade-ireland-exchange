@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone, Eye, MousePointer, BarChart3, CalendarIcon } from "lucide-react";
+import { Plus, Building2, Mail, Phone, Globe, MapPin, Megaphone, Eye, MousePointer, BarChart3, CalendarIcon, CheckCircle, XCircle, Clock, FileText } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AdImageUpload } from "@/components/ads/AdImageUpload";
 import { AdAnalyticsDashboard } from "@/components/ads/AdAnalyticsDashboard";
@@ -51,8 +51,23 @@ interface Ad {
   link_url: string | null;
   placement: string;
   is_active: boolean;
+  approved: boolean;
   starts_at: string | null;
   ends_at: string | null;
+}
+
+interface AdvertiserInterest {
+  id: string;
+  business_name: string;
+  contact_name: string;
+  email: string;
+  phone: string | null;
+  location: string;
+  website: string | null;
+  message: string | null;
+  status: string;
+  admin_notes: string | null;
+  created_at: string;
 }
 
 interface AdStats {
@@ -122,6 +137,21 @@ const AdminAdvertisers = () => {
       return data as Ad[];
     },
     enabled: !!selectedAdvertiser,
+  });
+
+  // Fetch advertiser interest submissions
+  const { data: advertiserInterests, isLoading: interestsLoading } = useQuery({
+    queryKey: ["advertiserInterests"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("advertiser_interests")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      if (error) throw error;
+      return data as AdvertiserInterest[];
+    },
+    enabled: isAdmin === true,
   });
 
   // Fetch ad stats (impressions and clicks)
@@ -268,6 +298,41 @@ const AdminAdvertisers = () => {
     },
   });
 
+  // Toggle ad approval status
+  const toggleAdApproval = useMutation({
+    mutationFn: async ({ id, approved }: { id: string; approved: boolean }) => {
+      const { error } = await supabase
+        .from("ads")
+        .update({ approved })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ads", selectedAdvertiser?.id] });
+      toast.success(toggleAdApproval.variables?.approved ? "Ad approved" : "Ad approval revoked");
+    },
+  });
+
+  // Update advertiser interest status
+  const updateInterestStatus = useMutation({
+    mutationFn: async ({ id, status, admin_notes }: { id: string; status: string; admin_notes?: string }) => {
+      const { error } = await supabase
+        .from("advertiser_interests")
+        .update({ 
+          status, 
+          admin_notes: admin_notes || null,
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: user?.id 
+        })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["advertiserInterests"] });
+      toast.success("Interest status updated");
+    },
+  });
+
   if (loading || isAdminLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -293,6 +358,15 @@ const AdminAdvertisers = () => {
 
         <Tabs defaultValue="manage" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="requests" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Requests
+              {advertiserInterests?.filter(i => i.status === 'pending').length ? (
+                <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                  {advertiserInterests.filter(i => i.status === 'pending').length}
+                </Badge>
+              ) : null}
+            </TabsTrigger>
             <TabsTrigger value="manage" className="flex items-center gap-2">
               <Building2 className="h-4 w-4" />
               Manage
@@ -302,6 +376,103 @@ const AdminAdvertisers = () => {
               Analytics
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="requests">
+            <Card>
+              <CardHeader>
+                <CardTitle>Advertiser Interest Requests</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {interestsLoading ? (
+                  <div className="text-muted-foreground">Loading requests...</div>
+                ) : advertiserInterests?.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No advertiser interest requests yet.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {advertiserInterests?.map((interest) => (
+                      <Card key={interest.id} className="border">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="font-semibold">{interest.business_name}</h3>
+                                <Badge 
+                                  variant={
+                                    interest.status === 'pending' ? 'secondary' : 
+                                    interest.status === 'approved' ? 'default' : 'destructive'
+                                  }
+                                >
+                                  {interest.status === 'pending' && <Clock className="h-3 w-3 mr-1" />}
+                                  {interest.status === 'approved' && <CheckCircle className="h-3 w-3 mr-1" />}
+                                  {interest.status === 'rejected' && <XCircle className="h-3 w-3 mr-1" />}
+                                  {interest.status}
+                                </Badge>
+                              </div>
+                              <div className="text-sm text-muted-foreground space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium">Contact:</span> {interest.contact_name}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Mail className="h-3 w-3" /> {interest.email}
+                                </div>
+                                {interest.phone && (
+                                  <div className="flex items-center gap-2">
+                                    <Phone className="h-3 w-3" /> {interest.phone}
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-2">
+                                  <MapPin className="h-3 w-3" /> {interest.location}
+                                </div>
+                                {interest.website && (
+                                  <div className="flex items-center gap-2">
+                                    <Globe className="h-3 w-3" /> 
+                                    <a href={interest.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                                      {interest.website}
+                                    </a>
+                                  </div>
+                                )}
+                                {interest.message && (
+                                  <div className="mt-2 p-2 bg-muted rounded text-sm">
+                                    {interest.message}
+                                  </div>
+                                )}
+                                <div className="text-xs text-muted-foreground mt-2">
+                                  Submitted: {new Date(interest.created_at).toLocaleDateString()}
+                                </div>
+                              </div>
+                            </div>
+                            {interest.status === 'pending' && (
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  onClick={() => updateInterestStatus.mutate({ id: interest.id, status: 'approved' })}
+                                  disabled={updateInterestStatus.isPending}
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => updateInterestStatus.mutate({ id: interest.id, status: 'rejected' })}
+                                  disabled={updateInterestStatus.isPending}
+                                >
+                                  <XCircle className="h-4 w-4 mr-1" />
+                                  Reject
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="analytics">
             <AdAnalyticsDashboard advertisers={advertisers} />
@@ -659,16 +830,39 @@ const AdminAdvertisers = () => {
                             })()}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={ad.is_active ? "default" : "secondary"}>
-                            {ad.is_active ? "Active" : "Inactive"}
-                          </Badge>
-                          <Switch
-                            checked={ad.is_active ?? false}
-                            onCheckedChange={(checked) =>
-                              toggleAdStatus.mutate({ id: ad.id, is_active: checked })
-                            }
-                          />
+                        <div className="flex flex-col items-end gap-2">
+                          <div className="flex items-center gap-2">
+                            <Badge variant={ad.approved ? "default" : "secondary"}>
+                              {ad.approved ? (
+                                <>
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  Approved
+                                </>
+                              ) : (
+                                <>
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  Pending
+                                </>
+                              )}
+                            </Badge>
+                            <Button
+                              size="sm"
+                              variant={ad.approved ? "outline" : "default"}
+                              onClick={() => toggleAdApproval.mutate({ id: ad.id, approved: !ad.approved })}
+                              disabled={toggleAdApproval.isPending}
+                            >
+                              {ad.approved ? "Revoke" : "Approve"}
+                            </Button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">Active:</span>
+                            <Switch
+                              checked={ad.is_active ?? false}
+                              onCheckedChange={(checked) =>
+                                toggleAdStatus.mutate({ id: ad.id, is_active: checked })
+                              }
+                            />
+                          </div>
                         </div>
                       </div>
                     </CardContent>
