@@ -111,11 +111,20 @@ export function OnboardingQuestionnaire() {
     setCustomWanted(customWanted.filter(s => s !== skill));
   };
 
-  const handleTermsSubmit = () => {
+  const handleTermsSubmit = async () => {
     if (!agreedToTerms || !agreedToDisclaimer || !agreedToConduct) {
       toast.error("Please agree to all required conditions to continue");
       return;
     }
+    
+    // Record T&C acceptance timestamp for compliance
+    if (user) {
+      await supabase
+        .from("user_preferences")
+        .update({ terms_accepted_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
+    
     setCurrentStep("profile");
   };
 

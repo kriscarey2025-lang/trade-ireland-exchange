@@ -693,6 +693,7 @@ export type Database = {
           skills_offered_custom: string[] | null
           skills_wanted: string[] | null
           skills_wanted_custom: string[] | null
+          terms_accepted_at: string | null
           updated_at: string
           user_id: string
         }
@@ -705,6 +706,7 @@ export type Database = {
           skills_offered_custom?: string[] | null
           skills_wanted?: string[] | null
           skills_wanted_custom?: string[] | null
+          terms_accepted_at?: string | null
           updated_at?: string
           user_id: string
         }
@@ -717,6 +719,7 @@ export type Database = {
           skills_offered_custom?: string[] | null
           skills_wanted?: string[] | null
           skills_wanted_custom?: string[] | null
+          terms_accepted_at?: string | null
           updated_at?: string
           user_id?: string
         }
