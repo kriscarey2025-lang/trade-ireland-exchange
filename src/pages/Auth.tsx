@@ -199,7 +199,7 @@ export default function Auth() {
               <div className="mx-auto w-12 h-12 rounded-xl bg-gradient-hero flex items-center justify-center text-2xl mb-4">
                 🤝
               </div>
-              <CardTitle className="text-2xl">Welcome to SkillSwap</CardTitle>
+              <CardTitle className="text-2xl">Welcome to SwapSkills</CardTitle>
               <CardDescription>
                 Trade skills with your Irish neighbours
               </CardDescription>
@@ -465,7 +465,7 @@ export default function Auth() {
                           className="mt-0.5"
                         />
                         <Label htmlFor="disclaimer" className="text-sm leading-tight font-normal">
-                          I understand that SkillSwap is not responsible for the content of services listed or for my personal safety when meeting other users
+                          I understand that SwapSkills is not responsible for the content of services listed or for my personal safety when meeting other users
                         </Label>
                       </div>
 

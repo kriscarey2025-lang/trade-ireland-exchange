@@ -12,7 +12,7 @@ const values = [
     icon: Heart,
     title: "Community First",
     description:
-      "We believe in the power of communities helping each other. SkillSwap brings neighbours together.",
+      "We believe in the power of communities helping each other. SwapSkills brings neighbours together.",
   },
   {
     icon: Users,
@@ -51,7 +51,7 @@ export default function About() {
           <div className="container">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                About SkillSwap Ireland
+                About SwapSkills Ireland
               </h1>
               <p className="text-lg text-muted-foreground">
                 We're building Ireland's first community-driven platform for trading skills and services 
@@ -115,7 +115,7 @@ export default function About() {
                   <div className="relative">
                     <img 
                       src={founderImage} 
-                      alt="Kristina, founder of SkillSwap Ireland"
+                      alt="Kristina, founder of SwapSkills Ireland"
                       className="w-full rounded-2xl shadow-lg object-cover aspect-[3/4] grayscale"
                     />
                     <div className="absolute -bottom-3 -right-3 bg-primary/10 rounded-2xl w-full h-full -z-10" />
@@ -126,7 +126,7 @@ export default function About() {
                 </div>
                 <div className="md:w-2/3 prose prose-lg text-muted-foreground">
                   <p>
-                    SkillSwap was born from a simple observation: everyone has skills to offer, 
+                    SwapSkills was born from a simple observation: everyone has skills to offer, 
                     but not everyone has money to spare. In communities across Ireland, we saw 
                     talented people who could help each other — if only they had a way to connect.
                   </p>
@@ -136,7 +136,7 @@ export default function About() {
                     create the connections.
                   </p>
                   <p>
-                    That's why we built SkillSwap — a platform where you can trade what you're 
+                    That's why we built SwapSkills — a platform where you can trade what you're 
                     good at for what you need. No money changes hands. Just skills, time, and 
                     the satisfaction of helping your neighbours.
                   </p>
@@ -152,7 +152,7 @@ export default function About() {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Our Values</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                The principles that guide everything we do at SkillSwap.
+                The principles that guide everything we do at SwapSkills.
               </p>
             </div>
 

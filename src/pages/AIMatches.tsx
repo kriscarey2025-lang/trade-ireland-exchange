@@ -48,7 +48,7 @@ export default function AIMatches() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <SEO 
-          title="AI Skill Matching - SkillSwap Ireland"
+          title="AI Skill Matching - SwapSkills Ireland"
           description="Get AI-powered skill match suggestions to find the perfect swap partners."
         />
         <Header />
@@ -74,7 +74,7 @@ export default function AIMatches() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEO 
-        title="AI Skill Matching - SkillSwap Ireland"
+        title="AI Skill Matching - SwapSkills Ireland"
         description="Get AI-powered skill match suggestions to find the perfect swap partners."
       />
       <Header />
