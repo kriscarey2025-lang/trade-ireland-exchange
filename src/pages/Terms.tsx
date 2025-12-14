@@ -107,7 +107,26 @@ export default function Terms() {
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">7. Your Content</h2>
+                  <h2 className="text-2xl font-semibold mb-4">7. AI-Assisted Matching</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Swap-Skills uses automated tools, including AI-assisted matching, to help suggest 
+                    potential connections, skills, or listings that may be relevant to users based on 
+                    information they provide and their activity on the platform.
+                  </p>
+                  <p className="text-muted-foreground mb-3">
+                    These suggestions are provided for convenience only. They do not constitute 
+                    endorsements, guarantees, or verification of users, skills, or outcomes. Users 
+                    remain solely responsible for deciding whether to connect, communicate, or proceed 
+                    with any exchange.
+                  </p>
+                  <p className="text-muted-foreground">
+                    Swap-Skills does not independently verify matches and does not make decisions on 
+                    behalf of users.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-semibold mb-4">8. Your Content</h2>
                   <p className="text-muted-foreground mb-3">
                     When you post content on Swap-Skills (including listings, messages, and profile 
                     information), you retain ownership of your content. However, you grant us a 
@@ -120,7 +139,7 @@ export default function Terms() {
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">8. Limitation of Liability</h2>
+                  <h2 className="text-2xl font-semibold mb-4">9. Limitation of Liability</h2>
                   <p className="text-muted-foreground mb-3">
                     Swap-Skills is provided on an "as is" and "as available" basis, without 
                     warranties of any kind.
@@ -136,7 +155,7 @@ export default function Terms() {
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">9. Changes to These Terms</h2>
+                  <h2 className="text-2xl font-semibold mb-4">10. Changes to These Terms</h2>
                   <p className="text-muted-foreground">
                     We may update these Terms from time to time. We will notify users of significant 
                     changes through the platform or by email. Continued use of the platform after 
@@ -145,7 +164,7 @@ export default function Terms() {
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">10. Contact Us</h2>
+                  <h2 className="text-2xl font-semibold mb-4">11. Contact Us</h2>
                   <p className="text-muted-foreground">
                     If you have questions about these Terms, please contact us through the
                     <a href="/contact" className="text-primary hover:underline ml-1">Contact page</a> on our website.
