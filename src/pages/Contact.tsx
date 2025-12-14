@@ -27,6 +27,7 @@ export default function Contact() {
     };
 
     try {
+      // Send to backend email function
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
         {
@@ -41,6 +42,31 @@ export default function Contact() {
       if (!response.ok) {
         throw new Error("Failed to send message");
       }
+
+      // Track form submission in HubSpot
+      const _hsq = (window as any)._hsq = (window as any)._hsq || [];
+      
+      // Identify the contact
+      _hsq.push(["identify", {
+        email: data.email,
+        firstname: data.name.split(' ')[0],
+        lastname: data.name.split(' ').slice(1).join(' ') || '',
+      }]);
+      
+      // Track the form submission event
+      _hsq.push(["trackCustomBehavioralEvent", {
+        name: "pe20561907_contact_form_submission",
+        properties: {
+          subject: data.subject,
+          message: data.message,
+        }
+      }]);
+
+      // Also push a standard event
+      _hsq.push(["trackEvent", {
+        id: "Contact Form Submission",
+        value: null
+      }]);
 
       toast({
         title: "Message sent!",
