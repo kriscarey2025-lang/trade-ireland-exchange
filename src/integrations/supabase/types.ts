@@ -143,6 +143,57 @@ export type Database = {
           },
         ]
       }
+      advertiser_interests: {
+        Row: {
+          admin_notes: string | null
+          business_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          location: string
+          message: string | null
+          phone: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          business_name: string
+          contact_name: string
+          created_at?: string
+          email: string
+          id?: string
+          location: string
+          message?: string | null
+          phone?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          business_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          location?: string
+          message?: string | null
+          phone?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       advertisers: {
         Row: {
           business_email: string
