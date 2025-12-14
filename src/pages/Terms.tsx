@@ -29,9 +29,9 @@ export default function Terms() {
                   <h2 className="text-2xl font-semibold mb-4">1. Welcome to Swap-Skills</h2>
                   <p className="text-muted-foreground">
                     These Terms of Service ("Terms") govern your use of the Swap-Skills platform 
-                    operated by Kristina Carey ("we", "us", "our") located at Sruth na Ghleanna, 
-                    Killeshin, Ireland. By accessing or using our service, you agree to be bound 
-                    by these Terms.
+                    operated by Swap Skills Limited ("we", "us", "our"), an Irish private limited 
+                    company with a registered office in Ireland. By accessing or using our website 
+                    or application, you agree to be bound by these Terms.
                   </p>
                 </section>
 
@@ -39,9 +39,10 @@ export default function Terms() {
                   <h2 className="text-2xl font-semibold mb-4">2. What We Offer</h2>
                   <p className="text-muted-foreground">
                     Swap-Skills is a platform that connects people who want to exchange skills 
-                    and services with their neighbours. We provide the technology and space for 
-                    you to find and connect with others, but we are not a party to any agreements 
-                    you make with other users.
+                    and services with their neighbours and local community. We provide the technology 
+                    and space for users to find and connect with others, but we are not a party to 
+                    any agreements, arrangements, or interactions made between users, or between 
+                    users and advertisers.
                   </p>
                 </section>
 
@@ -61,7 +62,8 @@ export default function Terms() {
                 <section>
                   <h2 className="text-2xl font-semibold mb-4">4. Community Guidelines</h2>
                   <p className="text-muted-foreground mb-3">
-                    We're building a community based on trust and mutual respect. You agree to:
+                    We are building a community based on trust and mutual respect. By using 
+                    Swap-Skills, you agree to:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                     <li>Treat all members with respect and courtesy</li>
@@ -70,61 +72,83 @@ export default function Terms() {
                     <li>Not use the platform for illegal activities</li>
                     <li>Not harass, abuse, or harm other users</li>
                     <li>Not post false, misleading, or offensive content</li>
-                    <li>Not attempt to circumvent any platform features or security measures</li>
+                    <li>Not attempt to circumvent platform features or security measures</li>
                   </ul>
+                  <p className="text-muted-foreground mt-3">
+                    We reserve the right to remove content or suspend accounts that breach these guidelines.
+                  </p>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">5. Your Swaps</h2>
+                  <h2 className="text-2xl font-semibold mb-4">5. Your Swaps and Interactions</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Any arrangements you make with other users are solely between you and them. 
+                    Swap-Skills does not verify users, supervise exchanges, or guarantee outcomes.
+                  </p>
                   <p className="text-muted-foreground">
-                    Any arrangements you make with other users are between you and them. 
-                    We encourage you to discuss all details clearly before meeting, start 
-                    with smaller swaps to build trust, and use our Safety Guidelines. 
-                    We are not responsible for the quality, safety, or legality of services 
+                    You understand and agree that you are solely responsible for your interactions, 
+                    exchanges, and any outcomes resulting from your use of the platform. We are not 
+                    responsible for the quality, safety, legality, or suitability of any services 
                     exchanged between users.
                   </p>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">6. Your Content</h2>
+                  <h2 className="text-2xl font-semibold mb-4">6. Advertising and Listings</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Swap-Skills may display listings, promotions, or advertisements from local 
+                    businesses or community members, including free or trial advertising periods.
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                    <li>We do not endorse or guarantee any advertised products or services</li>
+                    <li>Advertisers are solely responsible for the accuracy and legality of their content</li>
+                    <li>We reserve the right to reject, modify, or remove advertisements or listings at our discretion</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-semibold mb-4">7. Your Content</h2>
+                  <p className="text-muted-foreground mb-3">
+                    When you post content on Swap-Skills (including listings, messages, and profile 
+                    information), you retain ownership of your content. However, you grant us a 
+                    non-exclusive, royalty-free licence to display and use that content for the 
+                    operation and promotion of the platform.
+                  </p>
                   <p className="text-muted-foreground">
-                    When you post content on Swap-Skills (listings, messages, profile information), 
-                    you retain ownership but grant us a licence to display it on our platform. 
-                    You're responsible for ensuring you have the right to share any content you post.
+                    You are responsible for ensuring you have the right to share any content you post.
                   </p>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">7. Limitation of Liability</h2>
+                  <h2 className="text-2xl font-semibold mb-4">8. Limitation of Liability</h2>
+                  <p className="text-muted-foreground mb-3">
+                    Swap-Skills is provided on an "as is" and "as available" basis, without 
+                    warranties of any kind.
+                  </p>
+                  <p className="text-muted-foreground mb-3">
+                    To the maximum extent permitted by Irish law, we shall not be liable for any 
+                    direct or indirect loss, damage, or harm arising from your use of the platform, 
+                    your interactions with other users, or reliance on any listings or advertisements.
+                  </p>
                   <p className="text-muted-foreground">
-                    Swap-Skills is provided "as is" without warranties of any kind. We're a small 
-                    operation doing our best to create something positive for Irish communities. 
-                    To the extent permitted by law, we're not liable for any damages arising from 
-                    your use of the platform or interactions with other users.
+                    Nothing in these Terms limits liability where such limitation is not permitted by law.
                   </p>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">8. Changes to These Terms</h2>
+                  <h2 className="text-2xl font-semibold mb-4">9. Changes to These Terms</h2>
                   <p className="text-muted-foreground">
-                    We may update these Terms from time to time. We'll notify you of significant 
-                    changes through the platform or by email. Your continued use after changes 
-                    take effect means you accept the new Terms.
+                    We may update these Terms from time to time. We will notify users of significant 
+                    changes through the platform or by email. Continued use of the platform after 
+                    changes take effect constitutes acceptance of the updated Terms.
                   </p>
                 </section>
 
                 <section>
-                  <h2 className="text-2xl font-semibold mb-4">9. Contact Us</h2>
+                  <h2 className="text-2xl font-semibold mb-4">10. Contact Us</h2>
                   <p className="text-muted-foreground">
-                    If you have questions about these Terms, please reach out through our 
-                    <a href="/contact" className="text-primary hover:underline ml-1">Contact page</a>.
-                  </p>
-                </section>
-
-                <section className="pt-8 border-t border-border">
-                  <p className="text-muted-foreground text-sm">
-                    Thank you for being part of Swap-Skills. Together, we're building something 
-                    special for Ireland. 🍀
+                    If you have questions about these Terms, please contact us through the
+                    <a href="/contact" className="text-primary hover:underline ml-1">Contact page</a> on our website.
                   </p>
                 </section>
               </div>
