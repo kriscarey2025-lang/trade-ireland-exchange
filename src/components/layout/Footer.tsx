@@ -103,7 +103,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         </div>
 
         <div className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} SkillSwap Ireland. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} SwapSkills Ireland. All rights reserved.</p>
           <p className="mt-1">Made with ❤️ for Irish communities</p>
         </div>
       </div>
