@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,21 +7,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, MapPin, Sparkles, Search, Plus, X, ArrowRight, User } from "lucide-react";
+import { Loader2, MapPin, Sparkles, Search, Plus, X, ArrowRight, User, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { categoryLabels, categoryIcons, allCategories } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
 
-type Step = "profile" | "preferences";
+type Step = "terms" | "profile" | "preferences";
 
 export function OnboardingQuestionnaire() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [checkingProfile, setCheckingProfile] = useState(true);
-  const [currentStep, setCurrentStep] = useState<Step>("profile");
+  const [currentStep, setCurrentStep] = useState<Step>("terms");
+  
+  // Terms acceptance state
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
+  const [agreedToConduct, setAgreedToConduct] = useState(false);
   
   // Profile form state
   const [fullName, setFullName] = useState("");
@@ -47,10 +52,14 @@ export function OnboardingQuestionnaire() {
         .eq("id", user.id)
         .maybeSingle();
       
+      // Determine starting step based on profile completeness
       if (profile?.full_name && profile?.location) {
-        // Profile is complete, skip to preferences
+        // Profile is complete, skip terms and profile steps - go to preferences
+        // For Google users coming back, they already accepted terms during onboarding
         setCurrentStep("preferences");
       } else {
+        // New users need to accept terms first, then complete profile
+        setCurrentStep("terms");
         // Pre-fill from profile if available
         setFullName(profile?.full_name || "");
         setLocation(profile?.location || "");
@@ -100,6 +109,14 @@ export function OnboardingQuestionnaire() {
 
   const removeCustomWanted = (skill: string) => {
     setCustomWanted(customWanted.filter(s => s !== skill));
+  };
+
+  const handleTermsSubmit = () => {
+    if (!agreedToTerms || !agreedToDisclaimer || !agreedToConduct) {
+      toast.error("Please agree to all required conditions to continue");
+      return;
+    }
+    setCurrentStep("profile");
   };
 
   const handleProfileSubmit = async () => {
@@ -188,6 +205,15 @@ export function OnboardingQuestionnaire() {
     navigate("/");
   };
 
+  const getStepIndex = () => {
+    switch (currentStep) {
+      case "terms": return 0;
+      case "profile": return 1;
+      case "preferences": return 2;
+      default: return 0;
+    }
+  };
+
   if (checkingProfile) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background flex items-center justify-center">
@@ -205,19 +231,102 @@ export function OnboardingQuestionnaire() {
           </div>
           <h1 className="text-3xl font-bold mb-2">Welcome to SwapSkills!</h1>
           <p className="text-muted-foreground">
-            {currentStep === "profile" 
+            {currentStep === "terms" 
+              ? "Please review and accept our community guidelines."
+              : currentStep === "profile" 
               ? "Let's set up your profile first."
               : "Tell us about your skills so we can help you find great matches."}
           </p>
           
           {/* Step indicator */}
           <div className="flex items-center justify-center gap-2 mt-4">
-            <div className={`w-3 h-3 rounded-full ${currentStep === "profile" ? "bg-primary" : "bg-primary/30"}`} />
-            <div className={`w-3 h-3 rounded-full ${currentStep === "preferences" ? "bg-primary" : "bg-primary/30"}`} />
+            <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 0 ? "bg-primary" : "bg-primary/30"}`} />
+            <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 1 ? "bg-primary" : "bg-primary/30"}`} />
+            <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 2 ? "bg-primary" : "bg-primary/30"}`} />
           </div>
         </div>
 
-        {currentStep === "profile" ? (
+        {currentStep === "terms" ? (
+          <div className="space-y-6">
+            {/* Terms & Conditions */}
+            <Card>
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                  <CardTitle className="text-lg">Community Guidelines</CardTitle>
+                </div>
+                <CardDescription>
+                  Before joining, please confirm you understand and agree to our community standards.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4 rounded-lg border border-border p-4 bg-muted/30">
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="terms"
+                      checked={agreedToTerms}
+                      onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+                    />
+                    <div className="space-y-1">
+                      <Label htmlFor="terms" className="cursor-pointer leading-snug">
+                        I agree to the{" "}
+                        <Link to="/terms" className="text-primary hover:underline" target="_blank">
+                          Terms of Service
+                        </Link>{" "}
+                        and{" "}
+                        <Link to="/privacy" className="text-primary hover:underline" target="_blank">
+                          Privacy Policy
+                        </Link>
+                      </Label>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="disclaimer"
+                      checked={agreedToDisclaimer}
+                      onCheckedChange={(checked) => setAgreedToDisclaimer(checked as boolean)}
+                    />
+                    <div className="space-y-1">
+                      <Label htmlFor="disclaimer" className="cursor-pointer leading-snug">
+                        I understand that SwapSkills is a platform for connecting people and does not verify, guarantee, or endorse any services or users
+                      </Label>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="conduct"
+                      checked={agreedToConduct}
+                      onCheckedChange={(checked) => setAgreedToConduct(checked as boolean)}
+                    />
+                    <div className="space-y-1">
+                      <Label htmlFor="conduct" className="cursor-pointer leading-snug">
+                        I will treat all members with respect, conduct myself honestly, and follow the{" "}
+                        <Link to="/safety" className="text-primary hover:underline" target="_blank">
+                          Safety Guidelines
+                        </Link>
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <Button
+                variant="hero"
+                className="flex-1"
+                onClick={handleTermsSubmit}
+                disabled={!agreedToTerms || !agreedToDisclaimer || !agreedToConduct}
+              >
+                Continue
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ) : currentStep === "profile" ? (
           <div className="space-y-6">
             {/* Profile Setup */}
             <Card>
