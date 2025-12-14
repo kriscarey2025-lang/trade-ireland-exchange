@@ -12,8 +12,8 @@ export function InlineAd({ className = "" }: InlineAdProps) {
   const selectedAd = useMemo(() => getRandomAd(ads), [ads]);
 
   return (
-    <div className={`xl:hidden px-4 py-6 ${className}`}>
-      <div className="max-w-md mx-auto">
+    <div className={`xl:hidden px-4 py-6 flex justify-center ${className}`}>
+      <div className="w-full max-w-md">
         <AdDisplay ad={selectedAd} variant="inline" />
       </div>
     </div>
