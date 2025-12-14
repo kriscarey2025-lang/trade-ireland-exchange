@@ -53,6 +53,7 @@ export type ServiceCategory =
   | 'crafts'
   | 'music'
   | 'photography'
+  | 'holistic_wellness'
   | 'other';
 
 export interface TradeRequest {
