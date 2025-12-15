@@ -22,6 +22,7 @@ import { ServiceCategory } from "@/types";
 import { z } from "zod";
 import { ImageUpload } from "@/components/services/ImageUpload";
 import { SkillSelector } from "@/components/services/SkillSelector";
+import { trackServiceCreated } from "@/hooks/useEngagementTracking";
 
 const serviceSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
@@ -104,7 +105,7 @@ export default function NewService() {
       ? ["_open_to_all_"] 
       : [...acceptedSkills, ...customSkills.map(s => `custom:${s}`)];
 
-    const { error } = await supabase.from("services").insert({
+    const { data: newService, error } = await supabase.from("services").insert({
       user_id: user.id,
       title: title.trim(),
       description: description.trim(),
@@ -116,7 +117,7 @@ export default function NewService() {
       images: images.length > 0 ? images : null,
       accepted_categories: allAcceptedSkills,
       type: serviceType,
-    });
+    }).select().single();
 
     if (error) {
       console.error("Error creating service:", error);
@@ -124,6 +125,9 @@ export default function NewService() {
       setIsSubmitting(false);
       return;
     }
+
+    // Track service creation
+    trackServiceCreated(user.id, newService.id, title.trim());
 
     toast.success(isRequest ? "Request posted successfully!" : "Service posted successfully!");
     navigate("/browse");

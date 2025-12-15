@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { BackToTop } from "@/components/BackToTop";
 import { AuthProvider } from "@/hooks/useAuth";
+import { EngagementTracker } from "@/components/tracking/EngagementTracker";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import HowItWorks from "./pages/HowItWorks";
@@ -43,6 +44,7 @@ const App = () => (
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ScrollToTop />
           <BackToTop />
+          <EngagementTracker />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/browse" element={<Browse />} />
