@@ -189,7 +189,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await supabase.from('profiles').update({ location }).eq('id', newUser.id);
     }
 
-    // Welcome email is now sent automatically via database trigger
+    // Send welcome email
+    try {
+      await supabase.functions.invoke('send-welcome-email', {
+        body: { email, fullName }
+      });
+    } catch (e) {
+      console.error('Failed to send welcome email:', e);
+    }
 
     return { error: null };
   };
