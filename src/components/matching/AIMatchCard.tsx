@@ -118,7 +118,7 @@ export function AIMatchCard({ match }: AIMatchCardProps) {
                 )}
               </div>
               <Button asChild size="sm">
-                <Link to={`/service/${match.service.id}`}>
+                <Link to={`/services/${match.service.id}`}>
                   View
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
