@@ -21,6 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isBanned, setIsBanned] = useState(false);
   const initializedRef = useRef(false);
   const ipLoggedRef = useRef(false);
+  const welcomeEmailSentRef = useRef(false);
 
   const checkBanStatus = async (userId: string) => {
     try {
@@ -135,8 +136,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const now = new Date();
           const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
           
-          // If profile was created in the last 60 seconds, send welcome email
-          if (diffSeconds < 60) {
+          // If profile was created in the last 60 seconds, send welcome email (only once)
+          if (diffSeconds < 60 && !welcomeEmailSentRef.current) {
+            welcomeEmailSentRef.current = true;
             try {
               await supabase.functions.invoke('send-welcome-email', {
                 body: { 
@@ -189,13 +191,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await supabase.from('profiles').update({ location }).eq('id', newUser.id);
     }
 
-    // Send welcome email
-    try {
-      await supabase.functions.invoke('send-welcome-email', {
-        body: { email, fullName }
-      });
-    } catch (e) {
-      console.error('Failed to send welcome email:', e);
+    // Send welcome email (only if not already sent)
+    if (!welcomeEmailSentRef.current) {
+      welcomeEmailSentRef.current = true;
+      try {
+        await supabase.functions.invoke('send-welcome-email', {
+          body: { email, fullName }
+        });
+      } catch (e) {
+        console.error('Failed to send welcome email:', e);
+      }
     }
 
     return { error: null };
