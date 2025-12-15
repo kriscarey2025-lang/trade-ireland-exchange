@@ -116,7 +116,19 @@ export default function Advertise() {
 
       if (dbError) throw dbError;
 
-      // Also send email notification
+      // Notify admins about new advertiser interest
+      supabase.functions.invoke("notify-admins-advertiser", {
+        body: {
+          businessName: result.data.businessName,
+          contactName: result.data.contactName,
+          email: result.data.email,
+          location: result.data.location,
+          website: result.data.website || undefined,
+          message: result.data.message || undefined,
+        },
+      }).catch((err) => console.error("Failed to notify admins:", err));
+
+      // Also send email notification (existing)
       await supabase.functions.invoke("send-contact-email", {
         body: {
           name: result.data.contactName,

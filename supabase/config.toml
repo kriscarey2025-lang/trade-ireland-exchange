@@ -26,3 +26,9 @@ verify_jwt = true
 
 [functions.notify-admins-moderation]
 verify_jwt = true
+
+[functions.notify-admins-verification]
+verify_jwt = true
+
+[functions.notify-admins-advertiser]
+verify_jwt = false
