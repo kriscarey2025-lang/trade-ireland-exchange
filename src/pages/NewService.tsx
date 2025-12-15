@@ -13,12 +13,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Sparkles, Search } from "lucide-react";
+import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
-import { ServiceCategory } from "@/types";
+import { postCategoryLabels, postCategoryDescriptions, postCategoryIcons, postCategoryColors } from "@/lib/postCategories";
+import { ServiceCategory, PostCategory } from "@/types";
 import { z } from "zod";
 import { ImageUpload } from "@/components/services/ImageUpload";
 import { SkillSelector } from "@/components/services/SkillSelector";
@@ -46,9 +48,16 @@ export default function NewService() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Determine if this is an offer or request based on URL param
-  const serviceType = searchParams.get("type") === "request" ? "request" : "offer";
-  const isRequest = serviceType === "request";
+  // Get initial post category from URL param, default to skill_swap
+  const getInitialPostCategory = (): PostCategory => {
+    const typeParam = searchParams.get("type");
+    if (typeParam === "free_offer" || typeParam === "help_request" || typeParam === "skill_swap") {
+      return typeParam;
+    }
+    return "skill_swap";
+  };
+  
+  const [postCategory, setPostCategory] = useState<PostCategory>(getInitialPostCategory());
   
   // Form state
   const [title, setTitle] = useState("");
@@ -57,7 +66,7 @@ export default function NewService() {
   const [location, setLocation] = useState("");
   const [images, setImages] = useState<string[]>([]);
   
-  // Skills I'd accept in return
+  // Skills I'd accept in return (only for skill_swap)
   const [acceptedSkills, setAcceptedSkills] = useState<string[]>([]);
   const [customSkills, setCustomSkills] = useState<string[]>([]);
   const [openToGeneralOffers, setOpenToGeneralOffers] = useState(false);
@@ -86,10 +95,12 @@ export default function NewService() {
       return;
     }
 
-    // Check that at least one skill/category is selected or open to general offers
-    if (!openToGeneralOffers && acceptedSkills.length === 0 && customSkills.length === 0) {
-      toast.error("Please select at least one skill you'd accept in return, or toggle 'Open to General Offers'");
-      return;
+    // Only validate exchange preferences for skill_swap
+    if (postCategory === "skill_swap") {
+      if (!openToGeneralOffers && acceptedSkills.length === 0 && customSkills.length === 0) {
+        toast.error("Please select at least one skill you'd accept in return, or toggle 'Open to General Offers'");
+        return;
+      }
     }
 
     if (!user) {
@@ -100,12 +111,14 @@ export default function NewService() {
 
     setIsSubmitting(true);
 
-    // Combine accepted skills - include both specific categories AND open to all if selected
-    const allAcceptedSkills = [
-      ...acceptedSkills,
-      ...customSkills.map(s => `custom:${s}`),
-      ...(openToGeneralOffers ? ["_open_to_all_"] : [])
-    ];
+    // Combine accepted skills - only for skill_swap
+    const allAcceptedSkills = postCategory === "skill_swap" 
+      ? [
+          ...acceptedSkills,
+          ...customSkills.map(s => `custom:${s}`),
+          ...(openToGeneralOffers ? ["_open_to_all_"] : [])
+        ]
+      : null;
 
     const { data: newService, error } = await supabase.from("services").insert({
       user_id: user.id,
@@ -118,7 +131,7 @@ export default function NewService() {
       status: "active",
       images: images.length > 0 ? images : null,
       accepted_categories: allAcceptedSkills,
-      type: serviceType,
+      type: postCategory,
     }).select().single();
 
     if (error) {
@@ -131,8 +144,41 @@ export default function NewService() {
     // Track service creation
     trackServiceCreated(user.id, newService.id, title.trim());
 
-    toast.success(isRequest ? "Request posted successfully!" : "Service posted successfully!");
+    toast.success("Posted successfully!");
     navigate("/browse");
+  };
+
+  const getHeaderIcon = () => {
+    switch (postCategory) {
+      case "free_offer":
+        return <Gift className="h-6 w-6 text-white" />;
+      case "help_request":
+        return <Search className="h-6 w-6 text-white" />;
+      case "skill_swap":
+        return <RefreshCw className="h-6 w-6 text-white" />;
+    }
+  };
+
+  const getHeaderTitle = () => {
+    switch (postCategory) {
+      case "free_offer":
+        return "Offer for Free";
+      case "help_request":
+        return "Request Help";
+      case "skill_swap":
+        return "Skill Swap";
+    }
+  };
+
+  const getHeaderDescription = () => {
+    switch (postCategory) {
+      case "free_offer":
+        return "Share your skills with the community for free";
+      case "help_request":
+        return "Tell the community what you need help with";
+      case "skill_swap":
+        return "Trade your skills for services you need";
+    }
   };
 
   if (authLoading) {
@@ -161,47 +207,71 @@ export default function NewService() {
           <Card className="shadow-elevated border-border/50">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isRequest ? "bg-accent" : "bg-gradient-hero"}`}>
-                  {isRequest ? (
-                    <Search className="h-6 w-6 text-accent-foreground" />
-                  ) : (
-                    <Sparkles className="h-6 w-6 text-white" />
-                  )}
+                <div className="w-12 h-12 rounded-xl bg-gradient-hero flex items-center justify-center">
+                  {getHeaderIcon()}
                 </div>
                 <div>
-                  <CardTitle className="text-2xl">
-                    {isRequest ? "Request a Service" : "Offer Your Skill"}
-                  </CardTitle>
-                  <CardDescription>
-                    {isRequest 
-                      ? "Tell the community what you need help with"
-                      : "Share your skills and choose what you'd like in return"
-                    }
-                  </CardDescription>
+                  <CardTitle className="text-2xl">{getHeaderTitle()}</CardTitle>
+                  <CardDescription>{getHeaderDescription()}</CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Section 1: Your Skill */}
+                {/* Post Type Selection */}
+                <div className="space-y-4">
+                  <Label className="text-base font-semibold">What type of post is this?</Label>
+                  <RadioGroup 
+                    value={postCategory} 
+                    onValueChange={(v) => setPostCategory(v as PostCategory)}
+                    className="grid gap-3"
+                  >
+                    {(["free_offer", "help_request", "skill_swap"] as PostCategory[]).map((type) => {
+                      const colors = postCategoryColors[type];
+                      return (
+                        <label
+                          key={type}
+                          className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                            postCategory === type 
+                              ? `${colors.border} ${colors.bg}` 
+                              : "border-border hover:border-primary/50"
+                          }`}
+                        >
+                          <RadioGroupItem value={type} className="mt-1" />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span>{postCategoryIcons[type]}</span>
+                              <span className="font-semibold">{postCategoryLabels[type]}</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {postCategoryDescriptions[type]}
+                            </p>
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </RadioGroup>
+                </div>
+
+                {/* Section 1: Your Skill / What You Need */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 pb-2 border-b border-border">
                     <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">1</span>
                     <h3 className="font-semibold text-lg">
-                      {isRequest ? "What You Need" : "Your Skill"}
+                      {postCategory === "help_request" ? "What You Need" : "What You're Offering"}
                     </h3>
                   </div>
 
                   {/* Title */}
                   <div className="space-y-2">
                     <Label htmlFor="title">
-                      {isRequest ? "What do you need? *" : "Skill / Service Title *"}
+                      {postCategory === "help_request" ? "What do you need? *" : "Title *"}
                     </Label>
                     <Input
                       id="title"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder={isRequest 
+                      placeholder={postCategory === "help_request" 
                         ? "e.g., Need help with garden landscaping"
                         : "e.g., Guitar Lessons for Beginners"
                       }
@@ -213,9 +283,7 @@ export default function NewService() {
 
                   {/* Category */}
                   <div className="space-y-2">
-                    <Label htmlFor="category">
-                      {isRequest ? "Category of service needed *" : "Skill Category *"}
-                    </Label>
+                    <Label htmlFor="category">Category *</Label>
                     <Select
                       value={category}
                       onValueChange={(value) => setCategory(value as ServiceCategory)}
@@ -241,9 +309,9 @@ export default function NewService() {
                       id="description"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder={isRequest
+                      placeholder={postCategory === "help_request"
                         ? "Describe what you need in detail. Include any specific requirements, timeline, or preferences..."
-                        : "Describe your skill and experience. What will you provide? What's your experience level?"
+                        : "Describe what you're offering. What will you provide? What's your experience level?"
                       }
                       rows={5}
                       disabled={isSubmitting}
@@ -291,30 +359,27 @@ export default function NewService() {
                   </div>
                 </div>
 
-                {/* Section 2: What You'd Accept in Return */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2 pb-2 border-b border-border">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">2</span>
-                    <h3 className="font-semibold text-lg">
-                      {isRequest ? "What You Can Offer" : "What You'd Accept in Return"}
-                    </h3>
-                  </div>
+                {/* Section 2: What You'd Accept in Return - ONLY for skill_swap */}
+                {postCategory === "skill_swap" && (
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-2 pb-2 border-b border-border">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">2</span>
+                      <h3 className="font-semibold text-lg">What You'd Accept in Return</h3>
+                    </div>
 
-                  <SkillSelector
-                    selectedSkills={acceptedSkills}
-                    onSkillsChange={setAcceptedSkills}
-                    customSkills={customSkills}
-                    onCustomSkillsChange={setCustomSkills}
-                    openToGeneralOffers={openToGeneralOffers}
-                    onOpenToGeneralOffersChange={setOpenToGeneralOffers}
-                    disabled={isSubmitting}
-                    label={isRequest ? "Skills I Can Offer" : "Skills I'd Accept in Return"}
-                    description={isRequest 
-                      ? "Select what you can offer as a trade for the service you need"
-                      : "Select the types of services you'd be open to receiving as a trade"
-                    }
-                  />
-                </div>
+                    <SkillSelector
+                      selectedSkills={acceptedSkills}
+                      onSkillsChange={setAcceptedSkills}
+                      customSkills={customSkills}
+                      onCustomSkillsChange={setCustomSkills}
+                      openToGeneralOffers={openToGeneralOffers}
+                      onOpenToGeneralOffersChange={setOpenToGeneralOffers}
+                      disabled={isSubmitting}
+                      label="Skills I'd Accept in Return"
+                      description="Select the types of services you'd be open to receiving as a trade"
+                    />
+                  </div>
+                )}
 
                 {/* Submit */}
                 <div className="pt-4 flex gap-3">
@@ -329,15 +394,10 @@ export default function NewService() {
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Posting...
                       </>
-                    ) : isRequest ? (
-                      <>
-                        <Search className="h-4 w-4 mr-2" />
-                        Post Request
-                      </>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        Post Skill
+                        {getHeaderIcon()}
+                        <span className="ml-2">Post {postCategoryLabels[postCategory]}</span>
                       </>
                     )}
                   </Button>

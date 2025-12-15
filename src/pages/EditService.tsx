@@ -15,11 +15,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Pencil } from "lucide-react";
+import { Loader2, ArrowLeft, Pencil, Gift, Search, RefreshCw } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
-import { ServiceCategory } from "@/types";
+import { postCategoryLabels } from "@/lib/postCategories";
+import { ServiceCategory, PostCategory } from "@/types";
 import { z } from "zod";
 import { ImageUpload } from "@/components/services/ImageUpload";
 import { SkillSelector } from "@/components/services/SkillSelector";
@@ -53,7 +54,7 @@ export default function EditService() {
   const [category, setCategory] = useState<ServiceCategory | "">("");
   const [location, setLocation] = useState("");
   const [images, setImages] = useState<string[]>([]);
-  const [serviceType, setServiceType] = useState<"offer" | "request">("offer");
+  const [postCategory, setPostCategory] = useState<PostCategory>("skill_swap");
   
   // Skills I'd accept in return
   const [acceptedSkills, setAcceptedSkills] = useState<string[]>([]);
@@ -88,7 +89,7 @@ export default function EditService() {
       setCategory((service.category as ServiceCategory) || "");
       setLocation(service.location || "");
       setImages(service.images || []);
-      setServiceType((service.type as "offer" | "request") || "offer");
+      setPostCategory((service.type as PostCategory) || "skill_swap");
       
       // Parse accepted_categories - now supports both open to all AND specific categories
       const acceptedCats = service.accepted_categories || [];
@@ -142,10 +143,12 @@ export default function EditService() {
       return;
     }
 
-    // Check that at least one skill/category is selected or open to general offers
-    if (!openToGeneralOffers && acceptedSkills.length === 0 && customSkills.length === 0) {
-      toast.error("Please select at least one skill you'd accept in return, or toggle 'Open to General Offers'");
-      return;
+    // Only validate exchange preferences for skill_swap
+    if (postCategory === "skill_swap") {
+      if (!openToGeneralOffers && acceptedSkills.length === 0 && customSkills.length === 0) {
+        toast.error("Please select at least one skill you'd accept in return, or toggle 'Open to General Offers'");
+        return;
+      }
     }
 
     if (!user || !id) {
@@ -155,12 +158,14 @@ export default function EditService() {
 
     setIsSubmitting(true);
 
-    // Combine accepted skills - include both specific categories AND open to all if selected
-    const allAcceptedSkills = [
-      ...acceptedSkills,
-      ...customSkills.map(s => `custom:${s}`),
-      ...(openToGeneralOffers ? ["_open_to_all_"] : [])
-    ];
+    // Combine accepted skills - only for skill_swap
+    const allAcceptedSkills = postCategory === "skill_swap"
+      ? [
+          ...acceptedSkills,
+          ...customSkills.map(s => `custom:${s}`),
+          ...(openToGeneralOffers ? ["_open_to_all_"] : [])
+        ]
+      : null;
 
     const { error } = await supabase
       .from("services")
@@ -173,6 +178,7 @@ export default function EditService() {
         price_type: null,
         images: images.length > 0 ? images : null,
         accepted_categories: allAcceptedSkills,
+        type: postCategory,
       })
       .eq("id", id)
       .eq("user_id", user.id);
@@ -193,7 +199,18 @@ export default function EditService() {
     navigate(`/services/${id}`);
   };
 
-  const isRequest = serviceType === "request";
+  const getHeaderIcon = () => {
+    switch (postCategory) {
+      case "free_offer":
+        return <Gift className="h-6 w-6 text-primary" />;
+      case "help_request":
+        return <Search className="h-6 w-6 text-primary" />;
+      case "skill_swap":
+        return <RefreshCw className="h-6 w-6 text-primary" />;
+      default:
+        return <Pencil className="h-6 w-6 text-primary" />;
+    }
+  };
 
   if (authLoading || serviceLoading) {
     return (
@@ -239,42 +256,44 @@ export default function EditService() {
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Pencil className="h-6 w-6 text-primary" />
+                  {getHeaderIcon()}
                 </div>
                 <div>
                   <CardTitle className="text-2xl">
-                    Edit {isRequest ? "Request" : "Skill"}
+                    Edit {postCategoryLabels[postCategory]}
                   </CardTitle>
                   <CardDescription>
-                    Update your {isRequest ? "request" : "skill"} details
+                    Update your post details
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Section 1: Your Skill */}
+                {/* Post Type Display (not editable) */}
+                <div className="p-3 rounded-lg bg-muted/50 border border-border">
+                  <p className="text-sm text-muted-foreground">
+                    Post type: <span className="font-medium text-foreground">{postCategoryLabels[postCategory]}</span>
+                  </p>
+                </div>
+
+                {/* Section 1: Details */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 pb-2 border-b border-border">
                     <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">1</span>
                     <h3 className="font-semibold text-lg">
-                      {isRequest ? "What You Need" : "Your Skill"}
+                      {postCategory === "help_request" ? "What You Need" : "What You're Offering"}
                     </h3>
                   </div>
 
                   {/* Title */}
                   <div className="space-y-2">
-                    <Label htmlFor="title">
-                      {isRequest ? "What do you need? *" : "Skill / Service Title *"}
-                    </Label>
+                    <Label htmlFor="title">Title *</Label>
                     <Input
                       id="title"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder={isRequest 
-                        ? "e.g., Need help with garden landscaping"
-                        : "e.g., Guitar Lessons for Beginners"
-                      }
+                      placeholder="e.g., Guitar Lessons for Beginners"
                       disabled={isSubmitting}
                       maxLength={100}
                     />
@@ -283,9 +302,7 @@ export default function EditService() {
 
                   {/* Category */}
                   <div className="space-y-2">
-                    <Label htmlFor="category">
-                      {isRequest ? "Category of service needed *" : "Skill Category *"}
-                    </Label>
+                    <Label htmlFor="category">Category *</Label>
                     <Select
                       value={category}
                       onValueChange={(value) => setCategory(value as ServiceCategory)}
@@ -311,10 +328,7 @@ export default function EditService() {
                       id="description"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder={isRequest
-                        ? "Describe what you need in detail..."
-                        : "Describe your skill and experience..."
-                      }
+                      placeholder="Describe your skill and experience..."
                       rows={5}
                       disabled={isSubmitting}
                       maxLength={1000}
@@ -358,30 +372,27 @@ export default function EditService() {
                   </div>
                 </div>
 
-                {/* Section 2: What You'd Accept in Return */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2 pb-2 border-b border-border">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">2</span>
-                    <h3 className="font-semibold text-lg">
-                      {isRequest ? "What You Can Offer" : "What You'd Accept in Return"}
-                    </h3>
-                  </div>
+                {/* Section 2: What You'd Accept in Return - ONLY for skill_swap */}
+                {postCategory === "skill_swap" && (
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-2 pb-2 border-b border-border">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-bold">2</span>
+                      <h3 className="font-semibold text-lg">What You'd Accept in Return</h3>
+                    </div>
 
-                  <SkillSelector
-                    selectedSkills={acceptedSkills}
-                    onSkillsChange={setAcceptedSkills}
-                    customSkills={customSkills}
-                    onCustomSkillsChange={setCustomSkills}
-                    openToGeneralOffers={openToGeneralOffers}
-                    onOpenToGeneralOffersChange={setOpenToGeneralOffers}
-                    disabled={isSubmitting}
-                    label={isRequest ? "Skills I Can Offer" : "Skills I'd Accept in Return"}
-                    description={isRequest 
-                      ? "Select what you can offer as a trade for the service you need"
-                      : "Select the types of services you'd be open to receiving as a trade"
-                    }
-                  />
-                </div>
+                    <SkillSelector
+                      selectedSkills={acceptedSkills}
+                      onSkillsChange={setAcceptedSkills}
+                      customSkills={customSkills}
+                      onCustomSkillsChange={setCustomSkills}
+                      openToGeneralOffers={openToGeneralOffers}
+                      onOpenToGeneralOffersChange={setOpenToGeneralOffers}
+                      disabled={isSubmitting}
+                      label="Skills I'd Accept in Return"
+                      description="Select the types of services you'd be open to receiving as a trade"
+                    />
+                  </div>
+                )}
 
                 {/* Submit */}
                 <div className="pt-4 flex gap-3">

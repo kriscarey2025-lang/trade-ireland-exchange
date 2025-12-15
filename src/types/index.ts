@@ -21,6 +21,8 @@ export interface Badge {
   earnedAt: Date;
 }
 
+export type PostCategory = 'free_offer' | 'help_request' | 'skill_swap';
+
 export interface Service {
   id: string;
   userId: string;
@@ -28,7 +30,7 @@ export interface Service {
   title: string;
   description: string;
   category: ServiceCategory;
-  type: 'offer' | 'request';
+  type: PostCategory;
   images?: string[];
   qualifications?: string[];
   estimatedHours?: number;
