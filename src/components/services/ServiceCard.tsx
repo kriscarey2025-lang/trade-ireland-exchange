@@ -7,7 +7,6 @@ import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 import { ServiceCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
-
 interface ServiceUser {
   id?: string;
   name: string;
@@ -19,7 +18,6 @@ interface ServiceUser {
   facebookUrl?: string;
   instagramUrl?: string;
 }
-
 interface ServiceData {
   id: string;
   title: string;
@@ -32,28 +30,21 @@ interface ServiceData {
   acceptedCategories?: string[];
   user?: ServiceUser;
 }
-
 interface ServiceCardProps {
   service: ServiceData;
   className?: string;
 }
-
-export function ServiceCard({ service, className }: ServiceCardProps) {
+export function ServiceCard({
+  service,
+  className
+}: ServiceCardProps) {
   const isOffer = service.type === "offer";
-
-  return (
-    <Link to={`/services/${service.id}`}>
-      <Card className={cn(
-        "group overflow-hidden hover-lift cursor-pointer border-2 border-transparent hover:border-primary/20 bg-card transition-all duration-300",
-        className
-      )}>
+  return <Link to={`/services/${service.id}`}>
+      <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-2 border-transparent hover:border-primary/20 bg-card transition-all duration-300", className)}>
         <CardContent className="p-5">
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-4">
-            <Badge 
-              variant={isOffer ? "default" : "accent"}
-              className="shrink-0 rounded-lg"
-            >
+            <Badge variant={isOffer ? "default" : "accent"} className="shrink-0 rounded-lg">
               {isOffer ? "✨ Offering" : "🔍 Looking for"}
             </Badge>
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted text-xs text-muted-foreground font-medium">
@@ -69,9 +60,7 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
           </h3>
 
           {/* Description */}
-          <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
-            {service.description}
-          </p>
+          
 
           {/* Meta Info */}
           <div className="flex flex-wrap gap-2 mb-4">
@@ -79,58 +68,36 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
               <MapPin className="h-3 w-3" />
               {service.location}
             </div>
-            {service.estimatedHours && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary text-xs font-medium text-secondary-foreground">
+            {service.estimatedHours && <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary text-xs font-medium text-secondary-foreground">
                 <Clock className="h-3 w-3" />
                 ~{service.estimatedHours}h
-              </div>
-            )}
+              </div>}
           </div>
 
           {/* Looking for in exchange */}
-          {service.acceptedCategories && service.acceptedCategories.length > 0 && (
-            <div className="mb-4">
-              {service.acceptedCategories.includes("_open_to_all_") ? (
-                <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/30 shadow-sm">
+          {service.acceptedCategories && service.acceptedCategories.length > 0 && <div className="mb-4">
+              {service.acceptedCategories.includes("_open_to_all_") ? <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/30 shadow-sm">
                   <span className="text-sm">✨</span>
                   <span className="text-xs font-semibold text-accent">Open to all offers</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 flex-wrap">
+                </div> : <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <RefreshCw className="h-3 w-3" />
                     Wants:
                   </span>
-                  {service.acceptedCategories
-                    .filter(cat => !cat.startsWith("custom:"))
-                    .slice(0, 4)
-                    .map((cat) => (
-                      <span 
-                        key={cat} 
-                        className="text-base"
-                        title={categoryLabels[cat as ServiceCategory] || cat}
-                      >
+                  {service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).slice(0, 4).map(cat => <span key={cat} className="text-base" title={categoryLabels[cat as ServiceCategory] || cat}>
                         {categoryIcons[cat as ServiceCategory] || "📋"}
-                      </span>
-                    ))}
-                  {service.acceptedCategories.filter(cat => cat.startsWith("custom:")).length > 0 && (
-                    <span className="text-xs text-muted-foreground">
+                      </span>)}
+                  {service.acceptedCategories.filter(cat => cat.startsWith("custom:")).length > 0 && <span className="text-xs text-muted-foreground">
                       +{service.acceptedCategories.filter(cat => cat.startsWith("custom:")).length} custom
-                    </span>
-                  )}
-                  {service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).length > 4 && (
-                    <span className="text-xs text-muted-foreground">
+                    </span>}
+                  {service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).length > 4 && <span className="text-xs text-muted-foreground">
                       +{service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).length - 4}
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+                    </span>}
+                </div>}
+            </div>}
 
           {/* User */}
-          {service.user && (
-            <div className="flex items-center gap-3 pt-4 border-t border-border">
+          {service.user && <div className="flex items-center gap-3 pt-4 border-t border-border">
               <Avatar className="h-14 w-14 ring-2 ring-background shadow-md shrink-0">
                 <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover object-top" />
                 <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
@@ -142,47 +109,28 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
                   <span className="font-medium text-sm truncate">
                     {service.user.name}
                   </span>
-                  <VerifiedBadge 
-                    status={service.user.verificationStatus} 
-                    size="sm" 
-                  />
+                  <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                   {/* Social Media Icons */}
-                  {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
-                    <div className="flex items-center gap-1 ml-1">
-                      {service.user.linkedinUrl && (
-                        <Linkedin className="h-3.5 w-3.5 text-[#0A66C2] shrink-0" />
-                      )}
-                      {service.user.facebookUrl && (
-                        <Facebook className="h-3.5 w-3.5 text-[#1877F2] shrink-0" />
-                      )}
-                      {service.user.instagramUrl && (
-                        <Instagram className="h-3.5 w-3.5 text-[#E4405F] shrink-0" />
-                      )}
-                    </div>
-                  )}
+                  {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && <div className="flex items-center gap-1 ml-1">
+                      {service.user.linkedinUrl && <Linkedin className="h-3.5 w-3.5 text-[#0A66C2] shrink-0" />}
+                      {service.user.facebookUrl && <Facebook className="h-3.5 w-3.5 text-[#1877F2] shrink-0" />}
+                      {service.user.instagramUrl && <Instagram className="h-3.5 w-3.5 text-[#E4405F] shrink-0" />}
+                    </div>}
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  {service.user.rating !== null ? (
-                    <>
+                  {service.user.rating !== null ? <>
                       <Star className="h-3 w-3 fill-warning text-warning" />
                       <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
                       <span>·</span>
-                    </>
-                  ) : (
-                    <span className="text-muted-foreground italic">No reviews</span>
-                  )}
-                  {service.user.completedTrades > 0 && (
-                    <>
+                    </> : <span className="text-muted-foreground italic">No reviews</span>}
+                  {service.user.completedTrades > 0 && <>
                       {service.user.rating !== null && <span>·</span>}
                       <span>{service.user.completedTrades} swaps</span>
-                    </>
-                  )}
+                    </>}
                 </div>
               </div>
-            </div>
-          )}
+            </div>}
         </CardContent>
       </Card>
-    </Link>
-  );
+    </Link>;
 }
