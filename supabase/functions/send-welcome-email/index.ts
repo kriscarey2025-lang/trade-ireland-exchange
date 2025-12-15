@@ -38,19 +38,19 @@ const handler = async (req: Request): Promise<Response> => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to Swap Skills</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #2d2d3a;">
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a2e;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
     <tr>
       <td align="center" style="padding: 40px 20px;">
-        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #2d2d3a; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">
+        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #1a1a2e; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">
           
-          <!-- Header with purple gradient -->
+          <!-- Header with orange to green gradient -->
           <tr>
-            <td style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6366f1 100%); padding: 48px 40px; text-align: center; border-radius: 12px 12px 0 0;">
+            <td style="background: linear-gradient(135deg, #f97316 0%, #22c55e 100%); padding: 48px 40px; text-align: center; border-radius: 12px 12px 0 0;">
               <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">
                 🔄 Swap Skills
               </h1>
-              <p style="margin: 12px 0 0 0; font-size: 16px; color: rgba(255, 255, 255, 0.85);">
+              <p style="margin: 12px 0 0 0; font-size: 16px; color: rgba(255, 255, 255, 0.9);">
                 Trade skills, not money
               </p>
             </td>
@@ -67,7 +67,7 @@ const handler = async (req: Request): Promise<Response> => {
                 We're thrilled to have you join the Swap Skills community! You've taken the first step toward a new way of exchanging value — one that's built on skills, collaboration, and mutual support.
               </p>
               
-              <div style="background-color: #3d3d4a; border-radius: 12px; padding: 24px; margin: 32px 0;">
+              <div style="background-color: #252542; border-radius: 12px; padding: 24px; margin: 32px 0;">
                 <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #ffffff;">
                   Here's how to get started:
                 </h3>
@@ -75,7 +75,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <table role="presentation" style="width: 100%; border-collapse: collapse;">
                   <tr>
                     <td style="padding: 12px 0; vertical-align: top; width: 44px;">
-                      <span style="display: inline-block; width: 32px; height: 32px; background: #7c3aed; border-radius: 50%; text-align: center; line-height: 32px; color: white; font-weight: 600;">1</span>
+                      <span style="display: inline-block; width: 32px; height: 32px; background: linear-gradient(135deg, #f97316, #22c55e); border-radius: 50%; text-align: center; line-height: 32px; color: white; font-weight: 600;">1</span>
                     </td>
                     <td style="padding: 12px 0; vertical-align: middle;">
                       <strong style="color: #ffffff;">Complete your profile</strong>
@@ -84,7 +84,7 @@ const handler = async (req: Request): Promise<Response> => {
                   </tr>
                   <tr>
                     <td style="padding: 12px 0; vertical-align: top; width: 44px;">
-                      <span style="display: inline-block; width: 32px; height: 32px; background: #7c3aed; border-radius: 50%; text-align: center; line-height: 32px; color: white; font-weight: 600;">2</span>
+                      <span style="display: inline-block; width: 32px; height: 32px; background: linear-gradient(135deg, #f97316, #22c55e); border-radius: 50%; text-align: center; line-height: 32px; color: white; font-weight: 600;">2</span>
                     </td>
                     <td style="padding: 12px 0; vertical-align: middle;">
                       <strong style="color: #ffffff;">Post your first service</strong>
@@ -93,7 +93,7 @@ const handler = async (req: Request): Promise<Response> => {
                   </tr>
                   <tr>
                     <td style="padding: 12px 0; vertical-align: top; width: 44px;">
-                      <span style="display: inline-block; width: 32px; height: 32px; background: #7c3aed; border-radius: 50%; text-align: center; line-height: 32px; color: white; font-weight: 600;">3</span>
+                      <span style="display: inline-block; width: 32px; height: 32px; background: linear-gradient(135deg, #f97316, #22c55e); border-radius: 50%; text-align: center; line-height: 32px; color: white; font-weight: 600;">3</span>
                     </td>
                     <td style="padding: 12px 0; vertical-align: middle;">
                       <strong style="color: #ffffff;">Connect with others</strong>
@@ -104,7 +104,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               
               <div style="text-align: center; margin: 32px 0;">
-                <a href="https://swap-skills.com/browse" style="display: inline-block; background: #7c3aed; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);">
+                <a href="https://swap-skills.com/browse" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);">
                   Start Exploring →
                 </a>
               </div>
@@ -122,14 +122,14 @@ const handler = async (req: Request): Promise<Response> => {
           
           <!-- Footer -->
           <tr>
-            <td style="background-color: #252532; padding: 32px 40px; text-align: center; border-top: 1px solid #3d3d4a;">
+            <td style="background-color: #16162a; padding: 32px 40px; text-align: center; border-top: 1px solid #252542;">
               <p style="margin: 0 0 16px 0; font-size: 14px; color: #71717a;">
                 Follow us for tips and updates
               </p>
               <p style="margin: 0 0 24px 0;">
-                <a href="#" style="display: inline-block; margin: 0 8px; color: #8b5cf6; text-decoration: none;">Twitter</a>
-                <a href="#" style="display: inline-block; margin: 0 8px; color: #8b5cf6; text-decoration: none;">Instagram</a>
-                <a href="#" style="display: inline-block; margin: 0 8px; color: #8b5cf6; text-decoration: none;">LinkedIn</a>
+                <a href="#" style="display: inline-block; margin: 0 8px; color: #f97316; text-decoration: none;">Twitter</a>
+                <a href="#" style="display: inline-block; margin: 0 8px; color: #22c55e; text-decoration: none;">Instagram</a>
+                <a href="#" style="display: inline-block; margin: 0 8px; color: #f97316; text-decoration: none;">LinkedIn</a>
               </p>
               <p style="margin: 0; font-size: 12px; color: #52525b;">
                 © ${new Date().getFullYear()} Swap Skills. All rights reserved.<br>
