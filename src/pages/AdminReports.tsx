@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Shield, Ban, CheckCircle, XCircle, AlertTriangle, UserX, Globe, Wifi } from "lucide-react";
+import { Loader2, Shield, Ban, CheckCircle, XCircle, AlertTriangle, UserX, Globe, Wifi, FileX, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -30,6 +30,7 @@ interface Report {
   id: string;
   reporter_id: string;
   reported_user_id: string;
+  reported_service_id: string | null;
   reason: string;
   description: string | null;
   status: string;
@@ -39,6 +40,7 @@ interface Report {
   resolved_by: string | null;
   reporter?: { full_name: string | null; avatar_url: string | null };
   reported_user?: { full_name: string | null; avatar_url: string | null; email: string | null };
+  reported_service?: { id: string; title: string; status: string | null } | null;
 }
 
 interface BannedUser {
@@ -128,22 +130,26 @@ export default function AdminReports() {
 
       if (error) throw error;
 
-      // Fetch profile info for each report
-      const reportsWithProfiles = await Promise.all(
+      // Fetch profile and service info for each report
+      const reportsWithDetails = await Promise.all(
         data.map(async (report) => {
-          const [reporterRes, reportedRes] = await Promise.all([
+          const [reporterRes, reportedRes, serviceRes] = await Promise.all([
             supabase.rpc("get_basic_profile", { _profile_id: report.reporter_id }),
-            supabase.from("profiles").select("full_name, avatar_url, email").eq("id", report.reported_user_id).single(),
+            supabase.from("profiles").select("full_name, avatar_url, email").eq("id", report.reported_user_id).maybeSingle(),
+            report.reported_service_id 
+              ? supabase.from("services").select("id, title, status").eq("id", report.reported_service_id).maybeSingle()
+              : Promise.resolve({ data: null }),
           ]);
           return {
             ...report,
             reporter: reporterRes.data?.[0] || null,
             reported_user: reportedRes.data || null,
+            reported_service: serviceRes.data || null,
           };
         })
       );
 
-      return reportsWithProfiles as Report[];
+      return reportsWithDetails as Report[];
     },
     enabled: isAdmin === true,
   });
@@ -337,10 +343,44 @@ export default function AdminReports() {
       spam: "Spam or scam",
       inappropriate: "Inappropriate content",
       fraud: "Fraudulent activity",
+      scam: "Potential scam",
+      illegal: "Illegal content",
       other: "Other violation",
     };
     return labels[reason] || reason;
   };
+
+  // Delete service mutation
+  const deleteService = useMutation({
+    mutationFn: async ({ serviceId, reportId }: { serviceId: string; reportId: string }) => {
+      const { error } = await supabase.from("services").delete().eq("id", serviceId);
+      if (error) throw error;
+
+      // Update report status
+      await supabase
+        .from("reports")
+        .update({
+          status: "resolved",
+          reviewed_at: new Date().toISOString(),
+          admin_notes: adminNotes || "Service deleted by admin",
+          resolved_by: user!.id,
+        })
+        .eq("id", reportId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-reports"] });
+      toast({ title: "Service deleted successfully" });
+      setSelectedReport(null);
+      setAdminNotes("");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to delete service",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   if (authLoading || roleLoading) {
     return (
@@ -425,9 +465,15 @@ export default function AdminReports() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 space-y-3">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             {getStatusBadge(report.status)}
                             <Badge variant="outline">{getReasonLabel(report.reason)}</Badge>
+                            {report.reported_service_id && (
+                              <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                                <FileX className="h-3 w-3 mr-1" />
+                                Listing Report
+                              </Badge>
+                            )}
                             <span className="text-sm text-muted-foreground">
                               {format(new Date(report.created_at), "dd MMM yyyy, HH:mm")}
                             </span>
@@ -466,14 +512,83 @@ export default function AdminReports() {
                             </div>
                           </div>
 
+                          {/* Reported Service Info */}
+                          {report.reported_service && (
+                            <div className="col-span-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg p-3 border border-orange-200 dark:border-orange-800">
+                              <p className="text-xs text-muted-foreground mb-1">Reported Listing</p>
+                              <div className="flex items-center justify-between gap-2">
+                                <div>
+                                  <p className="font-medium text-sm">{report.reported_service.title}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    Status: {report.reported_service.status || 'unknown'}
+                                  </p>
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  asChild
+                                >
+                                  <a href={`/services/${report.reported_service.id}`} target="_blank" rel="noopener noreferrer">
+                                    <ExternalLink className="h-3 w-3 mr-1" />
+                                    View
+                                  </a>
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+
                           {report.description && (
-                            <div className="bg-muted/50 rounded-lg p-3">
+                            <div className="col-span-2 bg-muted/50 rounded-lg p-3">
                               <p className="text-sm">{report.description}</p>
                             </div>
                           )}
                         </div>
 
                         <div className="flex flex-col gap-2">
+                          {/* Delete Service button for listing reports */}
+                          {report.reported_service && report.reported_service.status !== 'deleted' && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  className="gap-1"
+                                  onClick={() => setSelectedReport(report)}
+                                >
+                                  <FileX className="h-4 w-4" />
+                                  Delete Listing
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete this listing?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will permanently delete "{report.reported_service.title}". This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className="space-y-2">
+                                  <Textarea
+                                    placeholder="Admin notes (optional)"
+                                    value={adminNotes}
+                                    onChange={(e) => setAdminNotes(e.target.value)}
+                                  />
+                                </div>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => deleteService.mutate({ 
+                                      serviceId: report.reported_service!.id, 
+                                      reportId: report.id 
+                                    })}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  >
+                                    Delete Listing
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button

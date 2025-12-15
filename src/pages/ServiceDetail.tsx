@@ -48,6 +48,7 @@ import { formatDisplayName } from "@/lib/utils";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { Disclaimer } from "@/components/shared/Disclaimer";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
+import { ReportServiceDialog } from "@/components/reports/ReportServiceDialog";
 
 // Response from secure database function
 interface SecureServiceDetail {
@@ -527,6 +528,17 @@ export default function ServiceDetail() {
                         Save
                       </Button>
                     </div>
+
+                    {/* Report button - only show if not owner and user is logged in */}
+                    {!isOwner && user && service.user_id && (
+                      <div className="pt-2 border-t border-border">
+                        <ReportServiceDialog
+                          serviceId={service.id}
+                          serviceTitle={service.title}
+                          serviceOwnerId={service.user_id}
+                        />
+                      </div>
+                    )}
 
                     <Disclaimer variant="full" className="mt-4" />
                   </div>

@@ -571,6 +571,7 @@ export type Database = {
           description: string | null
           id: string
           reason: string
+          reported_service_id: string | null
           reported_user_id: string
           reporter_id: string
           resolved_by: string | null
@@ -583,6 +584,7 @@ export type Database = {
           description?: string | null
           id?: string
           reason: string
+          reported_service_id?: string | null
           reported_user_id: string
           reporter_id: string
           resolved_by?: string | null
@@ -595,13 +597,22 @@ export type Database = {
           description?: string | null
           id?: string
           reason?: string
+          reported_service_id?: string | null
           reported_user_id?: string
           reporter_id?: string
           resolved_by?: string | null
           reviewed_at?: string | null
           status?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "reports_reported_service_id_fkey"
+            columns: ["reported_service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
