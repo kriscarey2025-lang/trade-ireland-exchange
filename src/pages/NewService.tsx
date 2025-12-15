@@ -159,6 +159,16 @@ export default function NewService() {
     trackServiceCreated(user.id, newService.id, title.trim());
 
     if (!moderationResult.approved) {
+      // Notify admins about flagged content
+      supabase.functions.invoke('notify-admins-moderation', {
+        body: {
+          serviceId: newService.id,
+          serviceTitle: title.trim(),
+          moderationReason: moderationResult.reason || 'Content flagged for review',
+          posterName: user.email || 'Unknown user'
+        }
+      }).catch(err => console.error('Failed to notify admins:', err));
+
       toast.warning("Your post has been submitted for review", {
         description: moderationResult.reason || "Our system flagged some content. An admin will review it shortly.",
         duration: 8000,
