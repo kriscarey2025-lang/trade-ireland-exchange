@@ -184,7 +184,7 @@ function generateDigestEmail(
 ): string {
   const servicesList = services.map(service => `
     <tr>
-      <td style="padding: 16px 0; border-bottom: 1px solid #3d3d4a;">
+      <td style="padding: 16px 0; border-bottom: 1px solid #252542;">
         <a href="https://swap-skills.com/service/${service.id}" style="text-decoration: none;">
           <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #ffffff;">${service.title}</h4>
         </a>
@@ -192,7 +192,7 @@ function generateDigestEmail(
           ${service.description ? (service.description.length > 120 ? service.description.slice(0, 120) + '...' : service.description) : 'No description'}
         </p>
         <div style="display: flex; gap: 12px;">
-          <span style="font-size: 12px; color: #7c3aed; background: rgba(124, 58, 237, 0.15); padding: 4px 10px; border-radius: 12px;">${service.category}</span>
+          <span style="font-size: 12px; color: #22c55e; background: rgba(34, 197, 94, 0.15); padding: 4px 10px; border-radius: 12px;">${service.category}</span>
           ${service.location ? `<span style="font-size: 12px; color: #71717a;">📍 ${service.location}</span>` : ''}
         </div>
       </td>
@@ -207,19 +207,19 @@ function generateDigestEmail(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Your Weekly Swap Skills Digest</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #2d2d3a;">
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a2e;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
     <tr>
       <td align="center" style="padding: 40px 20px;">
-        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #2d2d3a; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">
+        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #1a1a2e; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">
           
-          <!-- Header with purple gradient -->
+          <!-- Header with orange to green gradient -->
           <tr>
-            <td style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6366f1 100%); padding: 48px 40px; text-align: center; border-radius: 12px 12px 0 0;">
+            <td style="background: linear-gradient(135deg, #f97316 0%, #22c55e 100%); padding: 48px 40px; text-align: center; border-radius: 12px 12px 0 0;">
               <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">
                 🔄 Swap Skills
               </h1>
-              <p style="margin: 12px 0 0 0; font-size: 16px; color: rgba(255, 255, 255, 0.85);">
+              <p style="margin: 12px 0 0 0; font-size: 16px; color: rgba(255, 255, 255, 0.9);">
                 Weekly Digest
               </p>
             </td>
@@ -234,12 +234,12 @@ function generateDigestEmail(
               
               <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.6; color: #a1a1aa;">
                 ${hasMatches 
-                  ? `Great news! We found <strong style="color: #8b5cf6;">${services.length} new skill offers</strong> that match what you're looking for.`
-                  : `Here's what's new on Swap Skills this week. We had <strong style="color: #8b5cf6;">${totalNewServices} new skill offers</strong> posted!`
+                  ? `Great news! We found <strong style="color: #22c55e;">${services.length} new skill offers</strong> that match what you're looking for.`
+                  : `Here's what's new on Swap Skills this week. We had <strong style="color: #22c55e;">${totalNewServices} new skill offers</strong> posted!`
                 }
               </p>
               
-              <div style="background-color: #3d3d4a; border-radius: 12px; padding: 24px; margin: 24px 0;">
+              <div style="background-color: #252542; border-radius: 12px; padding: 24px; margin: 24px 0;">
                 <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #ffffff;">
                   ${hasMatches ? '🎯 Matching Offers' : '✨ Featured This Week'}
                 </h3>
@@ -250,21 +250,21 @@ function generateDigestEmail(
               </div>
               
               <div style="text-align: center; margin: 32px 0;">
-                <a href="https://swap-skills.com/browse" style="display: inline-block; background: #7c3aed; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);">
+                <a href="https://swap-skills.com/browse" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);">
                   Browse All Offers →
                 </a>
               </div>
               
               <p style="margin: 32px 0 0 0; font-size: 14px; color: #71717a; text-align: center;">
                 You're receiving this email because you've opted in to weekly updates.<br>
-                <a href="https://swap-skills.com/profile" style="color: #8b5cf6; text-decoration: underline;">Manage your preferences</a>
+                <a href="https://swap-skills.com/profile" style="color: #f97316; text-decoration: underline;">Manage your preferences</a>
               </p>
             </td>
           </tr>
           
           <!-- Footer -->
           <tr>
-            <td style="background-color: #252532; padding: 32px 40px; text-align: center; border-top: 1px solid #3d3d4a;">
+            <td style="background-color: #16162a; padding: 32px 40px; text-align: center; border-top: 1px solid #252542;">
               <p style="margin: 0; font-size: 12px; color: #52525b;">
                 © ${new Date().getFullYear()} Swap Skills. All rights reserved.<br>
                 <a href="https://swap-skills.com/privacy" style="color: #71717a;">Privacy Policy</a> · 
