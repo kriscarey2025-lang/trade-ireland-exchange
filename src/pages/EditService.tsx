@@ -90,28 +90,26 @@ export default function EditService() {
       setImages(service.images || []);
       setServiceType((service.type as "offer" | "request") || "offer");
       
-      // Parse accepted_categories
+      // Parse accepted_categories - now supports both open to all AND specific categories
       const acceptedCats = service.accepted_categories || [];
-      if (acceptedCats.includes("_open_to_all_")) {
-        setOpenToGeneralOffers(true);
-        setAcceptedSkills([]);
-        setCustomSkills([]);
-      } else {
-        setOpenToGeneralOffers(false);
-        const standardSkills: string[] = [];
-        const customSkillsList: string[] = [];
-        
-        acceptedCats.forEach((cat: string) => {
-          if (cat.startsWith("custom:")) {
-            customSkillsList.push(cat.replace("custom:", ""));
-          } else {
-            standardSkills.push(cat);
-          }
-        });
-        
-        setAcceptedSkills(standardSkills);
-        setCustomSkills(customSkillsList);
-      }
+      const hasOpenToAll = acceptedCats.includes("_open_to_all_");
+      setOpenToGeneralOffers(hasOpenToAll);
+      
+      const standardSkills: string[] = [];
+      const customSkillsList: string[] = [];
+      
+      acceptedCats.forEach((cat: string) => {
+        if (cat === "_open_to_all_") {
+          // Skip, already handled
+        } else if (cat.startsWith("custom:")) {
+          customSkillsList.push(cat.replace("custom:", ""));
+        } else {
+          standardSkills.push(cat);
+        }
+      });
+      
+      setAcceptedSkills(standardSkills);
+      setCustomSkills(customSkillsList);
     }
   }, [service]);
 
@@ -157,10 +155,12 @@ export default function EditService() {
 
     setIsSubmitting(true);
 
-    // Combine accepted skills
-    const allAcceptedSkills = openToGeneralOffers 
-      ? ["_open_to_all_"] 
-      : [...acceptedSkills, ...customSkills.map(s => `custom:${s}`)];
+    // Combine accepted skills - include both specific categories AND open to all if selected
+    const allAcceptedSkills = [
+      ...acceptedSkills,
+      ...customSkills.map(s => `custom:${s}`),
+      ...(openToGeneralOffers ? ["_open_to_all_"] : [])
+    ];
 
     const { error } = await supabase
       .from("services")
