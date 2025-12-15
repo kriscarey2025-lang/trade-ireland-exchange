@@ -13,13 +13,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
-import { ServiceCategory } from "@/types";
+import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
 import { useDebounce } from "@/hooks/useDebounce";
 import { SEO } from "@/components/SEO";
 import { useAuth } from "@/hooks/useAuth";
+import { postCategoryLabels } from "@/lib/postCategories";
 
 const locations = [
   "All Ireland",
@@ -65,6 +66,7 @@ export default function Browse() {
     (searchParams.get("category") as ServiceCategory) || "all"
   );
   const [selectedLocation, setSelectedLocation] = useState("All Ireland");
+  const [selectedPostType, setSelectedPostType] = useState<PostCategory | "all">("all");
   const [showFilters, setShowFilters] = useState(false);
 
   // Debounce search query to avoid too many API calls
@@ -77,15 +79,22 @@ export default function Browse() {
     search: debouncedSearch || undefined,
   });
 
+  // Filter services by post type on the client side
+  const filteredServices = useMemo(() => {
+    if (selectedPostType === "all") return services;
+    return services.filter((service) => service.type === selectedPostType);
+  }, [services, selectedPostType]);
+
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("all");
     setSelectedLocation("All Ireland");
+    setSelectedPostType("all");
     setSearchParams({});
   };
 
   const hasActiveFilters =
-    searchQuery || selectedCategory !== "all" || selectedLocation !== "All Ireland";
+    searchQuery || selectedCategory !== "all" || selectedLocation !== "All Ireland" || selectedPostType !== "all";
 
   return (
     <>
@@ -131,6 +140,45 @@ export default function Browse() {
             <p className="text-muted-foreground">
               Find services you need or see what others are looking for
             </p>
+          </div>
+
+          {/* Post Type Filters */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            <Button
+              variant={selectedPostType === "all" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedPostType("all")}
+              className="gap-2"
+            >
+              All Types
+            </Button>
+            <Button
+              variant={selectedPostType === "free_offer" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedPostType("free_offer")}
+              className="gap-2"
+            >
+              <Gift className="h-4 w-4" />
+              {postCategoryLabels.free_offer}
+            </Button>
+            <Button
+              variant={selectedPostType === "help_request" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedPostType("help_request")}
+              className="gap-2"
+            >
+              <HelpCircle className="h-4 w-4" />
+              {postCategoryLabels.help_request}
+            </Button>
+            <Button
+              variant={selectedPostType === "skill_swap" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedPostType("skill_swap")}
+              className="gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              {postCategoryLabels.skill_swap}
+            </Button>
           </div>
 
           {/* Search & Filters */}
@@ -211,7 +259,7 @@ export default function Browse() {
           {/* Results */}
           <div className="mb-4">
             <p className="text-sm text-muted-foreground">
-              {isLoading ? "Loading..." : `${services.length} service${services.length !== 1 ? "s" : ""} found`}
+              {isLoading ? "Loading..." : `${filteredServices.length} service${filteredServices.length !== 1 ? "s" : ""} found`}
             </p>
           </div>
 
@@ -226,9 +274,9 @@ export default function Browse() {
                 Please try again later
               </p>
             </div>
-          ) : services.length > 0 ? (
+          ) : filteredServices.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services.map((service, index) => (
+              {filteredServices.map((service, index) => (
                 <div
                   key={service.id}
                   className="animate-fade-up"
