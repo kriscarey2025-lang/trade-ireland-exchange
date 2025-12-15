@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { trackContactInitiated } from "@/hooks/useEngagementTracking";
 
 interface Conversation {
   id: string;
@@ -233,6 +234,11 @@ export function useStartConversation() {
         });
 
       if (msgError) throw msgError;
+
+      // Track contact initiated (only for new conversations)
+      if (!existing && user) {
+        trackContactInitiated(user.id, conversationId, providerId);
+      }
 
       return conversationId;
     },

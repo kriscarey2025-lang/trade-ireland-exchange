@@ -713,6 +713,36 @@ export type Database = {
           },
         ]
       }
+      user_engagement: {
+        Row: {
+          created_at: string
+          duration_seconds: number | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          page_path: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          page_path?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_path?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_ip_logs: {
         Row: {
           created_at: string
@@ -973,6 +1003,15 @@ export type Database = {
           type: string
           updated_at: string
           user_id: string
+        }[]
+      }
+      get_user_engagement_summary: {
+        Args: { _user_id: string }
+        Returns: {
+          contacts_initiated: number
+          last_active_at: string
+          services_created: number
+          total_time_spent_minutes: number
         }[]
       }
       get_user_ratings: {
