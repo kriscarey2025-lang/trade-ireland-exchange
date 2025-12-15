@@ -42,6 +42,7 @@ import { categoryLabels, categoryIcons, allCategories } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
 import { trackServiceCreated } from "@/hooks/useEngagementTracking";
 import { postCategoryLabels, postCategoryIcons } from "@/lib/postCategories";
+import { ImageUpload } from "@/components/services/ImageUpload";
 
 type WizardStep = "goal" | "details" | "generating" | "review" | "checklist" | "complete";
 
@@ -87,6 +88,7 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
   const [generatedPost, setGeneratedPost] = useState<GeneratedPost | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   
   // Step 5: Checklist
   const [wantsVerification, setWantsVerification] = useState(false);
@@ -195,6 +197,7 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
         type: goal, // Use the goal directly as it maps to PostCategory
         status: "active",
         accepted_categories: goal === "skill_swap" ? ["_open_to_all_"] : null, // Only for skill swaps
+        images: images.length > 0 ? images : null,
       }).select().single();
 
       if (serviceError) throw serviceError;
@@ -530,6 +533,25 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
                     {editedTitle || "Your title will appear here"}
                   </h3>
 
+                  {/* Images Preview */}
+                  {images.length > 0 && (
+                    <div className="flex gap-2 mb-4 overflow-x-auto">
+                      {images.slice(0, 3).map((url, index) => (
+                        <img
+                          key={url}
+                          src={url}
+                          alt={`Preview ${index + 1}`}
+                          className="h-16 w-16 rounded-lg object-cover shrink-0"
+                        />
+                      ))}
+                      {images.length > 3 && (
+                        <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center text-sm text-muted-foreground shrink-0">
+                          +{images.length - 3}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Meta Info */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary text-xs font-medium text-secondary-foreground">
@@ -590,6 +612,19 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
                   />
                   <p className="text-xs text-muted-foreground">{editedDescription.length}/1000</p>
                 </div>
+                
+                {/* Image Upload */}
+                {user && (
+                  <div className="space-y-2">
+                    <Label>Photos (optional)</Label>
+                    <ImageUpload
+                      userId={user.id}
+                      images={images}
+                      onImagesChange={setImages}
+                      maxImages={4}
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 
