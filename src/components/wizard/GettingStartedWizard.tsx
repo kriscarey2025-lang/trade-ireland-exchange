@@ -106,7 +106,8 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
   };
 
   const handleDetailsNext = async () => {
-    if (!experienceLevel) {
+    // Experience level only required for free_offer and skill_swap
+    if (goal !== "help_request" && !experienceLevel) {
       toast.error("Please select your experience level");
       return;
     }
@@ -325,33 +326,35 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
             </div>
 
             <div className="space-y-5">
-              {/* Experience Level */}
-              <div className="space-y-3">
-                <Label>How would you describe your experience?</Label>
-                <RadioGroup 
-                  value={experienceLevel} 
-                  onValueChange={(v) => setExperienceLevel(v as typeof experienceLevel)}
-                  className="flex flex-wrap gap-2"
-                >
-                  {[
-                    { value: "beginner", label: "Just starting out" },
-                    { value: "intermediate", label: "Got some experience" },
-                    { value: "expert", label: "Years of practice" },
-                  ].map((level) => (
-                    <label
-                      key={level.value}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-full border cursor-pointer transition-all ${
-                        experienceLevel === level.value 
-                          ? "border-primary bg-primary/10" 
-                          : "border-border hover:border-primary/50"
-                      }`}
-                    >
-                      <RadioGroupItem value={level.value} className="sr-only" />
-                      <span className="text-sm font-medium">{level.label}</span>
-                    </label>
-                  ))}
-                </RadioGroup>
-              </div>
+              {/* Experience Level - only show for free_offer and skill_swap */}
+              {goal !== "help_request" && (
+                <div className="space-y-3">
+                  <Label>How would you describe your experience?</Label>
+                  <RadioGroup 
+                    value={experienceLevel} 
+                    onValueChange={(v) => setExperienceLevel(v as typeof experienceLevel)}
+                    className="flex flex-wrap gap-2"
+                  >
+                    {[
+                      { value: "beginner", label: "Just starting out" },
+                      { value: "intermediate", label: "Got some experience" },
+                      { value: "expert", label: "Years of practice" },
+                    ].map((level) => (
+                      <label
+                        key={level.value}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full border cursor-pointer transition-all ${
+                          experienceLevel === level.value 
+                            ? "border-primary bg-primary/10" 
+                            : "border-border hover:border-primary/50"
+                        }`}
+                      >
+                        <RadioGroupItem value={level.value} className="sr-only" />
+                        <span className="text-sm font-medium">{level.label}</span>
+                      </label>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
 
               {/* Engagement Type */}
               <div className="space-y-3">
