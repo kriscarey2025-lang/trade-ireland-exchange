@@ -7,6 +7,7 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { BackToTop } from "@/components/BackToTop";
 import { AuthProvider } from "@/hooks/useAuth";
 import { EngagementTracker } from "@/components/tracking/EngagementTracker";
+import { PromoBanner } from "@/components/layout/PromoBanner";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import HowItWorks from "./pages/HowItWorks";
@@ -43,6 +44,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <PromoBanner />
           <ScrollToTop />
           <BackToTop />
           <EngagementTracker />
