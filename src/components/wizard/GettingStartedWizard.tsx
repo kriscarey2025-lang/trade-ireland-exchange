@@ -72,6 +72,7 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
   
   // Step 2: Details
   const [experienceLevel, setExperienceLevel] = useState<"beginner" | "intermediate" | "expert" | "">("");
+  const [engagementType, setEngagementType] = useState<"one_off" | "short_term" | "long_term" | "">("");
   const [skillCategory, setSkillCategory] = useState<ServiceCategory | "">("");
   const [skillDetails, setSkillDetails] = useState("");
   const [location, setLocation] = useState("");
@@ -127,6 +128,7 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
         body: {
           goal,
           experienceLevel,
+          engagementType: engagementType || undefined,
           skillCategory,
           skillDetails: skillDetails.trim(),
           location,
@@ -343,6 +345,34 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
                     >
                       <RadioGroupItem value={level.value} className="sr-only" />
                       <span className="text-sm font-medium">{level.label}</span>
+                    </label>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              {/* Engagement Type */}
+              <div className="space-y-3">
+                <Label>What type of arrangement are you looking for?</Label>
+                <RadioGroup 
+                  value={engagementType} 
+                  onValueChange={(v) => setEngagementType(v as typeof engagementType)}
+                  className="flex flex-wrap gap-2"
+                >
+                  {[
+                    { value: "one_off", label: "One-off transaction" },
+                    { value: "short_term", label: "Short-term project" },
+                    { value: "long_term", label: "Long-term connection" },
+                  ].map((type) => (
+                    <label
+                      key={type.value}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full border cursor-pointer transition-all ${
+                        engagementType === type.value 
+                          ? "border-primary bg-primary/10" 
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <RadioGroupItem value={type.value} className="sr-only" />
+                      <span className="text-sm font-medium">{type.label}</span>
                     </label>
                   ))}
                 </RadioGroup>
