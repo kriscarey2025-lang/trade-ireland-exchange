@@ -7,6 +7,7 @@ const corsHeaders = {
 
 interface GeneratePostRequest {
   goal: "share_skill" | "find_help" | "both";
+  postCategory: "free_offer" | "help_request" | "skill_swap";
   experienceLevel: "beginner" | "intermediate" | "expert";
   engagementType?: "one_off" | "short_term" | "long_term";
   skillCategory: string;
@@ -27,11 +28,16 @@ serve(async (req) => {
     }
 
     const body: GeneratePostRequest = await req.json();
-    const { goal, experienceLevel, engagementType, skillCategory, skillDetails, location, whatTheyWant } = body;
+    const { goal, postCategory, experienceLevel, engagementType, skillCategory, skillDetails, location, whatTheyWant } = body;
 
-    console.log("Generating service post with params:", { goal, experienceLevel, engagementType, skillCategory, location });
+    console.log("Generating service post with params:", { goal, postCategory, experienceLevel, engagementType, skillCategory, location });
 
-    const isOffer = goal === "share_skill" || goal === "both";
+    const postCategoryDescriptions = {
+      free_offer: "offering their skills for free to help others",
+      help_request: "looking for help without necessarily offering something in return",
+      skill_swap: "wanting to trade their skills for services they need",
+    };
+
     const experienceText = {
       beginner: "a beginner",
       intermediate: "intermediate level",
@@ -49,7 +55,7 @@ Create warm, friendly, and authentic-sounding posts that would appeal to local n
 Always be genuine and approachable - no corporate speak.
 Keep the Irish/British spelling conventions (neighbour, favourite, etc.).`;
 
-    const userPrompt = `Create a service ${isOffer ? "offer" : "request"} post for someone who:
+    const userPrompt = `Create a service post for someone who is ${postCategoryDescriptions[postCategory]}:
 - Is ${experienceText} at: ${skillCategory}
 - Their skill/service details: ${skillDetails}
 - Located in: ${location}
@@ -127,14 +133,14 @@ Respond ONLY with valid JSON, no markdown formatting.`;
       // Fallback to a generated post
       parsed = {
         title: `${skillCategory} - ${location}`,
-        description: `I'm looking to ${isOffer ? "offer" : "find"} ${skillCategory} services. ${skillDetails}. Feel free to reach out if you're interested in connecting!`,
+        description: `I'm ${postCategory === 'help_request' ? 'looking for help with' : 'offering'} ${skillCategory} services. ${skillDetails}. Feel free to reach out if you're interested in connecting!`,
       };
     }
 
     return new Response(JSON.stringify({
       title: parsed.title || `${skillCategory} - ${location}`,
       description: parsed.description || skillDetails,
-      type: isOffer ? "offer" : "request",
+      type: postCategory,
       category: skillCategory,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
