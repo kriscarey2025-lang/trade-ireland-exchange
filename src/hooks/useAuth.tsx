@@ -157,10 +157,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // Update profile with location after signup
-    if (!error) {
-      const { data: { user: newUser } } = await supabase.auth.getUser();
-      if (newUser) {
-        await supabase.from('profiles').update({ location }).eq('id', newUser.id);
+    const { data: { user: newUser } } = await supabase.auth.getUser();
+    if (newUser) {
+      await supabase.from('profiles').update({ location }).eq('id', newUser.id);
+      
+      // Send welcome email
+      try {
+        await supabase.functions.invoke('send-welcome-email', {
+          body: { email, fullName }
+        });
+      } catch (e) {
+        console.error('Failed to send welcome email:', e);
+        // Don't fail signup if email fails
       }
     }
 
