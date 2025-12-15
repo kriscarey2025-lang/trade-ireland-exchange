@@ -8,6 +8,7 @@ const corsHeaders = {
 interface GeneratePostRequest {
   goal: "share_skill" | "find_help" | "both";
   experienceLevel: "beginner" | "intermediate" | "expert";
+  engagementType?: "one_off" | "short_term" | "long_term";
   skillCategory: string;
   skillDetails: string;
   location: string;
@@ -26,9 +27,9 @@ serve(async (req) => {
     }
 
     const body: GeneratePostRequest = await req.json();
-    const { goal, experienceLevel, skillCategory, skillDetails, location, whatTheyWant } = body;
+    const { goal, experienceLevel, engagementType, skillCategory, skillDetails, location, whatTheyWant } = body;
 
-    console.log("Generating service post with params:", { goal, experienceLevel, skillCategory, location });
+    console.log("Generating service post with params:", { goal, experienceLevel, engagementType, skillCategory, location });
 
     const isOffer = goal === "share_skill" || goal === "both";
     const experienceText = {
@@ -36,6 +37,12 @@ serve(async (req) => {
       intermediate: "intermediate level",
       expert: "an expert",
     }[experienceLevel];
+
+    const engagementText = engagementType ? {
+      one_off: "a one-off transaction",
+      short_term: "short-term project or occasional help",
+      long_term: "a long-term connection or ongoing arrangement",
+    }[engagementType] : null;
 
     const systemPrompt = `You are a helpful assistant creating service listings for a community skill-swapping platform in Ireland. 
 Create warm, friendly, and authentic-sounding posts that would appeal to local neighbours.
@@ -46,7 +53,8 @@ Keep the Irish/British spelling conventions (neighbour, favourite, etc.).`;
 - Is ${experienceText} at: ${skillCategory}
 - Their skill/service details: ${skillDetails}
 - Located in: ${location}
-${whatTheyWant ? `- Looking for in return: ${whatTheyWant}` : ""}
+${engagementText ? `- Looking for: ${engagementText}` : ""}
+${whatTheyWant ? `- Wants in return: ${whatTheyWant}` : ""}
 
 Generate a JSON response with these fields:
 - title: A catchy but natural title (max 80 chars) that describes the skill/service
