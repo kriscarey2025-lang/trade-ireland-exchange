@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -32,7 +33,8 @@ import {
   Edit,
   PartyPopper,
   Gift,
-  RefreshCw
+  RefreshCw,
+  MapPin
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -483,6 +485,18 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
         );
 
       case "review":
+        const getPostTypeBadgePreview = (type: PostCategory) => {
+          switch (type) {
+            case "free_offer":
+              return { label: "🎁 Free Offer", className: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-300" };
+            case "help_request":
+              return { label: "🙋 Looking for Help", className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-300" };
+            case "skill_swap":
+              return { label: "🔄 Skill Swap", className: "" };
+          }
+        };
+        const previewBadge = getPostTypeBadgePreview(goal as PostCategory);
+        
         return (
           <div className="space-y-6">
             <div className="text-center mb-6">
@@ -495,16 +509,67 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
               </p>
             </div>
 
+            {/* Post Preview */}
+            <div className="space-y-2">
+              <Label className="text-muted-foreground text-xs uppercase tracking-wide">Preview</Label>
+              <Card className="border-2 border-dashed border-primary/30 bg-card/50">
+                <CardContent className="p-5">
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <Badge className={cn("shrink-0 rounded-lg", previewBadge.className)}>
+                      {previewBadge.label}
+                    </Badge>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted text-xs text-muted-foreground font-medium">
+                      <span>{categoryIcons[skillCategory as ServiceCategory]}</span>
+                      <span className="hidden sm:inline">{categoryLabels[skillCategory as ServiceCategory]}</span>
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-display font-semibold text-lg mb-2 line-clamp-2">
+                    {editedTitle || "Your title will appear here"}
+                  </h3>
+
+                  {/* Meta Info */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary text-xs font-medium text-secondary-foreground">
+                      <MapPin className="h-3 w-3" />
+                      {location}
+                    </div>
+                  </div>
+
+                  {/* Open to all for skill swaps */}
+                  {goal === "skill_swap" && (
+                    <div className="mb-4">
+                      <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/30 shadow-sm">
+                        <span className="text-sm">✨</span>
+                        <span className="text-xs font-semibold text-accent">Open to all offers</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* User preview */}
+                  <div className="flex items-center gap-3 pt-4 border-t border-border">
+                    <div className="h-14 w-14 rounded-full ring-2 ring-background shadow-md shrink-0 bg-primary/10 flex items-center justify-center">
+                      <span className="text-primary font-semibold text-lg">You</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-medium text-sm truncate">Your Name</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground italic">
+                        <span>No reviews yet</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Edit Fields */}
             <Card>
               <CardHeader className="pb-3">
-                <div className="flex items-center gap-2">
-                  <Badge variant={goal === "skill_swap" ? "default" : goal === "free_offer" ? "secondary" : "outline"}>
-                    {postCategoryIcons[goal as PostCategory]} {postCategoryLabels[goal as PostCategory]}
-                  </Badge>
-                  <Badge variant="outline">
-                    {categoryIcons[skillCategory as ServiceCategory]} {categoryLabels[skillCategory as ServiceCategory]}
-                  </Badge>
-                </div>
+                <CardTitle className="text-base">Edit Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -524,9 +589,6 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
                     maxLength={1000}
                   />
                   <p className="text-xs text-muted-foreground">{editedDescription.length}/1000</p>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>📍 {location}</span>
                 </div>
               </CardContent>
             </Card>
