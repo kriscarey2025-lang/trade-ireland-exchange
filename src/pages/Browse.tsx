@@ -74,7 +74,7 @@ export default function Browse() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">See full profiles & verification status</p>
-                  <p className="text-sm text-muted-foreground">Sign in to view verified badges, contact details, and complete service information.</p>
+                  <p className="text-sm text-muted-foreground">Sign in to view verified badges and complete service information.</p>
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
