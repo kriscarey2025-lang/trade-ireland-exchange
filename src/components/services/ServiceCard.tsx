@@ -89,27 +89,42 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
 
           {/* Looking for in exchange */}
           {service.acceptedCategories && service.acceptedCategories.length > 0 && (
-            <div className="mb-4 p-3 rounded-lg bg-accent/30 border border-accent/50">
-              <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-2">
-                <RefreshCw className="h-3 w-3" />
-                <span>Looking for in exchange:</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {service.acceptedCategories.slice(0, 3).map((cat) => (
-                  <span 
-                    key={cat} 
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-background text-xs text-foreground"
-                  >
-                    <span>{categoryIcons[cat as ServiceCategory] || "📋"}</span>
-                    <span>{categoryLabels[cat as ServiceCategory] || cat}</span>
+            <div className="mb-4">
+              {service.acceptedCategories.includes("_open_to_all_") ? (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
+                  <RefreshCw className="h-3.5 w-3.5 text-primary" />
+                  <span className="text-xs font-medium text-primary">Open to all offers</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <RefreshCw className="h-3 w-3" />
+                    Wants:
                   </span>
-                ))}
-                {service.acceptedCategories.length > 3 && (
-                  <span className="text-xs text-muted-foreground">
-                    +{service.acceptedCategories.length - 3} more
-                  </span>
-                )}
-              </div>
+                  {service.acceptedCategories
+                    .filter(cat => !cat.startsWith("custom:"))
+                    .slice(0, 4)
+                    .map((cat) => (
+                      <span 
+                        key={cat} 
+                        className="text-base"
+                        title={categoryLabels[cat as ServiceCategory] || cat}
+                      >
+                        {categoryIcons[cat as ServiceCategory] || "📋"}
+                      </span>
+                    ))}
+                  {service.acceptedCategories.filter(cat => cat.startsWith("custom:")).length > 0 && (
+                    <span className="text-xs text-muted-foreground">
+                      +{service.acceptedCategories.filter(cat => cat.startsWith("custom:")).length} custom
+                    </span>
+                  )}
+                  {service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).length > 4 && (
+                    <span className="text-xs text-muted-foreground">
+                      +{service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).length - 4}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
