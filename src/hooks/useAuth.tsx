@@ -122,6 +122,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           clearTimeout(safetyTimeout);
           return;
         }
+        
+        // Send welcome email for new OAuth users (check if profile was just created)
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('created_at, email, full_name')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        
+        if (profile) {
+          const createdAt = new Date(profile.created_at);
+          const now = new Date();
+          const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
+          
+          // If profile was created in the last 60 seconds, send welcome email
+          if (diffSeconds < 60) {
+            try {
+              await supabase.functions.invoke('send-welcome-email', {
+                body: { 
+                  email: profile.email || session.user.email, 
+                  fullName: profile.full_name || 'there' 
+                }
+              });
+            } catch (e) {
+              console.error('Failed to send welcome email:', e);
+            }
+          }
+        }
       }
       
       clearTimeout(safetyTimeout);
