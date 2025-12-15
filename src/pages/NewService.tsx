@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw } from "lucide-react";
+import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw, AlertTriangle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
@@ -25,6 +25,8 @@ import { z } from "zod";
 import { ImageUpload } from "@/components/services/ImageUpload";
 import { SkillSelector } from "@/components/services/SkillSelector";
 import { trackServiceCreated } from "@/hooks/useEngagementTracking";
+import { useContentModeration } from "@/hooks/useContentModeration";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const serviceSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
@@ -45,8 +47,10 @@ export default function NewService() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
+  const { checkContent, isChecking } = useContentModeration();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [moderationWarning, setModerationWarning] = useState<string | null>(null);
   
   // Get initial post category from URL param, default to skill_swap
   const getInitialPostCategory = (): PostCategory => {
@@ -110,7 +114,11 @@ export default function NewService() {
     }
 
     setIsSubmitting(true);
+    setModerationWarning(null);
 
+    // Check content with AI moderation
+    const moderationResult = await checkContent(title.trim(), description.trim());
+    
     // Combine accepted skills - only for skill_swap
     const allAcceptedSkills = postCategory === "skill_swap" 
       ? [
@@ -119,6 +127,10 @@ export default function NewService() {
           ...(openToGeneralOffers ? ["_open_to_all_"] : [])
         ]
       : null;
+
+    // Determine moderation status
+    const moderationStatus = moderationResult.approved ? 'approved' : 'pending_review';
+    const moderationReason = moderationResult.reason;
 
     const { data: newService, error } = await supabase.from("services").insert({
       user_id: user.id,
@@ -132,6 +144,8 @@ export default function NewService() {
       images: images.length > 0 ? images : null,
       accepted_categories: allAcceptedSkills,
       type: postCategory,
+      moderation_status: moderationStatus,
+      moderation_reason: moderationReason,
     }).select().single();
 
     if (error) {
@@ -144,7 +158,16 @@ export default function NewService() {
     // Track service creation
     trackServiceCreated(user.id, newService.id, title.trim());
 
-    toast.success("Posted successfully!");
+    if (!moderationResult.approved) {
+      toast.warning("Your post has been submitted for review", {
+        description: moderationResult.reason || "Our system flagged some content. An admin will review it shortly.",
+        duration: 8000,
+      });
+      setModerationWarning(moderationResult.reason || "Your post is being reviewed by our team.");
+    } else {
+      toast.success("Posted successfully!");
+    }
+    
     navigate("/browse");
   };
 

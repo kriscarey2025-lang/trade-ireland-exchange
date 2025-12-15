@@ -472,6 +472,41 @@ export type Database = {
           },
         ]
       }
+      moderation_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          reason: string | null
+          reviewed_by: string | null
+          service_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          reviewed_by?: string | null
+          service_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          reviewed_by?: string | null
+          service_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_logs_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -674,6 +709,9 @@ export type Database = {
           id: string
           images: string[] | null
           location: string | null
+          moderated_at: string | null
+          moderation_reason: string | null
+          moderation_status: string | null
           price: number | null
           price_type: string | null
           status: string | null
@@ -690,6 +728,9 @@ export type Database = {
           id?: string
           images?: string[] | null
           location?: string | null
+          moderated_at?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string | null
           price?: number | null
           price_type?: string | null
           status?: string | null
@@ -706,6 +747,9 @@ export type Database = {
           id?: string
           images?: string[] | null
           location?: string | null
+          moderated_at?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string | null
           price?: number | null
           price_type?: string | null
           status?: string | null
