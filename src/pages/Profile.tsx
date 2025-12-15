@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Loader2, User, MapPin, Phone, Mail, Edit2, Save, X, AlertTriangle, Linkedin, Facebook, Instagram, Camera, Bell } from "lucide-react";
+import { Loader2, User, MapPin, Phone, Mail, Edit2, Save, X, AlertTriangle, Camera, Bell } from "lucide-react";
 import { DeleteAccountDialog } from "@/components/profile/DeleteAccountDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +18,7 @@ import { z } from "zod";
 import { UserListings } from "@/components/profile/UserListings";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { VerificationRequestCard } from "@/components/profile/VerificationRequestCard";
+import { SocialLinksCard } from "@/components/profile/SocialLinksCard";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { ReviewsList } from "@/components/reviews/ReviewsList";
 
@@ -26,9 +27,6 @@ const profileSchema = z.object({
   location: z.string().trim().max(100).optional(),
   bio: z.string().trim().max(500).optional(),
   phone: z.string().trim().max(20).optional(),
-  linkedin_url: z.string().trim().url("Please enter a valid URL").optional().or(z.literal("")),
-  facebook_url: z.string().trim().url("Please enter a valid URL").optional().or(z.literal("")),
-  instagram_url: z.string().trim().url("Please enter a valid URL").optional().or(z.literal("")),
 });
 
 type VerificationStatus = "unverified" | "pending" | "verified" | "rejected";
@@ -72,9 +70,6 @@ export default function Profile() {
   const [fullName, setFullName] = useState("");
   const [location, setLocation] = useState("");
   const [bio, setBio] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [facebookUrl, setFacebookUrl] = useState("");
-  const [instagramUrl, setInstagramUrl] = useState("");
   const [phone, setPhone] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
@@ -115,9 +110,6 @@ export default function Profile() {
         setLocation(profileData.location || "");
         setBio(profileData.bio || "");
         setPhone(profileData.phone || "");
-        setLinkedinUrl(profileData.linkedin_url || "");
-        setFacebookUrl(profileData.facebook_url || "");
-        setInstagramUrl(profileData.instagram_url || "");
       }
 
       // Fetch verification request
@@ -156,9 +148,6 @@ export default function Profile() {
       location: location || undefined,
       bio: bio || undefined,
       phone: phone || undefined,
-      linkedin_url: linkedinUrl || undefined,
-      facebook_url: facebookUrl || undefined,
-      instagram_url: instagramUrl || undefined,
     });
 
     if (!result.success) {
@@ -175,9 +164,6 @@ export default function Profile() {
         location: location.trim() || null,
         bio: bio.trim() || null,
         phone: phone.trim() || null,
-        linkedin_url: linkedinUrl.trim() || null,
-        facebook_url: facebookUrl.trim() || null,
-        instagram_url: instagramUrl.trim() || null,
       })
       .eq('id', user!.id);
 
@@ -193,9 +179,6 @@ export default function Profile() {
       location: location.trim() || null,
       bio: bio.trim() || null,
       phone: phone.trim() || null,
-      linkedin_url: linkedinUrl.trim() || null,
-      facebook_url: facebookUrl.trim() || null,
-      instagram_url: instagramUrl.trim() || null,
     } : null);
 
     toast.success("Profile updated successfully");
@@ -209,9 +192,6 @@ export default function Profile() {
       setLocation(profile.location || "");
       setBio(profile.bio || "");
       setPhone(profile.phone || "");
-      setLinkedinUrl(profile.linkedin_url || "");
-      setFacebookUrl(profile.facebook_url || "");
-      setInstagramUrl(profile.instagram_url || "");
     }
     setIsEditing(false);
   };
@@ -419,61 +399,6 @@ export default function Profile() {
                     <p className="text-xs text-muted-foreground">{bio.length}/500 characters</p>
                   </div>
 
-                  <Separator />
-
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Social Media Links (optional)</p>
-                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
-                        <AlertTriangle className="h-3 w-3" />
-                        These links will be visible to other users when you post a service or request.
-                      </p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="linkedin" className="flex items-center gap-2">
-                        <Linkedin className="h-4 w-4" />
-                        LinkedIn
-                      </Label>
-                      <Input
-                        id="linkedin"
-                        value={linkedinUrl}
-                        onChange={(e) => setLinkedinUrl(e.target.value)}
-                        placeholder="https://linkedin.com/in/yourprofile"
-                        disabled={saving}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="facebook" className="flex items-center gap-2">
-                        <Facebook className="h-4 w-4" />
-                        Facebook
-                      </Label>
-                      <Input
-                        id="facebook"
-                        value={facebookUrl}
-                        onChange={(e) => setFacebookUrl(e.target.value)}
-                        placeholder="https://facebook.com/yourprofile"
-                        disabled={saving}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="instagram" className="flex items-center gap-2">
-                        <Instagram className="h-4 w-4" />
-                        Instagram
-                      </Label>
-                      <Input
-                        id="instagram"
-                        value={instagramUrl}
-                        onChange={(e) => setInstagramUrl(e.target.value)}
-                        placeholder="https://instagram.com/yourprofile"
-                        disabled={saving}
-                      />
-                    </div>
-                  </div>
-                  
-                  <Separator />
                   
                   <div className="flex gap-3">
                     <Button
@@ -539,53 +464,28 @@ export default function Profile() {
                     </p>
                   </div>
 
-                  {(profile?.linkedin_url || profile?.facebook_url || profile?.instagram_url) && (
-                    <>
-                      <Separator />
-                      <div>
-                        <p className="text-sm font-medium mb-3">Social Media</p>
-                        <div className="flex gap-3">
-                          {profile?.linkedin_url && (
-                            <a 
-                              href={profile.linkedin_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              <Linkedin className="h-5 w-5" />
-                              LinkedIn
-                            </a>
-                          )}
-                          {profile?.facebook_url && (
-                            <a 
-                              href={profile.facebook_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              <Facebook className="h-5 w-5" />
-                              Facebook
-                            </a>
-                          )}
-                          {profile?.instagram_url && (
-                            <a 
-                              href={profile.instagram_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              <Instagram className="h-5 w-5" />
-                              Instagram
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </>
-                  )}
                 </div>
               )}
             </CardContent>
           </Card>
+
+          {/* Social Media Links Card */}
+          {user && profile && (
+            <SocialLinksCard
+              userId={user.id}
+              linkedinUrl={profile.linkedin_url}
+              facebookUrl={profile.facebook_url}
+              instagramUrl={profile.instagram_url}
+              onUpdate={(linkedin, facebook, instagram) => {
+                setProfile(prev => prev ? {
+                  ...prev,
+                  linkedin_url: linkedin,
+                  facebook_url: facebook,
+                  instagram_url: instagram,
+                } : null);
+              }}
+            />
+          )}
 
           {/* ID Verification Card */}
           {user && profile && (
