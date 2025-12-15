@@ -782,6 +782,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          last_digest_sent_at: string | null
           onboarding_completed: boolean | null
           service_radius_km: number
           skills_offered: string[] | null
@@ -791,10 +792,12 @@ export type Database = {
           terms_accepted_at: string | null
           updated_at: string
           user_id: string
+          weekly_digest_enabled: boolean | null
         }
         Insert: {
           created_at?: string
           id?: string
+          last_digest_sent_at?: string | null
           onboarding_completed?: boolean | null
           service_radius_km?: number
           skills_offered?: string[] | null
@@ -804,10 +807,12 @@ export type Database = {
           terms_accepted_at?: string | null
           updated_at?: string
           user_id: string
+          weekly_digest_enabled?: boolean | null
         }
         Update: {
           created_at?: string
           id?: string
+          last_digest_sent_at?: string | null
           onboarding_completed?: boolean | null
           service_radius_km?: number
           skills_offered?: string[] | null
@@ -817,6 +822,7 @@ export type Database = {
           terms_accepted_at?: string | null
           updated_at?: string
           user_id?: string
+          weekly_digest_enabled?: boolean | null
         }
         Relationships: []
       }

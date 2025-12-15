@@ -8,8 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Loader2, User, MapPin, Phone, Mail, Edit2, Save, X, AlertTriangle, Linkedin, Facebook, Instagram, Camera } from "lucide-react";
+import { Loader2, User, MapPin, Phone, Mail, Edit2, Save, X, AlertTriangle, Linkedin, Facebook, Instagram, Camera, Bell } from "lucide-react";
 import { DeleteAccountDialog } from "@/components/profile/DeleteAccountDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,6 +65,8 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [verificationRequest, setVerificationRequest] = useState<VerificationRequest | null>(null);
+  const [weeklyDigestEnabled, setWeeklyDigestEnabled] = useState(false);
+  const [savingDigest, setSavingDigest] = useState(false);
   
   // Form state
   const [fullName, setFullName] = useState("");
@@ -126,6 +129,17 @@ export default function Profile() {
 
       if (verificationData) {
         setVerificationRequest(verificationData as VerificationRequest);
+      }
+
+      // Fetch user preferences for weekly digest
+      const { data: prefsData } = await supabase
+        .from('user_preferences')
+        .select('weekly_digest_enabled')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (prefsData) {
+        setWeeklyDigestEnabled(prefsData.weekly_digest_enabled || false);
       }
       
       setLoading(false);
@@ -597,6 +611,50 @@ export default function Profile() {
               </CardHeader>
               <CardContent>
                 <ReviewsList userId={user.id} />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Email Notifications Card */}
+          {user && (
+            <Card className="shadow-elevated border-border/50">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Bell className="h-5 w-5" />
+                  Email Notifications
+                </CardTitle>
+                <CardDescription>
+                  Manage your email notification preferences
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Weekly Digest</p>
+                    <p className="text-sm text-muted-foreground">
+                      Receive weekly updates about new skill offers matching your interests (every Friday)
+                    </p>
+                  </div>
+                  <Switch
+                    checked={weeklyDigestEnabled}
+                    disabled={savingDigest}
+                    onCheckedChange={async (checked) => {
+                      setSavingDigest(true);
+                      const { error } = await supabase
+                        .from('user_preferences')
+                        .update({ weekly_digest_enabled: checked })
+                        .eq('user_id', user.id);
+                      
+                      if (error) {
+                        toast.error("Failed to update preference");
+                      } else {
+                        setWeeklyDigestEnabled(checked);
+                        toast.success(checked ? "Weekly digest enabled" : "Weekly digest disabled");
+                      }
+                      setSavingDigest(false);
+                    }}
+                  />
+                </div>
               </CardContent>
             </Card>
           )}
