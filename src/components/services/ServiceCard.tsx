@@ -91,9 +91,10 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
           {service.acceptedCategories && service.acceptedCategories.length > 0 && (
             <div className="mb-4">
               {service.acceptedCategories.includes("_open_to_all_") ? (
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
-                  <RefreshCw className="h-3.5 w-3.5 text-primary" />
-                  <span className="text-xs font-medium text-primary">Open to all offers</span>
+                <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-cyan-500/15 border border-emerald-500/30 shadow-sm">
+                  <span className="text-sm">🌟</span>
+                  <span className="text-xs font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Open to all offers</span>
+                  <span className="text-sm">✨</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 flex-wrap">
