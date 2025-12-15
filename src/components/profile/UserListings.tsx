@@ -131,7 +131,7 @@ interface ListingItemProps {
 
 function ListingItem({ service, onDelete }: ListingItemProps) {
   const navigate = useNavigate();
-  const isOffer = service.type === "offer";
+  const isOffer = service.type === "free_offer" || service.type === "skill_swap";
 
   return (
     <div className="flex items-center gap-4 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors">
