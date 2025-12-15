@@ -29,6 +29,7 @@ import Cookies from "./pages/Cookies";
 import AdminVerification from "./pages/AdminVerification";
 import AdminReports from "./pages/AdminReports";
 import AdminAdvertisers from "./pages/AdminAdvertisers";
+import AdminModeration from "./pages/AdminModeration";
 import AdvertiserDashboard from "./pages/AdvertiserDashboard";
 import AIMatches from "./pages/AIMatches";
 import Advertise from "./pages/Advertise";
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/admin/verification" element={<AdminVerification />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route path="/admin/advertisers" element={<AdminAdvertisers />} />
+            <Route path="/admin/moderation" element={<AdminModeration />} />
             <Route path="/matches" element={<AIMatches />} />
             <Route path="/advertiser" element={<AdvertiserDashboard />} />
             <Route path="/advertise" element={<Advertise />} />
