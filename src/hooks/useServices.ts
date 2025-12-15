@@ -62,6 +62,7 @@ export interface ServiceWithUser {
   createdAt: Date;
   location: string;
   status: "active" | "paused" | "completed";
+  acceptedCategories?: string[];
   user?: {
     id: string | null;
     name: string;
@@ -88,6 +89,7 @@ function transformSecureService(service: SecureServiceResponse): ServiceWithUser
     createdAt: new Date(service.created_at),
     location: service.location || "Ireland",
     status: (service.status as "active" | "paused" | "completed") || "active",
+    acceptedCategories: service.accepted_categories || undefined,
     user: service.provider_name ? {
       id: service.user_id,
       name: formatDisplayName(service.provider_name),
@@ -115,6 +117,7 @@ function transformService(dbService: DatabaseService): ServiceWithUser {
     createdAt: new Date(dbService.created_at),
     location: dbService.location || "Ireland",
     status: (dbService.status as "active" | "paused" | "completed") || "active",
+    acceptedCategories: dbService.accepted_categories || undefined,
     user: dbService.profiles ? {
       id: dbService.user_id,
       name: formatDisplayName(dbService.profiles.full_name),

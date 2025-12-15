@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 import { ServiceCategory } from "@/types";
@@ -29,6 +29,7 @@ interface ServiceData {
   location: string;
   estimatedHours?: number;
   creditValue?: number;
+  acceptedCategories?: string[];
   user?: ServiceUser;
 }
 
@@ -85,6 +86,32 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
               </div>
             )}
           </div>
+
+          {/* Looking for in exchange */}
+          {service.acceptedCategories && service.acceptedCategories.length > 0 && (
+            <div className="mb-4 p-3 rounded-lg bg-accent/30 border border-accent/50">
+              <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-2">
+                <RefreshCw className="h-3 w-3" />
+                <span>Looking for in exchange:</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {service.acceptedCategories.slice(0, 3).map((cat) => (
+                  <span 
+                    key={cat} 
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-background text-xs text-foreground"
+                  >
+                    <span>{categoryIcons[cat as ServiceCategory] || "📋"}</span>
+                    <span>{categoryLabels[cat as ServiceCategory] || cat}</span>
+                  </span>
+                ))}
+                {service.acceptedCategories.length > 3 && (
+                  <span className="text-xs text-muted-foreground">
+                    +{service.acceptedCategories.length - 3} more
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* User */}
           {service.user && (
