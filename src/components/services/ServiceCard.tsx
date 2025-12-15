@@ -91,9 +91,9 @@ export function ServiceCard({ service, className }: ServiceCardProps) {
           {service.acceptedCategories && service.acceptedCategories.length > 0 && (
             <div className="mb-4">
               {service.acceptedCategories.includes("_open_to_all_") ? (
-                <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-primary/10 border border-primary/30 shadow-sm">
+                <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/30 shadow-sm">
                   <span className="text-sm">✨</span>
-                  <span className="text-xs font-semibold text-primary">Open to all offers</span>
+                  <span className="text-xs font-semibold text-accent">Open to all offers</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 flex-wrap">
