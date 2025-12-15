@@ -30,20 +30,23 @@ import {
   Check,
   Wand2,
   Edit,
-  PartyPopper
+  PartyPopper,
+  Gift,
+  RefreshCw
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons, allCategories } from "@/lib/categories";
-import { ServiceCategory } from "@/types";
+import { ServiceCategory, PostCategory } from "@/types";
 import { trackServiceCreated } from "@/hooks/useEngagementTracking";
+import { postCategoryLabels, postCategoryIcons } from "@/lib/postCategories";
 
 type WizardStep = "goal" | "details" | "generating" | "review" | "checklist" | "complete";
 
 interface GeneratedPost {
   title: string;
   description: string;
-  type: "offer" | "request";
+  type: PostCategory;
   category: string;
 }
 
@@ -67,8 +70,8 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
   const [currentStep, setCurrentStep] = useState<WizardStep>("goal");
   const [isLoading, setIsLoading] = useState(false);
   
-  // Step 1: Goal
-  const [goal, setGoal] = useState<"share_skill" | "find_help" | "both" | "">("");
+  // Step 1: Goal - now maps to PostCategory
+  const [goal, setGoal] = useState<"free_offer" | "help_request" | "skill_swap" | "">("");
   
   // Step 2: Details
   const [experienceLevel, setExperienceLevel] = useState<"beginner" | "intermediate" | "expert" | "">("");
@@ -149,7 +152,7 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
       const fallbackPost: GeneratedPost = {
         title: `${categoryLabels[skillCategory as ServiceCategory]} - ${location}`,
         description: skillDetails,
-        type: goal === "find_help" ? "request" : "offer",
+        type: goal as PostCategory,
         category: skillCategory,
       };
       setGeneratedPost(fallbackPost);
@@ -186,9 +189,9 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
         description: editedDescription.trim(),
         category: skillCategory,
         location: location,
-        type: generatedPost.type,
+        type: goal, // Use the goal directly as it maps to PostCategory
         status: "active",
-        accepted_categories: ["_open_to_all_"], // Open to all offers by default
+        accepted_categories: goal === "skill_swap" ? ["_open_to_all_"] : null, // Only for skill swaps
       }).select().single();
 
       if (serviceError) throw serviceError;
@@ -248,51 +251,51 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
               <div className="space-y-3">
                 <label 
                   className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    goal === "share_skill" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+                    goal === "free_offer" ? "border-green-500 bg-green-50 dark:bg-green-900/20" : "border-border hover:border-green-400"
                   }`}
                 >
-                  <RadioGroupItem value="share_skill" className="mt-1" />
+                  <RadioGroupItem value="free_offer" className="mt-1" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Sparkles className="h-5 w-5 text-primary" />
-                      <span className="font-semibold">I have skills to share</span>
+                      <Gift className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      <span className="font-semibold">Offer something for free</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      I want to offer my skills or services to the community
+                      Share your skills or give away items to help others
                     </p>
                   </div>
                 </label>
 
                 <label 
                   className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    goal === "find_help" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+                    goal === "help_request" ? "border-amber-500 bg-amber-50 dark:bg-amber-900/20" : "border-border hover:border-amber-400"
                   }`}
                 >
-                  <RadioGroupItem value="find_help" className="mt-1" />
+                  <RadioGroupItem value="help_request" className="mt-1" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Search className="h-5 w-5 text-accent" />
-                      <span className="font-semibold">I need help with something</span>
+                      <Search className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      <span className="font-semibold">Ask for help</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      I'm looking for someone with specific skills
+                      Request help from the community without needing to give something back
                     </p>
                   </div>
                 </label>
 
                 <label 
                   className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    goal === "both" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+                    goal === "skill_swap" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
                   }`}
                 >
-                  <RadioGroupItem value="both" className="mt-1" />
+                  <RadioGroupItem value="skill_swap" className="mt-1" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Users className="h-5 w-5 text-highlight" />
-                      <span className="font-semibold">A bit of both!</span>
+                      <RefreshCw className="h-5 w-5 text-primary" />
+                      <span className="font-semibold">Swap skills</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      I can offer skills and I'm also looking for help
+                      Trade your skills for something you need in return
                     </p>
                   </div>
                 </label>
@@ -398,7 +401,7 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
               {/* Skill Details */}
               <div className="space-y-2">
                 <Label>
-                  {goal === "find_help" 
+                  {goal === "help_request" 
                     ? "Describe what you need help with" 
                     : "Describe your skill or what you can offer"
                   }
@@ -406,7 +409,7 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
                 <Textarea
                   value={skillDetails}
                   onChange={(e) => setSkillDetails(e.target.value)}
-                  placeholder={goal === "find_help"
+                  placeholder={goal === "help_request"
                     ? "e.g., I need help fixing a leaky tap in my kitchen..."
                     : "e.g., I can teach guitar - I've been playing for 10 years..."
                   }
@@ -416,16 +419,18 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
                 <p className="text-xs text-muted-foreground">{skillDetails.length}/500</p>
               </div>
 
-              {/* What they want in return */}
-              <div className="space-y-2">
-                <Label>What would you like in return? (optional)</Label>
-                <Input
-                  value={whatTheyWant}
-                  onChange={(e) => setWhatTheyWant(e.target.value)}
-                  placeholder="e.g., Gardening help, cooking lessons, or anything!"
-                  maxLength={200}
-                />
-              </div>
+              {/* What they want in return - only show for skill swaps */}
+              {goal === "skill_swap" && (
+                <div className="space-y-2">
+                  <Label>What would you like in return?</Label>
+                  <Input
+                    value={whatTheyWant}
+                    onChange={(e) => setWhatTheyWant(e.target.value)}
+                    placeholder="e.g., Gardening help, cooking lessons, or anything!"
+                    maxLength={200}
+                  />
+                </div>
+              )}
 
               {/* Location */}
               <div className="space-y-2">
@@ -490,8 +495,8 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
             <Card>
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant={generatedPost?.type === "offer" ? "default" : "secondary"}>
-                    {generatedPost?.type === "offer" ? "Offering" : "Looking for"}
+                  <Badge variant={goal === "skill_swap" ? "default" : goal === "free_offer" ? "secondary" : "outline"}>
+                    {postCategoryIcons[goal as PostCategory]} {postCategoryLabels[goal as PostCategory]}
                   </Badge>
                   <Badge variant="outline">
                     {categoryIcons[skillCategory as ServiceCategory]} {categoryLabels[skillCategory as ServiceCategory]}
