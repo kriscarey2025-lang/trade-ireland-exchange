@@ -121,6 +121,22 @@ export function VerificationRequestCard({
 
       if (profileError) throw profileError;
 
+      // Get user profile for notification
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name, email")
+        .eq("id", userId)
+        .single();
+
+      // Notify admins about new verification request
+      supabase.functions.invoke("notify-admins-verification", {
+        body: {
+          userName: profile?.full_name || "Unknown",
+          userEmail: profile?.email || "Not provided",
+          documentType: "ID Card",
+        },
+      }).catch((err) => console.error("Failed to notify admins:", err));
+
       toast.success("Verification request submitted successfully!");
       onStatusChange("pending");
       clearFile();
