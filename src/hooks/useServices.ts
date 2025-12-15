@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ServiceCategory } from "@/types";
+import { ServiceCategory, PostCategory } from "@/types";
 import { formatDisplayName } from "@/lib/utils";
 
 // Response from secure database function
 interface SecureServiceResponse {
   id: string;
-  user_id: string | null; // null for unauthenticated users
+  user_id: string | null;
   title: string;
   description: string | null;
   category: string;
@@ -19,8 +19,8 @@ interface SecureServiceResponse {
   accepted_categories: string[] | null;
   created_at: string;
   updated_at: string;
-  provider_name: string | null; // null for unauthenticated users
-  provider_avatar: string | null; // null for unauthenticated users
+  provider_name: string | null;
+  provider_avatar: string | null;
   provider_linkedin: string | null;
   provider_facebook: string | null;
   provider_instagram: string | null;
@@ -42,7 +42,6 @@ export interface DatabaseService {
   accepted_categories: string[] | null;
   created_at: string;
   updated_at: string;
-  // Joined profile data
   profiles?: {
     full_name: string | null;
     avatar_url: string | null;
@@ -51,11 +50,11 @@ export interface DatabaseService {
 
 export interface ServiceWithUser {
   id: string;
-  userId: string | null; // null for unauthenticated users (protected)
+  userId: string | null;
   title: string;
   description: string;
   category: ServiceCategory;
-  type: "offer" | "request";
+  type: PostCategory;
   images?: string[];
   estimatedHours?: number;
   creditValue?: number;
@@ -76,14 +75,23 @@ export interface ServiceWithUser {
   };
 }
 
+const mapType = (type: string | null): PostCategory => {
+  if (type === "offer") return "skill_swap";
+  if (type === "request") return "help_request";
+  if (type === "free_offer" || type === "help_request" || type === "skill_swap") {
+    return type as PostCategory;
+  }
+  return "skill_swap";
+};
+
 function transformSecureService(service: SecureServiceResponse): ServiceWithUser {
   return {
     id: service.id,
-    userId: service.user_id, // Will be null for unauthenticated users
+    userId: service.user_id,
     title: service.title,
     description: service.description || "",
     category: service.category as ServiceCategory,
-    type: (service.type as "offer" | "request") || "offer",
+    type: mapType(service.type),
     images: service.images || undefined,
     creditValue: service.price ? Number(service.price) : undefined,
     createdAt: new Date(service.created_at),
@@ -111,7 +119,7 @@ function transformService(dbService: DatabaseService): ServiceWithUser {
     title: dbService.title,
     description: dbService.description || "",
     category: dbService.category as ServiceCategory,
-    type: (dbService.type as "offer" | "request") || "offer",
+    type: mapType(dbService.type),
     images: dbService.images || undefined,
     creditValue: dbService.price ? Number(dbService.price) : undefined,
     createdAt: new Date(dbService.created_at),
@@ -140,7 +148,6 @@ export function useServices(options: UseServicesOptions = {}) {
   return useQuery({
     queryKey: ["services", options],
     queryFn: async () => {
-      // Use secure RPC function that conditionally exposes user_id
       const { data, error } = await supabase.rpc("get_public_services", {
         _category: options.category && options.category !== "all" ? options.category : null,
         _location: options.location && options.location !== "All Ireland" ? options.location : null,

@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Gift, HelpCircle } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn } from "@/lib/utils";
-import { ServiceCategory } from "@/types";
+import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
+
 interface ServiceUser {
   id?: string;
   name: string;
@@ -18,34 +19,49 @@ interface ServiceUser {
   facebookUrl?: string;
   instagramUrl?: string;
 }
+
 interface ServiceData {
   id: string;
   title: string;
   description: string;
   category: ServiceCategory;
-  type: "offer" | "request";
+  type: PostCategory;
   location: string;
   estimatedHours?: number;
   creditValue?: number;
   acceptedCategories?: string[];
   user?: ServiceUser;
 }
+
 interface ServiceCardProps {
   service: ServiceData;
   className?: string;
 }
+
+const getPostTypeBadge = (type: PostCategory) => {
+  switch (type) {
+    case "free_offer":
+      return { label: "🎁 Free Offer", variant: "secondary" as const, className: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-300" };
+    case "help_request":
+      return { label: "🙋 Looking for Help", variant: "accent" as const, className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-300" };
+    case "skill_swap":
+      return { label: "🔄 Skill Swap", variant: "default" as const, className: "" };
+  }
+};
+
 export function ServiceCard({
   service,
   className
 }: ServiceCardProps) {
-  const isOffer = service.type === "offer";
+  const postTypeBadge = getPostTypeBadge(service.type);
+  const isSkillSwap = service.type === "skill_swap";
   return <Link to={`/services/${service.id}`}>
       <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-2 border-transparent hover:border-primary/20 bg-card transition-all duration-300", className)}>
         <CardContent className="p-5">
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-4">
-            <Badge variant={isOffer ? "default" : "accent"} className="shrink-0 rounded-lg">
-              {isOffer ? "✨ Offering" : "🔍 Looking for"}
+            <Badge variant={postTypeBadge.variant} className={cn("shrink-0 rounded-lg", postTypeBadge.className)}>
+              {postTypeBadge.label}
             </Badge>
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted text-xs text-muted-foreground font-medium">
               <span>{categoryIcons[service.category]}</span>
@@ -74,8 +90,8 @@ export function ServiceCard({
               </div>}
           </div>
 
-          {/* Looking for in exchange */}
-          {service.acceptedCategories && service.acceptedCategories.length > 0 && <div className="mb-4 space-y-2">
+          {/* Looking for in exchange - Only show for skill_swap */}
+          {isSkillSwap && service.acceptedCategories && service.acceptedCategories.length > 0 && <div className="mb-4 space-y-2">
               {/* Show specific categories if any exist (excluding _open_to_all_) */}
               {service.acceptedCategories.filter(cat => cat !== "_open_to_all_").length > 0 && (
                 <div className="flex items-center gap-2 flex-wrap">
