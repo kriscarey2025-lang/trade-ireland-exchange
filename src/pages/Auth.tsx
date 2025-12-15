@@ -23,6 +23,7 @@ export default function Auth() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const defaultTab = searchParams.get("mode") === "signup" ? "signup" : "login";
+  const redirectTo = searchParams.get("redirect");
   
   const { user, loading: authLoading, signIn, signUp } = useAuth();
   
@@ -63,6 +64,12 @@ export default function Auth() {
     const checkUserStatus = async () => {
       if (!user || authLoading) return;
       
+      // If there's a specific redirect, go there
+      if (redirectTo) {
+        navigate(redirectTo);
+        return;
+      }
+      
       // Check if user is an advertiser
       const { data: advertiser } = await supabase
         .from("advertisers")
@@ -92,7 +99,7 @@ export default function Auth() {
     if (user && !authLoading) {
       checkUserStatus();
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading, navigate, redirectTo]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
