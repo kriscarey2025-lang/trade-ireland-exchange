@@ -201,11 +201,11 @@ export function Header() {
                     <div className="border-t border-border my-1" />
                     <Link
                       to="/getting-started"
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-muted-foreground"
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-foreground font-medium"
                       onClick={() => setPostMenuOpen(false)}
                     >
-                      <HelpCircle className="h-4 w-4" />
-                      Not sure? We'll help!
+                      <span>🧙‍♂️</span>
+                      Create Post Wizard
                     </Link>
                   </div>
                 )}
@@ -311,10 +311,10 @@ export function Header() {
                       Request a Service
                     </Link>
                   </Button>
-                  <Button variant="ghost" className="w-full rounded-xl text-muted-foreground" asChild>
+                  <Button variant="ghost" className="w-full rounded-xl text-foreground font-medium" asChild>
                     <Link to="/getting-started" onClick={() => setMobileMenuOpen(false)}>
-                      <HelpCircle className="h-4 w-4 mr-2" />
-                      Not sure? We'll help!
+                      <span className="mr-2">🧙‍♂️</span>
+                      Create Post Wizard
                     </Link>
                   </Button>
                   <div className="border-t border-border my-2" />
