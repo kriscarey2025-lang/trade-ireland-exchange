@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ServiceCard } from "@/components/services/ServiceCard";
@@ -13,16 +13,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
 import { useDebounce } from "@/hooks/useDebounce";
 import { SEO } from "@/components/SEO";
+import { useAuth } from "@/hooks/useAuth";
 
 const locations = ["All Ireland", "Dublin", "Cork", "Galway", "Limerick", "Waterford"];
 
 export default function Browse() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">(
@@ -63,6 +65,32 @@ export default function Browse() {
         <Header />
         <main className="flex-1 bg-secondary/20">
         <div className="container py-8">
+          {/* Auth Prompt Banner for Non-Logged-In Users */}
+          {!user && (
+            <div className="mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg shrink-0">
+                  <UserCheck className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">See full profiles & verification status</p>
+                  <p className="text-sm text-muted-foreground">Sign in to view verified badges, contact details, and complete service information.</p>
+                </div>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/auth">
+                    <LogIn className="h-4 w-4 mr-1" />
+                    Sign In
+                  </Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link to="/auth">Join Free</Link>
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Browse Services</h1>
