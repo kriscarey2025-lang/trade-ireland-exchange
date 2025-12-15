@@ -21,7 +21,41 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { SEO } from "@/components/SEO";
 import { useAuth } from "@/hooks/useAuth";
 
-const locations = ["All Ireland", "Dublin", "Cork", "Galway", "Limerick", "Waterford"];
+const locations = [
+  "All Ireland",
+  "Antrim",
+  "Armagh",
+  "Carlow",
+  "Cavan",
+  "Clare",
+  "Cork",
+  "Derry",
+  "Donegal",
+  "Down",
+  "Dublin",
+  "Fermanagh",
+  "Galway",
+  "Kerry",
+  "Kildare",
+  "Kilkenny",
+  "Laois",
+  "Leitrim",
+  "Limerick",
+  "Longford",
+  "Louth",
+  "Mayo",
+  "Meath",
+  "Monaghan",
+  "Offaly",
+  "Roscommon",
+  "Sligo",
+  "Tipperary",
+  "Tyrone",
+  "Waterford",
+  "Westmeath",
+  "Wexford",
+  "Wicklow",
+];
 
 export default function Browse() {
   const { user } = useAuth();
