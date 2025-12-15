@@ -342,11 +342,28 @@ export default function ServiceDetail() {
                       }
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {service.accepted_categories.map((cat) => (
-                        <Badge key={cat} variant="secondary" className="rounded-lg">
-                          {categoryIcons[cat as ServiceCategory]} {categoryLabels[cat as ServiceCategory]}
+                      {service.accepted_categories.includes("_open_to_all_") ? (
+                        <Badge variant="accent" className="rounded-lg px-4 py-2">
+                          ✨ Open to all offers
                         </Badge>
-                      ))}
+                      ) : (
+                        <>
+                          {service.accepted_categories
+                            .filter(cat => !cat.startsWith("custom:"))
+                            .map((cat) => (
+                              <Badge key={cat} variant="secondary" className="rounded-lg">
+                                {categoryIcons[cat as ServiceCategory]} {categoryLabels[cat as ServiceCategory]}
+                              </Badge>
+                            ))}
+                          {service.accepted_categories
+                            .filter(cat => cat.startsWith("custom:"))
+                            .map((cat) => (
+                              <Badge key={cat} variant="outline" className="rounded-lg">
+                                📋 {cat.replace("custom:", "")}
+                              </Badge>
+                            ))}
+                        </>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
