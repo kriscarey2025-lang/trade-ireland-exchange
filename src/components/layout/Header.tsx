@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown, Bell, Shield, Users, Flag, CheckCircle, Megaphone } from "lucide-react";
+import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown, Bell, Shield, Users, Flag, CheckCircle, Megaphone, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useCredits } from "@/hooks/useCredits";
@@ -181,7 +181,7 @@ export function Header() {
                   <ChevronDown className="h-3 w-3 ml-1" />
                 </Button>
                 {postMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-background rounded-xl border border-border shadow-lg py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-52 bg-background rounded-xl border border-border shadow-lg py-1 z-50">
                     <Link
                       to="/services/new"
                       className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors"
@@ -197,6 +197,15 @@ export function Header() {
                     >
                       <Search className="h-4 w-4 text-accent-foreground" />
                       Request a Service
+                    </Link>
+                    <div className="border-t border-border my-1" />
+                    <Link
+                      to="/getting-started"
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-muted-foreground"
+                      onClick={() => setPostMenuOpen(false)}
+                    >
+                      <HelpCircle className="h-4 w-4" />
+                      Not sure? We'll help!
                     </Link>
                   </div>
                 )}
@@ -302,6 +311,13 @@ export function Header() {
                       Request a Service
                     </Link>
                   </Button>
+                  <Button variant="ghost" className="w-full rounded-xl text-muted-foreground" asChild>
+                    <Link to="/getting-started" onClick={() => setMobileMenuOpen(false)}>
+                      <HelpCircle className="h-4 w-4 mr-2" />
+                      Not sure? We'll help!
+                    </Link>
+                  </Button>
+                  <div className="border-t border-border my-2" />
                   <Button variant="outline" className="w-full rounded-xl" asChild>
                     <Link to="/messages" onClick={() => setMobileMenuOpen(false)}>
                       <MessageCircle className="h-4 w-4 mr-2" />
