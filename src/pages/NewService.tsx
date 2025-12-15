@@ -100,10 +100,12 @@ export default function NewService() {
 
     setIsSubmitting(true);
 
-    // Combine accepted skills - if open to general offers, store special marker
-    const allAcceptedSkills = openToGeneralOffers 
-      ? ["_open_to_all_"] 
-      : [...acceptedSkills, ...customSkills.map(s => `custom:${s}`)];
+    // Combine accepted skills - include both specific categories AND open to all if selected
+    const allAcceptedSkills = [
+      ...acceptedSkills,
+      ...customSkills.map(s => `custom:${s}`),
+      ...(openToGeneralOffers ? ["_open_to_all_"] : [])
+    ];
 
     const { data: newService, error } = await supabase.from("services").insert({
       user_id: user.id,

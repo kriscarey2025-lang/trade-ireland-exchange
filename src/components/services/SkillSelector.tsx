@@ -169,7 +169,16 @@ export function SkillSelector({
       {(selectedSkills.length > 0 || customSkills.length > 0 || openToGeneralOffers) && (
         <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
           <p className="text-sm text-muted-foreground">
-            {openToGeneralOffers ? (
+            {openToGeneralOffers && (selectedSkills.length > 0 || customSkills.length > 0) ? (
+              <>
+                <span className="text-primary font-medium">✓ Open to all offers</span>
+                {" + "}
+                <span className="font-medium text-foreground">
+                  {selectedSkills.length + customSkills.length}
+                </span>{" "}
+                preferred skill{selectedSkills.length + customSkills.length !== 1 ? "s" : ""}
+              </>
+            ) : openToGeneralOffers ? (
               <span className="text-primary font-medium">✓ Open to all offers</span>
             ) : (
               <>
