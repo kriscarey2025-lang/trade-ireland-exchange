@@ -75,25 +75,32 @@ export function ServiceCard({
           </div>
 
           {/* Looking for in exchange */}
-          {service.acceptedCategories && service.acceptedCategories.length > 0 && <div className="mb-4">
-              {service.acceptedCategories.includes("_open_to_all_") ? <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/30 shadow-sm">
-                  <span className="text-sm">✨</span>
-                  <span className="text-xs font-semibold text-accent">Open to all offers</span>
-                </div> : <div className="flex items-center gap-2 flex-wrap">
+          {service.acceptedCategories && service.acceptedCategories.length > 0 && <div className="mb-4 space-y-2">
+              {/* Show specific categories if any exist (excluding _open_to_all_) */}
+              {service.acceptedCategories.filter(cat => cat !== "_open_to_all_").length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <RefreshCw className="h-3 w-3" />
                     Wants:
                   </span>
-                  {service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).slice(0, 4).map(cat => <span key={cat} className="text-base" title={categoryLabels[cat as ServiceCategory] || cat}>
+                  {service.acceptedCategories.filter(cat => !cat.startsWith("custom:") && cat !== "_open_to_all_").slice(0, 4).map(cat => <span key={cat} className="text-base" title={categoryLabels[cat as ServiceCategory] || cat}>
                         {categoryIcons[cat as ServiceCategory] || "📋"}
                       </span>)}
                   {service.acceptedCategories.filter(cat => cat.startsWith("custom:")).length > 0 && <span className="text-xs text-muted-foreground">
                       +{service.acceptedCategories.filter(cat => cat.startsWith("custom:")).length} custom
                     </span>}
-                  {service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).length > 4 && <span className="text-xs text-muted-foreground">
-                      +{service.acceptedCategories.filter(cat => !cat.startsWith("custom:")).length - 4}
+                  {service.acceptedCategories.filter(cat => !cat.startsWith("custom:") && cat !== "_open_to_all_").length > 4 && <span className="text-xs text-muted-foreground">
+                      +{service.acceptedCategories.filter(cat => !cat.startsWith("custom:") && cat !== "_open_to_all_").length - 4}
                     </span>}
-                </div>}
+                </div>
+              )}
+              {/* Always show "Open to all" banner if selected */}
+              {service.acceptedCategories.includes("_open_to_all_") && (
+                <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/30 shadow-sm">
+                  <span className="text-sm">✨</span>
+                  <span className="text-xs font-semibold text-accent">Open to all offers</span>
+                </div>
+              )}
             </div>}
 
           {/* User */}
