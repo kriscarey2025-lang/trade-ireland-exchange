@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown, Bell, Shield, Users, Flag, CheckCircle, Megaphone, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -199,14 +200,21 @@ export function Header() {
                       Request a Service
                     </Link>
                     <div className="border-t border-border my-1" />
-                    <Link
-                      to="/getting-started"
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-foreground font-medium"
-                      onClick={() => setPostMenuOpen(false)}
-                    >
-                      <span>🧙‍♂️</span>
-                      Create Post Wizard
-                    </Link>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          to="/getting-started"
+                          className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-foreground font-medium"
+                          onClick={() => setPostMenuOpen(false)}
+                        >
+                          <span>🧙‍♂️</span>
+                          Create Post Wizard
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="max-w-[200px]">
+                        <p>Answer a few questions and we'll create a post for you using AI</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 )}
               </div>
