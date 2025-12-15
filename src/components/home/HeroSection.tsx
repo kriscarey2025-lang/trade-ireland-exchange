@@ -37,13 +37,14 @@ export function HeroSection() {
             <span className="font-semibold text-foreground"> Swap skills, make friends, save money.</span>
           </p>
 
-          {/* Story snippet */}
+          {/* Vision statement */}
           <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-6 mb-10 max-w-xl mx-auto border border-border/50 animate-fade-up cozy-shadow" style={{ animationDelay: "0.25s" }}>
+            <p className="text-xs text-muted-foreground/70 uppercase tracking-wide mb-2">Imagine this...</p>
             <p className="text-muted-foreground italic">
               "I taught Mary's kids piano, and she sorted my garden. We've become great friends — 
               <span className="text-foreground font-medium"> and neither of us spent a penny."</span>
             </p>
-            <p className="text-sm text-primary mt-2 font-medium">— Siobhán, Cork</p>
+            <p className="text-sm text-primary mt-2 font-medium">— The kind of story we're building</p>
           </div>
 
           {/* CTA Buttons */}
