@@ -31,6 +31,7 @@ import AdminAdvertisers from "./pages/AdminAdvertisers";
 import AdvertiserDashboard from "./pages/AdvertiserDashboard";
 import AIMatches from "./pages/AIMatches";
 import Advertise from "./pages/Advertise";
+import GettingStarted from "./pages/GettingStarted";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/matches" element={<AIMatches />} />
             <Route path="/advertiser" element={<AdvertiserDashboard />} />
             <Route path="/advertise" element={<Advertise />} />
+            <Route path="/getting-started" element={<GettingStarted />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

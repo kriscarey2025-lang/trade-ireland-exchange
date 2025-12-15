@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Users, Shield, Coffee } from "lucide-react";
+import { ArrowRight, Heart, Users, Shield, Coffee, HelpCircle } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+
 export function HeroSection() {
+  const { user } = useAuth();
   return <section className="relative overflow-hidden min-h-[90vh] flex items-center">
       {/* Warm animated background blobs */}
       <div className="absolute inset-0 overflow-hidden">
@@ -55,7 +58,7 @@ export function HeroSection() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14 animate-fade-up" style={{
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6 animate-fade-up" style={{
           animationDelay: "0.3s"
         }}>
             <Button size="lg" className="group shadow-lg hover:shadow-xl rounded-full px-8" asChild>
@@ -68,6 +71,21 @@ export function HeroSection() {
               <Link to="/browse">
                 See what's on offer
                 <Coffee className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+
+          {/* Getting Started CTA */}
+          <div className="mb-14 animate-fade-up" style={{ animationDelay: "0.35s" }}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-muted-foreground hover:text-foreground"
+              asChild
+            >
+              <Link to={user ? "/getting-started" : "/auth?redirect=/getting-started"}>
+                <HelpCircle className="mr-2 h-4 w-4" />
+                Not sure where to start? We'll help you!
               </Link>
             </Button>
           </div>

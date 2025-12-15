@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.send-weekly-digest]
 verify_jwt = false
+
+[functions.generate-service-post]
+verify_jwt = true
