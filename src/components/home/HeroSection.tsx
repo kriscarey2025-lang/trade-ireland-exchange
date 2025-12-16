@@ -50,9 +50,7 @@ export function HeroSection() {
           <p className="text-sm md:text-base font-medium tracking-wide mb-12 animate-fade-up" style={{
           animationDelay: "0.22s"
         }}>
-            <span className="inline-block bg-gradient-to-r from-primary via-accent to-highlight bg-clip-text text-transparent animate-spin-slow">
-              Ireland's first digital & free Barter System Platform
-            </span>
+            <span className="inline-block bg-gradient-to-r from-primary via-accent to-highlight bg-clip-text text-transparent animate-spin-slow">Ireland's first digital & free Barter System </span>
           </p>
 
           {/* Vision statement */}
