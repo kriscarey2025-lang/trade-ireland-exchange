@@ -38,3 +38,6 @@ verify_jwt = false
 
 [functions.send-advertiser-rejection]
 verify_jwt = false
+
+[functions.leprechaun-chat]
+verify_jwt = false
