@@ -1,38 +1,28 @@
 import { Shield, CheckCircle2, Star, Users, Heart } from "lucide-react";
-
-const trustFeatures = [
-  {
-    icon: Shield,
-    title: "Real people, verified",
-    description: "We check IDs so you know who you're dealing with. Peace of mind, sorted.",
-  },
-  {
-    icon: Star,
-    title: "Reputation matters",
-    description: "Build trust through honest reviews. Good deeds get noticed around here.",
-  },
-  {
-    icon: Heart,
-    title: "Community first",
-    description: "This isn't a faceless app. It's your neighbours looking out for each other.",
-  },
-  {
-    icon: Users,
-    title: "Made for Ireland",
-    description: "Built right here in Killeshin. We understand what Irish communities need.",
-  },
-];
-
+const trustFeatures = [{
+  icon: Shield,
+  title: "Real people, verified",
+  description: "We check IDs so you know who you're dealing with. Peace of mind, sorted."
+}, {
+  icon: Star,
+  title: "Reputation matters",
+  description: "Build trust through honest reviews. Good deeds get noticed around here."
+}, {
+  icon: Heart,
+  title: "Community first",
+  description: "This isn't a faceless app. It's your neighbours looking out for each other."
+}, {
+  icon: Users,
+  title: "Made for Ireland",
+  description: "Built right here in Killeshin. We understand what Irish communities need."
+}];
 export function TrustSection() {
-  return (
-    <section className="py-20">
+  return <section className="py-20">
       <div className="container">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Content */}
           <div>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-semibold mb-4">
-              Safe as houses
-            </span>
+            
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               We've got your back
             </h2>
@@ -43,12 +33,9 @@ export function TrustSection() {
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6">
-              {trustFeatures.map((feature, index) => (
-                <div 
-                  key={index}
-                  className="flex gap-4 animate-fade-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
+              {trustFeatures.map((feature, index) => <div key={index} className="flex gap-4 animate-fade-up" style={{
+              animationDelay: `${index * 0.1}s`
+            }}>
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                     <feature.icon className="h-6 w-6 text-primary" />
                   </div>
@@ -56,8 +43,7 @@ export function TrustSection() {
                     <h3 className="font-semibold mb-1">{feature.title}</h3>
                     <p className="text-sm text-muted-foreground">{feature.description}</p>
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
 
@@ -78,19 +64,25 @@ export function TrustSection() {
               </div>
 
               {/* Floating Badges */}
-              <div className="absolute top-8 right-8 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{ animationDelay: "0.2s" }}>
+              <div className="absolute top-8 right-8 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{
+              animationDelay: "0.2s"
+            }}>
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🍀</span>
                   <span className="font-medium text-sm">Irish made</span>
                 </div>
               </div>
-              <div className="absolute bottom-12 left-4 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{ animationDelay: "0.4s" }}>
+              <div className="absolute bottom-12 left-4 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{
+              animationDelay: "0.4s"
+            }}>
                 <div className="flex items-center gap-2">
                   <span className="text-xl">✅</span>
                   <span className="font-medium text-sm">ID checked</span>
                 </div>
               </div>
-              <div className="absolute bottom-24 right-0 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{ animationDelay: "0.6s" }}>
+              <div className="absolute bottom-24 right-0 bg-card rounded-xl p-3 shadow-elevated animate-float border border-border/50" style={{
+              animationDelay: "0.6s"
+            }}>
                 <div className="flex items-center gap-2">
                   <span className="text-xl">💬</span>
                   <span className="font-medium text-sm">Real chats</span>
@@ -100,6 +92,5 @@ export function TrustSection() {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
