@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Users, Shield, Coffee, HelpCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-
 export function HeroSection() {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   return <section className="relative overflow-hidden min-h-[90vh] flex items-center">
       {/* Warm animated background blobs */}
       <div className="absolute inset-0 overflow-hidden">
@@ -46,9 +47,11 @@ export function HeroSection() {
           </p>
 
           {/* Ireland tagline */}
-          <p className="text-sm md:text-base font-medium tracking-wide mb-12 animate-fade-up" style={{ animationDelay: "0.22s" }}>
+          <p className="text-sm md:text-base font-medium tracking-wide mb-12 animate-fade-up" style={{
+          animationDelay: "0.22s"
+        }}>
             <span className="bg-gradient-to-r from-primary via-accent to-highlight bg-clip-text text-transparent">
-              Ireland's first digital, free Barter & Community Platform
+              Ireland's first digital & free Barter System Platform
             </span>
           </p>
 
@@ -83,13 +86,10 @@ export function HeroSection() {
           </div>
 
           {/* Getting Started CTA */}
-          <div className="mb-14 animate-fade-up" style={{ animationDelay: "0.35s" }}>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-muted-foreground hover:text-foreground"
-              asChild
-            >
+          <div className="mb-14 animate-fade-up" style={{
+          animationDelay: "0.35s"
+        }}>
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" asChild>
               <Link to={user ? "/getting-started" : "/auth?redirect=/getting-started"}>
                 <HelpCircle className="mr-2 h-4 w-4" />
                 Not sure where to start? We'll help you!
