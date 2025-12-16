@@ -31,10 +31,7 @@ export function TrustSection() {
               We've got your back
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Look, we know trusting strangers can be scary. That's why we've built 
-              this whole thing around keeping you safe. Verified profiles, honest reviews, 
-              and a community that actually cares about each other.
-            </p>
+          </p>
 
             <div className="grid sm:grid-cols-2 gap-6">
               {trustFeatures.map((feature, index) => <div key={index} className="flex gap-4 animate-fade-up" style={{
