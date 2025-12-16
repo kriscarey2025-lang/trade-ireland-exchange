@@ -8,6 +8,7 @@ import { BackToTop } from "@/components/BackToTop";
 import { AuthProvider } from "@/hooks/useAuth";
 import { EngagementTracker } from "@/components/tracking/EngagementTracker";
 import { PromoBanner } from "@/components/layout/PromoBanner";
+import FeedbackSidebar from "@/components/sidebar/FeedbackSidebar";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import HowItWorks from "./pages/HowItWorks";
@@ -30,6 +31,7 @@ import AdminVerification from "./pages/AdminVerification";
 import AdminReports from "./pages/AdminReports";
 import AdminAdvertisers from "./pages/AdminAdvertisers";
 import AdminModeration from "./pages/AdminModeration";
+import AdminFeedback from "./pages/AdminFeedback";
 import AdvertiserDashboard from "./pages/AdvertiserDashboard";
 import AIMatches from "./pages/AIMatches";
 import Advertise from "./pages/Advertise";
@@ -50,6 +52,7 @@ const App = () => (
           <ScrollToTop />
           <BackToTop />
           <EngagementTracker />
+          <FeedbackSidebar />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/browse" element={<Browse />} />
@@ -73,6 +76,7 @@ const App = () => (
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route path="/admin/advertisers" element={<AdminAdvertisers />} />
             <Route path="/admin/moderation" element={<AdminModeration />} />
+            <Route path="/admin/feedback" element={<AdminFeedback />} />
             <Route path="/matches" element={<AIMatches />} />
             <Route path="/advertiser" element={<AdvertiserDashboard />} />
             <Route path="/advertise" element={<Advertise />} />
