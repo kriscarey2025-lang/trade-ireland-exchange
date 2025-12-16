@@ -249,7 +249,17 @@ export default function AdminModeration() {
       reviewed_by: user?.id
     });
 
-    toast.success('Post rejected');
+    // Send notification to the poster
+    const rejectionReason = adminNotes || service.moderation_reason || 'Your listing did not meet our community guidelines.';
+    await supabase.from('notifications').insert({
+      user_id: service.user_id,
+      type: 'moderation',
+      title: 'Listing Rejected',
+      message: `Your listing "${service.title}" was not approved. Reason: ${rejectionReason}`,
+      related_service_id: service.id
+    });
+
+    toast.success('Post rejected and user notified');
     setSelectedService(null);
     setAdminNotes("");
     await fetchFlaggedServices();
@@ -274,7 +284,15 @@ export default function AdminModeration() {
       return;
     }
 
-    toast.success('Community post approved');
+    // Notify user their post was approved
+    await supabase.from('notifications').insert({
+      user_id: post.user_id,
+      type: 'moderation',
+      title: 'Community Post Approved',
+      message: `Your post "${post.title}" has been approved and is now visible on the board.`
+    });
+
+    toast.success('Community post approved and user notified');
     setSelectedPost(null);
     setAdminNotes("");
     await fetchFlaggedPosts();
@@ -300,7 +318,16 @@ export default function AdminModeration() {
       return;
     }
 
-    toast.success('Community post rejected');
+    // Send notification to the poster
+    const rejectionReason = adminNotes || post.moderation_reason || 'Your post did not meet our community guidelines.';
+    await supabase.from('notifications').insert({
+      user_id: post.user_id,
+      type: 'moderation',
+      title: 'Community Post Rejected',
+      message: `Your post "${post.title}" was not approved. Reason: ${rejectionReason}`
+    });
+
+    toast.success('Community post rejected and user notified');
     setSelectedPost(null);
     setAdminNotes("");
     await fetchFlaggedPosts();
