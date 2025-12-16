@@ -12,9 +12,9 @@ export function CorkBoard({ county }: CorkBoardProps) {
   if (isLoading) {
     return (
       <div className="bg-amber-800 p-6 rounded-lg shadow-inner min-h-[500px]">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-[180px] bg-amber-700/50" />
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <Skeleton key={i} className="h-[80px] md:h-[180px] bg-amber-700/50" />
           ))}
         </div>
       </div>
@@ -74,7 +74,7 @@ export function CorkBoard({ county }: CorkBoardProps) {
       {/* Wooden frame effect */}
       <div className="absolute inset-0 border-8 border-amber-900/50 rounded-lg pointer-events-none" />
 
-      <div className="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="relative z-10 grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
         {posts.map((post) => (
           <StickyNote key={post.id} post={post} />
         ))}
