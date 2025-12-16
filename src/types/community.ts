@@ -13,6 +13,7 @@ export interface CommunityPost {
   created_at: string;
   poster_name: string | null;
   poster_avatar: string | null;
+  image_url: string | null;
 }
 
 export const CATEGORY_CONFIG: Record<PostCategory, { label: string; color: string; bgColor: string }> = {
