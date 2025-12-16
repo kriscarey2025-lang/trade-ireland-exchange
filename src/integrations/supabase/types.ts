@@ -301,6 +301,51 @@ export type Database = {
           },
         ]
       }
+      community_posts: {
+        Row: {
+          archived_at: string | null
+          category: string
+          county: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_visible: boolean
+          location: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          category: string
+          county?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_visible?: boolean
+          location?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          category?: string
+          county?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_visible?: boolean
+          location?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       contact_shares: {
         Row: {
           conversation_id: string
@@ -1087,6 +1132,22 @@ export type Database = {
         Args: { _request_id: string }
         Returns: string
       }
+      get_visible_board_posts: {
+        Args: never
+        Returns: {
+          category: string
+          county: string
+          created_at: string
+          description: string
+          id: string
+          location: string
+          poster_avatar: string
+          poster_name: string
+          status: string
+          title: string
+          user_id: string
+        }[]
+      }
       has_contact_access: {
         Args: { _profile_id: string; _viewer_id: string }
         Returns: boolean
@@ -1107,6 +1168,30 @@ export type Database = {
       review_verification: {
         Args: { _approved: boolean; _notes?: string; _request_id: string }
         Returns: undefined
+      }
+      search_community_posts: {
+        Args: {
+          _category?: string
+          _county?: string
+          _limit?: number
+          _offset?: number
+          _search?: string
+          _status?: string
+        }
+        Returns: {
+          category: string
+          county: string
+          created_at: string
+          description: string
+          id: string
+          location: string
+          poster_avatar: string
+          poster_name: string
+          status: string
+          title: string
+          total_count: number
+          user_id: string
+        }[]
       }
       spend_credits: {
         Args: {
