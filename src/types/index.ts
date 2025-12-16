@@ -5,7 +5,6 @@ export interface User {
   avatar?: string;
   location: string;
   bio?: string;
-  credits: number;
   verificationStatus: 'pending' | 'verified' | 'unverified';
   badges: Badge[];
   joinedAt: Date;
@@ -34,7 +33,6 @@ export interface Service {
   images?: string[];
   qualifications?: string[];
   estimatedHours?: number;
-  creditValue?: number;
   createdAt: Date;
   location: string;
   status: 'active' | 'paused' | 'completed';
@@ -68,8 +66,7 @@ export interface TradeRequest {
   requestedServiceId: string;
   offeredService?: Service;
   requestedService?: Service;
-  type: 'direct_swap' | 'credits';
-  creditAmount?: number;
+  type: 'direct_swap';
   message?: string;
   status: 'pending' | 'accepted' | 'declined' | 'completed';
   createdAt: Date;

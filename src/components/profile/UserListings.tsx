@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Edit2, Trash2, Plus, MapPin, Coins, Package } from "lucide-react";
+import { Edit2, Trash2, Plus, MapPin, Package } from "lucide-react";
 import { useUserServices, ServiceWithUser } from "@/hooks/useServices";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { toast } from "sonner";
@@ -166,12 +166,6 @@ function ListingItem({ service, onDelete }: ListingItemProps) {
             <span className="flex items-center gap-1">
               <MapPin className="h-3 w-3" />
               {service.location}
-            </span>
-          )}
-          {service.creditValue && (
-            <span className="flex items-center gap-1">
-              <Coins className="h-3 w-3" />
-              {service.creditValue} credits
             </span>
           )}
         </div>
