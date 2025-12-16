@@ -61,6 +61,7 @@ interface CreatePostData {
   category: PostCategory;
   location?: string;
   county?: string;
+  image_url?: string;
 }
 
 export function useCreatePost() {
@@ -99,6 +100,7 @@ export function useCreatePost() {
           category: data.category,
           location: data.location || null,
           county: data.county || null,
+          image_url: data.image_url || null,
           moderation_status: moderationStatus,
           moderation_reason: moderationReason,
         }])
