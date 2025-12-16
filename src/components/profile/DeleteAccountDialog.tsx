@@ -75,7 +75,6 @@ export function DeleteAccountDialog({ userEmail }: DeleteAccountDialogProps) {
               <li>All your service listings</li>
               <li>Your conversation history</li>
               <li>Your reviews and ratings</li>
-              <li>Your credits and transaction history</li>
             </ul>
             <p className="font-medium pt-2">
               Type <span className="font-mono bg-muted px-1.5 py-0.5 rounded">DELETE</span> to confirm:

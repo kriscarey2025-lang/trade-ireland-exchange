@@ -28,7 +28,6 @@ interface ServiceData {
   type: PostCategory;
   location: string;
   estimatedHours?: number;
-  creditValue?: number;
   acceptedCategories?: string[];
   user?: ServiceUser;
 }

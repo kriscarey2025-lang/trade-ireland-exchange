@@ -57,7 +57,6 @@ export interface ServiceWithUser {
   type: PostCategory;
   images?: string[];
   estimatedHours?: number;
-  creditValue?: number;
   createdAt: Date;
   location: string;
   status: "active" | "paused" | "completed";
@@ -93,7 +92,6 @@ function transformSecureService(service: SecureServiceResponse): ServiceWithUser
     category: service.category as ServiceCategory,
     type: mapType(service.type),
     images: service.images || undefined,
-    creditValue: service.price ? Number(service.price) : undefined,
     createdAt: new Date(service.created_at),
     location: service.location || "Ireland",
     status: (service.status as "active" | "paused" | "completed") || "active",
@@ -121,7 +119,6 @@ function transformService(dbService: DatabaseService): ServiceWithUser {
     category: dbService.category as ServiceCategory,
     type: mapType(dbService.type),
     images: dbService.images || undefined,
-    creditValue: dbService.price ? Number(dbService.price) : undefined,
     createdAt: new Date(dbService.created_at),
     location: dbService.location || "Ireland",
     status: (dbService.status as "active" | "paused" | "completed") || "active",
