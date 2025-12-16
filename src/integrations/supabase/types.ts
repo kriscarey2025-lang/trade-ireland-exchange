@@ -311,6 +311,9 @@ export type Database = {
           id: string
           is_visible: boolean
           location: string | null
+          moderated_at: string | null
+          moderation_reason: string | null
+          moderation_status: string | null
           status: string
           title: string
           updated_at: string
@@ -325,6 +328,9 @@ export type Database = {
           id?: string
           is_visible?: boolean
           location?: string | null
+          moderated_at?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string | null
           status?: string
           title: string
           updated_at?: string
@@ -339,6 +345,9 @@ export type Database = {
           id?: string
           is_visible?: boolean
           location?: string | null
+          moderated_at?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string | null
           status?: string
           title?: string
           updated_at?: string

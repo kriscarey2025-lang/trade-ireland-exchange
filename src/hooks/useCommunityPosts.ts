@@ -71,6 +71,25 @@ export function useCreatePost() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('You must be logged in to create a post');
 
+      // Call moderation function
+      let moderationStatus = 'approved';
+      let moderationReason: string | null = null;
+
+      try {
+        const { data: modResult, error: modError } = await supabase.functions.invoke('moderate-content', {
+          body: { title: data.title, description: data.description || '' }
+        });
+
+        if (!modError && modResult) {
+          if (!modResult.approved) {
+            moderationStatus = 'pending_review';
+            moderationReason = modResult.reason || 'Flagged for review';
+          }
+        }
+      } catch (err) {
+        console.error('Moderation check failed, defaulting to approved:', err);
+      }
+
       const { data: result, error } = await supabase
         .from('community_posts')
         .insert([{
@@ -80,17 +99,23 @@ export function useCreatePost() {
           category: data.category,
           location: data.location || null,
           county: data.county || null,
+          moderation_status: moderationStatus,
+          moderation_reason: moderationReason,
         }])
         .select()
         .single();
 
       if (error) throw error;
-      return result;
+      return { result, moderationStatus };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['community-board-posts'] });
       queryClient.invalidateQueries({ queryKey: ['community-search-posts'] });
-      toast.success('Post created successfully!');
+      if (data.moderationStatus === 'pending_review') {
+        toast.info('Your post is being reviewed and will appear shortly.');
+      } else {
+        toast.success('Post created successfully!');
+      }
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to create post');
