@@ -14,6 +14,34 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUpdatePostStatus, useDeletePost } from '@/hooks/useCommunityPosts';
 import { useNavigate } from 'react-router-dom';
 
+// Helper component to make URLs clickable
+function LinkifyText({ text }: { text: string }) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  
+  return (
+    <>
+      {parts.map((part, index) => {
+        if (urlRegex.test(part)) {
+          return (
+            <a
+              key={index}
+              href={part}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline break-all"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {part}
+            </a>
+          );
+        }
+        return part;
+      })}
+    </>
+  );
+}
+
 interface StickyNoteProps {
   post: CommunityPost;
 }
@@ -78,7 +106,7 @@ export function StickyNote({ post }: StickyNoteProps) {
 
       {/* Description */}
       <p className="text-xs text-muted-foreground mb-3 line-clamp-3 flex-1">
-        {post.description}
+        <LinkifyText text={post.description || ''} />
       </p>
 
       {/* Location & Time */}

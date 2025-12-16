@@ -22,25 +22,30 @@ import { useSearchPosts } from '@/hooks/useCommunityPosts';
 import { StickyNote } from './StickyNote';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function BoardFilters() {
+interface BoardFiltersProps {
+  selectedCounty: string;
+  onCountyChange: (county: string) => void;
+}
+
+export function BoardFilters({ selectedCounty, onCountyChange }: BoardFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<PostCategory | 'all'>('all');
-  const [county, setCounty] = useState<string>('all');
   const [status, setStatus] = useState<PostStatus | 'all'>('all');
   const [isSearching, setIsSearching] = useState(false);
 
-  const hasFilters = search || category !== 'all' || county !== 'all' || status !== 'all';
+  // Search is only active when there's a text search or category/status filter
+  const hasSearchFilters = search || category !== 'all' || status !== 'all';
 
   const { data: searchResults, isLoading } = useSearchPosts({
     search: search || undefined,
     category: category !== 'all' ? category : null,
-    county: county !== 'all' ? county : null,
+    county: selectedCounty !== 'all' ? selectedCounty : null,
     status: status !== 'all' ? status : null,
   });
 
   const handleSearch = () => {
-    if (hasFilters) {
+    if (hasSearchFilters) {
       setIsSearching(true);
     }
   };
@@ -48,7 +53,7 @@ export function BoardFilters() {
   const clearFilters = () => {
     setSearch('');
     setCategory('all');
-    setCounty('all');
+    onCountyChange('all');
     setStatus('all');
     setIsSearching(false);
   };
@@ -72,7 +77,7 @@ export function BoardFilters() {
             <Button variant="outline" className="gap-2">
               <Filter className="h-4 w-4" />
               Filters
-              {hasFilters && (
+              {(hasSearchFilters || selectedCounty !== 'all') && (
                 <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
                   !
                 </Badge>
@@ -103,7 +108,7 @@ export function BoardFilters() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">County</label>
-                <Select value={county} onValueChange={setCounty}>
+                <Select value={selectedCounty} onValueChange={onCountyChange}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -145,15 +150,15 @@ export function BoardFilters() {
           </SheetContent>
         </Sheet>
 
-        <Button onClick={handleSearch} disabled={!hasFilters}>
+        <Button onClick={handleSearch} disabled={!hasSearchFilters}>
           Search
         </Button>
       </div>
 
       {/* Active filters display */}
-      {hasFilters && isSearching && (
+      {(hasSearchFilters && isSearching) && (
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-sm text-muted-foreground">Filters:</span>
+          <span className="text-sm text-muted-foreground">Search filters:</span>
           {search && (
             <Badge variant="secondary" className="gap-1">
               "{search}"
@@ -164,12 +169,6 @@ export function BoardFilters() {
             <Badge variant="secondary" className="gap-1">
               {CATEGORY_CONFIG[category].label}
               <X className="h-3 w-3 cursor-pointer" onClick={() => setCategory('all')} />
-            </Badge>
-          )}
-          {county !== 'all' && (
-            <Badge variant="secondary" className="gap-1">
-              {county}
-              <X className="h-3 w-3 cursor-pointer" onClick={() => setCounty('all')} />
             </Badge>
           )}
           {status !== 'all' && (
