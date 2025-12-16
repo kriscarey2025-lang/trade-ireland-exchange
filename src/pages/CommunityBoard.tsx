@@ -33,6 +33,28 @@ export default function CommunityBoard() {
               </p>
             </div>
 
+            {/* Tagline Banner */}
+            <div className="relative mb-8 flex justify-center">
+              <div className="relative inline-block">
+                {/* Pin decoration */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-red-500 shadow-lg z-10 flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-red-300" />
+                </div>
+                {/* Note card */}
+                <div className="bg-amber-50 dark:bg-amber-100 border-2 border-amber-200 rounded-lg px-8 py-5 shadow-lg transform rotate-[-1deg] hover:rotate-0 transition-transform duration-300">
+                  <p className="text-lg md:text-xl font-handwriting text-amber-900 italic text-center">
+                    "Think of this as your local supermarket noticeboard
+                    <br className="hidden sm:block" />
+                    <span className="inline sm:hidden"> </span>
+                    — just digital."
+                  </p>
+                  <div className="flex justify-center mt-2">
+                    <span className="text-2xl">📌</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Action Bar */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div className="flex-1 w-full sm:w-auto">
