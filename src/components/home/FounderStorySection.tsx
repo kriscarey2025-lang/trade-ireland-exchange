@@ -1,8 +1,6 @@
 import { Heart, Sparkles, Users, Wallet, Coffee, TreePine } from "lucide-react";
-
 export function FounderStorySection() {
-  return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-background to-secondary/30 relative overflow-hidden">
+  return <section className="py-20 md:py-28 bg-gradient-to-b from-background to-secondary/30 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
@@ -47,9 +45,7 @@ export function FounderStorySection() {
                 to hold.
               </p>
 
-              <p className="mb-6">
-                We've forgotten how to be neighbours. We order strangers on apps instead of asking the 
-                person next door. But here's the thing — <span className="text-foreground font-semibold">your community is full of hidden superpowers</span>. 
+              <p className="mb-6">— your community is full of hidden superpowers. We just need a little nudge to share them.<span className="text-foreground font-semibold">your community is full of hidden superpowers</span>. 
                 We just need a little nudge to share them.
               </p>
             </div>
@@ -110,6 +106,5 @@ export function FounderStorySection() {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
