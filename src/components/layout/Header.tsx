@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, Plus, Coins, Sparkles, LogOut, MessageCircle, ChevronDown, Bell, Shield, Users, Flag, CheckCircle, Megaphone, HelpCircle, Clipboard } from "lucide-react";
+import { Menu, X, Search, User, Plus, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useCredits } from "@/hooks/useCredits";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +19,6 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { data: credits } = useCredits();
   
   const isLoggedIn = !!user;
 
@@ -167,10 +164,6 @@ export function Header() {
           
           {isLoggedIn ? (
             <>
-              <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 rounded-xl">
-                <Coins className="h-3.5 w-3.5 text-warning" />
-                {credits ?? 0} credits
-              </Badge>
               <div className="relative" ref={postMenuRef}>
                 <Button 
                   variant="accent" 
