@@ -1,8 +1,16 @@
-import { Shield, CheckCircle2, Star, Users, Heart } from "lucide-react";
+import { Shield, Star, Users, Heart, Flag, Eye } from "lucide-react";
 const trustFeatures = [{
   icon: Shield,
-  title: "Real people, verified",
-  description: "We check IDs so you know who you're dealing with. Peace of mind, sorted."
+  title: "Optional verification",
+  description: "Want extra peace of mind? Users can verify their ID or social media—totally optional, but it helps build trust."
+}, {
+  icon: Flag,
+  title: "Report concerns",
+  description: "Had an unpleasant experience? We encourage you to report it. We take every report seriously."
+}, {
+  icon: Eye,
+  title: "Actively monitored",
+  description: "Our team keeps an eye on things. We're here to make sure everyone plays fair."
 }, {
   icon: Star,
   title: "Reputation matters",
