@@ -53,6 +53,45 @@ export function FAQJsonLd({ faqs }: { faqs: FAQItem[] }) {
   return <JsonLd data={data} />;
 }
 
+interface LocalBusinessJsonLdProps {
+  name: string;
+  description?: string;
+  location?: string;
+  url: string;
+  image?: string;
+}
+
+export function LocalBusinessJsonLd({
+  name,
+  description,
+  location,
+  url,
+  image,
+}: LocalBusinessJsonLdProps) {
+  const data: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name,
+    url,
+    description: description || `Verified service provider on Swap Skills`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: location || "Ireland",
+      addressCountry: "IE",
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Ireland",
+    },
+  };
+
+  if (image) {
+    data.image = image;
+  }
+
+  return <JsonLd data={data} />;
+}
+
 interface ServiceJsonLdProps {
   name: string;
   description: string;
