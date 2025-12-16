@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Gift, HelpCircle } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
-import { cn } from "@/lib/utils";
+import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 
@@ -130,7 +130,7 @@ export function ServiceCard({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <span className="font-medium text-sm truncate">
-                    {service.user.name}
+                    {formatDisplayName(service.user.name)}
                   </span>
                   <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                   {/* Social Media Icons */}
