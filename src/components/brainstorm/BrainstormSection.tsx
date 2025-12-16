@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Lightbulb, ArrowRight, Loader2, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
 export interface SkillSwapIdea {
@@ -16,40 +16,54 @@ export interface SkillSwapIdea {
   yourNeed: string;
 }
 
-interface BrainstormDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
 const BRAINSTORM_STORAGE_KEY = 'brainstorm_progress';
 
-export function BrainstormDialog({ open, onOpenChange }: BrainstormDialogProps) {
+export function BrainstormSection() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const [step, setStep] = useState<'input' | 'loading' | 'results'>('input');
   const [strengths, setStrengths] = useState("");
   const [needs, setNeeds] = useState("");
   const [ideas, setIdeas] = useState<SkillSwapIdea[]>([]);
+  const [pendingIdea, setPendingIdea] = useState<SkillSwapIdea | null>(null);
 
-  // Load saved progress on mount
+  // Load saved progress on mount and handle post-auth redirect
   useEffect(() => {
-    if (open) {
-      const saved = localStorage.getItem(BRAINSTORM_STORAGE_KEY);
-      if (saved) {
-        try {
-          const data = JSON.parse(saved);
-          if (data.strengths) setStrengths(data.strengths);
-          if (data.needs) setNeeds(data.needs);
-          if (data.ideas && data.ideas.length > 0) {
-            setIdeas(data.ideas);
-            setStep('results');
-          }
-        } catch (e) {
-          console.error('Failed to load brainstorm progress:', e);
+    const saved = localStorage.getItem(BRAINSTORM_STORAGE_KEY);
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        if (data.strengths) setStrengths(data.strengths);
+        if (data.needs) setNeeds(data.needs);
+        if (data.ideas && data.ideas.length > 0) {
+          setIdeas(data.ideas);
+          setStep('results');
         }
+        // Check if user just logged in and had a pending idea
+        if (data.selectedIdea && user && searchParams.get('action') === 'brainstorm') {
+          setPendingIdea(data.selectedIdea);
+        }
+      } catch (e) {
+        console.error('Failed to load brainstorm progress:', e);
       }
     }
-  }, [open]);
+  }, [user, searchParams]);
+
+  // Handle pending idea after login
+  useEffect(() => {
+    if (pendingIdea && user) {
+      toast.success("Welcome back! Ready to create your post.");
+      // Clear the pending state but keep the ideas visible
+      const saved = localStorage.getItem(BRAINSTORM_STORAGE_KEY);
+      if (saved) {
+        const data = JSON.parse(saved);
+        delete data.selectedIdea;
+        localStorage.setItem(BRAINSTORM_STORAGE_KEY, JSON.stringify(data));
+      }
+      setPendingIdea(null);
+    }
+  }, [pendingIdea, user]);
 
   // Save progress whenever it changes
   useEffect(() => {
@@ -103,7 +117,6 @@ export function BrainstormDialog({ open, onOpenChange }: BrainstormDialogProps) 
       toast.info("Please sign in to create a post");
       // Redirect to auth with return URL
       navigate('/auth?redirect=/matches&action=brainstorm');
-      onOpenChange(false);
       return;
     }
 
@@ -114,7 +127,6 @@ export function BrainstormDialog({ open, onOpenChange }: BrainstormDialogProps) 
       fromBrainstorm: 'true'
     });
     navigate(`/services/new?${params.toString()}`);
-    onOpenChange(false);
     clearProgress();
   };
 
@@ -126,59 +138,48 @@ export function BrainstormDialog({ open, onOpenChange }: BrainstormDialogProps) 
     setIdeas([]);
   };
 
-  const handleClose = (open: boolean) => {
-    if (!open) {
-      // Don't clear progress on close - keep it saved
-    }
-    onOpenChange(open);
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
+    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+      <CardContent className="pt-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 rounded-full bg-primary/10">
             <Lightbulb className="h-5 w-5 text-primary" />
-            Brainstorm Skill Swap Ideas
-          </DialogTitle>
-          <DialogDescription>
-            Tell us about your skills and needs, and we'll suggest creative skill swap opportunities.
-          </DialogDescription>
-        </DialogHeader>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg">Brainstorm Corner</h3>
+            <p className="text-sm text-muted-foreground">
+              Not sure what to swap? Let AI help you discover opportunities.
+            </p>
+          </div>
+        </div>
 
         {step === 'input' && (
-          <div className="space-y-6 py-4">
+          <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="strengths" className="text-base font-medium flex items-center gap-2">
-                <span className="text-lg">💪</span>
+              <Label htmlFor="strengths-section" className="text-sm font-medium flex items-center gap-2">
+                <span>💪</span>
                 What are you naturally good at?
               </Label>
-              <p className="text-sm text-muted-foreground">
-                Skills you love doing, talents, abilities that come easy to you
-              </p>
               <Textarea
-                id="strengths"
-                placeholder="e.g., I'm great at graphic design, love cooking, good with spreadsheets, enjoy teaching kids..."
+                id="strengths-section"
+                placeholder="e.g., I'm great at graphic design, love cooking, good with spreadsheets..."
                 value={strengths}
                 onChange={(e) => setStrengths(e.target.value)}
-                className="min-h-[100px] resize-none"
+                className="min-h-[80px] resize-none bg-background"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="needs" className="text-base font-medium flex items-center gap-2">
-                <span className="text-lg">🙏</span>
+              <Label htmlFor="needs-section" className="text-sm font-medium flex items-center gap-2">
+                <span>🙏</span>
                 What do you need help with?
               </Label>
-              <p className="text-sm text-muted-foreground">
-                Things you're not good at, tasks you avoid, skills you'd love to learn
-              </p>
               <Textarea
-                id="needs"
-                placeholder="e.g., I'm terrible at DIY, never have time to clean, need help with my CV, want to learn guitar..."
+                id="needs-section"
+                placeholder="e.g., I'm terrible at DIY, need help with my CV, want to learn guitar..."
                 value={needs}
                 onChange={(e) => setNeeds(e.target.value)}
-                className="min-h-[100px] resize-none"
+                className="min-h-[80px] resize-none bg-background"
               />
             </div>
 
@@ -194,67 +195,58 @@ export function BrainstormDialog({ open, onOpenChange }: BrainstormDialogProps) 
         )}
 
         {step === 'loading' && (
-          <div className="py-12 flex flex-col items-center justify-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground">Brainstorming creative ideas for you...</p>
+          <div className="py-8 flex flex-col items-center justify-center gap-3">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Brainstorming creative ideas...</p>
           </div>
         )}
 
         {step === 'results' && (
-          <div className="space-y-4 py-4">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
-                Here are some skill swap ideas based on your input:
+                Ideas based on your input:
               </p>
               <Button variant="ghost" size="sm" onClick={() => setStep('input')}>
                 <RefreshCw className="h-4 w-4 mr-1" />
-                Try Again
+                Edit
               </Button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {ideas.map((idea, index) => (
                 <div 
                   key={index}
-                  className="p-4 rounded-xl border border-border bg-muted/30 space-y-3 hover:border-primary/50 transition-colors"
+                  className="p-3 rounded-lg border border-border bg-background space-y-2 hover:border-primary/50 transition-colors"
                 >
-                  <h4 className="font-semibold text-foreground">{idea.title}</h4>
-                  <p className="text-sm text-muted-foreground">{idea.description}</p>
-                  <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="px-2 py-1 rounded-full bg-primary/10 text-primary">
-                      You offer: {idea.yourOffer}
+                  <h4 className="font-medium text-sm">{idea.title}</h4>
+                  <p className="text-xs text-muted-foreground">{idea.description}</p>
+                  <div className="flex flex-wrap gap-1.5 text-xs">
+                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                      Offer: {idea.yourOffer}
                     </span>
-                    <span className="px-2 py-1 rounded-full bg-accent/10 text-accent-foreground">
-                      You get: {idea.yourNeed}
+                    <span className="px-2 py-0.5 rounded-full bg-accent/10 text-accent-foreground">
+                      Get: {idea.yourNeed}
                     </span>
                   </div>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="w-full mt-2"
+                    className="w-full mt-1"
                     onClick={() => handleConvertToPost(idea)}
                   >
-                    {user ? 'Create Post from This Idea' : 'Sign In to Create Post'}
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    {user ? 'Create Post' : 'Sign In to Post'}
+                    <ArrowRight className="h-3 w-3 ml-1" />
                   </Button>
                 </div>
               ))}
             </div>
 
-            {ideas.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No ideas generated. Please try again with different inputs.</p>
-                <Button variant="outline" className="mt-4" onClick={() => setStep('input')}>
-                  Try Again
-                </Button>
-              </div>
-            )}
-
             {ideas.length > 0 && (
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full text-muted-foreground"
+                className="w-full text-muted-foreground text-xs"
                 onClick={clearProgress}
               >
                 Clear & Start Over
@@ -262,7 +254,7 @@ export function BrainstormDialog({ open, onOpenChange }: BrainstormDialogProps) 
             )}
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+      </CardContent>
+    </Card>
   );
 }
