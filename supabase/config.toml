@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.leprechaun-chat]
 verify_jwt = false
+
+[functions.brainstorm-skills]
+verify_jwt = true
