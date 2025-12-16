@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.send-advertiser-welcome]
 verify_jwt = false
+
+[functions.send-advertiser-rejection]
+verify_jwt = false
