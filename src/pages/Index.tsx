@@ -10,6 +10,7 @@ import { FounderStorySection } from "@/components/home/FounderStorySection";
 import { CTASection } from "@/components/home/CTASection";
 import { InlineAd } from "@/components/ads/InlineAd";
 import { SEO } from "@/components/SEO";
+import { OrganizationJsonLd, WebsiteJsonLd } from "@/components/seo/JsonLd";
 
 const Index = () => {
   return (
@@ -19,6 +20,8 @@ const Index = () => {
         keywords="skill swap Ireland, service exchange, barter services, trade skills Dublin, skill trading Cork, time bank Galway"
         url="https://swap-skills.com/"
       />
+      <OrganizationJsonLd />
+      <WebsiteJsonLd />
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1">

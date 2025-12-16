@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
+import { ServiceJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -206,8 +208,36 @@ export default function ServiceDetail() {
 
   const isOwner = user?.id === service.user_id;
 
+  const serviceUrl = `https://swap-skills.com/services/${service.id}`;
+
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title={service.title}
+        description={service.description || `${service.type === "request" ? "Looking for" : "Offering"} ${categoryLabels[service.category as ServiceCategory]} in ${service.location || "Ireland"}`}
+        url={serviceUrl}
+        type="article"
+        image={service.images?.[0]}
+      />
+      <ServiceJsonLd
+        name={service.title}
+        description={service.description || ""}
+        provider={service.provider_name || undefined}
+        location={service.location || undefined}
+        price={service.price ? Number(service.price) : undefined}
+        priceType={service.price_type || undefined}
+        category={categoryLabels[service.category as ServiceCategory]}
+        url={serviceUrl}
+        image={service.images?.[0]}
+        datePosted={service.created_at}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://swap-skills.com" },
+          { name: "Browse Services", url: "https://swap-skills.com/browse" },
+          { name: service.title, url: serviceUrl },
+        ]}
+      />
       <Header />
       <main className="flex-1 bg-secondary/20">
         <div className="container py-8">

@@ -1,13 +1,13 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SEO } from "@/components/SEO";
+import { FAQJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
 const faqs = [
   {
     question: "What is Swap-Skills?",
@@ -51,6 +51,13 @@ export default function FAQ() {
         description="Find answers to frequently asked questions about Swap Skills - how skill swapping works, safety tips, getting started, and more."
         keywords="swap skills FAQ, skill exchange questions, barter Ireland help, how to swap services"
         url="https://swap-skills.com/faq"
+      />
+      <FAQJsonLd faqs={faqs} />
+      <BreadcrumbJsonLd 
+        items={[
+          { name: "Home", url: "https://swap-skills.com" },
+          { name: "FAQ", url: "https://swap-skills.com/faq" },
+        ]} 
       />
       <div className="flex min-h-screen flex-col">
         <Header />
