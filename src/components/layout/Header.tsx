@@ -2,18 +2,20 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, Plus, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard } from "lucide-react";
+import { Menu, X, Search, User, Plus, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [postMenuOpen, setPostMenuOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  const [brainstormOpen, setBrainstormOpen] = useState(false);
   const postMenuRef = useRef<HTMLDivElement>(null);
   const adminMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -177,22 +179,31 @@ export function Header() {
                 </Button>
                 {postMenuOpen && (
                   <div className="absolute right-0 mt-2 w-52 bg-background rounded-xl border border-border shadow-lg py-1 z-50">
-                    <Link
-                      to="/services/new"
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors"
-                      onClick={() => setPostMenuOpen(false)}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          to="/services/new"
+                          className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors"
+                          onClick={() => setPostMenuOpen(false)}
+                        >
+                          <RefreshCw className="h-4 w-4 text-primary" />
+                          Skill Swap
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="max-w-[200px]">
+                        <p>Create a skill swap post to offer or request services</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <button
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors w-full text-left"
+                      onClick={() => {
+                        setPostMenuOpen(false);
+                        setBrainstormOpen(true);
+                      }}
                     >
-                      <Sparkles className="h-4 w-4 text-primary" />
-                      Offer a Service
-                    </Link>
-                    <Link
-                      to="/services/new?type=request"
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors"
-                      onClick={() => setPostMenuOpen(false)}
-                    >
-                      <Search className="h-4 w-4 text-accent-foreground" />
-                      Request a Service
-                    </Link>
+                      <Lightbulb className="h-4 w-4 text-amber-500" />
+                      Brainstorm Ideas
+                    </button>
                     <div className="border-t border-border my-1" />
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -303,15 +314,20 @@ export function Header() {
                 <>
                   <Button variant="accent" className="w-full rounded-xl" asChild>
                     <Link to="/services/new" onClick={() => setMobileMenuOpen(false)}>
-                      <Sparkles className="h-4 w-4 mr-1" />
-                      Offer a Service
+                      <RefreshCw className="h-4 w-4 mr-1" />
+                      Skill Swap
                     </Link>
                   </Button>
-                  <Button variant="outline" className="w-full rounded-xl" asChild>
-                    <Link to="/services/new?type=request" onClick={() => setMobileMenuOpen(false)}>
-                      <Search className="h-4 w-4 mr-1" />
-                      Request a Service
-                    </Link>
+                  <Button 
+                    variant="outline" 
+                    className="w-full rounded-xl"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setBrainstormOpen(true);
+                    }}
+                  >
+                    <Lightbulb className="h-4 w-4 mr-1" />
+                    Brainstorm Ideas
                   </Button>
                   <Button variant="ghost" className="w-full rounded-xl text-foreground font-medium" asChild>
                     <Link to="/getting-started" onClick={() => setMobileMenuOpen(false)}>
@@ -351,6 +367,7 @@ export function Header() {
           </nav>
         </div>
       )}
+      <BrainstormDialog open={brainstormOpen} onOpenChange={setBrainstormOpen} />
     </header>
   );
 }
