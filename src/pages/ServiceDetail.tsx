@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SEO } from "@/components/SEO";
-import { ServiceJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import { ServiceJsonLd, BreadcrumbJsonLd, LocalBusinessJsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -238,6 +238,15 @@ export default function ServiceDetail() {
           { name: service.title, url: serviceUrl },
         ]}
       />
+      {service.provider_verification_status === "verified" && service.provider_name && (
+        <LocalBusinessJsonLd
+          name={service.provider_name}
+          description={service.provider_bio || undefined}
+          location={service.provider_location || service.location || undefined}
+          url={serviceUrl}
+          image={service.provider_avatar || undefined}
+        />
+      )}
       <Header />
       <main className="flex-1 bg-secondary/20">
         <div className="container py-8">
