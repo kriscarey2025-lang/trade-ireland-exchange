@@ -48,9 +48,9 @@ export function AppAnnouncementBanner() {
             >
               <Sparkles className="h-4 w-4 text-primary hidden sm:block animate-spin" style={{ animationDuration: '3s' }} />
               <span className="text-sm font-bold tracking-wide text-foreground">
-                🎉 <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">New Platform!</span> Beta Testing in <span className="text-primary font-extrabold">County Carlow</span> — join us!
+                🎉 <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">New Platform!</span> Beta Testing in <span className="text-primary font-extrabold">County Carlow</span> — early access, come be part of it
               </span>
-              <span className="text-lg animate-pulse">☘️</span>
+              <span className="text-lg animate-pulse">🌱</span>
             </div>
           </div>
         </div>
