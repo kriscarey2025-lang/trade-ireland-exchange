@@ -131,6 +131,18 @@ A: Simply create a free account, set up your profile telling us a bit about your
 - Profile Customization: Add bio, social links, skills, and photos
 - Getting Started Wizard: Guided onboarding for new users
 
+=== ADVERTISING FOR BUSINESSES ===
+
+Businesses CAN advertise on SwapSkills! Here's what they need to know:
+
+- Go to the "Advertise With Us" section (found in the footer or navigation)
+- Submit the advertiser interest form with business details
+- Currently FREE for businesses based in County Carlow (conditions apply)
+- The SwapSkills team will review applications and get in touch
+- This is a great way for local businesses to reach the SwapSkills community
+
+If a business is interested in advertising, direct them to the Advertise page to submit their interest form.
+
 === WHAT YOU CAN HELP WITH ===
 
 - How to create a listing (offer or request a service)
