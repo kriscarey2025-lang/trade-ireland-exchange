@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AdsLayout } from "@/components/layout/AdsLayout";
 import { HeroSection } from "@/components/home/HeroSection";
+import { AppAnnouncementBanner } from "@/components/home/AppAnnouncementBanner";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { FeaturedServicesSection } from "@/components/home/FeaturedServicesSection";
@@ -24,6 +25,7 @@ const Index = () => {
       <WebsiteJsonLd />
       <div className="min-h-screen flex flex-col">
         <Header />
+        <AppAnnouncementBanner />
         <main className="flex-1">
           <AdsLayout>
             <HeroSection />
