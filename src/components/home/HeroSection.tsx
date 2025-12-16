@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Users, Shield, Coffee, HelpCircle } from "lucide-react";
+import { ArrowRight, Heart, Users, Shield, Coffee, Sparkles, Lightbulb } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 export function HeroSection() {
   const {
@@ -83,16 +83,28 @@ export function HeroSection() {
             </Button>
           </div>
 
-          {/* Getting Started CTA */}
+          {/* Brainstorm CTA - Standout Card */}
           <div className="mb-14 animate-fade-up" style={{
           animationDelay: "0.35s"
         }}>
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" asChild>
-              <Link to={user ? "/getting-started" : "/auth?redirect=/getting-started"}>
-                <HelpCircle className="mr-2 h-4 w-4" />
-                Not sure where to start? We'll help you!
-              </Link>
-            </Button>
+            <Link to="/matches" className="group block max-w-md mx-auto">
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-highlight/10 p-[2px] hover:from-primary/20 hover:via-accent/20 hover:to-highlight/20 transition-all duration-300">
+                <div className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card/95 backdrop-blur-sm group-hover:bg-card/90 transition-colors">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent animate-pulse">
+                    <Lightbulb className="h-5 w-5 text-primary-foreground" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                      Not sure where to start?
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Let AI brainstorm skill swap ideas for you!
+                    </p>
+                  </div>
+                  <Sparkles className="h-5 w-5 text-accent group-hover:animate-spin transition-all" />
+                </div>
+              </div>
+            </Link>
           </div>
 
           {/* Trust Indicators - warm and friendly */}
