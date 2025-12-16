@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { MapPin, Clock, MessageCircle, Check, Trash2, MoreVertical, X } from 'lucide-react';
+import { MapPin, Clock, MessageCircle, Check, Trash2, MoreVertical, Image } from 'lucide-react';
 import { CommunityPost, CATEGORY_CONFIG, STICKY_NOTE_COLORS } from '@/types/community';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -118,6 +118,14 @@ export function StickyNote({ post }: StickyNoteProps) {
             {post.title}
           </h3>
 
+          {/* Image indicator */}
+          {post.image_url && (
+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+              <Image className="h-2.5 w-2.5" />
+              <span>Photo</span>
+            </div>
+          )}
+
           {/* Minimal footer */}
           <div className="flex items-center justify-between pt-1 mt-1 border-t border-black/10">
             <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
@@ -158,6 +166,17 @@ export function StickyNote({ post }: StickyNoteProps) {
               </div>
               <DialogTitle className="text-left text-lg">{post.title}</DialogTitle>
             </DialogHeader>
+
+            {/* Image */}
+            {post.image_url && (
+              <div className="w-full h-40 rounded-lg overflow-hidden mb-3">
+                <img
+                  src={post.image_url}
+                  alt={post.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
 
             {/* Description */}
             <p className="text-sm text-muted-foreground whitespace-pre-wrap">
@@ -268,9 +287,20 @@ export function StickyNote({ post }: StickyNoteProps) {
       </h3>
 
       {/* Description */}
-      <p className="text-xs text-muted-foreground mb-3 line-clamp-3 flex-1">
+      <p className="text-xs text-muted-foreground mb-2 line-clamp-2 flex-1">
         <LinkifyText text={post.description || ''} />
       </p>
+
+      {/* Small image thumbnail */}
+      {post.image_url && (
+        <div className="w-full h-16 rounded overflow-hidden mb-2">
+          <img
+            src={post.image_url}
+            alt={post.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
       {/* Location & Time */}
       <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">

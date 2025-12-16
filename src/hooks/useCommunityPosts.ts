@@ -18,11 +18,11 @@ export function useBoardPosts(county?: string | null) {
           _offset: 0,
         });
         if (error) throw error;
-        return data as CommunityPost[];
+        return (data as unknown) as CommunityPost[];
       }
       const { data, error } = await supabase.rpc('get_visible_board_posts');
       if (error) throw error;
-      return data as CommunityPost[];
+      return (data as unknown) as CommunityPost[];
     },
   });
 }
@@ -49,7 +49,7 @@ export function useSearchPosts(params: SearchParams) {
         _offset: params.offset || 0,
       });
       if (error) throw error;
-      return data as (CommunityPost & { total_count: number })[];
+      return (data as unknown) as (CommunityPost & { total_count: number })[];
     },
     enabled: Boolean(params.search || params.category || params.county || params.status),
   });

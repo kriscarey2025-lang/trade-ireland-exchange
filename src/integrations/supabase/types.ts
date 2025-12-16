@@ -1152,6 +1152,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          image_url: string
           location: string
           poster_avatar: string
           poster_name: string
@@ -1196,6 +1197,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          image_url: string
           location: string
           poster_avatar: string
           poster_name: string
