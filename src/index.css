@@ -357,3 +357,20 @@
   text-underline-offset: 4px;
   text-decoration-style: wavy;
 }
+
+/* Gentle spin animation */
+@keyframes spinSlow {
+  0% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(-2deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 4s ease-in-out infinite;
+}
