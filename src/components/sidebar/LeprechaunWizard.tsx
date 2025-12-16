@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, X, Sparkles } from "lucide-react";
+import { Send, Sparkles, Mic, MicOff } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   role: "user" | "assistant";
@@ -23,7 +24,11 @@ interface LeprechaunWizardProps {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/leprechaun-chat`;
 
+// Check if Speech Recognition is available
+const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
 const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -32,12 +37,54 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-IE'; // Irish English
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => result[0].transcript)
+          .join('');
+        setInput(transcript);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        if (event.error === 'not-allowed') {
+          toast({
+            title: "Microphone access denied",
+            description: "Please allow microphone access to use voice input.",
+            variant: "destructive",
+          });
+        }
+      };
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, [toast]);
 
   useEffect(() => {
     if (open && inputRef.current) {
-      inputRef.current.focus();
+      // Delay focus to avoid keyboard issues on mobile
+      setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [open]);
 
@@ -46,6 +93,29 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const toggleListening = () => {
+    if (!SpeechRecognition) {
+      toast({
+        title: "Voice input not supported",
+        description: "Your browser doesn't support voice input. Try Chrome or Safari.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    } else {
+      try {
+        recognitionRef.current?.start();
+        setIsListening(true);
+      } catch (error) {
+        console.error('Failed to start speech recognition:', error);
+      }
+    }
+  };
 
   const streamChat = async (userMessages: Message[]) => {
     const resp = await fetch(CHAT_URL, {
@@ -116,6 +186,12 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
+    // Stop listening if active
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    }
+
     const userMessage: Message = { role: "user", content: input.trim() };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
@@ -140,8 +216,8 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
-        <DialogHeader className="p-4 pb-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10">
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[85vh] h-[85vh] sm:h-auto sm:max-h-none flex flex-col">
+        <DialogHeader className="p-4 pb-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 flex-shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <span className="text-2xl">🍀</span>
             <span>Lucky the Leprechaun</span>
@@ -152,7 +228,7 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
           </p>
         </DialogHeader>
 
-        <ScrollArea className="h-[350px] p-4" ref={scrollAreaRef}>
+        <ScrollArea className="flex-1 min-h-0 p-4" ref={scrollAreaRef}>
           <div className="space-y-4">
             {messages.map((message, index) => (
               <div
@@ -196,20 +272,39 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
           </div>
         </ScrollArea>
 
-        <form onSubmit={handleSubmit} className="p-4 border-t bg-muted/30">
+        <form onSubmit={handleSubmit} className="p-3 sm:p-4 border-t bg-muted/30 flex-shrink-0">
           <div className="flex gap-2">
+            <Button
+              type="button"
+              size="icon"
+              variant={isListening ? "default" : "outline"}
+              onClick={toggleListening}
+              disabled={isLoading}
+              className={cn(
+                "flex-shrink-0 transition-colors",
+                isListening && "bg-red-500 hover:bg-red-600 animate-pulse"
+              )}
+              title={isListening ? "Stop listening" : "Voice input"}
+            >
+              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            </Button>
             <Input
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Lucky a question..."
+              placeholder={isListening ? "Listening..." : "Ask Lucky a question..."}
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 text-base"
             />
             <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
               <Send className="h-4 w-4" />
             </Button>
           </div>
+          {isListening && (
+            <p className="text-xs text-muted-foreground text-center mt-2 animate-pulse">
+              🎤 Speak now...
+            </p>
+          )}
         </form>
       </DialogContent>
     </Dialog>
