@@ -113,17 +113,6 @@ export function HeroSection() {
               <span className="text-sm font-medium">Free to join</span>
             </div>
           </div>
-
-          {/* App Announcement */}
-          <div className="mt-8 animate-fade-up" style={{ animationDelay: "0.5s" }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20">
-              <span className="text-xl">📱</span>
-              <span className="text-sm font-medium">
-                <span className="text-accent">Free Android & iOS App</span>
-                <span className="text-muted-foreground"> — Coming Soon!</span>
-              </span>
-            </div>
-          </div>
         </div>
       </div>
     </section>;
