@@ -43,4 +43,4 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.brainstorm-skills]
-verify_jwt = true
+verify_jwt = false

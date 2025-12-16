@@ -64,9 +64,11 @@ export default function Auth() {
     const checkUserStatus = async () => {
       if (!user || authLoading) return;
       
-      // If there's a specific redirect, go there
+      // If there's a specific redirect with action, go there with action param preserved
       if (redirectTo) {
-        navigate(redirectTo);
+        const action = searchParams.get("action");
+        const redirectUrl = action ? `${redirectTo}?action=${action}` : redirectTo;
+        navigate(redirectUrl);
         return;
       }
       
@@ -99,7 +101,7 @@ export default function Auth() {
     if (user && !authLoading) {
       checkUserStatus();
     }
-  }, [user, authLoading, navigate, redirectTo]);
+  }, [user, authLoading, navigate, redirectTo, searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,7 +136,14 @@ export default function Auth() {
     }
 
     toast.success("Welcome back!");
-    navigate('/');
+    // Handle redirect with action preserved
+    if (redirectTo) {
+      const action = searchParams.get("action");
+      const redirectUrl = action ? `${redirectTo}?action=${action}` : redirectTo;
+      navigate(redirectUrl);
+    } else {
+      navigate('/');
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -185,7 +194,14 @@ export default function Auth() {
     }
 
     toast.success("Account created successfully!");
-    navigate('/onboarding');
+    // Handle redirect with action preserved
+    if (redirectTo) {
+      const action = searchParams.get("action");
+      const redirectUrl = action ? `${redirectTo}?action=${action}` : redirectTo;
+      navigate(redirectUrl);
+    } else {
+      navigate('/onboarding');
+    }
   };
 
   if (authLoading) {
