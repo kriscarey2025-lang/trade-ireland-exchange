@@ -1,11 +1,16 @@
+import { useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SEO } from '@/components/SEO';
 import { CorkBoard } from '@/components/community/CorkBoard';
 import { BoardFilters } from '@/components/community/BoardFilters';
 import { CreatePostDialog } from '@/components/community/CreatePostDialog';
+import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
 
 export default function CommunityBoard() {
+  const [selectedCounty, setSelectedCounty] = useState<string>('all');
+
   return (
     <>
       <SEO
@@ -31,7 +36,10 @@ export default function CommunityBoard() {
             {/* Action Bar */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div className="flex-1 w-full sm:w-auto">
-                <BoardFilters />
+                <BoardFilters 
+                  selectedCounty={selectedCounty} 
+                  onCountyChange={setSelectedCounty} 
+                />
               </div>
               <CreatePostDialog />
             </div>
@@ -41,8 +49,17 @@ export default function CommunityBoard() {
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 📌 Latest Posts
                 <span className="text-sm font-normal text-muted-foreground">(Most recent 20)</span>
+                {selectedCounty !== 'all' && (
+                  <Badge variant="secondary" className="ml-2 gap-1">
+                    {selectedCounty}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => setSelectedCounty('all')} 
+                    />
+                  </Badge>
+                )}
               </h2>
-              <CorkBoard />
+              <CorkBoard county={selectedCounty !== 'all' ? selectedCounty : null} />
             </section>
 
             {/* Info Section */}

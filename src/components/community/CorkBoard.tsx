@@ -2,8 +2,12 @@ import { useBoardPosts } from '@/hooks/useCommunityPosts';
 import { StickyNote } from './StickyNote';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function CorkBoard() {
-  const { data: posts, isLoading, error } = useBoardPosts();
+interface CorkBoardProps {
+  county?: string | null;
+}
+
+export function CorkBoard({ county }: CorkBoardProps) {
+  const { data: posts, isLoading, error } = useBoardPosts(county);
 
   if (isLoading) {
     return (
@@ -42,7 +46,9 @@ export function CorkBoard() {
           }}
         />
         <div className="text-center z-10">
-          <p className="text-amber-100 text-lg font-medium mb-2">The board is empty</p>
+          <p className="text-amber-100 text-lg font-medium mb-2">
+            {county ? `No posts for ${county}` : 'The board is empty'}
+          </p>
           <p className="text-amber-200/70 text-sm">Be the first to post a note!</p>
         </div>
       </div>

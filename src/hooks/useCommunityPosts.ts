@@ -3,10 +3,23 @@ import { supabase } from '@/integrations/supabase/client';
 import { CommunityPost, PostCategory, PostStatus } from '@/types/community';
 import { toast } from 'sonner';
 
-export function useBoardPosts() {
+export function useBoardPosts(county?: string | null) {
   return useQuery({
-    queryKey: ['community-board-posts'],
+    queryKey: ['community-board-posts', county],
     queryFn: async () => {
+      if (county) {
+        // Use search function with county filter for latest 20 active posts
+        const { data, error } = await supabase.rpc('search_community_posts', {
+          _search: null,
+          _category: null,
+          _county: county,
+          _status: 'active',
+          _limit: 20,
+          _offset: 0,
+        });
+        if (error) throw error;
+        return data as CommunityPost[];
+      }
       const { data, error } = await supabase.rpc('get_visible_board_posts');
       if (error) throw error;
       return data as CommunityPost[];
