@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Sparkles, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Send, Sparkles, Mic, MicOff } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -40,80 +38,9 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [autoSpeak, setAutoSpeak] = useState(false);
-  const [irishVoice, setIrishVoice] = useState<SpeechSynthesisVoice | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
-
-  // Find Irish or English voice
-  useEffect(() => {
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      // Try to find Irish English voice first
-      let voice = voices.find(v => v.lang === 'en-IE');
-      // Fall back to UK English (closer to Irish)
-      if (!voice) voice = voices.find(v => v.lang === 'en-GB');
-      // Fall back to any English
-      if (!voice) voice = voices.find(v => v.lang.startsWith('en'));
-      setIrishVoice(voice || null);
-      console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
-      console.log('Selected voice:', voice?.name, voice?.lang);
-    };
-
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null;
-    };
-  }, []);
-
-  // Stop speaking when dialog closes
-  useEffect(() => {
-    if (!open) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    }
-  }, [open]);
-
-  const speakText = useCallback((text: string) => {
-    if (!('speechSynthesis' in window)) {
-      toast({
-        title: "Voice output not supported",
-        description: "Your browser doesn't support text-to-speech.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Cancel any ongoing speech
-    window.speechSynthesis.cancel();
-
-    // Clean the text (remove emojis for cleaner speech)
-    const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '');
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    
-    if (irishVoice) {
-      utterance.voice = irishVoice;
-    }
-    utterance.lang = 'en-IE';
-    utterance.rate = 0.95; // Slightly slower for clarity
-    utterance.pitch = 1.1; // Slightly higher pitch for friendliness
-
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
-  }, [irishVoice, toast]);
-
-  const stopSpeaking = () => {
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-  };
 
   // Initialize speech recognition
   useEffect(() => {
@@ -181,8 +108,6 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
       recognitionRef.current?.stop();
       setIsListening(false);
     } else {
-      // Stop any ongoing speech before listening
-      stopSpeaking();
       try {
         recognitionRef.current?.start();
         setIsListening(true);
@@ -255,11 +180,6 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
         }
       }
     }
-
-    // Auto-speak if enabled
-    if (autoSpeak && assistantSoFar) {
-      speakText(assistantSoFar);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -271,9 +191,6 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
       recognitionRef.current?.stop();
       setIsListening(false);
     }
-
-    // Stop any ongoing speech
-    stopSpeaking();
 
     const userMessage: Message = { role: "user", content: input.trim() };
     const updatedMessages = [...messages, userMessage];
@@ -301,24 +218,11 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden max-h-[85vh] h-[85vh] sm:h-auto sm:max-h-none flex flex-col">
         <DialogHeader className="p-4 pb-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="flex items-center gap-2">
-              <span className="text-2xl">🍀</span>
-              <span>Lucky the Leprechaun</span>
-              <Sparkles className="h-4 w-4 text-yellow-500" />
-            </DialogTitle>
-            <div className="flex items-center gap-2">
-              <Label htmlFor="auto-speak" className="text-xs text-muted-foreground cursor-pointer">
-                {autoSpeak ? "🔊" : "🔇"}
-              </Label>
-              <Switch
-                id="auto-speak"
-                checked={autoSpeak}
-                onCheckedChange={setAutoSpeak}
-                className="scale-75"
-              />
-            </div>
-          </div>
+          <DialogTitle className="flex items-center gap-2">
+            <span className="text-2xl">🍀</span>
+            <span>Lucky the Leprechaun</span>
+            <Sparkles className="h-4 w-4 text-yellow-500" />
+          </DialogTitle>
           <p className="text-xs text-muted-foreground mt-1">
             A bit of fun — take with a pinch of salt! 🧂 But I do know my SwapSkills stuff.
           </p>
@@ -341,26 +245,13 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
                 )}
                 <div
                   className={cn(
-                    "rounded-2xl px-4 py-2 max-w-[80%] group relative",
+                    "rounded-2xl px-4 py-2 max-w-[80%]",
                     message.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted"
                   )}
                 >
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                  {message.role === "assistant" && message.content && (
-                    <button
-                      onClick={() => isSpeaking ? stopSpeaking() : speakText(message.content)}
-                      className="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-muted"
-                      title={isSpeaking ? "Stop speaking" : "Listen to this"}
-                    >
-                      {isSpeaking ? (
-                        <VolumeX className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Volume2 className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </button>
-                  )}
                 </div>
               </div>
             ))}
@@ -412,11 +303,6 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
           {isListening && (
             <p className="text-xs text-muted-foreground text-center mt-2 animate-pulse">
               🎤 Speak now...
-            </p>
-          )}
-          {isSpeaking && (
-            <p className="text-xs text-muted-foreground text-center mt-2 animate-pulse">
-              🔊 Lucky is speaking...
             </p>
           )}
         </form>
