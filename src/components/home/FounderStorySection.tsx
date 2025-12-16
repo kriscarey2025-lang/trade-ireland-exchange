@@ -45,9 +45,7 @@ export function FounderStorySection() {
                 to hold.
               </p>
 
-              <p className="mb-6">.your community is full of hidden superpowers. We just need a little nudge to share them.<span className="text-foreground font-semibold">your community is full of hidden superpowers</span>. 
-                We just need a little nudge to share them.
-              </p>
+              
             </div>
 
             {/* Benefits grid */}
