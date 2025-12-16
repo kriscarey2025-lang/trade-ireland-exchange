@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, MapPin, Clock, Heart } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -27,6 +28,19 @@ export default function Contact() {
     };
 
     try {
+      // Save to database for admin review
+      const { error: dbError } = await supabase.from("user_feedback").insert({
+        type: "contact",
+        subject: `${data.subject} (from ${data.name})`,
+        message: data.message,
+        email: data.email,
+        user_id: null,
+      });
+
+      if (dbError) {
+        console.error("Error saving contact message:", dbError);
+      }
+
       // Send to backend email function
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,

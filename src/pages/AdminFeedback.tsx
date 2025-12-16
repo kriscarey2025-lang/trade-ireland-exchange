@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Lightbulb, MessageSquare, Clock, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Lightbulb, MessageSquare, Clock, CheckCircle, XCircle, Loader2, Mail } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,7 +22,7 @@ import { format } from "date-fns";
 
 interface Feedback {
   id: string;
-  type: "feature_request" | "feedback";
+  type: "feature_request" | "feedback" | "contact";
   subject: string;
   message: string;
   email: string | null;
@@ -137,6 +137,7 @@ const AdminFeedback = () => {
 
   const featureRequests = feedbackList.filter((f) => f.type === "feature_request");
   const feedback = feedbackList.filter((f) => f.type === "feedback");
+  const contactMessages = feedbackList.filter((f) => f.type === "contact");
 
   if (authLoading || loading) {
     return (
@@ -157,6 +158,8 @@ const AdminFeedback = () => {
           <div className="flex items-center gap-2">
             {item.type === "feature_request" ? (
               <Lightbulb className="h-4 w-4 text-primary" />
+            ) : item.type === "contact" ? (
+              <Mail className="h-4 w-4 text-blue-500" />
             ) : (
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             )}
@@ -212,14 +215,18 @@ const AdminFeedback = () => {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Feedback & Feature Requests</h1>
+          <h1 className="text-3xl font-bold mb-2">Messages & Feedback</h1>
           <p className="text-muted-foreground">
-            Manage user feedback and feature suggestions
+            Manage contact form messages, feature requests, and user feedback
           </p>
         </div>
 
-        <Tabs defaultValue="features" className="space-y-6">
+        <Tabs defaultValue="contact" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="contact" className="gap-2">
+              <Mail className="h-4 w-4" />
+              Contact Messages ({contactMessages.length})
+            </TabsTrigger>
             <TabsTrigger value="features" className="gap-2">
               <Lightbulb className="h-4 w-4" />
               Feature Requests ({featureRequests.length})
@@ -229,6 +236,18 @@ const AdminFeedback = () => {
               Feedback ({feedback.length})
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="contact" className="space-y-4">
+            {contactMessages.length === 0 ? (
+              <Card>
+                <CardContent className="py-8 text-center text-muted-foreground">
+                  No contact messages yet
+                </CardContent>
+              </Card>
+            ) : (
+              contactMessages.map((item) => <FeedbackCard key={item.id} item={item} />)
+            )}
+          </TabsContent>
 
           <TabsContent value="features" className="space-y-4">
             {featureRequests.length === 0 ? (
