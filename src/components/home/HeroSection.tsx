@@ -97,9 +97,7 @@ export function HeroSection() {
                     <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
                       Not sure where to start?
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                      Let AI brainstorm skill swap ideas for you!
-                    </p>
+                    <p className="text-sm text-muted-foreground">Let's brainstorm skill swap ideas !</p>
                   </div>
                   <Sparkles className="h-5 w-5 text-accent group-hover:animate-spin transition-all" />
                 </div>
