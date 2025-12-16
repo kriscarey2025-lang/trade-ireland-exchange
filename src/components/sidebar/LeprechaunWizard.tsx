@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Sparkles, Mic, MicOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,44 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+
+// Parse markdown links and render as clickable
+const renderMessageContent = (content: string, onLinkClick: (path: string) => void) => {
+  // Split by markdown link pattern [text](url)
+  const parts = content.split(/(\[[^\]]+\]\([^)]+\))/g);
+  
+  return parts.map((part, index) => {
+    const linkMatch = part.match(/\[([^\]]+)\]\(([^)]+)\)/);
+    if (linkMatch) {
+      const [, text, url] = linkMatch;
+      // Check if it's an internal link
+      if (url.startsWith('/')) {
+        return (
+          <button
+            key={index}
+            onClick={() => onLinkClick(url)}
+            className="text-primary hover:underline font-medium"
+          >
+            {text}
+          </button>
+        );
+      }
+      // External link
+      return (
+        <a
+          key={index}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline font-medium"
+        >
+          {text}
+        </a>
+      );
+    }
+    return <span key={index}>{part}</span>;
+  });
+};
 
 interface Message {
   role: "user" | "assistant";
@@ -29,6 +68,7 @@ const SpeechRecognition = (window as any).SpeechRecognition || (window as any).w
 
 const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -251,7 +291,15 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
                       : "bg-muted"
                   )}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {message.role === "assistant" 
+                      ? renderMessageContent(message.content, (path) => {
+                          onOpenChange(false);
+                          navigate(path);
+                        })
+                      : message.content
+                    }
+                  </p>
                 </div>
               </div>
             ))}

@@ -1,9 +1,55 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Extract keywords from user message for search
+function extractSearchTerms(message: string): string[] {
+  const stopWords = new Set(['i', 'me', 'my', 'we', 'our', 'you', 'your', 'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'can', 'may', 'might', 'must', 'shall', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'and', 'but', 'if', 'or', 'because', 'until', 'while', 'about', 'against', 'any', 'need', 'want', 'looking', 'find', 'help', 'someone', 'anyone', 'something', 'anything', 'get', 'got']);
+  
+  const words = message.toLowerCase()
+    .replace(/[^\w\s]/g, '')
+    .split(/\s+/)
+    .filter(word => word.length > 2 && !stopWords.has(word));
+  
+  return [...new Set(words)];
+}
+
+// Map common terms to categories
+function mapToCategories(terms: string[]): string[] {
+  const categoryMap: Record<string, string[]> = {
+    'Home Improvement': ['home', 'repair', 'fix', 'build', 'construction', 'plumbing', 'electrical', 'carpentry', 'painting', 'renovation', 'diy', 'handyman', 'tiling', 'tile'],
+    'Childcare': ['childcare', 'babysit', 'babysitting', 'kids', 'children', 'nanny', 'childminding'],
+    'Education & Tutoring': ['tutor', 'tutoring', 'teach', 'teaching', 'lessons', 'homework', 'education', 'learning', 'math', 'maths', 'english', 'science', 'language'],
+    'Gardening': ['garden', 'gardening', 'lawn', 'plants', 'landscaping', 'mowing', 'hedge', 'weeding'],
+    'Cleaning': ['cleaning', 'clean', 'housekeeping', 'ironing', 'laundry', 'tidying'],
+    'Cooking & Catering': ['cooking', 'cook', 'catering', 'baking', 'meals', 'food', 'chef'],
+    'Pet Care': ['pet', 'dog', 'cat', 'walking', 'sitting', 'animal', 'pets', 'dogs', 'cats'],
+    'Transportation': ['transport', 'driving', 'delivery', 'lift', 'courier', 'moving', 'removals'],
+    'Tech Support': ['tech', 'computer', 'laptop', 'phone', 'software', 'it', 'website', 'internet', 'printer', 'technology'],
+    'Fitness & Wellness': ['fitness', 'gym', 'training', 'yoga', 'exercise', 'personal', 'trainer', 'workout'],
+    'Beauty & Grooming': ['beauty', 'hair', 'makeup', 'nails', 'grooming', 'haircut', 'styling'],
+    'Arts & Crafts': ['art', 'craft', 'painting', 'drawing', 'sewing', 'knitting', 'creative'],
+    'Music & Entertainment': ['music', 'guitar', 'piano', 'singing', 'instrument', 'lessons', 'band', 'entertainment'],
+    'Photography & Video': ['photography', 'photo', 'video', 'camera', 'filming', 'editing', 'photographer'],
+    'Holistic Wellness': ['holistic', 'massage', 'therapy', 'reiki', 'meditation', 'wellness', 'healing'],
+  };
+  
+  const matchedCategories: string[] = [];
+  for (const term of terms) {
+    for (const [category, keywords] of Object.entries(categoryMap)) {
+      if (keywords.some(kw => term.includes(kw) || kw.includes(term))) {
+        if (!matchedCategories.includes(category)) {
+          matchedCategories.push(category);
+        }
+      }
+    }
+  }
+  return matchedCategories;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -13,10 +59,92 @@ serve(async (req) => {
   try {
     const { messages } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
+
+    // Get the latest user message for context
+    const latestUserMessage = messages.filter((m: any) => m.role === "user").pop()?.content || "";
+    const searchTerms = extractSearchTerms(latestUserMessage);
+    const matchedCategories = mapToCategories(searchTerms);
+    
+    let servicesContext = "";
+    let communityContext = "";
+    
+    // Query database if we have search terms
+    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY && searchTerms.length > 0) {
+      const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      
+      // Build search query for services
+      let servicesQuery = supabase
+        .from('services')
+        .select('id, title, description, category, type, location')
+        .eq('status', 'active')
+        .eq('moderation_status', 'approved')
+        .limit(5);
+      
+      // Search by category or text
+      if (matchedCategories.length > 0) {
+        servicesQuery = servicesQuery.in('category', matchedCategories);
+      } else if (searchTerms.length > 0) {
+        // Text search in title/description
+        const searchPattern = searchTerms.slice(0, 3).join(' | ');
+        servicesQuery = servicesQuery.or(`title.ilike.%${searchTerms[0]}%,description.ilike.%${searchTerms[0]}%`);
+      }
+      
+      const { data: services, error: servicesError } = await servicesQuery;
+      
+      if (!servicesError && services && services.length > 0) {
+        servicesContext = `\n\n=== RELEVANT SERVICES CURRENTLY AVAILABLE ===\n`;
+        servicesContext += `I found ${services.length} service(s) that might be relevant:\n\n`;
+        services.forEach((s: any) => {
+          const typeLabel = s.type === 'offer' ? '🎁 OFFERING' : s.type === 'request' ? '🔍 LOOKING FOR' : '🔄 SWAP';
+          servicesContext += `- ${typeLabel}: "${s.title}" (${s.category}${s.location ? `, ${s.location}` : ''})\n`;
+          servicesContext += `  Link: /service/${s.id}\n`;
+          if (s.description) {
+            servicesContext += `  Description: ${s.description.substring(0, 100)}${s.description.length > 100 ? '...' : ''}\n`;
+          }
+          servicesContext += `\n`;
+        });
+      }
+      
+      // Search community posts
+      let postsQuery = supabase
+        .from('community_posts')
+        .select('id, title, description, category, location, status')
+        .eq('is_visible', true)
+        .eq('status', 'active')
+        .eq('moderation_status', 'approved')
+        .limit(5);
+      
+      if (searchTerms.length > 0) {
+        postsQuery = postsQuery.or(`title.ilike.%${searchTerms[0]}%,description.ilike.%${searchTerms[0]}%`);
+      }
+      
+      const { data: posts, error: postsError } = await postsQuery;
+      
+      if (!postsError && posts && posts.length > 0) {
+        communityContext = `\n\n=== RELEVANT COMMUNITY BOARD POSTS ===\n`;
+        communityContext += `I found ${posts.length} community post(s) that might be relevant:\n\n`;
+        posts.forEach((p: any) => {
+          communityContext += `- "${p.title}" (${p.category}${p.location ? `, ${p.location}` : ''})\n`;
+          communityContext += `  Link: /community (look for this post on the Community Board)\n`;
+          if (p.description) {
+            communityContext += `  Description: ${p.description.substring(0, 100)}${p.description.length > 100 ? '...' : ''}\n`;
+          }
+          communityContext += `\n`;
+        });
+      }
+    }
+    
+    // Log what we found
+    console.log('Search terms:', searchTerms);
+    console.log('Matched categories:', matchedCategories);
+    console.log('Services found:', servicesContext ? 'Yes' : 'No');
+    console.log('Posts found:', communityContext ? 'Yes' : 'No');
 
 const systemPrompt = `You are Lucky, a friendly and helpful Irish leprechaun who serves as the guide for SwapSkills - Ireland's first digital and free barter system platform.
 
@@ -25,6 +153,19 @@ Your personality:
 - Helpful and knowledgeable about the SwapSkills platform
 - Keep responses concise and friendly (2-4 sentences usually)
 - Add a touch of Irish charm with the occasional shamrock 🍀 or rainbow 🌈 emoji
+
+=== IMPORTANT: PROVIDING LINKS ===
+
+When you have relevant services or community posts to share, ALWAYS include clickable links in your response using Markdown format.
+
+Format links like this:
+- For services: [View this service](/service/UUID-HERE)
+- For browsing: [Browse all services](/browse)
+- For community board: [Visit the Community Board](/community)
+- For creating a service: [Post a new service](/services/new)
+
+When mentioning specific services, include the direct link so users can click through immediately!
+${servicesContext}${communityContext}
 
 === ABOUT SWAPSKILLS ===
 
@@ -124,7 +265,9 @@ A: Simply create a free account, set up your profile telling us a bit about your
 
 === KEY FEATURES ===
 
-- Community Board: A place for local announcements, requests, and community posts
+- Community Board: A place for local announcements, requests, and community posts - [View Community Board](/community)
+- Browse Services: Find skills and services in your area - [Browse Services](/browse)
+- Post a Service: Share your skills with the community - [Post New Service](/services/new)
 - ID Verification: Users can submit ID verification to get a verified badge on their profile
 - Messaging System: In-app messaging to discuss swaps and arrangements
 - Reviews & Ratings: 5-star rating system with written reviews to build trust
@@ -141,7 +284,7 @@ Businesses CAN advertise on SwapSkills! Here's what they need to know:
 - The SwapSkills team will review applications and get in touch
 - This is a great way for local businesses to reach the SwapSkills community
 
-If a business is interested in advertising, direct them to the Advertise page to submit their interest form.
+If a business is interested in advertising, direct them to the [Advertise page](/advertise) to submit their interest form.
 
 === WHAT YOU CAN HELP WITH ===
 
@@ -156,7 +299,7 @@ If a business is interested in advertising, direct them to the Advertise page to
 
 If asked about something you don't know, kindly suggest they use the feedback button to send a message to the team.
 
-Always maintain your leprechaun character but be genuinely helpful!`;
+Always maintain your leprechaun character but be genuinely helpful! When you have relevant services or posts to share, include the links prominently in your response.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
