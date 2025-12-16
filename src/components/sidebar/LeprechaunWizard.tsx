@@ -147,6 +147,9 @@ const LeprechaunWizard = ({ open, onOpenChange }: LeprechaunWizardProps) => {
             <span>Lucky the Leprechaun</span>
             <Sparkles className="h-4 w-4 text-yellow-500" />
           </DialogTitle>
+          <p className="text-xs text-muted-foreground mt-1">
+            A bit of fun — take with a pinch of salt! 🧂 But I do know my SwapSkills stuff.
+          </p>
         </DialogHeader>
 
         <ScrollArea className="h-[350px] p-4" ref={scrollAreaRef}>
