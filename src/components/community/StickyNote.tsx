@@ -126,15 +126,23 @@ export function StickyNote({ post }: StickyNoteProps) {
       {/* Footer */}
       <div className="flex items-center justify-between pt-2 border-t border-black/10">
         <div className="flex items-center gap-2">
-          <Avatar className="h-6 w-6">
-            <AvatarImage src={post.poster_avatar || undefined} />
-            <AvatarFallback className="text-xs">
-              {post.poster_name?.charAt(0) || '?'}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-xs text-muted-foreground truncate max-w-[80px]">
-            {post.poster_name || 'Anonymous'}
-          </span>
+          {user ? (
+            <>
+              <Avatar className="h-6 w-6">
+                <AvatarImage src={post.poster_avatar || undefined} />
+                <AvatarFallback className="text-xs">
+                  {post.poster_name?.charAt(0) || '?'}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-xs text-muted-foreground truncate max-w-[80px]">
+                {post.poster_name || 'Anonymous'}
+              </span>
+            </>
+          ) : (
+            <span className="text-xs text-muted-foreground italic">
+              Sign in to see poster
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-1">
