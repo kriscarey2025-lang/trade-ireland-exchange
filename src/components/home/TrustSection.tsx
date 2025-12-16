@@ -1,4 +1,4 @@
-import { Shield, Star, Users, Heart, Flag, Eye } from "lucide-react";
+import { Shield, Star, Users, Heart, Flag } from "lucide-react";
 const trustFeatures = [{
   icon: Shield,
   title: "Optional verification",
@@ -7,10 +7,6 @@ const trustFeatures = [{
   icon: Flag,
   title: "Report concerns",
   description: "Had an unpleasant experience? We encourage you to report it. We take every report seriously."
-}, {
-  icon: Eye,
-  title: "Actively monitored",
-  description: "Our team keeps an eye on things. We're here to make sure everyone plays fair."
 }, {
   icon: Star,
   title: "Reputation matters",
