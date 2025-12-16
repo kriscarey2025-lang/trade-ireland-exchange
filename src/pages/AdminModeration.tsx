@@ -45,15 +45,35 @@ interface FlaggedService {
   };
 }
 
+interface FlaggedCommunityPost {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  county: string | null;
+  location: string | null;
+  moderation_status: string;
+  moderation_reason: string | null;
+  created_at: string;
+  user_id: string;
+  profiles?: {
+    full_name: string | null;
+    email: string | null;
+  };
+}
+
 export default function AdminModeration() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [flaggedServices, setFlaggedServices] = useState<FlaggedService[]>([]);
+  const [flaggedPosts, setFlaggedPosts] = useState<FlaggedCommunityPost[]>([]);
   const [selectedService, setSelectedService] = useState<FlaggedService | null>(null);
+  const [selectedPost, setSelectedPost] = useState<FlaggedCommunityPost | null>(null);
   const [adminNotes, setAdminNotes] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'services' | 'community'>('services');
 
   useEffect(() => {
     const checkAdminAndFetch = async () => {
@@ -72,7 +92,7 @@ export default function AdminModeration() {
 
       if (roleData) {
         setIsAdmin(true);
-        await fetchFlaggedServices();
+        await Promise.all([fetchFlaggedServices(), fetchFlaggedPosts()]);
       }
       setLoading(false);
     };
@@ -102,11 +122,10 @@ export default function AdminModeration() {
 
     if (error) {
       console.error('Error fetching flagged services:', error);
-      toast.error('Failed to load flagged posts');
+      toast.error('Failed to load flagged services');
       return;
     }
 
-    // Fetch user profiles separately
     if (data && data.length > 0) {
       const userIds = [...new Set(data.map(s => s.user_id))];
       const { data: profiles } = await supabase
@@ -124,6 +143,50 @@ export default function AdminModeration() {
       setFlaggedServices(servicesWithProfiles as FlaggedService[]);
     } else {
       setFlaggedServices([]);
+    }
+  };
+
+  const fetchFlaggedPosts = async () => {
+    const { data, error } = await supabase
+      .from('community_posts')
+      .select(`
+        id,
+        title,
+        description,
+        category,
+        county,
+        location,
+        moderation_status,
+        moderation_reason,
+        created_at,
+        user_id
+      `)
+      .eq('moderation_status', 'pending_review')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching flagged posts:', error);
+      toast.error('Failed to load flagged community posts');
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const userIds = [...new Set(data.map(p => p.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', userIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+      
+      const postsWithProfiles = data.map(post => ({
+        ...post,
+        profiles: profileMap.get(post.user_id) || null
+      }));
+
+      setFlaggedPosts(postsWithProfiles as FlaggedCommunityPost[]);
+    } else {
+      setFlaggedPosts([]);
     }
   };
 
@@ -179,7 +242,6 @@ export default function AdminModeration() {
       return;
     }
 
-    // Log the action
     await supabase.from('moderation_logs').insert({
       service_id: service.id,
       action: 'rejected',
@@ -191,6 +253,57 @@ export default function AdminModeration() {
     setSelectedService(null);
     setAdminNotes("");
     await fetchFlaggedServices();
+    setIsProcessing(false);
+  };
+
+  const handleApprovePost = async (post: FlaggedCommunityPost) => {
+    setIsProcessing(true);
+    
+    const { error } = await supabase
+      .from('community_posts')
+      .update({
+        moderation_status: 'approved',
+        moderation_reason: null,
+        moderated_at: new Date().toISOString()
+      })
+      .eq('id', post.id);
+
+    if (error) {
+      toast.error('Failed to approve community post');
+      setIsProcessing(false);
+      return;
+    }
+
+    toast.success('Community post approved');
+    setSelectedPost(null);
+    setAdminNotes("");
+    await fetchFlaggedPosts();
+    setIsProcessing(false);
+  };
+
+  const handleRejectPost = async (post: FlaggedCommunityPost) => {
+    setIsProcessing(true);
+    
+    const { error } = await supabase
+      .from('community_posts')
+      .update({
+        moderation_status: 'rejected',
+        moderation_reason: adminNotes || post.moderation_reason,
+        moderated_at: new Date().toISOString(),
+        is_visible: false
+      })
+      .eq('id', post.id);
+
+    if (error) {
+      toast.error('Failed to reject community post');
+      setIsProcessing(false);
+      return;
+    }
+
+    toast.success('Community post rejected');
+    setSelectedPost(null);
+    setAdminNotes("");
+    await fetchFlaggedPosts();
     setIsProcessing(false);
   };
 
@@ -239,109 +352,227 @@ export default function AdminModeration() {
             </div>
           </div>
 
-          {flaggedServices.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
-                <h3 className="text-lg font-semibold mb-2">All Clear!</h3>
-                <p className="text-muted-foreground">
-                  No posts are currently pending review.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                {flaggedServices.length} post{flaggedServices.length !== 1 ? 's' : ''} pending review
-              </p>
-              
-              {flaggedServices.map((service) => (
-                <Card key={service.id} className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg">{service.title}</CardTitle>
-                        <CardDescription className="mt-1">
-                          By {service.profiles?.full_name || 'Unknown'} • {new Date(service.created_at).toLocaleDateString()}
-                        </CardDescription>
-                      </div>
-                      <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-300">
-                        <Clock className="h-3 w-3 mr-1" />
-                        Pending
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm line-clamp-3">{service.description}</p>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="secondary">
-                        {categoryLabels[service.category as keyof typeof categoryLabels] || service.category}
-                      </Badge>
-                      <Badge variant="outline">
-                        {postCategoryLabels[service.type as keyof typeof postCategoryLabels] || service.type}
-                      </Badge>
-                      {service.location && (
-                        <Badge variant="outline">{service.location}</Badge>
-                      )}
-                    </div>
+          {/* Tabs */}
+          <div className="flex gap-2 mb-6">
+            <Button
+              variant={activeTab === 'services' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('services')}
+              className="gap-2"
+            >
+              Services
+              {flaggedServices.length > 0 && (
+                <Badge variant="secondary">{flaggedServices.length}</Badge>
+              )}
+            </Button>
+            <Button
+              variant={activeTab === 'community' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('community')}
+              className="gap-2"
+            >
+              Community Board
+              {flaggedPosts.length > 0 && (
+                <Badge variant="secondary">{flaggedPosts.length}</Badge>
+              )}
+            </Button>
+          </div>
 
-                    {service.moderation_reason && (
-                      <div className="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
-                        <div className="flex items-start gap-2">
-                          <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
-                          <div>
-                            <p className="text-sm font-medium text-red-800 dark:text-red-200">AI Flag Reason:</p>
-                            <p className="text-sm text-red-700 dark:text-red-300">{service.moderation_reason}</p>
+          {activeTab === 'services' && (
+            flaggedServices.length === 0 ? (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
+                  <h3 className="text-lg font-semibold mb-2">All Clear!</h3>
+                  <p className="text-muted-foreground">
+                    No services are currently pending review.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  {flaggedServices.length} service{flaggedServices.length !== 1 ? 's' : ''} pending review
+                </p>
+                
+                {flaggedServices.map((service) => (
+                  <Card key={service.id} className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="text-lg">{service.title}</CardTitle>
+                          <CardDescription className="mt-1">
+                            By {service.profiles?.full_name || 'Unknown'} • {new Date(service.created_at).toLocaleDateString()}
+                          </CardDescription>
+                        </div>
+                        <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-300">
+                          <Clock className="h-3 w-3 mr-1" />
+                          Pending
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm line-clamp-3">{service.description}</p>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">
+                          {categoryLabels[service.category as keyof typeof categoryLabels] || service.category}
+                        </Badge>
+                        <Badge variant="outline">
+                          {postCategoryLabels[service.type as keyof typeof postCategoryLabels] || service.type}
+                        </Badge>
+                        {service.location && (
+                          <Badge variant="outline">{service.location}</Badge>
+                        )}
+                      </div>
+
+                      {service.moderation_reason && (
+                        <div className="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+                          <div className="flex items-start gap-2">
+                            <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-red-800 dark:text-red-200">AI Flag Reason:</p>
+                              <p className="text-sm text-red-700 dark:text-red-300">{service.moderation_reason}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    <div className="flex gap-2 pt-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          setSelectedService(service);
-                          setAdminNotes("");
-                        }}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        Review
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => handleApprove(service)}
-                        disabled={isProcessing}
-                      >
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        Approve
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleReject(service)}
-                        disabled={isProcessing}
-                      >
-                        <XCircle className="h-4 w-4 mr-1" />
-                        Reject
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      <div className="flex gap-2 pt-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedService(service);
+                            setAdminNotes("");
+                          }}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Review
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleApprove(service)}
+                          disabled={isProcessing}
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Approve
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleReject(service)}
+                          disabled={isProcessing}
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          Reject
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === 'community' && (
+            flaggedPosts.length === 0 ? (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
+                  <h3 className="text-lg font-semibold mb-2">All Clear!</h3>
+                  <p className="text-muted-foreground">
+                    No community posts are currently pending review.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  {flaggedPosts.length} community post{flaggedPosts.length !== 1 ? 's' : ''} pending review
+                </p>
+                
+                {flaggedPosts.map((post) => (
+                  <Card key={post.id} className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="text-lg">{post.title}</CardTitle>
+                          <CardDescription className="mt-1">
+                            By {post.profiles?.full_name || 'Unknown'} • {new Date(post.created_at).toLocaleDateString()}
+                          </CardDescription>
+                        </div>
+                        <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-300">
+                          <Clock className="h-3 w-3 mr-1" />
+                          Pending
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm line-clamp-3">{post.description}</p>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">{post.category}</Badge>
+                        {post.county && <Badge variant="outline">{post.county}</Badge>}
+                        {post.location && <Badge variant="outline">{post.location}</Badge>}
+                      </div>
+
+                      {post.moderation_reason && (
+                        <div className="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+                          <div className="flex items-start gap-2">
+                            <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-red-800 dark:text-red-200">AI Flag Reason:</p>
+                              <p className="text-sm text-red-700 dark:text-red-300">{post.moderation_reason}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex gap-2 pt-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedPost(post);
+                            setAdminNotes("");
+                          }}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Review
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleApprovePost(post)}
+                          disabled={isProcessing}
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Approve
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRejectPost(post)}
+                          disabled={isProcessing}
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          Reject
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )
           )}
         </div>
       </main>
 
-      {/* Review Dialog */}
+      {/* Service Review Dialog */}
       <Dialog open={!!selectedService} onOpenChange={() => setSelectedService(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Review Post</DialogTitle>
+            <DialogTitle>Review Service</DialogTitle>
             <DialogDescription>
               Review the flagged content and decide whether to approve or reject it.
             </DialogDescription>
@@ -395,6 +626,73 @@ export default function AdminModeration() {
             <Button
               variant="destructive"
               onClick={() => selectedService && handleReject(selectedService)}
+              disabled={isProcessing}
+            >
+              {isProcessing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <XCircle className="h-4 w-4 mr-1" />}
+              Reject
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Community Post Review Dialog */}
+      <Dialog open={!!selectedPost} onOpenChange={() => setSelectedPost(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Review Community Post</DialogTitle>
+            <DialogDescription>
+              Review the flagged content and decide whether to approve or reject it.
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedPost && (
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold mb-1">Title</h4>
+                <p className="text-sm bg-muted p-3 rounded-lg">{selectedPost.title}</p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-1">Description</h4>
+                <p className="text-sm bg-muted p-3 rounded-lg whitespace-pre-wrap">
+                  {selectedPost.description || 'No description'}
+                </p>
+              </div>
+
+              {selectedPost.moderation_reason && (
+                <div className="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+                  <p className="text-sm font-medium text-red-800 dark:text-red-200">AI Flag Reason:</p>
+                  <p className="text-sm text-red-700 dark:text-red-300">{selectedPost.moderation_reason}</p>
+                </div>
+              )}
+
+              <div>
+                <h4 className="font-semibold mb-1">Admin Notes (optional)</h4>
+                <Textarea
+                  value={adminNotes}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                  placeholder="Add notes about your decision..."
+                  rows={3}
+                />
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setSelectedPost(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="default"
+              onClick={() => selectedPost && handleApprovePost(selectedPost)}
+              disabled={isProcessing}
+            >
+              {isProcessing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <CheckCircle className="h-4 w-4 mr-1" />}
+              Approve
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => selectedPost && handleRejectPost(selectedPost)}
               disabled={isProcessing}
             >
               {isProcessing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <XCircle className="h-4 w-4 mr-1" />}
