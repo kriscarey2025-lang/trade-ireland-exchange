@@ -14,6 +14,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUpdatePostStatus, useDeletePost } from '@/hooks/useCommunityPosts';
 import { useNavigate } from 'react-router-dom';
 
+// Helper to format name as "FirstName L."
+function formatDisplayName(fullName: string | null | undefined): string {
+  if (!fullName) return 'Anonymous';
+  const parts = fullName.trim().split(' ');
+  if (parts.length < 2) return fullName;
+  const firstName = parts[0];
+  const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
+  return `${firstName} ${lastInitial}.`;
+}
+
 // Helper component to make URLs clickable
 function LinkifyText({ text }: { text: string }) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -135,7 +145,7 @@ export function StickyNote({ post }: StickyNoteProps) {
                 </AvatarFallback>
               </Avatar>
               <span className="text-xs text-muted-foreground truncate max-w-[80px]">
-                {post.poster_name || 'Anonymous'}
+                {formatDisplayName(post.poster_name)}
               </span>
             </>
           ) : (
