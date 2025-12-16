@@ -1,0 +1,65 @@
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import { SEO } from '@/components/SEO';
+import { CorkBoard } from '@/components/community/CorkBoard';
+import { BoardFilters } from '@/components/community/BoardFilters';
+import { CreatePostDialog } from '@/components/community/CreatePostDialog';
+
+export default function CommunityBoard() {
+  return (
+    <>
+      <SEO
+        title="Community Board"
+        description="Your local community noticeboard. Share events, lost & found, free items, and local news with your neighbours."
+        url="https://swap-skills.com/community"
+      />
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 bg-secondary/20">
+          <div className="container py-8">
+            {/* Hero Section */}
+            <div className="text-center mb-8">
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+                Community Board
+              </h1>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Your local digital noticeboard — share events, lost & found notices, free items, 
+                and community news with your neighbours.
+              </p>
+            </div>
+
+            {/* Action Bar */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <div className="flex-1 w-full sm:w-auto">
+                <BoardFilters />
+              </div>
+              <CreatePostDialog />
+            </div>
+
+            {/* The Cork Board */}
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                📌 Latest Posts
+                <span className="text-sm font-normal text-muted-foreground">(Most recent 20)</span>
+              </h2>
+              <CorkBoard />
+            </section>
+
+            {/* Info Section */}
+            <section className="bg-card rounded-lg p-6 border">
+              <h3 className="font-semibold mb-2">How it works</h3>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Post a note to share with your local community</li>
+                <li>• Notes are colour-coded by category for easy browsing</li>
+                <li>• The board shows the 20 most recent active posts</li>
+                <li>• Use search & filters to find older or archived posts</li>
+                <li>• Mark your post as resolved when it's no longer needed</li>
+              </ul>
+            </section>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
