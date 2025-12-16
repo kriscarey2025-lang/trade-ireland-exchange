@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AdsLayout } from "@/components/layout/AdsLayout";
 import { HeroSection } from "@/components/home/HeroSection";
+import { NewUserWelcomeCard } from "@/components/home/NewUserWelcomeCard";
 import { AppAnnouncementBanner } from "@/components/home/AppAnnouncementBanner";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { CategoriesSection } from "@/components/home/CategoriesSection";
@@ -29,6 +30,7 @@ const Index = () => {
         <main className="flex-1">
           <AdsLayout>
             <HeroSection />
+            <NewUserWelcomeCard />
             <InlineAd />
             <HowItWorksSection />
             <CategoriesSection />
