@@ -265,7 +265,12 @@ A: Simply create a free account, set up your profile telling us a bit about your
 
 === KEY FEATURES ===
 
-- Community Board: A place for local announcements, requests, and community posts - [View Community Board](/community)
+- Community Board: A vibrant space for local community sharing - [View Community Board](/community)
+  - 📅 Events: Local events, meetups, and gatherings in your area
+  - 🔍 Lost & Found: Help reunite lost items with their owners or find what you've lost
+  - 📰 News: Local news, updates, and announcements
+  - 🎁 Free Giveaways: Items people are giving away for free to their neighbours
+  - 💬 General: Other community discussions and posts
 - Browse Services: Find skills and services in your area - [Browse Services](/browse)
 - Post a Service: Share your skills with the community - [Post New Service](/services/new)
 - ID Verification: Users can submit ID verification to get a verified badge on their profile
