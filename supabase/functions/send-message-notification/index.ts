@@ -75,17 +75,17 @@ const handler = async (req: Request): Promise<Response> => {
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #065f46 0%, #047857 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">🍀 SwapSkills</h1>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+          <div style="background-color: #ffffff; padding: 30px; border-radius: 12px; text-align: center; border-bottom: 3px solid #065f46;">
+            <h1 style="color: #065f46; margin: 0; font-size: 24px;">🍀 SwapSkills</h1>
           </div>
           
-          <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb; border-top: none;">
+          <div style="background-color: #ffffff; padding: 30px;">
             <h2 style="color: #065f46; margin-top: 0;">Hi ${recipientName}!</h2>
             
-            <p>You have a new message from <strong>${sender_name}</strong>:</p>
+            <p style="color: #333;">You have a new message from <strong>${sender_name}</strong>:</p>
             
-            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #065f46; margin: 20px 0;">
+            <div style="background: #f9fafb; padding: 20px; border-radius: 8px; border-left: 4px solid #065f46; margin: 20px 0;">
               <p style="margin: 0; color: #4b5563; font-style: italic;">"${truncatedMessage}"</p>
             </div>
             
@@ -101,7 +101,7 @@ const handler = async (req: Request): Promise<Response> => {
             </p>
           </div>
           
-          <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 12px;">
+          <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb;">
             <p>© ${new Date().getFullYear()} SwapSkills Ireland. All rights reserved.</p>
             <p>
               <a href="https://swap-skills.com/unsubscribe" style="color: #9ca3af;">Unsubscribe</a> | 
