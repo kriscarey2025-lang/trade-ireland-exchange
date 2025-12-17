@@ -81,12 +81,12 @@ export function Header() {
   const discoverLinks = [
     { href: "/browse", label: "Browse Skills", icon: Search },
     { href: "/community", label: "Community Board", icon: Clipboard },
-    { href: "/stories", label: "Swap-Skill Stories", icon: BookOpen },
+    { href: "/how-it-works", label: "How It Works", icon: Compass },
   ];
 
   const mainNavLinks = [
+    { href: "/stories", label: "Swap-Skill Stories", icon: BookOpen },
     { href: "/matches", label: "AI Matches", icon: Sparkles },
-    { href: "/how-it-works", label: "How It Works" },
     ...(isAdvertiser ? [{ href: "/advertiser", label: "My Ads", icon: Megaphone }] : []),
   ];
 
