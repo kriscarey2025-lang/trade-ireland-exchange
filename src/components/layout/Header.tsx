@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, Plus, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw } from "lucide-react";
+import { Menu, X, Search, User, Plus, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -76,6 +76,7 @@ export function Header() {
   const navLinks = [
     { href: "/browse", label: "Browse" },
     { href: "/community", label: "Community Board", icon: Clipboard },
+    { href: "/stories", label: "Swap-Skill Stories", icon: BookOpen },
     { href: "/matches", label: "AI Matches", icon: Sparkles },
     { href: "/how-it-works", label: "How It Works" },
     { href: "/about", label: "About" },
