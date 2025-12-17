@@ -6,30 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AIMatchCard } from "@/components/matching/AIMatchCard";
-import { BrainstormSection } from "@/components/brainstorm/BrainstormSection";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, RefreshCw, AlertCircle, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
+
 export default function AIMatches() {
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const {
-    data,
-    isLoading,
-    error,
-    refetch
-  } = useQuery({
+  
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['ai-matches', user?.id],
     queryFn: async () => {
-      const {
-        data: {
-          session
-        }
-      } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error('Not authenticated');
       const response = await supabase.functions.invoke('skill-match', {
         headers: {
@@ -44,38 +34,39 @@ export default function AIMatches() {
     enabled: !!user,
     staleTime: 5 * 60 * 1000 // Cache for 5 minutes
   });
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await refetch();
     setIsRefreshing(false);
   };
 
-  // Non-logged-in users can still see brainstorm section
+  // Non-logged-in users - prompt to sign in
   if (!user) {
-    return <div className="min-h-screen flex flex-col bg-background">
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
         <SEO title="AI Skill Matching - SwapSkills Ireland" description="Get AI-powered skill match suggestions to find the perfect swap partners." />
         <Header />
         <main className="flex-1 container py-12">
           <div className="max-w-3xl mx-auto space-y-8">
-            {/* Hero for non-logged users */}
             <div className="text-center mb-8">
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
                 <Sparkles className="h-4 w-4" />
                 <span className="text-sm font-medium">AI-Powered Matching</span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">Get inspired in our Brainstorm corner
-or find your AI Skill Match</h1>
-              
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">
+                Find Your Perfect Skill Match
+              </h1>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Our AI analyzes your services, skill preferences, and location to find the best 
+                potential swap partners within your preferred radius.
+              </p>
             </div>
 
-            {/* Brainstorm Section - available to everyone */}
-            <BrainstormSection />
-
-            {/* Sign in prompt for personalized matches */}
             <Card>
               <CardContent className="pt-6 text-center">
                 <Sparkles className="h-12 w-12 mx-auto text-primary mb-4" />
-                <h2 className="text-xl font-semibold mb-2">Want personalized AI matches?</h2>
+                <h2 className="text-xl font-semibold mb-2">Get Personalized AI Matches</h2>
                 <p className="text-muted-foreground mb-4">
                   Sign in to get AI-powered skill match suggestions based on your profile and preferences.
                 </p>
@@ -87,9 +78,12 @@ or find your AI Skill Match</h1>
           </div>
         </main>
         <Footer />
-      </div>;
+      </div>
+    );
   }
-  return <div className="min-h-screen flex flex-col bg-background">
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
       <SEO title="AI Skill Matching - SwapSkills Ireland" description="Get AI-powered skill match suggestions to find the perfect swap partners." />
       <Header />
       <main className="flex-1 container py-8">
@@ -112,9 +106,6 @@ or find your AI Skill Match</h1>
         </div>
 
         <div className="max-w-3xl mx-auto space-y-8">
-          {/* Brainstorm Section */}
-          <BrainstormSection />
-
           {/* Refresh Button */}
           <div className="flex justify-center">
             <Button onClick={handleRefresh} disabled={isLoading || isRefreshing} variant="outline" className="gap-2">
@@ -124,8 +115,10 @@ or find your AI Skill Match</h1>
           </div>
 
           {/* Loading State */}
-          {isLoading && <div className="space-y-4">
-              {[1, 2, 3].map(i => <Card key={i}>
+          {isLoading && (
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => (
+                <Card key={i}>
                   <CardContent className="p-4">
                     <div className="flex gap-4">
                       <Skeleton className="w-48 h-40 rounded-lg" />
@@ -136,11 +129,14 @@ or find your AI Skill Match</h1>
                       </div>
                     </div>
                   </CardContent>
-                </Card>)}
-            </div>}
+                </Card>
+              ))}
+            </div>
+          )}
 
           {/* Error State */}
-          {error && <Card>
+          {error && (
+            <Card>
               <CardContent className="pt-6 text-center">
                 <AlertCircle className="h-12 w-12 mx-auto text-destructive mb-4" />
                 <h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
@@ -149,14 +145,21 @@ or find your AI Skill Match</h1>
                 </p>
                 <Button onClick={handleRefresh}>Try Again</Button>
               </CardContent>
-            </Card>}
+            </Card>
+          )}
 
           {/* Results */}
-          {!isLoading && !error && data && <>
-              {data.matches && data.matches.length > 0 ? <div className="space-y-4">
+          {!isLoading && !error && data && (
+            <>
+              {data.matches && data.matches.length > 0 ? (
+                <div className="space-y-4">
                   <h2 className="text-lg font-semibold">Your AI Matches</h2>
-                  {data.matches.map((match: any) => <AIMatchCard key={match.service_id} match={match} />)}
-                </div> : <Card>
+                  {data.matches.map((match: any) => (
+                    <AIMatchCard key={match.service_id} match={match} />
+                  ))}
+                </div>
+              ) : (
+                <Card>
                   <CardContent className="pt-6 text-center">
                     <Sparkles className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <h2 className="text-xl font-semibold mb-2">
@@ -172,10 +175,13 @@ or find your AI Skill Match</h1>
                       </Link>
                     </Button>
                   </CardContent>
-                </Card>}
-            </>}
+                </Card>
+              )}
+            </>
+          )}
         </div>
       </main>
       <Footer />
-    </div>;
+    </div>
+  );
 }
