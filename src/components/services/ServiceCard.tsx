@@ -7,6 +7,7 @@ import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
+import { FoundersBadge } from "@/components/profile/FoundersBadge";
 
 interface ServiceUser {
   id?: string;
@@ -18,6 +19,7 @@ interface ServiceUser {
   linkedinUrl?: string;
   facebookUrl?: string;
   instagramUrl?: string;
+  isFounder?: boolean;
 }
 
 interface ServiceData {
@@ -127,11 +129,12 @@ export function ServiceCard({
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="font-medium text-sm truncate">
                     {formatDisplayName(service.user.name)}
                   </span>
                   <VerifiedBadge status={service.user.verificationStatus} size="sm" />
+                  {service.user.isFounder && <FoundersBadge size="sm" />}
                   {/* Social Media Icons */}
                   {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && <div className="flex items-center gap-1 ml-1">
                       {service.user.linkedinUrl && <Linkedin className="h-3.5 w-3.5 text-[#0A66C2] shrink-0" />}

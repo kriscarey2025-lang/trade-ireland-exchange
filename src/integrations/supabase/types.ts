@@ -1128,6 +1128,7 @@ export type Database = {
           provider_avatar: string
           provider_facebook: string
           provider_instagram: string
+          provider_is_founder: boolean
           provider_linkedin: string
           provider_name: string
           provider_verification_status: string
@@ -1154,6 +1155,7 @@ export type Database = {
           provider_bio: string
           provider_facebook: string
           provider_instagram: string
+          provider_is_founder: boolean
           provider_linkedin: string
           provider_location: string
           provider_name: string

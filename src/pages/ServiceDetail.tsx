@@ -50,6 +50,7 @@ import { formatDisplayName } from "@/lib/utils";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { Disclaimer } from "@/components/shared/Disclaimer";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
+import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { ReportServiceDialog } from "@/components/reports/ReportServiceDialog";
 
 // Response from secure database function
@@ -76,6 +77,7 @@ interface SecureServiceDetail {
   provider_facebook: string | null;
   provider_instagram: string | null;
   provider_verification_status: string | null;
+  provider_is_founder: boolean | null;
 }
 
 export default function ServiceDetail() {
@@ -427,7 +429,7 @@ export default function ServiceDetail() {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-semibold text-lg">
                               {formatDisplayName(service.provider_name)}
                             </p>
@@ -435,6 +437,7 @@ export default function ServiceDetail() {
                               status={(service.provider_verification_status as "verified" | "pending" | "unverified" | "rejected") || "unverified"} 
                               size="md" 
                             />
+                            {service.provider_is_founder && <FoundersBadge size="sm" />}
                           </div>
                           {service.user_id && (
                             <UserRatingBadge userId={service.user_id} size="sm" />
