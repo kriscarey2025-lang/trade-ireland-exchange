@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, Plus, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen } from "lucide-react";
+import { Menu, X, Search, User, Plus, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -15,9 +15,11 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [postMenuOpen, setPostMenuOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  const [discoverMenuOpen, setDiscoverMenuOpen] = useState(false);
   const [brainstormOpen, setBrainstormOpen] = useState(false);
   const postMenuRef = useRef<HTMLDivElement>(null);
   const adminMenuRef = useRef<HTMLDivElement>(null);
+  const discoverMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -61,6 +63,9 @@ export function Header() {
       if (adminMenuRef.current && !adminMenuRef.current.contains(event.target as Node)) {
         setAdminMenuOpen(false);
       }
+      if (discoverMenuRef.current && !discoverMenuRef.current.contains(event.target as Node)) {
+        setDiscoverMenuOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -73,13 +78,15 @@ export function Header() {
     setMobileMenuOpen(false);
   };
 
-  const navLinks = [
-    { href: "/browse", label: "Browse" },
+  const discoverLinks = [
+    { href: "/browse", label: "Browse Skills", icon: Search },
     { href: "/community", label: "Community Board", icon: Clipboard },
     { href: "/stories", label: "Swap-Skill Stories", icon: BookOpen },
+  ];
+
+  const mainNavLinks = [
     { href: "/matches", label: "AI Matches", icon: Sparkles },
     { href: "/how-it-works", label: "How It Works" },
-    { href: "/about", label: "About" },
     ...(isAdvertiser ? [{ href: "/advertiser", label: "My Ads", icon: Megaphone }] : []),
   ];
 
@@ -89,13 +96,15 @@ export function Header() {
     { href: "/admin/verification", label: "Verification", icon: CheckCircle },
   ];
 
+  const isDiscoverActive = discoverLinks.some(l => location.pathname === l.href);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl">
+      <div className="container flex h-14 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 font-display font-bold text-xl group">
-          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-hero text-white shadow-md group-hover:shadow-lg transition-shadow">
-            <span className="text-lg">🤝</span>
+        <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg group">
+          <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-hero text-white shadow-sm group-hover:shadow-md transition-shadow">
+            <span className="text-sm">🤝</span>
           </div>
           <span className="hidden sm:inline text-foreground">
             Swap<span className="text-primary">Skills</span>
@@ -103,16 +112,51 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
+        <nav className="hidden md:flex items-center gap-0.5">
+          {/* Discover Dropdown */}
+          <div className="relative" ref={discoverMenuRef}>
+            <button
+              onClick={() => setDiscoverMenuOpen(!discoverMenuOpen)}
+              className={cn(
+                "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
+                isDiscoverActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              )}
+            >
+              <Compass className="h-4 w-4" />
+              Discover
+              <ChevronDown className={cn("h-3 w-3 transition-transform", discoverMenuOpen && "rotate-180")} />
+            </button>
+            {discoverMenuOpen && (
+              <div className="absolute left-0 mt-1 w-48 bg-background rounded-lg border border-border shadow-lg py-1 z-50">
+                {discoverLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition-colors",
+                      location.pathname === link.href && "bg-muted text-primary"
+                    )}
+                    onClick={() => setDiscoverMenuOpen(false)}
+                  >
+                    <link.icon className="h-4 w-4" />
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {mainNavLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
               className={cn(
-                "px-4 py-2 rounded-xl text-sm font-medium transition-all",
+                "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                 location.pathname === link.href
                   ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
               {link.label}
@@ -125,24 +169,24 @@ export function Header() {
               <button
                 onClick={() => setAdminMenuOpen(!adminMenuOpen)}
                 className={cn(
-                  "flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium transition-all",
+                  "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                   adminLinks.some(l => location.pathname === l.href)
                     ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >
                 <Shield className="h-4 w-4" />
                 Admin
-                <ChevronDown className="h-3 w-3" />
+                <ChevronDown className={cn("h-3 w-3 transition-transform", adminMenuOpen && "rotate-180")} />
               </button>
               {adminMenuOpen && (
-                <div className="absolute left-0 mt-2 w-48 bg-background rounded-xl border border-border shadow-lg py-1 z-50">
+                <div className="absolute left-0 mt-1 w-44 bg-background rounded-lg border border-border shadow-lg py-1 z-50">
                   {adminLinks.map((link) => (
                     <Link
                       key={link.href}
                       to={link.href}
                       className={cn(
-                        "flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors",
+                        "flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition-colors",
                         location.pathname === link.href && "bg-muted text-primary"
                       )}
                       onClick={() => setAdminMenuOpen(false)}
@@ -268,22 +312,43 @@ export function Header() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-border bg-background animate-fade-in">
-          <nav className="container py-4 space-y-2">
-            {navLinks.map((link) => (
+          <nav className="container py-4 space-y-1">
+            <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Discover
+            </div>
+            {discoverLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
                 className={cn(
-                  "block px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                  "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                   location.pathname === link.href
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-muted"
                 )}
                 onClick={() => setMobileMenuOpen(false)}
               >
+                <link.icon className="h-4 w-4" />
                 {link.label}
               </Link>
             ))}
+            <div className="pt-2">
+              {mainNavLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={cn(
+                    "block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                    location.pathname === link.href
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-muted"
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
             
             {/* Mobile Admin Links */}
             {isAdmin && (
