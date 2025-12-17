@@ -79,14 +79,15 @@ export function Header() {
   };
 
   const discoverLinks = [
-    { href: "/browse", label: "Browse Skills", icon: Search },
     { href: "/community", label: "Community Board", icon: Clipboard },
     { href: "/how-it-works", label: "How It Works", icon: Compass },
+    { href: "/matches", label: "AI Matches", icon: Sparkles },
+    { href: "#brainstorm", label: "Brainstorm Ideas", icon: Lightbulb, action: () => setBrainstormOpen(true) },
   ];
 
   const mainNavLinks = [
-    { href: "/stories", label: "Swap-Skill Stories", icon: BookOpen },
-    { href: "/matches", label: "AI Matches", icon: Sparkles },
+    { href: "/browse", label: "Browse Skills" },
+    { href: "/stories", label: "Swap-Skill Stories" },
     ...(isAdvertiser ? [{ href: "/advertiser", label: "My Ads", icon: Megaphone }] : []),
   ];
 
@@ -130,20 +131,34 @@ export function Header() {
             </button>
             {discoverMenuOpen && (
               <div className="absolute left-0 mt-1 w-48 bg-background rounded-lg border border-border shadow-lg py-1 z-50">
-                {discoverLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={cn(
-                      "flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition-colors",
-                      location.pathname === link.href && "bg-muted text-primary"
-                    )}
-                    onClick={() => setDiscoverMenuOpen(false)}
-                  >
-                    <link.icon className="h-4 w-4" />
-                    {link.label}
-                  </Link>
-                ))}
+                {discoverLinks.map((link) => 
+                  link.action ? (
+                    <button
+                      key={link.href}
+                      className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition-colors w-full text-left"
+                      onClick={() => {
+                        setDiscoverMenuOpen(false);
+                        link.action();
+                      }}
+                    >
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
+                    </button>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition-colors",
+                        location.pathname === link.href && "bg-muted text-primary"
+                      )}
+                      onClick={() => setDiscoverMenuOpen(false)}
+                    >
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
+                    </Link>
+                  )
+                )}
               </div>
             )}
           </div>
@@ -316,22 +331,36 @@ export function Header() {
             <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Discover
             </div>
-            {discoverLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                  location.pathname === link.href
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <link.icon className="h-4 w-4" />
-                {link.label}
-              </Link>
-            ))}
+            {discoverLinks.map((link) => 
+              link.action ? (
+                <button
+                  key={link.href}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:bg-muted w-full text-left"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    link.action();
+                  }}
+                >
+                  <link.icon className="h-4 w-4" />
+                  {link.label}
+                </button>
+              ) : (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                    location.pathname === link.href
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-muted"
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <link.icon className="h-4 w-4" />
+                  {link.label}
+                </Link>
+              )
+            )}
             <div className="pt-2">
               {mainNavLinks.map((link) => (
                 <Link
