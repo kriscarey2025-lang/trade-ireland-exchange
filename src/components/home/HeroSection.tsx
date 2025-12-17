@@ -44,12 +44,7 @@ export function HeroSection() {
           </p>
 
           {/* Conversational subheadline */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-fade-up leading-relaxed" style={{
-          animationDelay: "0.2s"
-        }}>
-            That lovely person down the road? Brilliant at tiling. The retired teacher next door? Glad to help with homework. 
-            <span className="font-semibold text-foreground"> Swap skills, make friends, save money.</span>
-          </p>
+          
 
           {/* Ireland tagline */}
           <p className="text-sm md:text-base font-medium tracking-wide mb-12 animate-fade-up" style={{
