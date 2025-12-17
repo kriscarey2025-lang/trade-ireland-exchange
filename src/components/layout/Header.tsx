@@ -95,6 +95,7 @@ export function Header() {
     { href: "/admin/advertisers", label: "Advertisers", icon: Megaphone },
     { href: "/admin/reports", label: "Reports", icon: Flag },
     { href: "/admin/verification", label: "Verification", icon: CheckCircle },
+    { href: "/admin/feedback", label: "Messages & Feedback", icon: MessageCircle },
   ];
 
   const isDiscoverActive = discoverLinks.some(l => location.pathname === l.href);
