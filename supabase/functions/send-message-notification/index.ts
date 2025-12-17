@@ -14,6 +14,7 @@ interface MessageNotificationRequest {
   sender_name: string;
   message_preview: string;
   conversation_id: string;
+  test_email?: string; // For testing purposes
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -22,38 +23,50 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { recipient_id, sender_name, message_preview, conversation_id }: MessageNotificationRequest = await req.json();
+    const { recipient_id, sender_name, message_preview, conversation_id, test_email }: MessageNotificationRequest = await req.json();
 
-    console.log("Sending message notification to recipient:", recipient_id);
+    console.log("Sending message notification, recipient:", recipient_id, "test_email:", test_email);
 
-    // Initialize Supabase client to get recipient email
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    let recipientEmail: string;
+    let recipientName: string;
 
-    // Get recipient's email from profiles
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("email, full_name")
-      .eq("id", recipient_id)
-      .single();
+    // If test_email is provided, use it directly (for testing)
+    if (test_email) {
+      recipientEmail = test_email;
+      recipientName = "Test User";
+      console.log("Using test email:", test_email);
+    } else {
+      // Initialize Supabase client to get recipient email
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    if (profileError || !profile?.email) {
-      console.log("No email found for recipient:", recipient_id);
-      return new Response(
-        JSON.stringify({ success: false, message: "No email found for recipient" }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+      // Get recipient's email from profiles
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("email, full_name")
+        .eq("id", recipient_id)
+        .single();
+
+      if (profileError || !profile?.email) {
+        console.log("No email found for recipient:", recipient_id);
+        return new Response(
+          JSON.stringify({ success: false, message: "No email found for recipient" }),
+          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      recipientEmail = profile.email;
+      recipientName = profile.full_name || "there";
     }
 
-    const recipientName = profile.full_name || "there";
     const truncatedMessage = message_preview.length > 100 
       ? message_preview.substring(0, 100) + "..." 
       : message_preview;
 
     const emailResponse = await resend.emails.send({
       from: "SwapSkills <hello@swap-skills.com>",
-      to: [profile.email],
+      to: [recipientEmail],
       subject: `New message from ${sender_name} on SwapSkills`,
       html: `
         <!DOCTYPE html>

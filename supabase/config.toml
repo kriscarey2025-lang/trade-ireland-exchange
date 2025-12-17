@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.send-feedback-reply]
 verify_jwt = true
+
+[functions.send-message-notification]
+verify_jwt = false

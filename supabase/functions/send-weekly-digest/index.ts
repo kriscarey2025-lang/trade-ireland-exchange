@@ -42,6 +42,10 @@ interface CommunityPost {
   county: string | null;
 }
 
+interface RequestBody {
+  test_email?: string; // For testing purposes - send directly to this email
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -50,28 +54,16 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log("Starting weekly digest job...");
 
+    // Check for test_email parameter
+    let testEmail: string | null = null;
+    try {
+      const body: RequestBody = await req.json();
+      testEmail = body.test_email || null;
+    } catch {
+      // No body or invalid JSON, continue normally
+    }
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Get all users who have opted in for weekly digest
-    const { data: subscribers, error: subscribersError } = await supabase
-      .from("user_preferences")
-      .select("user_id, skills_wanted, skills_wanted_custom, weekly_digest_enabled")
-      .eq("weekly_digest_enabled", true);
-
-    if (subscribersError) {
-      console.error("Error fetching subscribers:", subscribersError);
-      throw subscribersError;
-    }
-
-    if (!subscribers || subscribers.length === 0) {
-      console.log("No subscribers found for weekly digest");
-      return new Response(JSON.stringify({ success: true, sent: 0 }), {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
-
-    console.log(`Found ${subscribers.length} subscribers`);
 
     // Get new content from the past week
     const oneWeekAgo = new Date();
@@ -107,6 +99,65 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Error fetching community posts:", communityError);
       throw communityError;
     }
+
+    // If this is a test email, send directly to the test address
+    if (testEmail) {
+      console.log("Sending test digest to:", testEmail);
+      
+      const servicesToShow = (newServices as Service[] || []).slice(0, 5);
+      const communityPostsToShow = (newCommunityPosts as CommunityPost[] || []).slice(0, 5);
+      const unsubscribeToken = btoa("test-user");
+
+      try {
+        await resend.emails.send({
+          from: "Swap Skills <noreply@swap-skills.com>",
+          to: [testEmail],
+          subject: "📬 Your Weekly Swap Skills Digest (TEST)",
+          html: generateDigestEmail(
+            "Test User", 
+            servicesToShow, 
+            communityPostsToShow,
+            false, 
+            newServices?.length || 0,
+            newCommunityPosts?.length || 0,
+            unsubscribeToken
+          ),
+        });
+
+        console.log("Test email sent to:", testEmail);
+        return new Response(JSON.stringify({ success: true, sent: 1, test: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      } catch (emailError) {
+        console.error("Failed to send test email:", emailError);
+        return new Response(JSON.stringify({ success: false, error: String(emailError) }), {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+    }
+
+    // Normal flow - get all subscribers
+    const { data: subscribers, error: subscribersError } = await supabase
+      .from("user_preferences")
+      .select("user_id, skills_wanted, skills_wanted_custom, weekly_digest_enabled")
+      .eq("weekly_digest_enabled", true);
+
+    if (subscribersError) {
+      console.error("Error fetching subscribers:", subscribersError);
+      throw subscribersError;
+    }
+
+    if (!subscribers || subscribers.length === 0) {
+      console.log("No subscribers found for weekly digest");
+      return new Response(JSON.stringify({ success: true, sent: 0 }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    console.log(`Found ${subscribers.length} subscribers`);
 
     const hasContent = (newServices && newServices.length > 0) || (newCommunityPosts && newCommunityPosts.length > 0);
 
