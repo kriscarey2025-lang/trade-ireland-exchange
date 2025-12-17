@@ -31,9 +31,18 @@ export function HeroSection() {
 
           {/* Warm, inviting headline */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-            <span className="gradient-text inline-block opacity-0 animate-fade-up" style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}>Swap skills.</span>{" "}
-            <span className="gradient-text inline-block opacity-0 animate-fade-up" style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}>Make friends.</span>{" "}
-            <span className="gradient-text inline-block opacity-0 animate-fade-up" style={{ animationDelay: "0.7s", animationFillMode: "forwards" }}>Save money.</span>
+            <span className="inline-flex items-baseline">
+              <span className="gradient-text inline-block opacity-0 animate-fade-up" style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}>Swap skills.</span>
+              <span className="typing-cursor opacity-0" style={{ animationDelay: "0.1s" }} />
+            </span>{" "}
+            <span className="inline-flex items-baseline">
+              <span className="gradient-text inline-block opacity-0 animate-fade-up" style={{ animationDelay: "0.5s", animationFillMode: "forwards" }}>Make friends.</span>
+              <span className="typing-cursor opacity-0" style={{ animationDelay: "0.5s" }} />
+            </span>{" "}
+            <span className="inline-flex items-baseline">
+              <span className="gradient-text inline-block opacity-0 animate-fade-up" style={{ animationDelay: "0.9s", animationFillMode: "forwards" }}>Save money.</span>
+              <span className="typing-cursor opacity-0" style={{ animationDelay: "0.9s" }} />
+            </span>
           </h1>
 
           {/* Tagline */}
