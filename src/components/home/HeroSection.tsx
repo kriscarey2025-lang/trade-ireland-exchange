@@ -106,28 +106,7 @@ export function HeroSection() {
           </div>
 
           {/* Trust Indicators - warm and friendly */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto animate-fade-up" style={{
-          animationDelay: "0.4s"
-        }}>
-            <div className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-card border border-border/50 cozy-shadow hover-lift">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10">
-                <Users className="h-5 w-5 text-primary" />
-              </div>
-              <span className="text-sm font-medium">Real Community</span>
-            </div>
-            <div className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-card border border-border/50 cozy-shadow hover-lift">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-accent/10">
-                <Shield className="h-5 w-5 text-accent" />
-              </div>
-              <span className="text-sm font-medium">ID verified</span>
-            </div>
-            <div className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-card border border-border/50 cozy-shadow hover-lift">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-highlight/10">
-                <Heart className="h-5 w-5 text-highlight" />
-              </div>
-              <span className="text-sm font-medium">Free to join</span>
-            </div>
-          </div>
+          
         </div>
       </div>
     </section>;
