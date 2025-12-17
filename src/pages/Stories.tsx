@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Heart, Share2, MessageCircle, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
-import jenniferDeliaImage from "@/assets/jennifer-delia-carlow.png";
+import jenniferDeliaImage from "@/assets/jennifer-delia-carlow-edited.png";
 
 // Featured real story
 const featuredStory = {
