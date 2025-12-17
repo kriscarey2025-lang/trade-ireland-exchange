@@ -14,7 +14,7 @@ interface MessageNotificationRequest {
   sender_name: string;
   message_preview: string;
   conversation_id: string;
-  test_email?: string; // For testing purposes
+  test_email?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -30,18 +30,15 @@ const handler = async (req: Request): Promise<Response> => {
     let recipientEmail: string;
     let recipientName: string;
 
-    // If test_email is provided, use it directly (for testing)
     if (test_email) {
       recipientEmail = test_email;
       recipientName = "Test User";
       console.log("Using test email:", test_email);
     } else {
-      // Initialize Supabase client to get recipient email
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
       const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-      // Get recipient's email from profiles
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("email, full_name")
@@ -68,49 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
       from: "SwapSkills <hello@swap-skills.com>",
       to: [recipientEmail],
       subject: `New message from ${sender_name} on SwapSkills`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
-          <div style="background-color: #ffffff; padding: 30px; border-radius: 12px; text-align: center; border-bottom: 3px solid #065f46;">
-            <h1 style="color: #065f46; margin: 0; font-size: 24px;">🍀 SwapSkills</h1>
-          </div>
-          
-          <div style="background-color: #ffffff; padding: 30px;">
-            <h2 style="color: #065f46; margin-top: 0;">Hi ${recipientName}!</h2>
-            
-            <p style="color: #333;">You have a new message from <strong>${sender_name}</strong>:</p>
-            
-            <div style="background: #f9fafb; padding: 20px; border-radius: 8px; border-left: 4px solid #065f46; margin: 20px 0;">
-              <p style="margin: 0; color: #4b5563; font-style: italic;">"${truncatedMessage}"</p>
-            </div>
-            
-            <div style="text-align: center; margin-top: 30px;">
-              <a href="https://swap-skills.com/messages/${conversation_id}" 
-                 style="background: #065f46; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">
-                View Message
-              </a>
-            </div>
-            
-            <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
-              Don't miss out on potential skill swaps! Log in to continue the conversation.
-            </p>
-          </div>
-          
-          <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 12px; border-top: 1px solid #e5e7eb;">
-            <p>© ${new Date().getFullYear()} SwapSkills Ireland. All rights reserved.</p>
-            <p>
-              <a href="https://swap-skills.com/unsubscribe" style="color: #9ca3af;">Unsubscribe</a> | 
-              <a href="https://swap-skills.com/privacy" style="color: #9ca3af;">Privacy Policy</a>
-            </p>
-          </div>
-        </body>
-        </html>
-      `,
+      html: generateMessageEmail(recipientName, sender_name, truncatedMessage, conversation_id),
     });
 
     console.log("Email sent successfully:", emailResponse);
@@ -127,5 +82,86 @@ const handler = async (req: Request): Promise<Response> => {
     );
   }
 };
+
+function generateMessageEmail(recipientName: string, senderName: string, message: string, conversationId: string): string {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Message on SwapSkills</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #faf8f5;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #fffefa; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #fffefa; padding: 40px 40px 24px 40px; text-align: center; border-bottom: 2px solid #f97316;">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #f97316; letter-spacing: -0.5px;">
+                🦊 SwapSkills
+              </h1>
+              <p style="margin: 8px 0 0 0; font-size: 14px; color: #6b7280;">
+                Ireland's skill sharing community 🍀
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Main content -->
+          <tr>
+            <td style="padding: 40px; background-color: #fffefa;">
+              <h2 style="margin: 0 0 20px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
+                Hi ${recipientName}! 👋
+              </h2>
+              
+              <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
+                You have a new message from <strong style="color: #f97316;">${senderName}</strong>:
+              </p>
+              
+              <div style="background: #faf8f5; padding: 24px; border-radius: 12px; border-left: 4px solid #f97316; margin: 24px 0;">
+                <p style="margin: 0; font-size: 16px; color: #4b5563; font-style: italic; line-height: 1.6;">"${message}"</p>
+              </div>
+              
+              <div style="text-align: center; margin-top: 32px;">
+                <a href="https://swap-skills.com/messages/${conversationId}" 
+                   style="background: #f97316; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
+                  View Message →
+                </a>
+              </div>
+              
+              <p style="color: #6b7280; font-size: 14px; margin-top: 32px; text-align: center; line-height: 1.6;">
+                Don't miss out on potential skill swaps!<br>Log in to continue the conversation.
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #faf8f5; padding: 32px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280;">
+                <a href="https://swap-skills.com/profile" style="color: #f97316; text-decoration: none; font-weight: 500;">Manage Notifications</a>
+                &nbsp;·&nbsp;
+                <a href="https://swap-skills.com/unsubscribe" style="color: #6b7280; text-decoration: none;">Unsubscribe</a>
+              </p>
+              
+              <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+                © ${new Date().getFullYear()} SwapSkills Ireland. All rights reserved.<br>
+                <a href="https://swap-skills.com/privacy" style="color: #9ca3af;">Privacy Policy</a> · 
+                <a href="https://swap-skills.com/terms" style="color: #9ca3af;">Terms of Service</a>
+              </p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+}
 
 serve(handler);
