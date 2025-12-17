@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Lightbulb, MessageSquare, Clock, CheckCircle, XCircle, Loader2, Mail } from "lucide-react";
+import { Lightbulb, MessageSquare, Clock, CheckCircle, XCircle, Loader2, Mail, Reply, Send } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -14,6 +16,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,11 +44,15 @@ interface Feedback {
 
 const AdminFeedback = () => {
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null);
+  const [replyMessage, setReplyMessage] = useState("");
+  const [sendingReply, setSendingReply] = useState(false);
 
   const { data: isAdmin } = useQuery({
     queryKey: ["isAdmin", user?.id],
@@ -120,6 +134,66 @@ const AdminFeedback = () => {
     }
   };
 
+  const openReplyDialog = (feedback: Feedback) => {
+    setSelectedFeedback(feedback);
+    setReplyMessage("");
+    setReplyDialogOpen(true);
+  };
+
+  const sendReply = async () => {
+    if (!selectedFeedback || !replyMessage.trim() || !session?.access_token) return;
+
+    setSendingReply(true);
+    try {
+      // Extract name from subject (format: "Subject (from Name)")
+      const nameMatch = selectedFeedback.subject.match(/\(from ([^)]+)\)$/);
+      const recipientName = nameMatch ? nameMatch[1] : "there";
+      const cleanSubject = selectedFeedback.subject.replace(/\s*\(from [^)]+\)$/, "");
+
+      const response = await supabase.functions.invoke("send-feedback-reply", {
+        body: {
+          feedbackId: selectedFeedback.id,
+          recipientEmail: selectedFeedback.email,
+          recipientName,
+          subject: cleanSubject,
+          replyMessage: replyMessage.trim(),
+          originalMessage: selectedFeedback.message,
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      toast({
+        title: "Reply sent!",
+        description: `Your reply has been sent to ${selectedFeedback.email}`,
+      });
+
+      // Update local state
+      setFeedbackList((prev) =>
+        prev.map((item) =>
+          item.id === selectedFeedback.id
+            ? { ...item, status: "reviewed", admin_notes: `Replied on ${new Date().toLocaleDateString()}: ${replyMessage.substring(0, 100)}...` }
+            : item
+        )
+      );
+
+      setReplyDialogOpen(false);
+      setSelectedFeedback(null);
+      setReplyMessage("");
+    } catch (error: any) {
+      console.error("Error sending reply:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send reply",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingReply(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
@@ -175,7 +249,7 @@ const AdminFeedback = () => {
       <CardContent className="space-y-4">
         <p className="text-sm text-foreground whitespace-pre-wrap">{item.message}</p>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Select
             value={item.status}
             onValueChange={(value) => updateStatus(item.id, value)}
@@ -191,6 +265,19 @@ const AdminFeedback = () => {
               <SelectItem value="rejected">Rejected</SelectItem>
             </SelectContent>
           </Select>
+          
+          {item.email && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openReplyDialog(item)}
+              className="gap-1"
+            >
+              <Reply className="h-3 w-3" />
+              Reply
+            </Button>
+          )}
+          
           {updatingId === item.id && <Loader2 className="h-4 w-4 animate-spin" />}
         </div>
 
@@ -275,6 +362,62 @@ const AdminFeedback = () => {
         </Tabs>
       </main>
       <Footer />
+
+      {/* Reply Dialog */}
+      <Dialog open={replyDialogOpen} onOpenChange={setReplyDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Reply className="h-5 w-5" />
+              Reply to Message
+            </DialogTitle>
+            <DialogDescription>
+              Send a reply to {selectedFeedback?.email}. They will also receive an in-app notification if they have an account.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="bg-muted/50 p-3 rounded-lg">
+              <p className="text-xs text-muted-foreground mb-1">Original message:</p>
+              <p className="text-sm">{selectedFeedback?.message}</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="reply">Your Reply</Label>
+              <Textarea
+                id="reply"
+                placeholder="Type your reply here..."
+                value={replyMessage}
+                onChange={(e) => setReplyMessage(e.target.value)}
+                rows={5}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setReplyDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={sendReply} 
+              disabled={!replyMessage.trim() || sendingReply}
+              className="gap-1"
+            >
+              {sendingReply ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  Send Reply
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

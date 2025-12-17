@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.unsubscribe-digest]
 verify_jwt = false
+
+[functions.send-feedback-reply]
+verify_jwt = true
