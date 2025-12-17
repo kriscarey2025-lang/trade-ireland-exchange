@@ -16,6 +16,7 @@ interface UserPreference {
   user_id: string;
   skills_wanted: string[] | null;
   skills_wanted_custom: string[] | null;
+  weekly_digest_enabled: boolean;
 }
 
 interface Profile {
@@ -29,6 +30,16 @@ interface Service {
   description: string | null;
   category: string;
   location: string | null;
+  type: string;
+}
+
+interface CommunityPost {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  location: string | null;
+  county: string | null;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -44,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Get all users who have opted in for weekly digest
     const { data: subscribers, error: subscribersError } = await supabase
       .from("user_preferences")
-      .select("user_id, skills_wanted, skills_wanted_custom")
+      .select("user_id, skills_wanted, skills_wanted_custom, weekly_digest_enabled")
       .eq("weekly_digest_enabled", true);
 
     if (subscribersError) {
@@ -62,15 +73,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Found ${subscribers.length} subscribers`);
 
-    // Get new services from the past week
+    // Get new content from the past week
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
+    // Fetch new services (both offers and requests)
     const { data: newServices, error: servicesError } = await supabase
       .from("services")
-      .select("id, title, description, category, location")
-      .eq("type", "offer")
+      .select("id, title, description, category, location, type")
       .eq("status", "active")
+      .eq("moderation_status", "approved")
       .gte("created_at", oneWeekAgo.toISOString())
       .order("created_at", { ascending: false })
       .limit(50);
@@ -80,15 +92,33 @@ const handler = async (req: Request): Promise<Response> => {
       throw servicesError;
     }
 
-    if (!newServices || newServices.length === 0) {
-      console.log("No new services this week");
-      return new Response(JSON.stringify({ success: true, sent: 0, reason: "no_new_services" }), {
+    // Fetch new community posts
+    const { data: newCommunityPosts, error: communityError } = await supabase
+      .from("community_posts")
+      .select("id, title, description, category, location, county")
+      .eq("status", "active")
+      .eq("moderation_status", "approved")
+      .eq("is_visible", true)
+      .gte("created_at", oneWeekAgo.toISOString())
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    if (communityError) {
+      console.error("Error fetching community posts:", communityError);
+      throw communityError;
+    }
+
+    const hasContent = (newServices && newServices.length > 0) || (newCommunityPosts && newCommunityPosts.length > 0);
+
+    if (!hasContent) {
+      console.log("No new content this week");
+      return new Response(JSON.stringify({ success: true, sent: 0, reason: "no_new_content" }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    console.log(`Found ${newServices.length} new services this week`);
+    console.log(`Found ${newServices?.length || 0} new services and ${newCommunityPosts?.length || 0} community posts this week`);
 
     let emailsSent = 0;
 
@@ -113,7 +143,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       let matchingServices: Service[] = [];
 
-      if (wantedSkills.length > 0) {
+      if (wantedSkills.length > 0 && newServices) {
         matchingServices = (newServices as Service[]).filter(service => 
           wantedSkills.some(skill => 
             service.category.toLowerCase().includes(skill) ||
@@ -127,10 +157,15 @@ const handler = async (req: Request): Promise<Response> => {
       // If no matches, show top 5 recent services
       const servicesToShow = matchingServices.length > 0 
         ? matchingServices.slice(0, 5) 
-        : (newServices as Service[]).slice(0, 5);
+        : (newServices as Service[] || []).slice(0, 5);
+
+      const communityPostsToShow = (newCommunityPosts as CommunityPost[] || []).slice(0, 5);
 
       const firstName = profile.full_name?.split(" ")[0] || "there";
       const hasMatches = matchingServices.length > 0;
+
+      // Generate unsubscribe token (base64 encode user_id)
+      const unsubscribeToken = btoa(subscriber.user_id);
 
       // Send email
       try {
@@ -140,7 +175,15 @@ const handler = async (req: Request): Promise<Response> => {
           subject: hasMatches 
             ? `🎯 ${matchingServices.length} new skill offers match your interests!` 
             : "📬 Your Weekly Swap Skills Digest",
-          html: generateDigestEmail(firstName, servicesToShow, hasMatches, newServices.length),
+          html: generateDigestEmail(
+            firstName, 
+            servicesToShow, 
+            communityPostsToShow,
+            hasMatches, 
+            newServices?.length || 0,
+            newCommunityPosts?.length || 0,
+            unsubscribeToken
+          ),
         });
 
         emailsSent++;
@@ -179,8 +222,11 @@ const handler = async (req: Request): Promise<Response> => {
 function generateDigestEmail(
   firstName: string, 
   services: Service[], 
+  communityPosts: CommunityPost[],
   hasMatches: boolean,
-  totalNewServices: number
+  totalNewServices: number,
+  totalNewPosts: number,
+  unsubscribeToken: string
 ): string {
   const servicesList = services.map(service => `
     <tr>
@@ -191,9 +237,27 @@ function generateDigestEmail(
         <p style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
           ${service.description ? (service.description.length > 120 ? service.description.slice(0, 120) + '...' : service.description) : 'No description'}
         </p>
-        <div style="display: flex; gap: 12px;">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <span style="font-size: 12px; color: #ffffff; background: ${service.type === 'offer' ? '#4ade80' : '#f97316'}; padding: 4px 10px; border-radius: 12px;">${service.type === 'offer' ? 'Offer' : 'Request'}</span>
           <span style="font-size: 12px; color: #4ade80; background: rgba(74, 222, 128, 0.15); padding: 4px 10px; border-radius: 12px;">${service.category}</span>
           ${service.location ? `<span style="font-size: 12px; color: #6b7280;">📍 ${service.location}</span>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  const communityPostsList = communityPosts.map(post => `
+    <tr>
+      <td style="padding: 16px 0; border-bottom: 1px solid #e5e7eb;">
+        <a href="https://swap-skills.com/community" style="text-decoration: none;">
+          <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1f2937;">${post.title}</h4>
+        </a>
+        <p style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
+          ${post.description ? (post.description.length > 120 ? post.description.slice(0, 120) + '...' : post.description) : 'No description'}
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <span style="font-size: 12px; color: #f97316; background: rgba(249, 115, 22, 0.15); padding: 4px 10px; border-radius: 12px;">${post.category}</span>
+          ${post.county ? `<span style="font-size: 12px; color: #6b7280;">📍 ${post.county}</span>` : ''}
         </div>
       </td>
     </tr>
@@ -233,38 +297,65 @@ function generateDigestEmail(
               </h2>
               
               <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                ${hasMatches 
-                  ? `Great news! We found <strong style="color: #4ade80;">${services.length} new skill offers</strong> that match what you're looking for.`
-                  : `Here's what's new on Swap Skills this week. We had <strong style="color: #4ade80;">${totalNewServices} new skill offers</strong> posted!`
-                }
+                Here's what's been happening on Swap Skills this week:
+                ${totalNewServices > 0 ? `<br>• <strong style="color: #4ade80;">${totalNewServices} new skill listings</strong> posted` : ''}
+                ${totalNewPosts > 0 ? `<br>• <strong style="color: #f97316;">${totalNewPosts} new community posts</strong> added` : ''}
               </p>
               
+              ${services.length > 0 ? `
+              <!-- Services Section -->
               <div style="background-color: #f9fafb; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #e5e7eb;">
                 <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #1f2937;">
-                  ${hasMatches ? '🎯 Matching Offers' : '✨ Featured This Week'}
+                  ${hasMatches ? '🎯 Matching Skill Listings' : '✨ Featured Skill Listings'}
                 </h3>
                 
                 <table role="presentation" style="width: 100%; border-collapse: collapse;">
                   ${servicesList}
                 </table>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                  <a href="https://swap-skills.com/browse" style="display: inline-block; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600;">
+                    Browse All Listings →
+                  </a>
+                </div>
               </div>
+              ` : ''}
               
-              <div style="text-align: center; margin: 32px 0;">
-                <a href="https://swap-skills.com/browse" style="display: inline-block; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(74, 222, 128, 0.4);">
-                  Browse All Offers →
-                </a>
+              ${communityPosts.length > 0 ? `
+              <!-- Community Board Section -->
+              <div style="background-color: #fff7ed; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #fed7aa;">
+                <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #1f2937;">
+                  📋 Community Board Updates
+                </h3>
+                
+                <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                  ${communityPostsList}
+                </table>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                  <a href="https://swap-skills.com/community" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600;">
+                    View Community Board →
+                  </a>
+                </div>
               </div>
+              ` : ''}
               
-              <p style="margin: 32px 0 0 0; font-size: 14px; color: #6b7280; text-align: center;">
-                You're receiving this email because you've opted in to weekly updates.<br>
-                <a href="https://swap-skills.com/profile" style="color: #f97316; text-decoration: none; font-weight: 500;">Manage your preferences</a>
-              </p>
             </td>
           </tr>
           
           <!-- Footer -->
           <tr>
             <td style="background-color: #f9fafb; padding: 32px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280;">
+                You're receiving this email because you've opted in to weekly updates.
+              </p>
+              
+              <p style="margin: 0 0 16px 0;">
+                <a href="https://swap-skills.com/profile" style="color: #f97316; text-decoration: none; font-weight: 500; font-size: 14px;">Manage Preferences</a>
+                &nbsp;·&nbsp;
+                <a href="https://swap-skills.com/unsubscribe?token=${unsubscribeToken}" style="color: #ef4444; text-decoration: none; font-weight: 500; font-size: 14px;">Unsubscribe from Digest</a>
+              </p>
+              
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
                 © ${new Date().getFullYear()} Swap Skills. All rights reserved.<br>
                 <a href="https://swap-skills.com/privacy" style="color: #6b7280;">Privacy Policy</a> · 

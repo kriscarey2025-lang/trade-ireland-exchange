@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.brainstorm-skills]
 verify_jwt = false
+
+[functions.unsubscribe-digest]
+verify_jwt = false
