@@ -33,9 +33,7 @@ export function HeroSection() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 animate-fade-up" style={{
           animationDelay: "0.1s"
         }}>
-            Your neighbours have 
-            <br />
-            <span className="gradient-text">superpowers</span>
+            <span className="gradient-text">Swap skills. Make friends. Save money.</span>
           </h1>
 
           {/* Conversational subheadline */}
