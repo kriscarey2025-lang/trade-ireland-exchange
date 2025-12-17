@@ -102,7 +102,7 @@ function generateMessageEmail(recipientName: string, senderName: string, message
           <tr>
             <td style="background-color: #fffefa; padding: 40px 40px 24px 40px; text-align: center; border-bottom: 2px solid #f97316;">
               <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #f97316; letter-spacing: -0.5px;">
-                🦊 SwapSkills
+                🤝 SwapSkills
               </h1>
               <p style="margin: 8px 0 0 0; font-size: 14px; color: #6b7280;">
                 Ireland's skill sharing community 🍀
