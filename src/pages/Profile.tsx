@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { UserListings } from "@/components/profile/UserListings";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
+import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { VerificationRequestCard } from "@/components/profile/VerificationRequestCard";
 import { SocialLinksCard } from "@/components/profile/SocialLinksCard";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
@@ -52,6 +53,7 @@ interface Profile {
   linkedin_url: string | null;
   facebook_url: string | null;
   instagram_url: string | null;
+  is_founder: boolean | null;
 }
 
 export default function Profile() {
@@ -104,7 +106,8 @@ export default function Profile() {
       if (profileData) {
         setProfile({
           ...profileData,
-          verification_status: (profileData.verification_status as VerificationStatus) || 'unverified'
+          verification_status: (profileData.verification_status as VerificationStatus) || 'unverified',
+          is_founder: profileData.is_founder || false,
         });
         setFullName(profileData.full_name || "");
         setLocation(profileData.location || "");
@@ -304,9 +307,10 @@ export default function Profile() {
               </div>
               <div className="pt-14 flex items-start justify-between">
                 <div>
-                  <CardTitle className="text-2xl flex items-center gap-2">
+                  <CardTitle className="text-2xl flex items-center gap-2 flex-wrap">
                     {profile?.full_name || "Your Name"}
                     <VerifiedBadge status={profile?.verification_status || "unverified"} size="md" />
+                    {profile?.is_founder && <FoundersBadge size="md" />}
                   </CardTitle>
                   <CardDescription className="flex items-center gap-1 mt-1">
                     <Mail className="h-3.5 w-3.5" />

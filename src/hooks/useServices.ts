@@ -25,6 +25,7 @@ interface SecureServiceResponse {
   provider_facebook: string | null;
   provider_instagram: string | null;
   provider_verification_status: string | null;
+  provider_is_founder: boolean | null;
 }
 
 export interface DatabaseService {
@@ -71,6 +72,7 @@ export interface ServiceWithUser {
     linkedinUrl?: string;
     facebookUrl?: string;
     instagramUrl?: string;
+    isFounder?: boolean;
   };
 }
 
@@ -106,6 +108,7 @@ function transformSecureService(service: SecureServiceResponse): ServiceWithUser
       linkedinUrl: service.provider_linkedin || undefined,
       facebookUrl: service.provider_facebook || undefined,
       instagramUrl: service.provider_instagram || undefined,
+      isFounder: service.provider_is_founder || false,
     } : undefined,
   };
 }
