@@ -33,7 +33,7 @@ export function HeroSection() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
             <span className="gradient-text inline-block opacity-0 animate-typeIn" style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}>Swap skills.</span>{" "}
             <span className="gradient-text inline-block opacity-0 animate-typeIn" style={{ animationDelay: "0.6s", animationFillMode: "forwards" }}>Make friends.</span>{" "}
-            <span className="gradient-text inline-block opacity-0 animate-slideFromRight" style={{ animationDelay: "1.1s", animationFillMode: "forwards" }}>Save money.</span>
+            <span className="text-foreground inline-block opacity-0 animate-slideFromRight" style={{ animationDelay: "1.1s", animationFillMode: "forwards" }}>Save money.</span>
           </h1>
 
           {/* Tagline */}
