@@ -79,14 +79,15 @@ export default function Stories() {
                 </div>
               </div>
               
-              <CardContent className="p-0 blur-sm">
+              <CardContent className="p-0">
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative aspect-[4/5] lg:aspect-auto bg-gradient-to-br from-orange-400 via-amber-500 to-orange-600 p-4 md:p-6">
                     <div className="relative w-full h-full rounded-lg overflow-hidden shadow-xl ring-4 ring-white/30">
                       <img 
                         src={featuredStory.image} 
-                        alt="Jennifer and Delia from Carlow" 
+                        alt="Coming soon" 
                         className="w-full h-full object-cover"
+                        style={{ filter: 'blur(20px)', transform: 'scale(1.2)' }}
                       />
                     </div>
                   </div>
