@@ -91,7 +91,7 @@ export default function Stories() {
                       />
                     </div>
                   </div>
-                  <div className="p-8 lg:p-10 flex flex-col justify-center">
+                  <div className="p-8 lg:p-10 flex flex-col justify-center blur-sm">
                     <div className="flex items-center gap-2 mb-4">
                       <Badge variant="secondary">{featuredStory.category}</Badge>
                       <span className="text-xs text-muted-foreground">{featuredStory.date}</span>
