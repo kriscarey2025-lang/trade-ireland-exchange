@@ -616,6 +616,7 @@ export type Database = {
           full_name: string | null
           id: string
           instagram_url: string | null
+          is_founder: boolean | null
           linkedin_url: string | null
           location: string | null
           phone: string | null
@@ -632,6 +633,7 @@ export type Database = {
           full_name?: string | null
           id: string
           instagram_url?: string | null
+          is_founder?: boolean | null
           linkedin_url?: string | null
           location?: string | null
           phone?: string | null
@@ -648,6 +650,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           instagram_url?: string | null
+          is_founder?: boolean | null
           linkedin_url?: string | null
           location?: string | null
           phone?: string | null
