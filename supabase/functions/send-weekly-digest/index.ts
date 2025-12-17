@@ -19,11 +19,6 @@ interface UserPreference {
   weekly_digest_enabled: boolean;
 }
 
-interface Profile {
-  email: string | null;
-  full_name: string | null;
-}
-
 interface Service {
   id: string;
   title: string;
@@ -59,7 +54,7 @@ const handler = async (req: Request): Promise<Response> => {
       const body: RequestBody = await req.json();
       testEmail = body.test_email || null;
     } catch {
-      // No body or invalid JSON, continue normally
+      // No body or invalid JSON
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -76,10 +71,7 @@ const handler = async (req: Request): Promise<Response> => {
       .order("created_at", { ascending: false })
       .limit(50);
 
-    if (servicesError) {
-      console.error("Error fetching new services:", servicesError);
-      throw servicesError;
-    }
+    if (servicesError) throw servicesError;
 
     const { data: newCommunityPosts, error: communityError } = await supabase
       .from("community_posts")
@@ -91,10 +83,7 @@ const handler = async (req: Request): Promise<Response> => {
       .order("created_at", { ascending: false })
       .limit(20);
 
-    if (communityError) {
-      console.error("Error fetching community posts:", communityError);
-      throw communityError;
-    }
+    if (communityError) throw communityError;
 
     if (testEmail) {
       console.log("Sending test digest to:", testEmail);
@@ -105,9 +94,9 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         await resend.emails.send({
-          from: "Swap Skills <noreply@swap-skills.com>",
+          from: "SwapSkills <noreply@swap-skills.com>",
           to: [testEmail],
-          subject: "📬 Your Weekly Swap Skills Digest (TEST)",
+          subject: "📬 Your Weekly SwapSkills Digest (TEST)",
           html: generateDigestEmail(
             "Test User", 
             servicesToShow, 
@@ -119,13 +108,11 @@ const handler = async (req: Request): Promise<Response> => {
           ),
         });
 
-        console.log("Test email sent to:", testEmail);
         return new Response(JSON.stringify({ success: true, sent: 1, test: true }), {
           status: 200,
           headers: { "Content-Type": "application/json", ...corsHeaders },
         });
       } catch (emailError) {
-        console.error("Failed to send test email:", emailError);
         return new Response(JSON.stringify({ success: false, error: String(emailError) }), {
           status: 500,
           headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -138,32 +125,23 @@ const handler = async (req: Request): Promise<Response> => {
       .select("user_id, skills_wanted, skills_wanted_custom, weekly_digest_enabled")
       .eq("weekly_digest_enabled", true);
 
-    if (subscribersError) {
-      console.error("Error fetching subscribers:", subscribersError);
-      throw subscribersError;
-    }
+    if (subscribersError) throw subscribersError;
 
     if (!subscribers || subscribers.length === 0) {
-      console.log("No subscribers found for weekly digest");
       return new Response(JSON.stringify({ success: true, sent: 0 }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    console.log(`Found ${subscribers.length} subscribers`);
-
     const hasContent = (newServices && newServices.length > 0) || (newCommunityPosts && newCommunityPosts.length > 0);
 
     if (!hasContent) {
-      console.log("No new content this week");
       return new Response(JSON.stringify({ success: true, sent: 0, reason: "no_new_content" }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
-
-    console.log(`Found ${newServices?.length || 0} new services and ${newCommunityPosts?.length || 0} community posts this week`);
 
     let emailsSent = 0;
 
@@ -174,10 +152,7 @@ const handler = async (req: Request): Promise<Response> => {
         .eq("id", subscriber.user_id)
         .single();
 
-      if (profileError || !profile?.email) {
-        console.log(`Skipping user ${subscriber.user_id}: no email`);
-        continue;
-      }
+      if (profileError || !profile?.email) continue;
 
       const wantedSkills = [
         ...(subscriber.skills_wanted || []),
@@ -205,16 +180,15 @@ const handler = async (req: Request): Promise<Response> => {
 
       const firstName = profile.full_name?.split(" ")[0] || "there";
       const hasMatches = matchingServices.length > 0;
-
       const unsubscribeToken = btoa(subscriber.user_id);
 
       try {
         await resend.emails.send({
-          from: "Swap Skills <noreply@swap-skills.com>",
+          from: "SwapSkills <noreply@swap-skills.com>",
           to: [profile.email],
           subject: hasMatches 
             ? `🎯 ${matchingServices.length} new skill offers match your interests!` 
-            : "📬 Your Weekly Swap Skills Digest",
+            : "📬 Your Weekly SwapSkills Digest",
           html: generateDigestEmail(
             firstName, 
             servicesToShow, 
@@ -227,7 +201,6 @@ const handler = async (req: Request): Promise<Response> => {
         });
 
         emailsSent++;
-        console.log(`Email sent to ${profile.email}`);
 
         await supabase
           .from("user_preferences")
@@ -238,8 +211,6 @@ const handler = async (req: Request): Promise<Response> => {
         console.error(`Failed to send email to ${profile.email}:`, emailError);
       }
     }
-
-    console.log(`Weekly digest complete: ${emailsSent} emails sent`);
 
     return new Response(JSON.stringify({ success: true, sent: emailsSent }), {
       status: 200,
@@ -269,16 +240,16 @@ function generateDigestEmail(
 ): string {
   const servicesList = services.map(service => `
     <tr>
-      <td style="padding: 16px 0; border-bottom: 1px solid #e5e7eb;">
+      <td style="padding: 16px 0; border-bottom: 1px solid #f0ebe3;">
         <a href="https://swap-skills.com/services/${service.id}" style="text-decoration: none;">
           <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1f2937;">${service.title}</h4>
         </a>
-        <p style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
+        <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
           ${service.description ? (service.description.length > 120 ? service.description.slice(0, 120) + '...' : service.description) : 'No description'}
         </p>
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-          <span style="font-size: 12px; color: #ffffff; background: ${service.type === 'offer' ? '#22c55e' : '#f97316'}; padding: 4px 10px; border-radius: 12px;">${service.type === 'offer' ? 'Offer' : 'Request'}</span>
-          <span style="font-size: 12px; color: #065f46; background: #ecfdf5; padding: 4px 10px; border-radius: 12px;">${service.category}</span>
+        <div>
+          <span style="font-size: 12px; color: #ffffff; background: ${service.type === 'offer' ? '#4d7c0f' : '#f97316'}; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-right: 8px;">${service.type === 'offer' ? '✨ Offer' : '🔍 Request'}</span>
+          <span style="font-size: 12px; color: #4d7c0f; background: #ecfccb; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-right: 8px;">${service.category}</span>
           ${service.location ? `<span style="font-size: 12px; color: #6b7280;">📍 ${service.location}</span>` : ''}
         </div>
       </td>
@@ -287,15 +258,15 @@ function generateDigestEmail(
 
   const communityPostsList = communityPosts.map(post => `
     <tr>
-      <td style="padding: 16px 0; border-bottom: 1px solid #e5e7eb;">
+      <td style="padding: 16px 0; border-bottom: 1px solid #f0ebe3;">
         <a href="https://swap-skills.com/community" style="text-decoration: none;">
           <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1f2937;">${post.title}</h4>
         </a>
-        <p style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
+        <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
           ${post.description ? (post.description.length > 120 ? post.description.slice(0, 120) + '...' : post.description) : 'No description'}
         </p>
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-          <span style="font-size: 12px; color: #c2410c; background: #fff7ed; padding: 4px 10px; border-radius: 12px;">${post.category}</span>
+        <div>
+          <span style="font-size: 12px; color: #c2410c; background: #fff7ed; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-right: 8px;">${post.category}</span>
           ${post.county ? `<span style="font-size: 12px; color: #6b7280;">📍 ${post.county}</span>` : ''}
         </div>
       </td>
@@ -308,53 +279,57 @@ function generateDigestEmail(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Weekly Swap Skills Digest</title>
+  <title>Your Weekly SwapSkills Digest</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #faf8f5;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
     <tr>
       <td align="center" style="padding: 40px 20px;">
-        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #fffefa; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);">
           
           <!-- Header -->
           <tr>
-            <td style="background-color: #ffffff; padding: 48px 40px; text-align: center; border-bottom: 3px solid #065f46;">
-              <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #065f46; letter-spacing: -0.5px;">
-                🤝 Swap Skills
+            <td style="background-color: #fffefa; padding: 40px 40px 24px 40px; text-align: center; border-bottom: 2px solid #f97316;">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #f97316; letter-spacing: -0.5px;">
+                🦊 SwapSkills
               </h1>
-              <p style="margin: 12px 0 0 0; font-size: 16px; color: #6b7280;">
-                Weekly Digest
+              <p style="margin: 8px 0 0 0; font-size: 14px; color: #6b7280;">
+                Ireland's skill sharing community 🍀
               </p>
             </td>
           </tr>
           
           <!-- Main content -->
           <tr>
-            <td style="padding: 48px 40px; background-color: #ffffff;">
-              <h2 style="margin: 0 0 16px 0; font-size: 26px; font-weight: 700; color: #1f2937;">
+            <td style="padding: 40px; background-color: #fffefa;">
+              <h2 style="margin: 0 0 16px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
                 Hi ${firstName}! 👋
               </h2>
               
               <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                Here's what's been happening on Swap Skills this week:
-                ${totalNewServices > 0 ? `<br>• <strong style="color: #065f46;">${totalNewServices} new skill listings</strong> posted` : ''}
-                ${totalNewPosts > 0 ? `<br>• <strong style="color: #c2410c;">${totalNewPosts} new community posts</strong> added` : ''}
+                Here's what's been happening in our wee corner of the internet this week:
               </p>
+              
+              <!-- Stats -->
+              <div style="background: #faf8f5; border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: center;">
+                ${totalNewServices > 0 ? `<span style="display: inline-block; margin: 0 16px; font-size: 14px;"><strong style="color: #4d7c0f; font-size: 24px;">${totalNewServices}</strong><br><span style="color: #6b7280;">new skills</span></span>` : ''}
+                ${totalNewPosts > 0 ? `<span style="display: inline-block; margin: 0 16px; font-size: 14px;"><strong style="color: #f97316; font-size: 24px;">${totalNewPosts}</strong><br><span style="color: #6b7280;">community posts</span></span>` : ''}
+              </div>
               
               ${services.length > 0 ? `
               <!-- Services Section -->
-              <div style="background-color: #f9fafb; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #e5e7eb;">
+              <div style="background-color: #faf8f5; border-radius: 12px; padding: 24px; margin: 24px 0;">
                 <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #1f2937;">
-                  ${hasMatches ? '🎯 Matching Skill Listings' : '✨ Featured Skill Listings'}
+                  ${hasMatches ? '🎯 Matching Your Interests' : '✨ Featured Skills'}
                 </h3>
                 
                 <table role="presentation" style="width: 100%; border-collapse: collapse;">
                   ${servicesList}
                 </table>
                 
-                <div style="text-align: center; margin-top: 20px;">
-                  <a href="https://swap-skills.com/browse" style="display: inline-block; background: #065f46; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600;">
-                    Browse All Listings →
+                <div style="text-align: center; margin-top: 24px;">
+                  <a href="https://swap-skills.com/browse" style="display: inline-block; background: #f97316; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
+                    See what's on offer →
                   </a>
                 </div>
               </div>
@@ -362,43 +337,52 @@ function generateDigestEmail(
               
               ${communityPosts.length > 0 ? `
               <!-- Community Board Section -->
-              <div style="background-color: #f9fafb; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #e5e7eb;">
+              <div style="background-color: #faf8f5; border-radius: 12px; padding: 24px; margin: 24px 0;">
                 <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #1f2937;">
-                  📋 Community Board Updates
+                  📋 Community Board
                 </h3>
                 
                 <table role="presentation" style="width: 100%; border-collapse: collapse;">
                   ${communityPostsList}
                 </table>
                 
-                <div style="text-align: center; margin-top: 20px;">
-                  <a href="https://swap-skills.com/community" style="display: inline-block; background: #c2410c; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600;">
+                <div style="text-align: center; margin-top: 24px;">
+                  <a href="https://swap-skills.com/community" style="display: inline-block; background: transparent; color: #f97316; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 2px solid #f97316;">
                     View Community Board →
                   </a>
                 </div>
               </div>
               ` : ''}
               
+              <!-- Quote Section -->
+              <div style="background: #fffefa; border-radius: 12px; padding: 24px; margin: 32px 0; text-align: center; border: 1px solid #f0ebe3;">
+                <p style="margin: 0; font-size: 14px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px;">Imagine this...</p>
+                <p style="margin: 12px 0 0 0; font-size: 16px; color: #4b5563; font-style: italic; line-height: 1.6;">
+                  "I taught Mary's kids piano, and she sorted my garden. We've become great friends — <strong>and neither of us spent a penny.</strong>"
+                </p>
+                <p style="margin: 12px 0 0 0; font-size: 14px; color: #f97316;">— The kind of story we're building</p>
+              </div>
+              
             </td>
           </tr>
           
           <!-- Footer -->
           <tr>
-            <td style="background-color: #f9fafb; padding: 32px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
+            <td style="background-color: #faf8f5; padding: 32px 40px; text-align: center; border-top: 1px solid #f0ebe3;">
               <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280;">
-                You're receiving this email because you've opted in to weekly updates.
+                You're receiving this because you opted in to weekly updates.
               </p>
               
               <p style="margin: 0 0 16px 0;">
-                <a href="https://swap-skills.com/profile" style="color: #065f46; text-decoration: none; font-weight: 500; font-size: 14px;">Manage Preferences</a>
+                <a href="https://swap-skills.com/profile" style="color: #f97316; text-decoration: none; font-weight: 500; font-size: 14px;">Manage Preferences</a>
                 &nbsp;·&nbsp;
-                <a href="https://swap-skills.com/unsubscribe?token=${unsubscribeToken}" style="color: #ef4444; text-decoration: none; font-weight: 500; font-size: 14px;">Unsubscribe from Digest</a>
+                <a href="https://swap-skills.com/unsubscribe?token=${unsubscribeToken}" style="color: #6b7280; text-decoration: none; font-size: 14px;">Unsubscribe</a>
               </p>
               
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                © ${new Date().getFullYear()} Swap Skills. All rights reserved.<br>
-                <a href="https://swap-skills.com/privacy" style="color: #6b7280;">Privacy Policy</a> · 
-                <a href="https://swap-skills.com/terms" style="color: #6b7280;">Terms of Service</a>
+                © ${new Date().getFullYear()} SwapSkills Ireland. All rights reserved.<br>
+                <a href="https://swap-skills.com/privacy" style="color: #9ca3af;">Privacy Policy</a> · 
+                <a href="https://swap-skills.com/terms" style="color: #9ca3af;">Terms of Service</a>
               </p>
             </td>
           </tr>
