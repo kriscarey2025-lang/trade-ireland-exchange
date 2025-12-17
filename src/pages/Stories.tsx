@@ -4,8 +4,30 @@ import { SEO } from "@/components/SEO";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Heart, Share2, MessageCircle } from "lucide-react";
+import { BookOpen, Heart, Share2, MessageCircle, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
+import jenniferDeliaImage from "@/assets/jennifer-delia-carlow.png";
+
+// Featured real story
+const featuredStory = {
+  id: 0,
+  title: "A Real Life Story from Carlow",
+  authors: "Jennifer & Delia",
+  location: "Carlow",
+  category: "Holistic Wellness",
+  date: "December 2025",
+  image: jenniferDeliaImage,
+  facebookLink: "https://www.facebook.com/beautyholistic",
+  content: {
+    intro: "Two wellness professionals discovered the power of skill-trading.",
+    jennifer: "Jennifer runs Carlow Reiki Clinic, a calm and welcoming space where she supports people through Reiki healing, meditation, and energy balancing, helping clients restore calm, clarity, and wellbeing.",
+    delia: "Delia is the founder of ND Clinic in Carlow city centre, where she offers a range of professional massage and holistic wellness treatments, supporting both physical recovery and deep relaxation.",
+    connection: "Through skill-trading, Jennifer and Delia connected in a simple, natural way.",
+    exchange: "Jennifer helps Delia relax and rebalance through Reiki and meditation sessions, while Delia supports Jennifer with calming massage treatments after long working days.",
+    outcome: "No money is exchanged — just two professionals sharing their skills, supporting each other's wellbeing, and building trust.",
+    partnership: "That connection has since grown into a business partnership, rooted in shared values and mutual care."
+  }
+};
 
 const stories = [
   {
@@ -82,9 +104,73 @@ export default function Stories() {
           </div>
         </section>
 
-        {/* Stories Grid */}
+        {/* Featured Story */}
+        <section className="py-12 bg-primary/5">
+          <div className="container">
+            <div className="flex items-center gap-2 mb-6">
+              <Badge variant="default" className="bg-primary text-primary-foreground">
+                Featured Story
+              </Badge>
+              <span className="text-sm text-muted-foreground">Real success from our community</span>
+            </div>
+            
+            <Card className="overflow-hidden border-primary/20">
+              <CardContent className="p-0">
+                <div className="grid lg:grid-cols-2 gap-0">
+                  <div className="relative aspect-[4/5] lg:aspect-auto">
+                    <img 
+                      src={featuredStory.image} 
+                      alt="Jennifer and Delia from Carlow" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-8 lg:p-10 flex flex-col justify-center">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Badge variant="secondary">{featuredStory.category}</Badge>
+                      <span className="text-xs text-muted-foreground">{featuredStory.date}</span>
+                    </div>
+                    
+                    <h2 className="text-2xl md:text-3xl font-display font-bold mb-6 text-primary">
+                      {featuredStory.title}
+                    </h2>
+                    
+                    <div className="space-y-4 text-muted-foreground">
+                      <p>{featuredStory.content.jennifer}</p>
+                      <p>{featuredStory.content.delia}</p>
+                      <p className="font-medium text-foreground">{featuredStory.content.connection}</p>
+                      <p>{featuredStory.content.exchange}</p>
+                      <p className="italic">{featuredStory.content.outcome}</p>
+                      <p className="font-medium text-foreground">{featuredStory.content.partnership}</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-4 mt-8 pt-6 border-t border-border">
+                      <div className="text-sm">
+                        <span className="font-medium">{featuredStory.authors}</span>
+                        <span className="text-muted-foreground"> • {featuredStory.location}</span>
+                      </div>
+                      <a 
+                        href={featuredStory.facebookLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-auto"
+                      >
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <ExternalLink className="h-4 w-4" />
+                          Follow Their Journey
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* More Stories Grid */}
         <section className="py-16">
           <div className="container">
+            <h2 className="text-2xl font-display font-bold mb-8">More Community Stories</h2>
             <div className="grid md:grid-cols-2 gap-8">
               {stories.map((story) => (
                 <Card key={story.id} className="group hover:shadow-lg transition-all duration-300 border-border/50">
