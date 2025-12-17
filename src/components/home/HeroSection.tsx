@@ -36,6 +36,13 @@ export function HeroSection() {
             <span className="gradient-text">Swap skills. Make friends. Save money.</span>
           </h1>
 
+          {/* Tagline */}
+          <p className="text-lg md:text-xl font-medium text-foreground mb-4 animate-fade-up" style={{
+          animationDelay: "0.15s"
+        }}>
+            A free, local platform for exchanging skills — no money involved.
+          </p>
+
           {/* Conversational subheadline */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-fade-up leading-relaxed" style={{
           animationDelay: "0.2s"
