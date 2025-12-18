@@ -272,7 +272,7 @@ export function Header() {
                 className="rounded-xl"
                 asChild
               >
-                <Link to="/services/new">
+                <Link to="/new-service">
                   <PenLine className="h-4 w-4 mr-1" />
                   Start a Post
                 </Link>
@@ -421,7 +421,7 @@ export function Header() {
               {isLoggedIn ? (
                 <>
                   <Button variant="accent" className="w-full rounded-xl" asChild>
-                    <Link to="/services/new" onClick={() => setMobileMenuOpen(false)}>
+                    <Link to="/new-service" onClick={() => setMobileMenuOpen(false)}>
                       <PenLine className="h-4 w-4 mr-1" />
                       Start a Post
                     </Link>
