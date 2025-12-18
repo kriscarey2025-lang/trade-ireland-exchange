@@ -1,9 +1,11 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart } from "lucide-react";
+import { ArrowRight, Heart, PenLine } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
+  const { user } = useAuth();
   return (
     <section ref={ref} className="py-20 md:py-28 relative overflow-hidden">
       {/* Warm gradient background */}
@@ -34,9 +36,9 @@ export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
             className="bg-white text-primary hover:bg-white/95 shadow-xl hover:shadow-2xl font-semibold rounded-full px-8"
             asChild
           >
-            <Link to="/auth?mode=signup">
-              <Heart className="mr-2 h-5 w-5" />
-              Join the community
+            <Link to={user ? "/new-service" : "/auth?mode=signup"}>
+              {user ? <PenLine className="mr-2 h-5 w-5" /> : <Heart className="mr-2 h-5 w-5" />}
+              {user ? "Start a Post" : "Join the community"}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

@@ -70,8 +70,8 @@ export function HeroSection() {
           animationDelay: "0.3s"
         }}>
             <Button size="lg" className="group shadow-lg hover:shadow-xl rounded-full px-8" asChild>
-              <Link to="/auth?mode=signup">
-                Join the Community
+              <Link to={user ? "/new-service" : "/auth?mode=signup"}>
+                {user ? "Start a Post" : "Join the Community"}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
