@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
+import swapSkillsLogo from "@/assets/swapskills-logo.png";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -109,9 +110,11 @@ export function Header() {
       <div className="container flex h-14 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg group">
-          <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-hero text-white shadow-sm group-hover:shadow-md transition-shadow">
-            <span className="text-sm">🤝</span>
-          </div>
+          <img 
+            src={swapSkillsLogo} 
+            alt="SwapSkills Logo" 
+            className="w-8 h-8 rounded-xl shadow-sm group-hover:shadow-md transition-shadow"
+          />
           <span className="hidden sm:inline text-foreground">
             Swap<span className="text-primary">Skills</span>
           </span>
