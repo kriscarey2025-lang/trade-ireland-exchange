@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
+import swapSkillsLogo from "@/assets/swapskills-logo.png";
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   return (
@@ -10,9 +11,11 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           {/* Brand */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2 font-bold text-xl">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-hero text-primary-foreground">
-                <span className="text-lg">🤝</span>
-              </div>
+              <img 
+                src={swapSkillsLogo} 
+                alt="SwapSkills Logo" 
+                className="w-10 h-10 rounded-xl"
+              />
               <span>
                 Swap<span className="text-primary">Skills</span>
               </span>
