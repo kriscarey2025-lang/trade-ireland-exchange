@@ -1,11 +1,13 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Users, Shield, Coffee, Sparkles, Lightbulb } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
+
 export function HeroSection() {
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
+  const [brainstormOpen, setBrainstormOpen] = useState(false);
   return <section className="relative overflow-hidden min-h-[90vh] flex items-center">
       {/* Warm animated background blobs */}
       <div className="absolute inset-0 overflow-hidden">
@@ -87,7 +89,7 @@ export function HeroSection() {
           <div className="mb-14 animate-fade-up" style={{
           animationDelay: "0.35s"
         }}>
-            <Link to="/matches" className="group block max-w-md mx-auto">
+            <button onClick={() => setBrainstormOpen(true)} className="group block max-w-md mx-auto w-full">
               <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-highlight/10 p-[2px] hover:from-primary/20 hover:via-accent/20 hover:to-highlight/20 transition-all duration-300">
                 <div className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card/95 backdrop-blur-sm group-hover:bg-card/90 transition-colors">
                   <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent animate-pulse">
@@ -102,12 +104,13 @@ export function HeroSection() {
                   <Sparkles className="h-5 w-5 text-accent group-hover:animate-spin transition-all" />
                 </div>
               </div>
-            </Link>
+            </button>
           </div>
 
           {/* Trust Indicators - warm and friendly */}
           
         </div>
       </div>
+      <BrainstormDialog open={brainstormOpen} onOpenChange={setBrainstormOpen} />
     </section>;
 }
