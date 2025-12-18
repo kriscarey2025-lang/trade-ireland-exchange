@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, Plus, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass } from "lucide-react";
+import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -13,12 +13,10 @@ import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [postMenuOpen, setPostMenuOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const [discoverMenuOpen, setDiscoverMenuOpen] = useState(false);
   const [browseMenuOpen, setBrowseMenuOpen] = useState(false);
   const [brainstormOpen, setBrainstormOpen] = useState(false);
-  const postMenuRef = useRef<HTMLDivElement>(null);
   const adminMenuRef = useRef<HTMLDivElement>(null);
   const discoverMenuRef = useRef<HTMLDivElement>(null);
   const browseMenuRef = useRef<HTMLDivElement>(null);
@@ -59,9 +57,6 @@ export function Header() {
   // Close menus when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (postMenuRef.current && !postMenuRef.current.contains(event.target as Node)) {
-        setPostMenuOpen(false);
-      }
       if (adminMenuRef.current && !adminMenuRef.current.contains(event.target as Node)) {
         setAdminMenuOpen(false);
       }
@@ -271,63 +266,17 @@ export function Header() {
           
           {isLoggedIn ? (
             <>
-              <div className="relative" ref={postMenuRef}>
-                <Button 
-                  variant="accent" 
-                  size="sm" 
-                  className="rounded-xl"
-                  onClick={() => setPostMenuOpen(!postMenuOpen)}
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Post
-                  <ChevronDown className="h-3 w-3 ml-1" />
-                </Button>
-                {postMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-52 bg-background rounded-xl border border-border shadow-lg py-1 z-50">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          to="/services/new"
-                          className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors"
-                          onClick={() => setPostMenuOpen(false)}
-                        >
-                          <RefreshCw className="h-4 w-4 text-primary" />
-                          Skill Swap
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent side="left" className="max-w-[200px]">
-                        <p>Create a skill swap post to offer or request services</p>
-                      </TooltipContent>
-                    </Tooltip>
-                    <button
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors w-full text-left"
-                      onClick={() => {
-                        setPostMenuOpen(false);
-                        setBrainstormOpen(true);
-                      }}
-                    >
-                      <Lightbulb className="h-4 w-4 text-amber-500" />
-                      Brainstorm Ideas
-                    </button>
-                    <div className="border-t border-border my-1" />
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          to="/getting-started"
-                          className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-foreground font-medium"
-                          onClick={() => setPostMenuOpen(false)}
-                        >
-                          <span>🧙‍♂️</span>
-                          Create Post Wizard
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent side="left" className="max-w-[200px]">
-                        <p>Answer a few questions and we'll create a post for you using AI</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                )}
-              </div>
+              <Button 
+                variant="accent" 
+                size="sm" 
+                className="rounded-xl"
+                asChild
+              >
+                <Link to="/services/new">
+                  <PenLine className="h-4 w-4 mr-1" />
+                  Start a Post
+                </Link>
+              </Button>
               <NotificationBell />
               <Button variant="ghost" size="icon" className="rounded-xl" asChild>
                 <Link to="/messages">
@@ -473,8 +422,8 @@ export function Header() {
                 <>
                   <Button variant="accent" className="w-full rounded-xl" asChild>
                     <Link to="/services/new" onClick={() => setMobileMenuOpen(false)}>
-                      <RefreshCw className="h-4 w-4 mr-1" />
-                      Skill Swap
+                      <PenLine className="h-4 w-4 mr-1" />
+                      Start a Post
                     </Link>
                   </Button>
                   <Button 
