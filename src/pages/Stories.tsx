@@ -28,14 +28,9 @@ const featuredStory = {
     partnership: "That connection has since grown into a business partnership, rooted in shared values and mutual care."
   }
 };
-
 export default function Stories() {
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <SEO 
-        title="Swap-Skill Stories | SwapSkills Ireland"
-        description="Read inspiring stories from our community members who have successfully swapped skills and made meaningful connections."
-      />
+  return <div className="min-h-screen flex flex-col bg-background">
+      <SEO title="Swap-Skill Stories | SwapSkills Ireland" description="Read inspiring stories from our community members who have successfully swapped skills and made meaningful connections." />
       <Header />
       
       <main className="flex-1">
@@ -76,11 +71,7 @@ export default function Stories() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative aspect-[4/5] lg:aspect-auto bg-gradient-to-br from-orange-400 via-amber-500 to-orange-600 p-4 md:p-6">
                     <div className="relative w-full h-full rounded-lg overflow-hidden shadow-xl ring-4 ring-white/30">
-                      <img 
-                        src={featuredStory.image} 
-                        alt={`${featuredStory.authors} - ${featuredStory.title}`}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={featuredStory.image} alt={`${featuredStory.authors} - ${featuredStory.title}`} className="w-full h-full object-cover" />
                     </div>
                   </div>
                   <div className="p-8 lg:p-10 flex flex-col justify-center">
@@ -95,7 +86,7 @@ export default function Stories() {
                     
                     <div className="space-y-4 text-muted-foreground">
                       <p>{featuredStory.content.jennifer}</p>
-                      <p>{featuredStory.content.delia}</p>
+                      
                       <p className="font-medium text-foreground">{featuredStory.content.connection}</p>
                       <p>{featuredStory.content.exchange}</p>
                       <p className="italic">{featuredStory.content.outcome}</p>
@@ -107,12 +98,7 @@ export default function Stories() {
                         <span className="font-medium">{featuredStory.authors}</span>
                         <span className="text-muted-foreground"> • {featuredStory.location}</span>
                       </div>
-                      <a 
-                        href={featuredStory.facebookLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ml-auto"
-                      >
+                      <a href={featuredStory.facebookLink} target="_blank" rel="noopener noreferrer" className="ml-auto">
                         <Button variant="outline" size="sm" className="gap-2">
                           <ExternalLink className="h-4 w-4" />
                           Follow Their Journey
@@ -147,6 +133,5 @@ export default function Stories() {
       </main>
 
       <Footer />
-    </div>
-  );
+    </div>;
 }
