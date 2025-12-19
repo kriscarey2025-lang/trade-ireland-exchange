@@ -34,10 +34,10 @@ const Index = () => {
             <NewUserWelcomeCard />
             <InlineAd />
             <HowItWorksSection />
+            <TrustSection />
             <OurStorySection />
             <InlineAd />
             <CategoriesSection />
-            <TrustSection />
             <InlineAd />
             <CommunityImpactSection />
             <FounderStorySection />
