@@ -6,7 +6,7 @@ import swapSkillsLogo from "@/assets/swapskills-logo.png";
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   return (
-    <footer ref={ref} className="border-t border-border bg-secondary/30">
+    <footer ref={ref} className="border-t border-border bg-secondary/30 pb-20 md:pb-0">
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
