@@ -1,6 +1,7 @@
 import { useAds, getRandomAd, useUserLocation } from "@/hooks/useAds";
 import { AdDisplay } from "./AdDisplay";
 import { useMemo } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SideAdProps {
   position: "left" | "right";
@@ -10,20 +11,22 @@ interface SideAdProps {
 export function SideAd({ position, className = "" }: SideAdProps) {
   const { data: ads } = useAds("side");
   const { data: userLocation } = useUserLocation();
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
   
-  // Get two random ads for the side slots with location prioritization
+  // Get two random ads for the side slots with location filtering
   const selectedAds = useMemo(() => {
     if (!ads || ads.length === 0) return [null, null];
     
-    // Get first ad with location priority
-    const firstAd = getRandomAd(ads, userLocation);
+    // Get first ad with location filtering
+    const firstAd = getRandomAd(ads, userLocation, isLoggedIn);
     
     // Get second ad from remaining (if any)
     const remainingAds = ads.filter(ad => ad.id !== firstAd?.id);
-    const secondAd = remainingAds.length > 0 ? getRandomAd(remainingAds, userLocation) : null;
+    const secondAd = remainingAds.length > 0 ? getRandomAd(remainingAds, userLocation, isLoggedIn) : null;
     
     return [firstAd, secondAd];
-  }, [ads, userLocation]);
+  }, [ads, userLocation, isLoggedIn]);
 
   return (
     <div 
