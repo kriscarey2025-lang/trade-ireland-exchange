@@ -1,6 +1,8 @@
 import { MapPin, Clock, Sprout, Globe, HeartHandshake, Coins } from "lucide-react";
+
 export function OurStorySection() {
-  return <section className="py-20 md:py-28 bg-card/50">
+  return (
+    <section className="py-20 md:py-28 bg-card/50">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Section header */}
@@ -10,10 +12,10 @@ export function OurStorySection() {
               The bigger picture
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
-              More than just <span className="gradient-text">swapping skills</span>
+              More than just a <span className="gradient-text">barter system</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We're building something that matters. Here's why SwapSkills exists and what we're working towards.
+              We're building a modern barter community that matters. Here's why SwapSkills exists and what we're working towards.
             </p>
           </div>
 
@@ -37,16 +39,17 @@ export function OurStorySection() {
                   the country, making it harder than ever to afford the services we need.
                 </p>
                 <p>
-                  Think about it: you might be brilliant at fixing computers, while your neighbour down the road 
-                  is amazing at gardening. But instead of helping each other, you both end up paying strangers 
-                  for services your community already has. Money flows out of local areas, skills go unused, and 
-                  opportunities for genuine connection slip away.
+                  Think about it: the retired teacher on your street could help local kids with their homework, 
+                  and in return, maybe someone shovels their driveway when the snow comes. That someone might 
+                  have only just moved into the neighbourhood — but through this platform, they get a chance to 
+                  connect with their community effortlessly. The old barter system worked for centuries, but 
+                  finding someone to barter with became nearly impossible in our modern, disconnected world.
                 </p>
                 <p>
                   We've become a society where we're more likely to order something online from the other side 
                   of the world than ask a neighbour for help. We scroll past each other on our phones, unaware 
                   that the person sitting next to us on the bus could solve a problem we've been struggling with 
-                  for weeks.
+                  for weeks. The ancient practice of bartering skills has been lost — until now.
                 </p>
               </div>
             </div>
@@ -62,14 +65,23 @@ export function OurStorySection() {
                 </h3>
               </div>
               <div className="text-muted-foreground space-y-4">
-                <p>We envision an Ireland where communities are reconnecting in a new way. Where the retired teacher on your street can help local kids with their homework, and in return, maybe someone shovels their driveway when the snow comes. And this someone might not be known in the community, might has only moved in to the neighbourhood - but through this Platform get's a chance to connect with his community effortless. A place where the young professional who's handy with technology can help an elderly neighbour set up video calls to see their grandchildren, and learn a family recipe in return.</p>
+                <p>
+                  We envision an Ireland where communities are reconnecting through a modern barter system. 
+                  Where the young professional who's handy with technology can help an elderly neighbour set 
+                  up video calls to see their grandchildren, and learn a family recipe in return. Where skills 
+                  flow freely between neighbours who might never have met otherwise.
+                </p>
                 <p>
                   SwapSkills isn't just about saving money, though that's certainly a wonderful benefit. It's 
                   about rediscovering the value of what we already have. Every person in Ireland has something 
                   to offer, something they're good at, something they could share. We're simply creating the 
-                  bridge that connects these hidden talents.
+                  bridge that connects these hidden talents through skill bartering.
                 </p>
-                <p>And when we say "talents" - it could also be simply something people are happy to do such as "cleaning windows" or "ironing" - while this is another person's nightmare who much more happily would cut the grass for the person next door. </p>
+                <p>
+                  And when we say "talents" — it could also be simply something people are happy to do such as 
+                  "cleaning windows" or "ironing" — while this is another person's nightmare who would much 
+                  more happily cut the grass for the person next door. That's the beauty of a barter community.
+                </p>
               </div>
             </div>
 
@@ -86,9 +98,10 @@ export function OurStorySection() {
               <div className="text-muted-foreground space-y-4">
                 <p>
                   What we're doing isn't new at all. In fact, it's deeply rooted in Irish tradition. Our 
-                  grandparents and great-grandparents lived this way naturally. The concept of "meitheal" — 
-                  neighbours coming together to help with farming tasks, building homes, or tackling any job 
-                  too big for one family alone — was how communities survived and thrived.
+                  grandparents and great-grandparents lived this way naturally — bartering skills, trading 
+                  favours, helping out neighbours. The concept of "meitheal" — neighbours coming together to 
+                  help with farming tasks, building homes, or tackling any job too big for one family alone — 
+                  was essentially a community barter system that helped communities survive and thrive.
                 </p>
                 <p>
                   During the hard times, Irish communities pulled together. When a family was struggling, 
@@ -97,10 +110,10 @@ export function OurStorySection() {
                   helps all, and that genuine community makes life richer in ways money simply cannot.
                 </p>
                 <p>
-                  SwapSkills is bringing this tradition into the digital age. We're using modern technology 
-                  to facilitate the same kind of community connections that have sustained Irish life for 
-                  generations. We're not trying to replace human connection with an app — we're using an app 
-                  to enable more human connection.
+                  SwapSkills is bringing this barter tradition into the digital age. We're using modern 
+                  technology to facilitate the same kind of community connections that have sustained Irish 
+                  life for generations. We're not trying to replace human connection with an app — we're 
+                  using an app to enable more human connection through skill bartering.
                 </p>
               </div>
             </div>
@@ -124,7 +137,7 @@ export function OurStorySection() {
                   the dog when work runs late.
                 </p>
                 <p>
-                  SwapSkills lets you access these services without money changing hands. If you can offer 
+                  SwapSkills lets you barter for these services without money changing hands. If you can offer 
                   something in return — and everyone can offer something — you can get the help you need. 
                   Maybe you're a fantastic cook but hopeless with technology. Maybe you're great with kids 
                   but your garden looks like a jungle. Whatever your situation, there's someone out there 
@@ -150,5 +163,6 @@ export function OurStorySection() {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 }
