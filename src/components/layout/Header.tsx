@@ -13,7 +13,9 @@ import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import swapSkillsLogo from "@/assets/swapskills-logo.png";
 
 export function Header() {
+  const headerRef = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuTop, setMobileMenuTop] = useState(56);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const [discoverMenuOpen, setDiscoverMenuOpen] = useState(false);
   const [browseMenuOpen, setBrowseMenuOpen] = useState(false);
@@ -72,6 +74,26 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Ensure the mobile menu opens below the header (even with promo banner above)
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const updateTop = () => {
+      const rect = headerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setMobileMenuTop(Math.round(rect.bottom));
+    };
+
+    updateTop();
+    window.addEventListener("resize", updateTop);
+    window.addEventListener("scroll", updateTop, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateTop);
+      window.removeEventListener("scroll", updateTop);
+    };
+  }, [mobileMenuOpen]);
+
   const handleSignOut = async () => {
     await signOut();
     toast.success("Signed out successfully");
@@ -106,7 +128,7 @@ export function Header() {
   const isDiscoverActive = discoverLinks.some(l => location.pathname === l.href);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl">
+    <header ref={headerRef} className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl">
       <div className="container flex h-14 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg group">
@@ -335,12 +357,15 @@ export function Header() {
       </div>
 
       {/* Mobile Menu - Slide from top */}
-      <div className={cn(
-        "md:hidden fixed inset-x-0 top-14 bottom-0 bg-background border-b border-border shadow-xl z-40 transition-all duration-300 ease-out overflow-y-auto",
-        mobileMenuOpen 
-          ? "opacity-100 translate-y-0" 
-          : "opacity-0 -translate-y-4 pointer-events-none"
-      )}>
+      <div
+        className={cn(
+          "md:hidden fixed inset-x-0 bottom-0 bg-background border-b border-border shadow-xl z-[60] transition-all duration-300 ease-out overflow-y-auto",
+          mobileMenuOpen
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-4 pointer-events-none"
+        )}
+        style={{ top: mobileMenuTop }}
+      >
           <nav className="container py-4 space-y-1 pb-24">
             <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Browse
