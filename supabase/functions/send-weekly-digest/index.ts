@@ -120,15 +120,23 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
+    // Calculate 24 hours ago for duplicate prevention
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
+    // Only fetch subscribers who haven't received a digest in the last 24 hours
     const { data: subscribers, error: subscribersError } = await supabase
       .from("user_preferences")
-      .select("user_id, skills_wanted, skills_wanted_custom, weekly_digest_enabled")
-      .eq("weekly_digest_enabled", true);
+      .select("user_id, skills_wanted, skills_wanted_custom, weekly_digest_enabled, last_digest_sent_at")
+      .eq("weekly_digest_enabled", true)
+      .or(`last_digest_sent_at.is.null,last_digest_sent_at.lt.${twentyFourHoursAgo.toISOString()}`);
 
     if (subscribersError) throw subscribersError;
 
+    console.log(`Found ${subscribers?.length || 0} eligible subscribers (not sent in last 24h)`);
+
     if (!subscribers || subscribers.length === 0) {
-      return new Response(JSON.stringify({ success: true, sent: 0 }), {
+      return new Response(JSON.stringify({ success: true, sent: 0, reason: "no_eligible_subscribers" }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
