@@ -8,6 +8,8 @@ import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { TrustSection } from "@/components/home/TrustSection";
 import { FounderStorySection } from "@/components/home/FounderStorySection";
+import { OurStorySection } from "@/components/home/OurStorySection";
+import { CommunityImpactSection } from "@/components/home/CommunityImpactSection";
 import { CTASection } from "@/components/home/CTASection";
 import { InlineAd } from "@/components/ads/InlineAd";
 import { SEO } from "@/components/SEO";
@@ -32,10 +34,12 @@ const Index = () => {
             <NewUserWelcomeCard />
             <InlineAd />
             <HowItWorksSection />
-            <CategoriesSection />
+            <OurStorySection />
             <InlineAd />
+            <CategoriesSection />
             <TrustSection />
             <InlineAd />
+            <CommunityImpactSection />
             <FounderStorySection />
             <CTASection />
           </AdsLayout>
