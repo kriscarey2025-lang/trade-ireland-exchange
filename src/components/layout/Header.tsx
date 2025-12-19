@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -356,100 +357,41 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu - Slide from top */}
-      <div
-        className={cn(
-          "md:hidden fixed inset-x-0 bottom-0 bg-background border-b border-border shadow-xl z-[60] transition-all duration-300 ease-out overflow-y-auto",
-          mobileMenuOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-4 pointer-events-none"
-        )}
-        style={{ top: mobileMenuTop }}
-      >
-          <nav className="container py-4 space-y-1 pb-24">
-            <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Browse
-            </div>
-            {browseLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                  location.pathname === link.href
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <link.icon className="h-4 w-4" />
-                {link.label}
-              </Link>
-            ))}
-            <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider pt-2">
-              Discover
-            </div>
-            {discoverLinks.map((link) => 
-              link.action ? (
-                <button
-                  key={link.href}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:bg-muted w-full text-left"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    link.action();
-                  }}
-                >
-                  <link.icon className="h-4 w-4" />
-                  {link.label}
-                </button>
-              ) : (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                    location.pathname === link.href
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted"
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <link.icon className="h-4 w-4" />
-                  {link.label}
-                </Link>
-              )
+      {/* Mobile Menu (portal) */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className={cn(
+              "md:hidden fixed inset-0 z-[70] transition-opacity duration-200",
+              mobileMenuOpen
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
             )}
-            <div className="pt-2">
-              {mainNavLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className={cn(
-                    "block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                    location.pathname === link.href
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted"
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-            
-            {/* Mobile Admin Links */}
-            {isAdmin && (
-              <div className="pt-4 border-t border-border space-y-2">
-                <div className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-foreground">
-                  <Shield className="h-4 w-4" />
-                  Admin
+            aria-hidden={!mobileMenuOpen}
+          >
+            <button
+              type="button"
+              aria-label="Close menu"
+              className="absolute inset-0 bg-foreground/10 backdrop-blur-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+
+            <div
+              className="absolute inset-x-0 bottom-0 bg-background border-b border-border shadow-xl overflow-y-auto"
+              style={{ top: mobileMenuTop }}
+              role="dialog"
+              aria-modal="true"
+            >
+              <nav className="container py-4 space-y-1 pb-24">
+                <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Browse
                 </div>
-                {adminLinks.map((link) => (
+                {browseLinks.map((link) => (
                   <Link
                     key={link.href}
                     to={link.href}
                     className={cn(
-                      "flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                      "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                       location.pathname === link.href
                         ? "bg-primary/10 text-primary"
                         : "text-muted-foreground hover:bg-muted"
@@ -460,51 +402,151 @@ export function Header() {
                     {link.label}
                   </Link>
                 ))}
-              </div>
-            )}
-            {/* Quick Actions - only show items NOT in bottom nav */}
-            <div className="pt-4 border-t border-border space-y-2">
-              {isLoggedIn ? (
-                <>
-                  <Button 
-                    variant="outline" 
-                    className="w-full rounded-xl"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      setBrainstormOpen(true);
-                    }}
-                  >
-                    <Lightbulb className="h-4 w-4 mr-2" />
-                    Brainstorm Ideas
-                  </Button>
-                  <Button variant="ghost" className="w-full rounded-xl text-foreground font-medium" asChild>
-                    <Link to="/getting-started" onClick={() => setMobileMenuOpen(false)}>
-                      <span className="mr-2">🧙‍♂️</span>
-                      Create Post Wizard
+
+                <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider pt-2">
+                  Discover
+                </div>
+                {discoverLinks.map((link) =>
+                  link.action ? (
+                    <button
+                      key={link.href}
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:bg-muted w-full text-left"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        link.action();
+                      }}
+                    >
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
+                    </button>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                        location.pathname === link.href
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted"
+                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
                     </Link>
-                  </Button>
-                  <div className="border-t border-border my-2" />
-                  <Button variant="ghost" className="w-full rounded-xl text-destructive" onClick={handleSignOut}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="outline" className="w-full rounded-xl" asChild>
-                    <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
-                  </Button>
-                  <Button variant="hero" className="w-full rounded-xl" asChild>
-                    <Link to="/auth?mode=signup" onClick={() => setMobileMenuOpen(false)}>
-                      <Sparkles className="h-4 w-4 mr-1.5" />
-                      Join Free
+                  )
+                )}
+
+                <div className="pt-2">
+                  {mainNavLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className={cn(
+                        "block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                        location.pathname === link.href
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted"
+                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {link.label}
                     </Link>
-                  </Button>
-                </>
-              )}
+                  ))}
+                </div>
+
+                {/* Mobile Admin Links */}
+                {isAdmin && (
+                  <div className="pt-4 border-t border-border space-y-2">
+                    <div className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-muted-foreground">
+                      <Shield className="h-4 w-4" />
+                      Admin
+                    </div>
+                    {adminLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        to={link.href}
+                        className={cn(
+                          "flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                          location.pathname === link.href
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-muted"
+                        )}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <link.icon className="h-4 w-4" />
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
+                {/* Quick Actions - only show items NOT in bottom nav */}
+                <div className="pt-4 border-t border-border space-y-2">
+                  {isLoggedIn ? (
+                    <>
+                      <Button
+                        variant="outline"
+                        className="w-full rounded-xl"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setBrainstormOpen(true);
+                        }}
+                      >
+                        <Lightbulb className="h-4 w-4 mr-2" />
+                        Brainstorm Ideas
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="w-full rounded-xl text-foreground font-medium"
+                        asChild
+                      >
+                        <Link
+                          to="/getting-started"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <span className="mr-2">🧙‍♂️</span>
+                          Create Post Wizard
+                        </Link>
+                      </Button>
+                      <div className="border-t border-border my-2" />
+                      <Button
+                        variant="ghost"
+                        className="w-full rounded-xl text-destructive"
+                        onClick={handleSignOut}
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="outline" className="w-full rounded-xl" asChild>
+                        <Link
+                          to="/auth"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Sign In
+                        </Link>
+                      </Button>
+                      <Button variant="hero" className="w-full rounded-xl" asChild>
+                        <Link
+                          to="/auth?mode=signup"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <Sparkles className="h-4 w-4 mr-1.5" />
+                          Join Free
+                        </Link>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </nav>
             </div>
-          </nav>
-        </div>
+          </div>,
+          document.body
+        )}
+
       
       <BrainstormDialog open={brainstormOpen} onOpenChange={setBrainstormOpen} />
     </header>
