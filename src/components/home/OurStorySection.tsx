@@ -1,8 +1,6 @@
 import { MapPin, Clock, Sprout, Globe, HeartHandshake, Coins } from "lucide-react";
-
 export function OurStorySection() {
-  return (
-    <section className="py-20 md:py-28 bg-card/50">
+  return <section className="py-20 md:py-28 bg-card/50">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Section header */}
@@ -64,25 +62,14 @@ export function OurStorySection() {
                 </h3>
               </div>
               <div className="text-muted-foreground space-y-4">
-                <p>
-                  We envision an Ireland where communities are alive again. Where the retired teacher on your 
-                  street can help local kids with their homework, and in return, maybe someone shovels their 
-                  driveway when the snow comes. Where the young professional who's handy with technology can 
-                  help an elderly neighbour set up video calls to see their grandchildren, and learn a family 
-                  recipe in return.
-                </p>
+                <p>We envision an Ireland where communities are reconnecting in a new way. Where the retired teacher on your street can help local kids with their homework, and in return, maybe someone shovels their driveway when the snow comes. And this someone might not be known in the community, might has only moved in to the neighbourhood - but through this Platform get's a chance to connect with his community effortless. A place where the young professional who's handy with technology can help an elderly neighbour set up video calls to see their grandchildren, and learn a family recipe in return.</p>
                 <p>
                   SwapSkills isn't just about saving money, though that's certainly a wonderful benefit. It's 
                   about rediscovering the value of what we already have. Every person in Ireland has something 
                   to offer, something they're good at, something they could share. We're simply creating the 
                   bridge that connects these hidden talents.
                 </p>
-                <p>
-                  Picture your local community board filled with offers: "Can teach guitar in exchange for 
-                  help moving furniture." "Happy to mind dogs while you're at work — would love someone to 
-                  teach me to bake!" "Plumber with 30 years experience, looking for someone to help with 
-                  garden work." These are real connections waiting to happen.
-                </p>
+                <p>And when we say "talents" - it could also be simply something people are happy to do such as "cleaning windows" or "ironing" - while this is another person's nightmare who much more happily would cut the grass for the person next door. </p>
               </div>
             </div>
 
@@ -163,6 +150,5 @@ export function OurStorySection() {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
