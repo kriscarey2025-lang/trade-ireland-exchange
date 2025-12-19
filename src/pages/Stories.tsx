@@ -25,7 +25,7 @@ const featuredStory = {
     connection: "Through skill-trading, Jennifer and Delia connected in a simple, natural way.",
     exchange: "Jennifer helps Delia relax and rebalance through Reiki and meditation sessions, while Delia supports Jennifer with calming massage treatments after long working days.",
     outcome: "No money is exchanged — just two professionals sharing their skills, supporting each other's wellbeing, and building trust.",
-    partnership: "That connection has since grown into a business partnership, rooted in shared values and mutual care."
+    partnership: "That connection has since grown into a business partnership, rooted in shared values and mutual care. Watch their spaces for more updates on their business expansion here: https://www.facebook.com/beautyholistic"
   }
 };
 export default function Stories() {
