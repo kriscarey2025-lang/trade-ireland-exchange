@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { BackToTop } from "@/components/BackToTop";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { AuthProvider } from "@/hooks/useAuth";
 import { EngagementTracker } from "@/components/tracking/EngagementTracker";
 import { PromoBanner } from "@/components/layout/PromoBanner";
@@ -55,6 +56,7 @@ const App = () => (
           <BackToTop />
           <EngagementTracker />
           <FeedbackSidebar />
+          <MobileBottomNav />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/browse" element={<Browse />} />

@@ -331,9 +331,13 @@ export function Header() {
         </Button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background animate-fade-in">
+      {/* Mobile Menu - Slide from top */}
+      <div className={cn(
+        "md:hidden fixed inset-x-0 top-14 bg-background/98 backdrop-blur-xl border-b border-border z-40 transition-all duration-300 ease-out overflow-hidden",
+        mobileMenuOpen 
+          ? "max-h-[calc(100vh-3.5rem)] opacity-100" 
+          : "max-h-0 opacity-0 pointer-events-none"
+      )}>
           <nav className="container py-4 space-y-1">
             <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Browse
@@ -487,7 +491,7 @@ export function Header() {
             </div>
           </nav>
         </div>
-      )}
+      
       <BrainstormDialog open={brainstormOpen} onOpenChange={setBrainstormOpen} />
     </header>
   );

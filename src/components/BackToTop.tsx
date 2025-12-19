@@ -24,7 +24,7 @@ export const BackToTop = () => {
     <Button
       onClick={scrollToTop}
       size="icon"
-      className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg animate-fade-in"
+      className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 rounded-full shadow-lg animate-fade-in touch-feedback"
       aria-label="Back to top"
     >
       <ArrowUp className="h-5 w-5" />
