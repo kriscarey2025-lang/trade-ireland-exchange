@@ -1,6 +1,6 @@
 import { useAds, getRandomAd, useUserLocation } from "@/hooks/useAds";
 import { AdDisplay } from "./AdDisplay";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 interface SideAdProps {
@@ -8,11 +8,23 @@ interface SideAdProps {
   className?: string;
 }
 
+const AD_ROTATION_INTERVAL = 30000; // 30 seconds
+
 export function SideAd({ position, className = "" }: SideAdProps) {
   const { data: ads } = useAds("side");
   const { data: userLocation } = useUserLocation();
   const { user } = useAuth();
   const isLoggedIn = !!user;
+  const [rotationKey, setRotationKey] = useState(0);
+  
+  // Auto-rotate ads every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotationKey(prev => prev + 1);
+    }, AD_ROTATION_INTERVAL);
+    
+    return () => clearInterval(interval);
+  }, []);
   
   // Get two random ads for the side slots with location filtering
   const selectedAds = useMemo(() => {
@@ -26,7 +38,7 @@ export function SideAd({ position, className = "" }: SideAdProps) {
     const secondAd = remainingAds.length > 0 ? getRandomAd(remainingAds, userLocation, isLoggedIn) : null;
     
     return [firstAd, secondAd];
-  }, [ads, userLocation, isLoggedIn]);
+  }, [ads, userLocation, isLoggedIn, rotationKey]);
 
   return (
     <div 
