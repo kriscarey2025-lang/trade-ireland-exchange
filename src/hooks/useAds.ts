@@ -40,7 +40,7 @@ export function useAds(placement?: "side" | "inline" | "both") {
         .from("ads")
         .select(`
           id, title, description, image_url, link_url, placement, advertiser_id,
-          advertisers!inner(location)
+          advertisers(location)
         `)
         .eq("is_active", true)
         .eq("approved", true)
