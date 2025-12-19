@@ -1,6 +1,6 @@
 import { useAds, getRandomAd, useUserLocation } from "@/hooks/useAds";
 import { AdDisplay } from "./AdDisplay";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 interface SideAdProps {
@@ -10,35 +10,58 @@ interface SideAdProps {
 
 const AD_ROTATION_INTERVAL = 30000; // 30 seconds
 
+interface Ad {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url: string | null;
+  link_url: string | null;
+  placement: string;
+  advertiser_id: string;
+  advertiser_location?: string | null;
+}
+
 export function SideAd({ position, className = "" }: SideAdProps) {
-  const { data: ads } = useAds("side");
+  const { data: ads, isLoading } = useAds("side");
   const { data: userLocation } = useUserLocation();
   const { user } = useAuth();
   const isLoggedIn = !!user;
-  const [rotationKey, setRotationKey] = useState(0);
   
-  // Auto-rotate ads every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotationKey(prev => prev + 1);
-    }, AD_ROTATION_INTERVAL);
-    
-    return () => clearInterval(interval);
-  }, []);
+  const [selectedAds, setSelectedAds] = useState<[Ad | null, Ad | null]>([null, null]);
+  const hasInitialized = useRef(false);
   
-  // Get two random ads for the side slots with location filtering
-  const selectedAds = useMemo(() => {
-    if (!ads || ads.length === 0) return [null, null];
+  // Select ads when data first arrives or on rotation
+  const selectAds = () => {
+    if (!ads || ads.length === 0) {
+      setSelectedAds([null, null]);
+      return;
+    }
     
-    // Get first ad with location filtering
     const firstAd = getRandomAd(ads, userLocation, isLoggedIn);
-    
-    // Get second ad from remaining (if any)
     const remainingAds = ads.filter(ad => ad.id !== firstAd?.id);
     const secondAd = remainingAds.length > 0 ? getRandomAd(remainingAds, userLocation, isLoggedIn) : null;
     
-    return [firstAd, secondAd];
-  }, [ads, userLocation, isLoggedIn, rotationKey]);
+    setSelectedAds([firstAd, secondAd]);
+  };
+  
+  // Initialize ads when data first arrives
+  useEffect(() => {
+    if (ads && ads.length > 0 && !hasInitialized.current) {
+      hasInitialized.current = true;
+      selectAds();
+    }
+  }, [ads, userLocation, isLoggedIn]);
+  
+  // Auto-rotate ads every 30 seconds
+  useEffect(() => {
+    if (!ads || ads.length === 0) return;
+    
+    const interval = setInterval(() => {
+      selectAds();
+    }, AD_ROTATION_INTERVAL);
+    
+    return () => clearInterval(interval);
+  }, [ads, userLocation, isLoggedIn]);
 
   return (
     <div 
