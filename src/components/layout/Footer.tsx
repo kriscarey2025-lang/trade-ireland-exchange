@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Facebook } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import swapSkillsLogo from "@/assets/swapskills-logo.png";
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
@@ -23,6 +24,12 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
             <p className="text-sm text-muted-foreground">
               Ireland's community for trading skills and services without money.
             </p>
+            <Button variant="outline" size="sm" className="gap-2 rounded-xl" asChild>
+              <a href="https://www.facebook.com/people/Swap-Skills/61584889451637/?sk=followers" target="_blank" rel="noopener noreferrer">
+                <Facebook className="h-4 w-4" />
+                Follow Us
+              </a>
+            </Button>
           </div>
 
           {/* Quick Links */}
