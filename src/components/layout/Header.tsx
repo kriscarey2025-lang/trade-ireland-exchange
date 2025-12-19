@@ -320,15 +320,18 @@ export function Header() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden rounded-xl"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </Button>
+        {/* Mobile Actions - simplified since MobileBottomNav handles main nav */}
+        <div className="flex md:hidden items-center gap-1">
+          {isLoggedIn && <NotificationBell />}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-xl"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
       </div>
 
       {/* Mobile Menu - Slide from top */}
@@ -434,15 +437,10 @@ export function Header() {
                 ))}
               </div>
             )}
+            {/* Quick Actions - only show items NOT in bottom nav */}
             <div className="pt-4 border-t border-border space-y-2">
               {isLoggedIn ? (
                 <>
-                  <Button variant="accent" className="w-full rounded-xl" asChild>
-                    <Link to="/new-service" onClick={() => setMobileMenuOpen(false)}>
-                      <PenLine className="h-4 w-4 mr-1" />
-                      Start a Post
-                    </Link>
-                  </Button>
                   <Button 
                     variant="outline" 
                     className="w-full rounded-xl"
@@ -451,7 +449,7 @@ export function Header() {
                       setBrainstormOpen(true);
                     }}
                   >
-                    <Lightbulb className="h-4 w-4 mr-1" />
+                    <Lightbulb className="h-4 w-4 mr-2" />
                     Brainstorm Ideas
                   </Button>
                   <Button variant="ghost" className="w-full rounded-xl text-foreground font-medium" asChild>
@@ -461,16 +459,7 @@ export function Header() {
                     </Link>
                   </Button>
                   <div className="border-t border-border my-2" />
-                  <Button variant="outline" className="w-full rounded-xl" asChild>
-                    <Link to="/messages" onClick={() => setMobileMenuOpen(false)}>
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      Messages
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="w-full rounded-xl" asChild>
-                    <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>My Profile</Link>
-                  </Button>
-                  <Button variant="ghost" className="w-full rounded-xl" onClick={handleSignOut}>
+                  <Button variant="ghost" className="w-full rounded-xl text-destructive" onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
                   </Button>
