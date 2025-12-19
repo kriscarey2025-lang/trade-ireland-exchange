@@ -31,6 +31,14 @@ export function FounderStorySection() {
                 hang a picture frame? Disaster waiting to happen.
               </p>
 
+              <p className="mb-6">
+                I'm Kristina, and I live in a small village called Killeshin in County Carlow. Like many people 
+                in Ireland, I've watched the cost of living creep up year after year. I've seen families stretched 
+                thin, pensioners worried about heating bills, and young people struggling to get ahead. And I've 
+                also noticed something else: we've all got skills, talents, and time that could help each other — 
+                if only we knew how to connect.
+              </p>
+
               <div className="my-10 p-6 bg-gradient-to-r from-primary/10 via-accent/10 to-highlight/10 rounded-2xl border border-primary/20">
                 <p className="text-lg md:text-xl font-medium text-foreground italic mb-0 font-display">
                   "What if I could help someone with their tech headaches, and in return, they'd help me put together 
@@ -39,10 +47,26 @@ export function FounderStorySection() {
               </div>
 
               <p className="mb-6">
-                That's how Swap Skills was born. I realised we're all walking around with brilliant skills that 
-                someone else desperately needs. The retired teacher next door who'd love to help with maths homework. 
-                The teenager who's magic with animals. The neighbour who actually knows which end of a screwdriver 
-                to hold.
+                That simple question became the seed for SwapSkills. I started thinking about all the untapped 
+                potential in every Irish community. The retired teacher next door who'd love to help with maths 
+                homework but feels forgotten by the world. The teenager who's magic with animals but can't find 
+                paid work. The neighbour who actually knows which end of a screwdriver to hold. The mum who makes 
+                incredible birthday cakes but thinks it's "just a hobby."
+              </p>
+
+              <p className="mb-6">
+                We're all walking around with brilliant skills that someone else desperately needs. The problem 
+                isn't that we don't want to help each other — it's that we've lost the connections that used to 
+                make this natural. In our grandparents' time, they knew everyone on their street. They'd pop 
+                round with extra vegetables from the garden, help fix a fence, mind the children during an 
+                emergency. It wasn't transactional; it was just how communities worked.
+              </p>
+
+              <p className="mb-6">
+                I built SwapSkills to bring that spirit back, updated for the modern world. This isn't about 
+                replacing professional services or undermining anyone's livelihood. It's about rediscovering 
+                the power of community, of neighbours helping neighbours, of valuing what we can offer each 
+                other beyond what money can buy.
               </p>
 
               
