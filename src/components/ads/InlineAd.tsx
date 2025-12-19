@@ -1,6 +1,7 @@
 import { useAds, getRandomAd, useUserLocation } from "@/hooks/useAds";
 import { AdDisplay } from "./AdDisplay";
 import { useMemo } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface InlineAdProps {
   className?: string;
@@ -9,8 +10,10 @@ interface InlineAdProps {
 export function InlineAd({ className = "" }: InlineAdProps) {
   const { data: ads } = useAds("inline");
   const { data: userLocation } = useUserLocation();
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
   
-  const selectedAd = useMemo(() => getRandomAd(ads, userLocation), [ads, userLocation]);
+  const selectedAd = useMemo(() => getRandomAd(ads, userLocation, isLoggedIn), [ads, userLocation, isLoggedIn]);
 
   return (
     <div className={`xl:hidden px-4 py-6 flex justify-center ${className}`}>

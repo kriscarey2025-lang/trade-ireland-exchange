@@ -72,32 +72,28 @@ export function useAds(placement?: "side" | "inline" | "both") {
   });
 }
 
-// Get a random ad with location-based prioritization
-export function getRandomAd(ads: Ad[] | undefined, userLocation?: string | null): Ad | null {
+// Get a random ad with location-based filtering
+// - Non-logged-in users: rotate all active ads equally
+// - Logged-in users: show ONLY ads matching their county/location
+export function getRandomAd(ads: Ad[] | undefined, userLocation?: string | null, isLoggedIn?: boolean): Ad | null {
   if (!ads || ads.length === 0) return null;
   
-  // If user has a location, prioritize matching ads
-  if (userLocation) {
+  // If user is logged in and has a location, show ONLY matching ads
+  if (isLoggedIn && userLocation) {
     const normalizedUserLocation = userLocation.toLowerCase().trim();
     
-    // Separate ads into location-matched and others
+    // Filter to only location-matched ads
     const matchedAds = ads.filter(ad => 
       ad.advertiser_location?.toLowerCase().trim() === normalizedUserLocation
     );
-    const otherAds = ads.filter(ad => 
-      ad.advertiser_location?.toLowerCase().trim() !== normalizedUserLocation
-    );
     
-    // 70% chance to show location-matched ad if available
-    if (matchedAds.length > 0 && Math.random() < 0.7) {
-      return matchedAds[Math.floor(Math.random() * matchedAds.length)];
-    }
+    // If no matching ads, show nothing for logged-in users
+    if (matchedAds.length === 0) return null;
     
-    // Otherwise show from all ads
-    return ads[Math.floor(Math.random() * ads.length)];
+    return matchedAds[Math.floor(Math.random() * matchedAds.length)];
   }
   
-  // No user location - just random
+  // Non-logged-in users OR logged-in without location: rotate all ads equally
   return ads[Math.floor(Math.random() * ads.length)];
 }
 
