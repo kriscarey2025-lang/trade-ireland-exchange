@@ -80,9 +80,12 @@ export default function Stories() {
                       <span className="text-xs text-muted-foreground">{featuredStory.date}</span>
                     </div>
                     
-                    <h2 className="text-2xl md:text-3xl font-display font-bold mb-6 text-primary">
+                    <h2 className="text-2xl md:text-3xl font-display font-bold mb-2 text-primary">
                       {featuredStory.title}
                     </h2>
+                    <p className="font-bold text-foreground mb-6">
+                      Learn more about two business women from Carlow, with unique service offerings and how they connected by swapping their skills and forming a connection:
+                    </p>
                     
                     <div className="space-y-4 text-muted-foreground">
                       <p>{featuredStory.content.jennifer}</p>
