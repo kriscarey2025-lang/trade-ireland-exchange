@@ -336,12 +336,12 @@ export function Header() {
 
       {/* Mobile Menu - Slide from top */}
       <div className={cn(
-        "md:hidden fixed inset-x-0 top-14 bg-background/98 backdrop-blur-xl border-b border-border z-40 transition-all duration-300 ease-out overflow-hidden",
+        "md:hidden fixed inset-x-0 top-14 bottom-0 bg-background border-b border-border shadow-xl z-40 transition-all duration-300 ease-out overflow-y-auto",
         mobileMenuOpen 
-          ? "max-h-[calc(100vh-3.5rem)] opacity-100" 
-          : "max-h-0 opacity-0 pointer-events-none"
+          ? "opacity-100 translate-y-0" 
+          : "opacity-0 -translate-y-4 pointer-events-none"
       )}>
-          <nav className="container py-4 space-y-1">
+          <nav className="container py-4 space-y-1 pb-24">
             <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Browse
             </div>
