@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Leaf, Shield, ArrowRight } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { BreadcrumbJsonLd, OrganizationJsonLd, PersonJsonLd } from "@/components/seo/JsonLd";
 import founderImage from "@/assets/founder-kristina.png";
 
 const values = [
@@ -42,6 +43,19 @@ export default function About() {
         description="Learn about Swap Skills - Ireland's community-driven platform for trading skills and services without money. Founded by Kristina Carey to help neighbours help each other."
         keywords="about swap skills, skill exchange Ireland, Kristina Carey, community trading, barter Ireland"
         url="https://swap-skills.com/about"
+      />
+      <OrganizationJsonLd />
+      <PersonJsonLd 
+        name="Kristina Carey"
+        jobTitle="Founder"
+        description="Founder of SwapSkills Ireland - building a community-driven platform for trading skills and services."
+        url="https://swap-skills.com/about"
+      />
+      <BreadcrumbJsonLd 
+        items={[
+          { name: "Home", url: "https://swap-skills.com" },
+          { name: "About", url: "https://swap-skills.com/about" },
+        ]} 
       />
       <div className="min-h-screen flex flex-col">
         <Header />

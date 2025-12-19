@@ -170,13 +170,29 @@ export function OrganizationJsonLd() {
   const data = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Swap Skills",
+    name: "SwapSkills Ireland",
+    alternateName: "Swap Skills",
     url: "https://swap-skills.com",
     logo: "https://swap-skills.com/og-image.png",
-    description: "Ireland's community for trading skills and services without money.",
+    description: "Ireland's community for trading skills and services without money. Connect with neighbours to exchange tiling, tutoring, gardening, childcare and more.",
+    foundingDate: "2024",
+    founder: {
+      "@type": "Person",
+      name: "Kristina Carey",
+    },
     address: {
       "@type": "PostalAddress",
       addressCountry: "IE",
+      addressLocality: "Carlow",
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Ireland",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      url: "https://swap-skills.com/contact",
     },
     sameAs: [],
   };
@@ -188,14 +204,96 @@ export function WebsiteJsonLd() {
   const data = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Swap Skills",
+    name: "SwapSkills Ireland",
+    alternateName: "Swap Skills",
     url: "https://swap-skills.com",
-    description: "Trade skills, not money. Ireland's community for skill swapping.",
+    description: "Trade skills, not money. Ireland's community for skill swapping and service exchange.",
+    inLanguage: "en-IE",
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://swap-skills.com/browse?search={search_term_string}",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: "https://swap-skills.com/browse?search={search_term_string}",
+      },
       "query-input": "required name=search_term_string",
     },
+  };
+
+  return <JsonLd data={data} />;
+}
+
+export function PersonJsonLd({ 
+  name, 
+  description, 
+  image, 
+  jobTitle,
+  url 
+}: { 
+  name: string; 
+  description?: string; 
+  image?: string;
+  jobTitle?: string;
+  url?: string;
+}) {
+  const data: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name,
+  };
+
+  if (description) data.description = description;
+  if (image) data.image = image;
+  if (jobTitle) data.jobTitle = jobTitle;
+  if (url) data.url = url;
+
+  return <JsonLd data={data} />;
+}
+
+export function HowToJsonLd({ 
+  name, 
+  description, 
+  steps 
+}: { 
+  name: string; 
+  description: string; 
+  steps: { name: string; text: string }[];
+}) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name,
+    description,
+    step: steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
+
+  return <JsonLd data={data} />;
+}
+
+export function ItemListJsonLd({ 
+  name, 
+  description, 
+  items 
+}: { 
+  name: string; 
+  description?: string; 
+  items: { name: string; url: string; position: number }[];
+}) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name,
+    description,
+    itemListElement: items.map((item) => ({
+      "@type": "ListItem",
+      position: item.position,
+      name: item.name,
+      url: item.url,
+    })),
   };
 
   return <JsonLd data={data} />;

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SEO } from "@/components/SEO";
+import { BreadcrumbJsonLd, HowToJsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/button";
 import {
   UserPlus,
@@ -59,6 +60,11 @@ const steps = [
   },
 ];
 
+const howToSteps = steps.map(step => ({
+  name: step.title.replace(/^\d+\.\s*/, ''),
+  text: step.description,
+}));
+
 export default function HowItWorks() {
   return (
     <>
@@ -67,6 +73,17 @@ export default function HowItWorks() {
         description="Learn how Swap Skills works - create your account, post services, browse listings, connect with neighbours, and start trading skills in Ireland."
         keywords="how swap skills works, skill exchange tutorial, barter services Ireland guide, trade skills step by step"
         url="https://swap-skills.com/how-it-works"
+      />
+      <HowToJsonLd
+        name="How to Swap Skills in Ireland"
+        description="A step-by-step guide to trading skills and services with neighbours in Ireland using SwapSkills."
+        steps={howToSteps}
+      />
+      <BreadcrumbJsonLd 
+        items={[
+          { name: "Home", url: "https://swap-skills.com" },
+          { name: "How It Works", url: "https://swap-skills.com/how-it-works" },
+        ]} 
       />
       <div className="min-h-screen flex flex-col">
         <Header />
