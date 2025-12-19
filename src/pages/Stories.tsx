@@ -20,7 +20,7 @@ const featuredStory = {
   facebookLink: "https://www.facebook.com/beautyholistic",
   content: {
     intro: "Two wellness professionals discovered the power of skill-trading.",
-    jennifer: "Jennifer runs Carlow Reiki Clinic, a calm and welcoming space where she supports people through Reiki healing, meditation, and energy balancing, helping clients restore calm, clarity, and wellbeing. Debora runs ND Clinic in the heart of Carlow, a holistic wellness and therapy clinic, with a range of non-invasive treatments for general well-being, weight loss and more.",
+    jennifer: "Jennifer runs Carlow Reiki Clinic, a calm and welcoming space where she supports people through Reiki healing, meditation, and energy balancing, helping clients restore calm, clarity, and wellbeing. Delia runs ND Clinic in the heart of Carlow, a holistic wellness and therapy clinic, with a range of non-invasive treatments for general well-being, weight loss and more.",
     delia: "Delia is the founder of ND Clinic in Carlow city centre, where she offers a range of professional massage and holistic wellness treatments, supporting both physical recovery and deep relaxation.",
     connection: "Through skill-trading, Jennifer and Delia connected in a simple, natural way.",
     exchange: "Jennifer helps Delia relax and rebalance through Reiki and meditation sessions, while Delia supports Jennifer with calming massage treatments after long working days.",
