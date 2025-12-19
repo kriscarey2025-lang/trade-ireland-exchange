@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Gift, HelpCircle } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2 } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface ServiceUser {
   id?: string;
@@ -56,6 +58,38 @@ export function ServiceCard({
 }: ServiceCardProps) {
   const postTypeBadge = getPostTypeBadge(service.type);
   const isSkillSwap = service.type === "skill_swap";
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const shareUrl = `https://swap-skills.com/services/${service.id}`;
+    const shareTitle = service.title;
+    const shareText = `Check out "${service.title}" on SwapSkills - Trade skills, not money! 🔄`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch (error) {
+        if ((error as Error).name !== 'AbortError') {
+          copyToClipboard(shareUrl);
+        }
+      }
+    } else {
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = (url: string) => {
+    navigator.clipboard.writeText(url);
+    toast.success("Link copied to clipboard!", {
+      description: "Share it on your favorite social media platform.",
+    });
+  };
   return <Link to={`/services/${service.id}`}>
       <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-2 border-transparent hover:border-primary/20 bg-card transition-all duration-300", className)}>
         <CardContent className="p-5">
@@ -155,6 +189,19 @@ export function ServiceCard({
                 </div>
               </div>
             </div>}
+
+          {/* Share Button */}
+          <div className="flex justify-end pt-3 border-t border-border mt-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleShare}
+              className="text-muted-foreground hover:text-primary gap-1.5"
+            >
+              <Share2 className="h-4 w-4" />
+              <span className="text-xs">Share</span>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </Link>;
