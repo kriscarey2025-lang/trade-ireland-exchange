@@ -74,7 +74,7 @@ export default function Stories() {
                       <img src={featuredStory.image} alt={`${featuredStory.authors} - ${featuredStory.title}`} className="w-full h-full object-cover object-top" />
                     </div>
                   </div>
-                  <div className="p-8 lg:p-10 flex flex-col justify-center">
+                  <div className="p-8 lg:p-10 flex flex-col lg:justify-start lg:pt-6">
                     <div className="flex items-center gap-2 mb-4">
                       <Badge variant="secondary">{featuredStory.category}</Badge>
                       <span className="text-xs text-muted-foreground">{featuredStory.date}</span>
