@@ -67,7 +67,17 @@ const handler = async (req: Request): Promise<Response> => {
       .eq("id", interested_user_id)
       .single();
 
-    const interestedUserName = interestedProfile?.full_name || "Someone";
+    // Format name as "FirstName L." for privacy
+    const formatDisplayName = (fullName: string | null): string => {
+      if (!fullName) return "Someone";
+      const parts = fullName.trim().split(/\s+/);
+      if (parts.length === 1) return parts[0];
+      const firstName = parts[0];
+      const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
+      return `${firstName} ${lastInitial}.`;
+    };
+
+    const interestedUserName = formatDisplayName(interestedProfile?.full_name);
     const ownerName = ownerProfile.full_name || "there";
 
     // Get services offered by the interested user
@@ -82,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
       from: "SwapSkills <hello@swap-skills.com>",
       to: [ownerProfile.email],
       subject: `${interestedUserName} is interested in your skill: ${service_title}`,
-      html: generateInterestEmail(ownerName, interestedUserName, service_title, service_id, userServices || []),
+      html: generateInterestEmail(ownerName, interestedUserName, service_title, interested_user_id, userServices || []),
     });
 
     console.log("Interest notification email sent successfully:", emailResponse);
@@ -104,7 +114,7 @@ function generateInterestEmail(
   ownerName: string, 
   interestedUserName: string, 
   serviceTitle: string, 
-  serviceId: string,
+  interestedUserId: string,
   userServices: Array<{ id: string; title: string; category: string }>
 ): string {
   const servicesHtml = userServices.length > 0 
@@ -173,9 +183,9 @@ function generateInterestEmail(
               ${servicesHtml}
               
               <div style="text-align: center; margin-top: 32px;">
-                <a href="https://swap-skills.com/service/${serviceId}" 
+                <a href="https://swap-skills.com/profile/${interestedUserId}" 
                    style="background: #f97316; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
-                  View Your Listing →
+                  View Their Profile →
                 </a>
               </div>
               
