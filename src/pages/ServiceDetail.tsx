@@ -216,10 +216,13 @@ export default function ServiceDetail() {
     <div className="min-h-screen flex flex-col">
       <SEO
         title={service.title}
-        description={service.description || `${service.type === "request" ? "Looking for" : "Offering"} ${categoryLabels[service.category as ServiceCategory]} in ${service.location || "Ireland"}`}
+        description={service.description 
+          ? service.description.slice(0, 150) + (service.description.length > 150 ? "..." : "")
+          : `${service.type === "skill_swap" ? "Skill swap" : service.type === "free_offer" ? "Free offer" : "Looking for"}: ${categoryLabels[service.category as ServiceCategory]} in ${service.location || "Ireland"} - Trade skills, not money!`}
         url={serviceUrl}
         type="article"
-        image={service.images?.[0]}
+        image={service.images?.[0] || `https://swap-skills.com/og-image.png`}
+        keywords={`skill swap, ${categoryLabels[service.category as ServiceCategory]}, ${service.location || "Ireland"}, trade services, barter`}
       />
       <ServiceJsonLd
         name={service.title}
