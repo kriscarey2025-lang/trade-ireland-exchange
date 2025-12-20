@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2 } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2, Copy } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -10,6 +10,12 @@ import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ServiceUser {
   id?: string;
@@ -59,36 +65,48 @@ export function ServiceCard({
   const postTypeBadge = getPostTypeBadge(service.type);
   const isSkillSwap = service.type === "skill_swap";
 
-  const handleShare = async (e: React.MouseEvent) => {
+  const shareUrl = `https://swap-skills.com/services/${service.id}`;
+  const shareText = `Check out "${service.title}" on SwapSkills - Trade skills, not money! 🔄`;
+  const encodedUrl = encodeURIComponent(shareUrl);
+  const encodedText = encodeURIComponent(shareText);
+
+  const handleShareFacebook = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    const shareUrl = `https://swap-skills.com/services/${service.id}`;
-    const shareTitle = service.title;
-    const shareText = `Check out "${service.title}" on SwapSkills - Trade skills, not money! 🔄`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: shareTitle,
-          text: shareText,
-          url: shareUrl,
-        });
-      } catch (error) {
-        if ((error as Error).name !== 'AbortError') {
-          copyToClipboard(shareUrl);
-        }
-      }
-    } else {
-      copyToClipboard(shareUrl);
-    }
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`, '_blank', 'width=600,height=400');
   };
 
-  const copyToClipboard = (url: string) => {
-    navigator.clipboard.writeText(url);
-    toast.success("Link copied to clipboard!", {
-      description: "Share it on your favorite social media platform.",
+  const handleShareWhatsApp = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(`https://wa.me/?text=${encodedText}%20${encodedUrl}`, '_blank');
+  };
+
+  const handleShareTikTok = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // TikTok doesn't have a direct share URL, so we copy and prompt user
+    navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+    toast.success("Link copied for TikTok!", {
+      description: "Paste it in your TikTok caption or bio.",
     });
+  };
+
+  const handleShareInstagram = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Instagram doesn't have a direct share URL for web, so we copy and prompt user
+    navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+    toast.success("Link copied for Instagram!", {
+      description: "Paste it in your Instagram story or bio.",
+    });
+  };
+
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Link copied to clipboard!");
   };
   return <Link to={`/services/${service.id}`}>
       <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-2 border-transparent hover:border-primary/20 bg-card transition-all duration-300", className)}>
@@ -200,15 +218,44 @@ export function ServiceCard({
               <span className="text-xs font-medium">Read more</span>
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleShare}
-              className="text-muted-foreground hover:text-primary gap-1.5"
-            >
-              <Share2 className="h-4 w-4" />
-              <span className="text-xs">Share</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-primary gap-1.5"
+                >
+                  <Share2 className="h-4 w-4" />
+                  <span className="text-xs">Share</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={handleShareFacebook} className="cursor-pointer gap-2">
+                  <Facebook className="h-4 w-4 text-[#1877F2]" />
+                  <span>Facebook</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShareWhatsApp} className="cursor-pointer gap-2">
+                  <svg className="h-4 w-4 text-[#25D366]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  <span>WhatsApp</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShareTikTok} className="cursor-pointer gap-2">
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                  </svg>
+                  <span>TikTok</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShareInstagram} className="cursor-pointer gap-2">
+                  <Instagram className="h-4 w-4 text-[#E4405F]" />
+                  <span>Instagram</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleCopyLink} className="cursor-pointer gap-2">
+                  <Copy className="h-4 w-4 text-muted-foreground" />
+                  <span>Copy link</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </CardContent>
       </Card>
