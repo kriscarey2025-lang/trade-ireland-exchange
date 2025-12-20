@@ -27,6 +27,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending message notification, recipient:", recipient_id, "test_email:", test_email);
 
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
     let recipientEmail: string;
     let recipientName: string;
 
@@ -35,9 +39,20 @@ const handler = async (req: Request): Promise<Response> => {
       recipientName = "Test User";
       console.log("Using test email:", test_email);
     } else {
-      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      // Check if user has message emails enabled
+      const { data: prefs } = await supabase
+        .from("user_preferences")
+        .select("message_emails_enabled")
+        .eq("user_id", recipient_id)
+        .maybeSingle();
+
+      if (prefs?.message_emails_enabled === false) {
+        console.log("User has disabled message email notifications:", recipient_id);
+        return new Response(
+          JSON.stringify({ success: false, message: "User has disabled message emails" }),
+          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
 
       const { data: profile, error: profileError } = await supabase
         .from("profiles")

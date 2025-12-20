@@ -30,6 +30,21 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Check if user has interest emails enabled
+    const { data: prefs } = await supabase
+      .from("user_preferences")
+      .select("interest_emails_enabled")
+      .eq("user_id", service_owner_id)
+      .maybeSingle();
+
+    if (prefs?.interest_emails_enabled === false) {
+      console.log("User has disabled interest email notifications:", service_owner_id);
+      return new Response(
+        JSON.stringify({ success: false, message: "User has disabled interest emails" }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     // Get service owner's email
     const { data: ownerProfile, error: ownerError } = await supabase
       .from("profiles")
