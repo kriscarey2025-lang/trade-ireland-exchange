@@ -23,6 +23,7 @@ const About = lazy(() => import("./pages/About"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Profile = lazy(() => import("./pages/Profile"));
+const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 const NewService = lazy(() => import("./pages/NewService"));
 const EditService = lazy(() => import("./pages/EditService"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
@@ -81,6 +82,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:id" element={<PublicProfile />} />
               <Route path="/new-service" element={<NewService />} />
               <Route path="/services/new" element={<NewService />} />
               <Route path="/services/:id/edit" element={<EditService />} />
