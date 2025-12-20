@@ -190,8 +190,16 @@ export function ServiceCard({
               </div>
             </div>}
 
-          {/* Share Button */}
-          <div className="flex justify-end pt-3 border-t border-border mt-4">
+          {/* Actions */}
+          <div className="flex justify-between items-center pt-3 border-t border-border mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-primary border-primary/30 hover:bg-primary/10 gap-1.5"
+            >
+              <span className="text-xs font-medium">See more</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </Button>
             <Button
               variant="ghost"
               size="sm"
