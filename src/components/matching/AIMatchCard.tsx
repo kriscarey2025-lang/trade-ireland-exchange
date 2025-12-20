@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
+import { FoundersBadge } from "@/components/profile/FoundersBadge";
 
 interface AIMatchCardProps {
   match: {
@@ -27,6 +28,7 @@ interface AIMatchCardProps {
       avatar_url: string;
       location: string;
       verification_status: string;
+      is_founder?: boolean;
     };
   };
 }
@@ -117,6 +119,9 @@ export function AIMatchCard({ match }: AIMatchCardProps) {
                   <span className="text-sm font-medium">{formatDisplayName(match.provider?.full_name)}</span>
                   {match.provider?.verification_status === 'verified' && (
                     <VerifiedBadge status="verified" size="sm" />
+                  )}
+                  {match.provider?.is_founder && (
+                    <FoundersBadge size="sm" />
                   )}
                 </div>
                 {match.service.location && (

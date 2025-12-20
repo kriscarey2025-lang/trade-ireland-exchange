@@ -96,7 +96,8 @@ serve(async (req) => {
           full_name,
           avatar_url,
           location,
-          verification_status
+          verification_status,
+          is_founder
         )
       `)
       .neq('user_id', user.id)
