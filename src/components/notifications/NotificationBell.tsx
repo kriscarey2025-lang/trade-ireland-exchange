@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Bell, Check, Trash2, MessageCircle, Sparkles, X } from "lucide-react";
+import { Bell, Check, Trash2, MessageCircle, Sparkles, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -40,6 +40,8 @@ export function NotificationBell() {
         return <MessageCircle className="h-4 w-4 text-primary" />;
       case "match":
         return <Sparkles className="h-4 w-4 text-accent-foreground" />;
+      case "interest":
+        return <Heart className="h-4 w-4 text-destructive" />;
       default:
         return <Bell className="h-4 w-4 text-muted-foreground" />;
     }
