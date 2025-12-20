@@ -946,7 +946,9 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          interest_emails_enabled: boolean | null
           last_digest_sent_at: string | null
+          message_emails_enabled: boolean | null
           onboarding_completed: boolean | null
           service_radius_km: number
           skills_offered: string[] | null
@@ -961,7 +963,9 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          interest_emails_enabled?: boolean | null
           last_digest_sent_at?: string | null
+          message_emails_enabled?: boolean | null
           onboarding_completed?: boolean | null
           service_radius_km?: number
           skills_offered?: string[] | null
@@ -976,7 +980,9 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          interest_emails_enabled?: boolean | null
           last_digest_sent_at?: string | null
+          message_emails_enabled?: boolean | null
           onboarding_completed?: boolean | null
           service_radius_km?: number
           skills_offered?: string[] | null

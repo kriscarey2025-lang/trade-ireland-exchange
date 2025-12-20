@@ -67,7 +67,9 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [verificationRequest, setVerificationRequest] = useState<VerificationRequest | null>(null);
   const [weeklyDigestEnabled, setWeeklyDigestEnabled] = useState(false);
-  const [savingDigest, setSavingDigest] = useState(false);
+  const [messageEmailsEnabled, setMessageEmailsEnabled] = useState(true);
+  const [interestEmailsEnabled, setInterestEmailsEnabled] = useState(true);
+  const [savingPreference, setSavingPreference] = useState<string | null>(null);
   
   // Form state
   const [fullName, setFullName] = useState("");
@@ -127,15 +129,17 @@ export default function Profile() {
         setVerificationRequest(verificationData as VerificationRequest);
       }
 
-      // Fetch user preferences for weekly digest
+      // Fetch user preferences for email notifications
       const { data: prefsData } = await supabase
         .from('user_preferences')
-        .select('weekly_digest_enabled')
+        .select('weekly_digest_enabled, message_emails_enabled, interest_emails_enabled')
         .eq('user_id', user.id)
         .maybeSingle();
 
       if (prefsData) {
-        setWeeklyDigestEnabled(prefsData.weekly_digest_enabled || false);
+        setWeeklyDigestEnabled(prefsData.weekly_digest_enabled ?? false);
+        setMessageEmailsEnabled(prefsData.message_emails_enabled ?? true);
+        setInterestEmailsEnabled(prefsData.interest_emails_enabled ?? true);
       }
       
       setLoading(false);
@@ -535,7 +539,8 @@ export default function Profile() {
                   Manage your email notification preferences
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-6">
+                {/* Weekly Digest */}
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">Weekly Digest</p>
@@ -545,9 +550,9 @@ export default function Profile() {
                   </div>
                   <Switch
                     checked={weeklyDigestEnabled}
-                    disabled={savingDigest}
+                    disabled={savingPreference === 'weekly'}
                     onCheckedChange={async (checked) => {
-                      setSavingDigest(true);
+                      setSavingPreference('weekly');
                       const { error } = await supabase
                         .from('user_preferences')
                         .update({ weekly_digest_enabled: checked })
@@ -559,7 +564,69 @@ export default function Profile() {
                         setWeeklyDigestEnabled(checked);
                         toast.success(checked ? "Weekly digest enabled" : "Weekly digest disabled");
                       }
-                      setSavingDigest(false);
+                      setSavingPreference(null);
+                    }}
+                  />
+                </div>
+
+                <Separator />
+
+                {/* Message Notifications */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Message Notifications</p>
+                    <p className="text-sm text-muted-foreground">
+                      Get notified by email when someone sends you a message
+                    </p>
+                  </div>
+                  <Switch
+                    checked={messageEmailsEnabled}
+                    disabled={savingPreference === 'messages'}
+                    onCheckedChange={async (checked) => {
+                      setSavingPreference('messages');
+                      const { error } = await supabase
+                        .from('user_preferences')
+                        .update({ message_emails_enabled: checked })
+                        .eq('user_id', user.id);
+                      
+                      if (error) {
+                        toast.error("Failed to update preference");
+                      } else {
+                        setMessageEmailsEnabled(checked);
+                        toast.success(checked ? "Message emails enabled" : "Message emails disabled");
+                      }
+                      setSavingPreference(null);
+                    }}
+                  />
+                </div>
+
+                <Separator />
+
+                {/* Interest Notifications */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Interest Notifications</p>
+                    <p className="text-sm text-muted-foreground">
+                      Get notified by email when someone expresses interest in your services
+                    </p>
+                  </div>
+                  <Switch
+                    checked={interestEmailsEnabled}
+                    disabled={savingPreference === 'interests'}
+                    onCheckedChange={async (checked) => {
+                      setSavingPreference('interests');
+                      const { error } = await supabase
+                        .from('user_preferences')
+                        .update({ interest_emails_enabled: checked })
+                        .eq('user_id', user.id);
+                      
+                      if (error) {
+                        toast.error("Failed to update preference");
+                      } else {
+                        setInterestEmailsEnabled(checked);
+                        toast.success(checked ? "Interest emails enabled" : "Interest emails disabled");
+                      }
+                      setSavingPreference(null);
                     }}
                   />
                 </div>
