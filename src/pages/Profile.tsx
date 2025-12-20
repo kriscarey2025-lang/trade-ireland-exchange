@@ -22,6 +22,7 @@ import { VerificationRequestCard } from "@/components/profile/VerificationReques
 import { SocialLinksCard } from "@/components/profile/SocialLinksCard";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { ReviewsList } from "@/components/reviews/ReviewsList";
+import { InterestedUsersCard } from "@/components/profile/InterestedUsersCard";
 
 const profileSchema = z.object({
   full_name: z.string().trim().min(1, "Name is required").max(100),
@@ -505,6 +506,9 @@ export default function Profile() {
 
           {/* User Listings */}
           {user && <UserListings userId={user.id} />}
+
+          {/* Interested Users */}
+          {user && <InterestedUsersCard userId={user.id} />}
 
           {/* Reviews Section */}
           {user && (
