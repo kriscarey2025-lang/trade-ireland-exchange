@@ -4,9 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, ExternalLink, Users } from "lucide-react";
+import { Heart, ExternalLink, Users, MessageCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface InterestedUser {
   id: string;
@@ -28,8 +29,10 @@ interface InterestedUsersCardProps {
 }
 
 export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
+  const navigate = useNavigate();
   const [interestedUsers, setInterestedUsers] = useState<InterestedUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [startingChat, setStartingChat] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchInterestedUsers() {
@@ -119,6 +122,44 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
       month: "short",
       year: "numeric",
     });
+  };
+
+  const handleStartConversation = async (interestedUserId: string, serviceId: string) => {
+    setStartingChat(interestedUserId);
+    try {
+      // Check if conversation already exists
+      const { data: existing } = await supabase
+        .from("conversations")
+        .select("id")
+        .eq("service_id", serviceId)
+        .or(`and(participant_1.eq.${userId},participant_2.eq.${interestedUserId}),and(participant_1.eq.${interestedUserId},participant_2.eq.${userId})`)
+        .maybeSingle();
+
+      if (existing) {
+        navigate(`/messages/${existing.id}`);
+        return;
+      }
+
+      // Create new conversation
+      const { data: newConvo, error } = await supabase
+        .from("conversations")
+        .insert({
+          participant_1: userId,
+          participant_2: interestedUserId,
+          service_id: serviceId,
+        })
+        .select("id")
+        .single();
+
+      if (error) throw error;
+      
+      navigate(`/messages/${newConvo.id}`);
+    } catch (error) {
+      console.error("Failed to start conversation:", error);
+      toast.error("Failed to start conversation");
+    } finally {
+      setStartingChat(null);
+    }
   };
 
   if (loading) {
@@ -216,11 +257,26 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
                     </div>
                   )}
                 </div>
-                <Link to={`/service/${interest.service_id}`}>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <ExternalLink className="h-4 w-4" />
+                <div className="flex flex-col gap-1">
+                  <Button 
+                    variant="default" 
+                    size="icon" 
+                    className="h-8 w-8"
+                    onClick={() => handleStartConversation(interest.user_id, interest.service_id)}
+                    disabled={startingChat === interest.user_id}
+                  >
+                    {startingChat === interest.user_id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <MessageCircle className="h-4 w-4" />
+                    )}
                   </Button>
-                </Link>
+                  <Link to={`/service/${interest.service_id}`}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
