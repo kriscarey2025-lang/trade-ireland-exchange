@@ -197,7 +197,7 @@ export function ServiceCard({
               size="sm"
               className="text-primary border-primary/30 hover:bg-primary/10 gap-1.5"
             >
-              <span className="text-xs font-medium">See more</span>
+              <span className="text-xs font-medium">Read more</span>
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Button>
             <Button
