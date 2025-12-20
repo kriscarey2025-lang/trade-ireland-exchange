@@ -211,6 +211,15 @@ export default function ServiceDetail() {
   const isOwner = user?.id === service.user_id;
 
   const serviceUrl = `https://swap-skills.com/services/${service.id}`;
+  
+  // Generate dynamic OG image URL
+  const ogImageParams = new URLSearchParams({
+    title: service.title,
+    category: service.category,
+    location: service.location || 'Ireland',
+    type: service.type || 'skill_swap',
+  });
+  const dynamicOgImage = `https://lporltdxjhouspwmmrjd.supabase.co/functions/v1/generate-og-image?${ogImageParams.toString()}`;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -221,7 +230,7 @@ export default function ServiceDetail() {
           : `${service.type === "skill_swap" ? "Skill swap" : service.type === "free_offer" ? "Free offer" : "Looking for"}: ${categoryLabels[service.category as ServiceCategory]} in ${service.location || "Ireland"} - Trade skills, not money!`}
         url={serviceUrl}
         type="article"
-        image={service.images?.[0] || `https://swap-skills.com/og-image.png`}
+        image={dynamicOgImage}
         keywords={`skill swap, ${categoryLabels[service.category as ServiceCategory]}, ${service.location || "Ireland"}, trade services, barter`}
       />
       <ServiceJsonLd
