@@ -38,6 +38,15 @@ export function AIMatchCard({ match }: AIMatchCardProps) {
     return "bg-orange-500/20 text-orange-700 border-orange-500/30";
   };
 
+  const formatDisplayName = (fullName: string | null | undefined): string => {
+    if (!fullName) return 'Anonymous';
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0];
+    const firstName = parts[0];
+    const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
+    return `${firstName} ${lastInitial}.`;
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 border-border/50">
       <CardContent className="p-0">
@@ -105,7 +114,7 @@ export function AIMatchCard({ match }: AIMatchCardProps) {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex items-center gap-1">
-                  <span className="text-sm font-medium">{match.provider?.full_name || 'Anonymous'}</span>
+                  <span className="text-sm font-medium">{formatDisplayName(match.provider?.full_name)}</span>
                   {match.provider?.verification_status === 'verified' && (
                     <VerifiedBadge status="verified" size="sm" />
                   )}
