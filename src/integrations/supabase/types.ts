@@ -146,6 +146,24 @@ export type Database = {
           },
         ]
       }
+      advertiser_interest_rate_limits: {
+        Row: {
+          ip_hash: string
+          submission_count: number
+          window_start: string
+        }
+        Insert: {
+          ip_hash: string
+          submission_count?: number
+          window_start?: string
+        }
+        Update: {
+          ip_hash?: string
+          submission_count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       advertiser_interests: {
         Row: {
           admin_notes: string | null
@@ -1077,6 +1095,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_advertiser_rate_limit: {
+        Args: {
+          _ip_hash: string
+          _max_requests?: number
+          _window_minutes?: number
+        }
+        Returns: boolean
+      }
       create_advertiser_by_email: {
         Args: {
           _business_email: string
@@ -1242,6 +1268,18 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      insert_advertiser_interest: {
+        Args: {
+          _business_name: string
+          _contact_name: string
+          _email: string
+          _location?: string
+          _message?: string
+          _phone?: string
+          _website?: string
+        }
+        Returns: string
       }
       is_ip_banned: { Args: { _ip_address: string }; Returns: boolean }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }

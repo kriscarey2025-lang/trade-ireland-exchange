@@ -101,20 +101,33 @@ export default function Advertise() {
     setIsSubmitting(true);
 
     try {
-      // Store in database
-      const { error: dbError } = await supabase
-        .from("advertiser_interests")
-        .insert({
-          business_name: result.data.businessName,
-          contact_name: result.data.contactName,
+      // Submit via rate-limited edge function
+      const { data, error: submitError } = await supabase.functions.invoke("submit-advertiser-interest", {
+        body: {
+          businessName: result.data.businessName,
+          contactName: result.data.contactName,
           email: result.data.email,
-          phone: result.data.phone || null,
+          phone: result.data.phone || undefined,
           location: result.data.location,
-          website: result.data.website || null,
-          message: result.data.message || null,
-        });
+          website: result.data.website || undefined,
+          message: result.data.message || undefined,
+        },
+      });
 
-      if (dbError) throw dbError;
+      if (submitError) throw submitError;
+      
+      // Check for rate limiting response
+      if (data?.rateLimited) {
+        toast({
+          title: "Too Many Submissions",
+          description: "You've submitted too many requests. Please try again in an hour.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+      
+      if (data?.error) throw new Error(data.error);
 
       // Notify admins about new advertiser interest
       supabase.functions.invoke("notify-admins-advertiser", {
