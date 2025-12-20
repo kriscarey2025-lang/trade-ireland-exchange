@@ -52,6 +52,7 @@ import { Disclaimer } from "@/components/shared/Disclaimer";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { ReportServiceDialog } from "@/components/reports/ReportServiceDialog";
+import { InterestButton } from "@/components/services/InterestButton";
 
 // Response from secure database function
 interface SecureServiceDetail {
@@ -519,14 +520,22 @@ export default function ServiceDetail() {
                   {/* Actions */}
                   <div className="space-y-3">
                     {!isOwner ? (
-                      <Button
-                        variant="hero"
-                        className="w-full"
-                        onClick={handleContact}
-                      >
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        Contact Provider
-                      </Button>
+                      <>
+                        <Button
+                          variant="hero"
+                          className="w-full"
+                          onClick={handleContact}
+                        >
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Contact Provider
+                        </Button>
+                        <InterestButton 
+                          serviceId={service.id} 
+                          ownerId={service.user_id}
+                          className="w-full"
+                        />
+                      </>
+                    
                     ) : (
                       <>
                         <Button
