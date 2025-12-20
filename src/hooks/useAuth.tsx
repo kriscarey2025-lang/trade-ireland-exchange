@@ -169,41 +169,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string, fullName: string, location: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName,
-          location: location,
-        },
-      },
-    });
+    try {
+      // Use rate-limited signup edge function
+      const { data, error: invokeError } = await supabase.functions.invoke('rate-limited-signup', {
+        body: { email, password, fullName, location, redirectUrl }
+      });
 
-    if (error) {
-      return { error };
-    }
-
-    // Update profile with location after signup
-    const { data: { user: newUser } } = await supabase.auth.getUser();
-    if (newUser) {
-      await supabase.from('profiles').update({ location }).eq('id', newUser.id);
-    }
-
-    // Send welcome email (only if not already sent)
-    if (!welcomeEmailSentRef.current) {
-      welcomeEmailSentRef.current = true;
-      try {
-        await supabase.functions.invoke('send-welcome-email', {
-          body: { email, fullName }
-        });
-      } catch (e) {
-        console.error('Failed to send welcome email:', e);
+      if (invokeError) {
+        console.error('Signup invoke error:', invokeError);
+        return { error: new Error('Unable to create account. Please try again.') };
       }
-    }
 
-    return { error: null };
+      if (data?.error) {
+        return { error: new Error(data.error) };
+      }
+
+      if (data?.rateLimited) {
+        return { error: new Error('Too many signup attempts. Please try again later.') };
+      }
+
+      // Sign in the user after successful account creation
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        console.error('Auto sign-in error:', signInError);
+        // Account was created but sign in failed - still a success
+        return { error: null };
+      }
+
+      // Send welcome email (only if not already sent)
+      if (!welcomeEmailSentRef.current) {
+        welcomeEmailSentRef.current = true;
+        try {
+          await supabase.functions.invoke('send-welcome-email', {
+            body: { email, fullName }
+          });
+        } catch (e) {
+          console.error('Failed to send welcome email:', e);
+        }
+      }
+
+      return { error: null };
+    } catch (e: any) {
+      console.error('Signup error:', e);
+      return { error: new Error('Unable to create account. Please try again.') };
+    }
   };
 
   const signIn = async (email: string, password: string) => {

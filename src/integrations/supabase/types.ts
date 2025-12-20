@@ -867,6 +867,24 @@ export type Database = {
           },
         ]
       }
+      signup_rate_limits: {
+        Row: {
+          ip_hash: string
+          submission_count: number
+          window_start: string
+        }
+        Insert: {
+          ip_hash: string
+          submission_count?: number
+          window_start?: string
+        }
+        Update: {
+          ip_hash?: string
+          submission_count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       user_engagement: {
         Row: {
           created_at: string
@@ -1096,6 +1114,14 @@ export type Database = {
     }
     Functions: {
       check_advertiser_rate_limit: {
+        Args: {
+          _ip_hash: string
+          _max_requests?: number
+          _window_minutes?: number
+        }
+        Returns: boolean
+      }
+      check_signup_rate_limit: {
         Args: {
           _ip_hash: string
           _max_requests?: number
