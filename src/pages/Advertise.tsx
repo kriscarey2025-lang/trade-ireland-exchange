@@ -20,7 +20,7 @@ const advertiserSchema = z.object({
   email: z.string().trim().email("Please enter a valid email address").max(255, "Email must be less than 255 characters"),
   phone: z.string().trim().optional(),
   location: z.string().trim().min(2, "Location must be at least 2 characters").max(100, "Location must be less than 100 characters"),
-  website: z.string().trim().url("Please enter a valid URL").optional().or(z.literal("")),
+  website: z.string().trim().max(255, "Website must be less than 255 characters").optional().or(z.literal("")),
   message: z.string().trim().max(1000, "Message must be less than 1000 characters").optional(),
   termsAccepted: z.literal(true, {
     errorMap: () => ({ message: "You must accept the Terms of Use to proceed" }),
