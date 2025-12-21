@@ -1307,6 +1307,10 @@ export type Database = {
         }
         Returns: string
       }
+      is_conversation_participant: {
+        Args: { _conversation_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_ip_banned: { Args: { _ip_address: string }; Returns: boolean }
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
       log_user_ip: {
