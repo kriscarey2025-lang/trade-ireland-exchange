@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Loader2, Mail, CheckCircle2, Users, Shield, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
@@ -18,6 +19,21 @@ const emailSchema = z.string().trim().email({ message: "Invalid email address" }
 const passwordSchema = z.string().min(8, { message: "Password must be at least 8 characters" }).max(128);
 const nameSchema = z.string().trim().min(1, { message: "Name is required" }).max(100);
 const locationSchema = z.string().trim().min(1, { message: "Location is required" }).max(100);
+
+// Password strength calculator
+const getPasswordStrength = (password: string): { score: number; label: string; color: string } => {
+  let score = 0;
+  if (password.length >= 8) score += 25;
+  if (password.length >= 12) score += 15;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 20;
+  if (/\d/.test(password)) score += 20;
+  if (/[^a-zA-Z0-9]/.test(password)) score += 20;
+  
+  if (score < 40) return { score, label: "Weak", color: "bg-destructive" };
+  if (score < 70) return { score, label: "Fair", color: "bg-yellow-500" };
+  if (score < 90) return { score, label: "Good", color: "bg-blue-500" };
+  return { score, label: "Strong", color: "bg-green-500" };
+};
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -30,6 +46,9 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [showVerificationScreen, setShowVerificationScreen] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState("");
+  const [isResending, setIsResending] = useState(false);
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
@@ -46,6 +65,26 @@ export default function Auth() {
     }
   };
 
+  const handleResendVerification = async () => {
+    if (!verificationEmail) return;
+    setIsResending(true);
+    
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: verificationEmail,
+      options: {
+        emailRedirectTo: `${window.location.origin}/onboarding`,
+      },
+    });
+    
+    if (error) {
+      toast.error("Failed to resend verification email. Please try again.");
+    } else {
+      toast.success("Verification email sent! Check your inbox.");
+    }
+    setIsResending(false);
+  };
+
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -58,6 +97,9 @@ export default function Auth() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
   const [agreedToConduct, setAgreedToConduct] = useState(false);
+
+  // Password strength
+  const passwordStrength = useMemo(() => getPasswordStrength(signupPassword), [signupPassword]);
 
   // Redirect if already logged in - check if onboarding is complete and advertiser status
   useEffect(() => {
@@ -193,21 +235,140 @@ export default function Auth() {
       return;
     }
 
-    toast.success("Account created successfully!");
-    // Handle redirect with action preserved
-    if (redirectTo) {
-      const action = searchParams.get("action");
-      const redirectUrl = action ? `${redirectTo}?action=${action}` : redirectTo;
-      navigate(redirectUrl);
-    } else {
-      navigate('/onboarding');
-    }
+    // Show verification screen instead of navigating immediately
+    setVerificationEmail(signupEmail);
+    setShowVerificationScreen(true);
+    setIsLoading(false);
   };
 
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Email verification confirmation screen
+  if (showVerificationScreen) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
+        <Header />
+        <main className="container py-12 md:py-20">
+          <div className="max-w-md mx-auto">
+            <Card className="shadow-elevated border-border/50">
+              <CardHeader className="text-center pb-4">
+                <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Mail className="h-8 w-8 text-primary" />
+                </div>
+                <CardTitle className="text-2xl">Check your email</CardTitle>
+                <CardDescription className="text-base">
+                  We've sent a verification link to
+                </CardDescription>
+                <p className="font-medium text-foreground mt-1">{verificationEmail}</p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-primary">1</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Open your email</p>
+                      <p className="text-sm text-muted-foreground">Look for an email from SwapSkills</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-primary">2</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Click the verification link</p>
+                      <p className="text-sm text-muted-foreground">This confirms your email address</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-xs font-bold text-primary">3</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Start swapping skills!</p>
+                      <p className="text-sm text-muted-foreground">Complete your profile and browse services</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    <strong>Can't find the email?</strong> Check your spam or junk folder. The email might take a minute to arrive.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleResendVerification}
+                    disabled={isResending}
+                  >
+                    {isResending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="mr-2 h-4 w-4" />
+                        Resend verification email
+                      </>
+                    )}
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full"
+                    onClick={() => {
+                      setShowVerificationScreen(false);
+                      setVerificationEmail("");
+                    }}
+                  >
+                    Use a different email
+                  </Button>
+                </div>
+
+                <Separator />
+
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-2">Already verified?</p>
+                  <Button
+                    variant="hero"
+                    className="w-full"
+                    onClick={() => navigate('/auth?mode=login')}
+                  >
+                    Sign in to your account
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Trust indicators */}
+            <div className="mt-6 grid grid-cols-3 gap-4 text-center">
+              <div className="space-y-1">
+                <Users className="h-5 w-5 mx-auto text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">500+ Members</p>
+              </div>
+              <div className="space-y-1">
+                <Shield className="h-5 w-5 mx-auto text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Verified Users</p>
+              </div>
+              <div className="space-y-1">
+                <Clock className="h-5 w-5 mx-auto text-muted-foreground" />
+                <p className="text-xs text-muted-foreground">Quick Setup</p>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     );
   }
@@ -451,6 +612,24 @@ export default function Auth() {
                           )}
                         </Button>
                       </div>
+                      {signupPassword && (
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Progress value={passwordStrength.score} className="h-1.5 flex-1" />
+                            <span className={`text-xs font-medium ${
+                              passwordStrength.score < 40 ? 'text-destructive' :
+                              passwordStrength.score < 70 ? 'text-yellow-600 dark:text-yellow-400' :
+                              passwordStrength.score < 90 ? 'text-blue-600 dark:text-blue-400' :
+                              'text-green-600 dark:text-green-400'
+                            }`}>
+                              {passwordStrength.label}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Use 12+ characters with uppercase, numbers & symbols for best security
+                          </p>
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-3 rounded-lg border border-border p-4 bg-muted/30">
                       <p className="text-sm font-medium text-foreground">Before signing up, please confirm:</p>
@@ -531,8 +710,24 @@ export default function Auth() {
             </CardContent>
           </Card>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            By continuing, you agree to our community guidelines and commit to trading fairly.
+          {/* Trust indicators */}
+          <div className="mt-6 grid grid-cols-3 gap-4 text-center">
+            <div className="space-y-1">
+              <Users className="h-5 w-5 mx-auto text-muted-foreground" />
+              <p className="text-xs text-muted-foreground">500+ Members</p>
+            </div>
+            <div className="space-y-1">
+              <Shield className="h-5 w-5 mx-auto text-muted-foreground" />
+              <p className="text-xs text-muted-foreground">Verified Users</p>
+            </div>
+            <div className="space-y-1">
+              <CheckCircle2 className="h-5 w-5 mx-auto text-muted-foreground" />
+              <p className="text-xs text-muted-foreground">100% Free</p>
+            </div>
+          </div>
+
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            Join Ireland's skill-swapping community. Trade fairly, connect locally.
           </p>
         </div>
       </main>
