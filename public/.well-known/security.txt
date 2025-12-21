@@ -1,0 +1,14 @@
+# Security Policy for SwapSkills Ireland
+# https://swap-skills.com
+
+Contact: mailto:hello@swap-skills.com
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: en, ga
+Canonical: https://swap-skills.com/.well-known/security.txt
+
+# About SwapSkills
+# SwapSkills is a community platform for skill sharing in Ireland.
+# We take security seriously and appreciate responsible disclosure.
+
+# Policy
+Policy: https://swap-skills.com/privacy
