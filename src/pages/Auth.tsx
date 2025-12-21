@@ -356,7 +356,7 @@ export default function Auth() {
             <div className="mt-6 grid grid-cols-3 gap-4 text-center">
               <div className="space-y-1">
                 <Users className="h-5 w-5 mx-auto text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">500+ Members</p>
+                <p className="text-xs text-muted-foreground">Local Community</p>
               </div>
               <div className="space-y-1">
                 <Shield className="h-5 w-5 mx-auto text-muted-foreground" />
@@ -714,7 +714,7 @@ export default function Auth() {
           <div className="mt-6 grid grid-cols-3 gap-4 text-center">
             <div className="space-y-1">
               <Users className="h-5 w-5 mx-auto text-muted-foreground" />
-              <p className="text-xs text-muted-foreground">500+ Members</p>
+              <p className="text-xs text-muted-foreground">Local Community</p>
             </div>
             <div className="space-y-1">
               <Shield className="h-5 w-5 mx-auto text-muted-foreground" />
