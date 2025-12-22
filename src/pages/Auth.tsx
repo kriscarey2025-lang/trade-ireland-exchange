@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { fireConfetti } from "@/hooks/useConfetti";
+import { submitToHubSpot, parseFullName } from "@/hooks/useHubSpot";
 
 const emailSchema = z.string().trim().email({ message: "Invalid email address" }).max(255);
 const passwordSchema = z.string().min(8, { message: "Password must be at least 8 characters" }).max(128);
@@ -240,6 +241,16 @@ export default function Auth() {
     setVerificationEmail(signupEmail);
     setShowVerificationScreen(true);
     setIsLoading(false);
+    
+    // Submit to HubSpot
+    const { firstname, lastname } = parseFullName(signupName);
+    submitToHubSpot({
+      email: signupEmail,
+      firstname,
+      lastname,
+      city: signupLocation,
+      form_source: 'Signup Form',
+    });
     
     // Celebrate the signup!
     setTimeout(() => fireConfetti(), 300);
