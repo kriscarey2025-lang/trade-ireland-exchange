@@ -14,6 +14,7 @@ import { Eye, EyeOff, ArrowRight, Loader2, Mail, CheckCircle2, Users, Shield, Cl
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import { fireConfetti } from "@/hooks/useConfetti";
 
 const emailSchema = z.string().trim().email({ message: "Invalid email address" }).max(255);
 const passwordSchema = z.string().min(8, { message: "Password must be at least 8 characters" }).max(128);
@@ -239,6 +240,9 @@ export default function Auth() {
     setVerificationEmail(signupEmail);
     setShowVerificationScreen(true);
     setIsLoading(false);
+    
+    // Celebrate the signup!
+    setTimeout(() => fireConfetti(), 300);
   };
 
   if (authLoading) {
