@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { CommunityPost, PostCategory, PostStatus } from '@/types/community';
 import { toast } from 'sonner';
+import { fireSubtleConfetti } from '@/hooks/useConfetti';
 
 export function useBoardPosts(county?: string | null) {
   return useQuery({
@@ -72,6 +73,14 @@ export function useCreatePost() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('You must be logged in to create a post');
 
+      // Check if this is the user's first post
+      const { count } = await supabase
+        .from('community_posts')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      
+      const isFirstPost = (count || 0) === 0;
+
       // Call moderation function
       let moderationStatus = 'approved';
       let moderationReason: string | null = null;
@@ -108,7 +117,7 @@ export function useCreatePost() {
         .single();
 
       if (error) throw error;
-      return { result, moderationStatus };
+      return { result, moderationStatus, isFirstPost };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['community-board-posts'] });
@@ -117,6 +126,11 @@ export function useCreatePost() {
         toast.info('Your post is being reviewed and will appear shortly.');
       } else {
         toast.success('Post created successfully!');
+      }
+      
+      // Celebrate first post with confetti!
+      if (data.isFirstPost) {
+        setTimeout(() => fireSubtleConfetti(), 300);
       }
     },
     onError: (error: Error) => {
