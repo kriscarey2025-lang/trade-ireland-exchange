@@ -10,6 +10,7 @@ import { Mail, MapPin, Clock, Heart } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { submitToHubSpot, parseFullName } from "@/hooks/useHubSpot";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -57,30 +58,16 @@ export default function Contact() {
         throw new Error("Failed to send message");
       }
 
-      // Track form submission in HubSpot
-      const _hsq = (window as any)._hsq = (window as any)._hsq || [];
-      
-      // Identify the contact
-      _hsq.push(["identify", {
+      // Submit to HubSpot
+      const { firstname, lastname } = parseFullName(data.name);
+      submitToHubSpot({
         email: data.email,
-        firstname: data.name.split(' ')[0],
-        lastname: data.name.split(' ').slice(1).join(' ') || '',
-      }]);
-      
-      // Track the form submission event
-      _hsq.push(["trackCustomBehavioralEvent", {
-        name: "pe20561907_contact_form_submission",
-        properties: {
-          subject: data.subject,
-          message: data.message,
-        }
-      }]);
-
-      // Also push a standard event
-      _hsq.push(["trackEvent", {
-        id: "Contact Form Submission",
-        value: null
-      }]);
+        firstname,
+        lastname,
+        form_source: 'Contact Form',
+        subject: data.subject,
+        message: data.message,
+      });
 
       toast({
         title: "Message sent!",

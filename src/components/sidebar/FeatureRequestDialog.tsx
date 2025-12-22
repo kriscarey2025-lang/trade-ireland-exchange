@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { submitToHubSpot } from "@/hooks/useHubSpot";
 
 const formSchema = z.object({
   subject: z.string().min(3, "Subject must be at least 3 characters").max(100, "Subject must be less than 100 characters"),
@@ -64,6 +65,17 @@ const FeatureRequestDialog = ({ open, onOpenChange }: FeatureRequestDialogProps)
       });
 
       if (error) throw error;
+
+      // Submit to HubSpot if we have an email
+      const emailToUse = values.email || user?.email;
+      if (emailToUse) {
+        submitToHubSpot({
+          email: emailToUse,
+          form_source: 'Feature Request Form',
+          subject: values.subject,
+          message: values.message,
+        });
+      }
 
       toast({
         title: "Feature request submitted! 🎉",

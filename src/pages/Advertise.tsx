@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Building2, MapPin, CheckCircle2, BarChart3, Shield, Users } from "lucide-react";
 import { z } from "zod";
 import { Link } from "react-router-dom";
+import { submitToHubSpot, parseFullName } from "@/hooks/useHubSpot";
 
 const advertiserSchema = z.object({
   businessName: z.string().trim().min(2, "Business name must be at least 2 characters").max(100, "Business name must be less than 100 characters"),
@@ -161,6 +162,20 @@ ${result.data.message || "No additional message provided"}
 Terms Accepted: Yes
           `.trim(),
         },
+      });
+
+      // Submit to HubSpot
+      const { firstname, lastname } = parseFullName(result.data.contactName);
+      submitToHubSpot({
+        email: result.data.email,
+        firstname,
+        lastname,
+        phone: result.data.phone || undefined,
+        company: result.data.businessName,
+        city: result.data.location,
+        website: result.data.website || undefined,
+        form_source: 'Advertiser Interest Form',
+        message: result.data.message || undefined,
       });
 
       setIsSubmitted(true);
