@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
+import { trackInterestExpressedHubSpot } from "./useHubSpot";
 
 export interface Interest {
   id: string;
@@ -57,7 +58,7 @@ export function useExpressInterest() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (serviceId: string) => {
+    mutationFn: async ({ serviceId, serviceTitle }: { serviceId: string; serviceTitle?: string }) => {
       if (!user) throw new Error("Must be logged in");
       
       const { data, error } = await supabase
@@ -67,12 +68,17 @@ export function useExpressInterest() {
         .single();
       
       if (error) throw error;
-      return data;
+      return { data, serviceTitle };
     },
-    onSuccess: (_, serviceId) => {
+    onSuccess: ({ data, serviceTitle }, { serviceId }) => {
       queryClient.invalidateQueries({ queryKey: ["interests", serviceId] });
       queryClient.invalidateQueries({ queryKey: ["interest-count", serviceId] });
       toast.success("Interest expressed! The owner will be notified.");
+      
+      // Track in HubSpot
+      if (user?.email && serviceTitle) {
+        trackInterestExpressedHubSpot(user.email, serviceTitle);
+      }
     },
     onError: (error: Error) => {
       if (error.message.includes("duplicate")) {

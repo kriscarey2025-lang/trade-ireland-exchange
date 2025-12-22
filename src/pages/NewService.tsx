@@ -27,6 +27,7 @@ import { SkillSelector } from "@/components/services/SkillSelector";
 import { trackServiceCreated } from "@/hooks/useEngagementTracking";
 import { useContentModeration } from "@/hooks/useContentModeration";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { trackServiceCreatedHubSpot } from "@/hooks/useHubSpot";
 
 const serviceSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
@@ -157,6 +158,11 @@ export default function NewService() {
 
     // Track service creation
     trackServiceCreated(user.id, newService.id, title.trim());
+    
+    // Track in HubSpot
+    if (user.email) {
+      trackServiceCreatedHubSpot(user.email, title.trim(), category, postCategory);
+    }
 
     if (!moderationResult.approved) {
       // Notify admins about flagged content

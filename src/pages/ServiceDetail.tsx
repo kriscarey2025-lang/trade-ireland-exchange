@@ -531,6 +531,7 @@ export default function ServiceDetail() {
                         </Button>
                         <InterestButton 
                           serviceId={service.id} 
+                          serviceTitle={service.title}
                           ownerId={service.user_id}
                           className="w-full"
                         />
