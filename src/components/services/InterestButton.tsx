@@ -6,11 +6,12 @@ import { useNavigate } from "react-router-dom";
 
 interface InterestButtonProps {
   serviceId: string;
+  serviceTitle?: string;
   ownerId?: string | null;
   className?: string;
 }
 
-export function InterestButton({ serviceId, ownerId, className }: InterestButtonProps) {
+export function InterestButton({ serviceId, serviceTitle, ownerId, className }: InterestButtonProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: existingInterest, isLoading } = useInterests(serviceId);
@@ -31,7 +32,7 @@ export function InterestButton({ serviceId, ownerId, className }: InterestButton
     if (existingInterest) {
       removeInterest.mutate(serviceId);
     } else {
-      expressInterest.mutate(serviceId);
+      expressInterest.mutate({ serviceId, serviceTitle });
     }
   };
 
