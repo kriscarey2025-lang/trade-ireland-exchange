@@ -12,6 +12,7 @@ import { EngagementTracker } from "@/components/tracking/EngagementTracker";
 import { PromoBanner } from "@/components/layout/PromoBanner";
 import FeedbackSidebar from "@/components/sidebar/FeedbackSidebar";
 import { PageLoader } from "@/components/ui/page-loader";
+import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 
 // Eagerly load Index for fastest initial paint
 import Index from "./pages/Index";
@@ -73,6 +74,7 @@ const App = () => (
           <EngagementTracker />
           <FeedbackSidebar />
           <MobileBottomNav />
+          <PWAInstallPrompt />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Index />} />
