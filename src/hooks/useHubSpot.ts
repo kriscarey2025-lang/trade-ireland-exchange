@@ -53,40 +53,33 @@ export function parseFullName(fullName: string): { firstname: string; lastname: 
 }
 
 /**
- * Track a custom event in HubSpot via the tracking script
- * This uses the client-side HubSpot tracking code
+ * Track a milestone event in HubSpot via edge function
+ * Updates contact properties instead of using custom behavioral events
  */
-export function trackHubSpotEvent(eventName: string, properties?: Record<string, string | number | boolean>) {
+export async function trackMilestoneHubSpot(
+  email: string,
+  milestone: 'service_created' | 'interest_expressed',
+  properties?: Record<string, string>
+): Promise<boolean> {
   try {
-    const _hsq = (window as any)._hsq = (window as any)._hsq || [];
-    
-    // Track custom behavioral event
-    _hsq.push(['trackCustomBehavioralEvent', {
-      name: eventName,
-      properties: properties || {},
-    }]);
-    
-    console.log(`HubSpot event tracked: ${eventName}`, properties);
-  } catch (error) {
-    console.error('Failed to track HubSpot event:', error);
-  }
-}
+    const { error } = await supabase.functions.invoke('hubspot-contact', {
+      body: {
+        email,
+        form_source: `milestone_${milestone}`,
+        ...properties,
+      },
+    });
 
-/**
- * Identify a user in HubSpot
- */
-export function identifyHubSpotUser(email: string, properties?: Record<string, string>) {
-  try {
-    const _hsq = (window as any)._hsq = (window as any)._hsq || [];
-    
-    _hsq.push(['identify', {
-      email,
-      ...properties,
-    }]);
-    
-    console.log(`HubSpot user identified: ${email}`);
+    if (error) {
+      console.error('HubSpot milestone tracking error:', error);
+      return false;
+    }
+
+    console.log(`HubSpot milestone tracked: ${milestone} for ${email}`);
+    return true;
   } catch (error) {
-    console.error('Failed to identify HubSpot user:', error);
+    console.error('Failed to track HubSpot milestone:', error);
+    return false;
   }
 }
 
@@ -94,11 +87,10 @@ export function identifyHubSpotUser(email: string, properties?: Record<string, s
  * Track service creation milestone
  */
 export function trackServiceCreatedHubSpot(email: string, serviceTitle: string, serviceCategory: string, serviceType: string) {
-  identifyHubSpotUser(email);
-  trackHubSpotEvent('pe20561907_service_created', {
-    service_title: serviceTitle,
-    service_category: serviceCategory,
-    service_type: serviceType,
+  trackMilestoneHubSpot(email, 'service_created', {
+    last_service_title: serviceTitle,
+    last_service_category: serviceCategory,
+    last_service_type: serviceType,
   });
 }
 
@@ -106,8 +98,7 @@ export function trackServiceCreatedHubSpot(email: string, serviceTitle: string, 
  * Track interest expression milestone
  */
 export function trackInterestExpressedHubSpot(email: string, serviceTitle: string) {
-  identifyHubSpotUser(email);
-  trackHubSpotEvent('pe20561907_interest_expressed', {
-    service_title: serviceTitle,
+  trackMilestoneHubSpot(email, 'interest_expressed', {
+    last_interest_service: serviceTitle,
   });
 }

@@ -17,6 +17,11 @@ interface HubSpotContactData {
   form_source?: string;
   message?: string;
   subject?: string;
+  // Milestone tracking properties
+  last_service_title?: string;
+  last_service_category?: string;
+  last_service_type?: string;
+  last_interest_service?: string;
 }
 
 serve(async (req) => {
@@ -47,6 +52,10 @@ serve(async (req) => {
       form_source,
       message,
       subject,
+      last_service_title,
+      last_service_category,
+      last_service_type,
+      last_interest_service,
     }: HubSpotContactData = body;
 
     if (!email) {
@@ -69,6 +78,19 @@ serve(async (req) => {
     if (company) properties.company = company;
     if (city) properties.city = city;
     if (website) properties.website = website;
+    
+    // Add milestone tracking properties (these are custom properties you create in HubSpot)
+    // Go to Settings > Properties > Create property for each:
+    // - last_service_title (Single-line text)
+    // - last_service_category (Single-line text)
+    // - last_service_type (Single-line text)
+    // - last_interest_service (Single-line text)
+    // - swapskills_activity (Single-line text) - for tracking activity type
+    if (last_service_title) properties.last_service_title = last_service_title;
+    if (last_service_category) properties.last_service_category = last_service_category;
+    if (last_service_type) properties.last_service_type = last_service_type;
+    if (last_interest_service) properties.last_interest_service = last_interest_service;
+    if (form_source) properties.swapskills_activity = form_source;
     
     // Try to create or update the contact
     const createResponse = await fetch('https://api.hubapi.com/crm/v3/objects/contacts', {
