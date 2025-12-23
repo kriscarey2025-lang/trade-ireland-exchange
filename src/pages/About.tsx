@@ -86,6 +86,10 @@ export default function About() {
                     <img 
                       src={founderImage} 
                       alt="Kristina, founder of SwapSkills Ireland"
+                      width={300}
+                      height={400}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full rounded-2xl shadow-lg object-cover aspect-[3/4] grayscale"
                     />
                     <div className="absolute -bottom-3 -right-3 bg-primary/10 rounded-2xl w-full h-full -z-10" />
