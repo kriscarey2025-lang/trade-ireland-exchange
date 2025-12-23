@@ -30,7 +30,11 @@ const featuredStory = {
 };
 export default function Stories() {
   return <div className="min-h-screen flex flex-col bg-background">
-      <SEO title="Swap-Skill Stories | SwapSkills Ireland" description="Read inspiring stories from our community members who have successfully swapped skills and made meaningful connections." />
+      <SEO 
+        title="Swap-Skill Stories" 
+        description="Read inspiring stories from our community members who have successfully swapped skills and made meaningful connections."
+        url="https://swap-skills.com/stories"
+      />
       <Header />
       
       <main className="flex-1">
