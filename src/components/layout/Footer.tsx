@@ -15,6 +15,9 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
               <img 
                 src={swapSkillsLogo} 
                 alt="SwapSkills Logo" 
+                width={40}
+                height={40}
+                loading="lazy"
                 className="w-10 h-10 rounded-xl"
               />
               <span>

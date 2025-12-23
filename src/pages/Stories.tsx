@@ -75,7 +75,7 @@ export default function Stories() {
                 <div className="grid lg:grid-cols-2 gap-0">
                   <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-auto bg-gradient-to-br from-orange-400 via-amber-500 to-orange-600 p-4 md:p-6">
                     <div className="relative w-full h-full rounded-lg overflow-hidden shadow-xl ring-4 ring-white/30">
-                      <img src={featuredStory.image} alt={`${featuredStory.authors} - ${featuredStory.title}`} className="w-full h-full object-cover object-top" />
+                      <img src={featuredStory.image} alt={`${featuredStory.authors} - ${featuredStory.title}`} width={400} height={500} loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
                     </div>
                   </div>
                   <div className="p-8 lg:p-10 flex flex-col lg:justify-start lg:pt-6">

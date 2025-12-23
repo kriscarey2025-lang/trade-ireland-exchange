@@ -148,6 +148,8 @@ export function Header() {
           <img 
             src={swapSkillsLogo} 
             alt="SwapSkills Logo" 
+            width={32}
+            height={32}
             className="w-8 h-8 rounded-xl shadow-sm group-hover:shadow-md transition-shadow"
           />
           <span className="hidden sm:inline text-foreground">
