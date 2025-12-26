@@ -12,18 +12,32 @@ export function HeroSection() {
   const { user } = useAuth();
   const [brainstormOpen, setBrainstormOpen] = useState(false);
   const [currentServiceIndex, setCurrentServiceIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const { data: services = [], isLoading } = useServices({ status: "active" });
 
-  // Auto-rotate services every 5 seconds
+  // Auto-rotate services every 5 seconds with animation
   useEffect(() => {
     if (services.length <= 1) return;
     
     const interval = setInterval(() => {
-      setCurrentServiceIndex((prev) => (prev + 1) % services.length);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentServiceIndex((prev) => (prev + 1) % services.length);
+        setIsTransitioning(false);
+      }, 300);
     }, 5000);
 
     return () => clearInterval(interval);
   }, [services.length]);
+
+  const handleDotClick = (idx: number) => {
+    if (idx === currentServiceIndex) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentServiceIndex(idx);
+      setIsTransitioning(false);
+    }, 300);
+  };
 
   const currentService = services[currentServiceIndex];
   return <section className="relative overflow-hidden min-h-[90vh] flex items-center">
@@ -93,44 +107,53 @@ export function HeroSection() {
                   </div>
                 </div>
               ) : (
-                <Link 
+              <Link 
                   to={`/services/${currentService.id}`}
                   className="block group relative z-10"
                   key={currentService.id}
                 >
-                  {/* Header badge */}
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                    </span>
-                    <span className="text-xs font-semibold text-primary uppercase tracking-wider">Now Available</span>
-                  </div>
-                  
-                  {/* Title with icon */}
-                  <div className="flex items-center justify-center gap-3 mb-4">
-                    <span className="text-3xl transform group-hover:scale-110 transition-transform duration-300">
-                      {categoryIcons[currentService.category as ServiceCategory] || "✨"}
-                    </span>
-                    <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
-                      {currentService.title}
-                    </h3>
-                  </div>
-                  
-                  {/* Description */}
-                  <p className="text-muted-foreground text-sm md:text-base line-clamp-2 mb-5 leading-relaxed max-w-md mx-auto">
-                    <span className="italic">"{currentService.description}"</span>
-                  </p>
-                  
-                  {/* Location and category tags */}
-                  <div className="flex items-center justify-center gap-3 flex-wrap">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 text-muted-foreground text-sm font-medium">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {currentService.location}
-                    </span>
-                    <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 text-primary text-sm font-semibold border border-primary/20">
-                      {categoryLabels[currentService.category as ServiceCategory] || "Other"}
-                    </span>
+                  {/* Animated content wrapper */}
+                  <div 
+                    className={`transition-all duration-300 ease-out ${
+                      isTransitioning 
+                        ? "opacity-0 translate-y-4 scale-95" 
+                        : "opacity-100 translate-y-0 scale-100"
+                    }`}
+                  >
+                    {/* Header badge */}
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                      </span>
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">Now Available</span>
+                    </div>
+                    
+                    {/* Title with icon */}
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <span className="text-3xl transform group-hover:scale-110 transition-transform duration-300">
+                        {categoryIcons[currentService.category as ServiceCategory] || "✨"}
+                      </span>
+                      <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
+                        {currentService.title}
+                      </h3>
+                    </div>
+                    
+                    {/* Description */}
+                    <p className="text-muted-foreground text-sm md:text-base line-clamp-2 mb-5 leading-relaxed max-w-md mx-auto">
+                      <span className="italic">"{currentService.description}"</span>
+                    </p>
+                    
+                    {/* Location and category tags */}
+                    <div className="flex items-center justify-center gap-3 flex-wrap">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 text-muted-foreground text-sm font-medium">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {currentService.location}
+                      </span>
+                      <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 text-primary text-sm font-semibold border border-primary/20">
+                        {categoryLabels[currentService.category as ServiceCategory] || "Other"}
+                      </span>
+                    </div>
                   </div>
                   
                   {/* Progress indicator - pill style */}
@@ -140,7 +163,7 @@ export function HeroSection() {
                         key={idx}
                         onClick={(e) => {
                           e.preventDefault();
-                          setCurrentServiceIndex(idx);
+                          handleDotClick(idx);
                         }}
                         className={`h-2 rounded-full transition-all duration-500 ease-out ${
                           idx === currentServiceIndex 
