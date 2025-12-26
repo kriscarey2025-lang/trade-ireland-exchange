@@ -1,13 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Users, Shield, Coffee, Sparkles, Lightbulb } from "lucide-react";
+import { ArrowRight, Heart, Coffee, Sparkles, Lightbulb, MapPin } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
+import { useServices } from "@/hooks/useServices";
+import { categoryLabels, categoryIcons } from "@/lib/categories";
+import { ServiceCategory } from "@/types";
 
 export function HeroSection() {
   const { user } = useAuth();
   const [brainstormOpen, setBrainstormOpen] = useState(false);
+  const [currentServiceIndex, setCurrentServiceIndex] = useState(0);
+  const { data: services = [], isLoading } = useServices({ status: "active" });
+
+  // Auto-rotate services every 5 seconds
+  useEffect(() => {
+    if (services.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentServiceIndex((prev) => (prev + 1) % services.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [services.length]);
+
+  const currentService = services[currentServiceIndex];
   return <section className="relative overflow-hidden min-h-[90vh] flex items-center">
       {/* Warm animated background blobs */}
       <div className="absolute inset-0 overflow-hidden">
@@ -55,16 +73,65 @@ export function HeroSection() {
             <span className="inline-block bg-gradient-to-r from-primary via-accent to-highlight bg-clip-text text-transparent animate-spin-slow">Ireland's first digital & free Barter System </span>
           </p>
 
-          {/* Vision statement */}
-          <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-6 mb-10 max-w-xl mx-auto border border-border/50 animate-fade-up cozy-shadow" style={{
+          {/* Live Service Preview Carousel */}
+          <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-6 mb-10 max-w-xl mx-auto border border-border/50 animate-fade-up cozy-shadow relative overflow-hidden" style={{
           animationDelay: "0.25s"
         }}>
-            <p className="text-xs text-muted-foreground/70 uppercase tracking-wide mb-2">Imagine this...</p>
-            <p className="text-muted-foreground italic">
-              "I taught Mary's kids piano, and she sorted my garden. We've become great friends — 
-              <span className="text-foreground font-medium"> and neither of us spent a penny."</span>
-            </p>
-            <p className="text-sm text-primary mt-2 font-medium">— The kind of story we're building</p>
+            {isLoading || !currentService ? (
+              <div className="animate-pulse">
+                <div className="h-4 bg-muted rounded w-24 mx-auto mb-3"></div>
+                <div className="h-5 bg-muted rounded w-3/4 mx-auto mb-2"></div>
+                <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
+              </div>
+            ) : (
+              <Link 
+                to={`/service/${currentService.id}`}
+                className="block group transition-all duration-300"
+                key={currentService.id}
+              >
+                <p className="text-xs text-muted-foreground/70 uppercase tracking-wide mb-2">
+                  Now Available on SwapSkills
+                </p>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span className="text-xl">
+                    {categoryIcons[currentService.category as ServiceCategory] || "✨"}
+                  </span>
+                  <p className="text-foreground font-semibold text-lg group-hover:text-primary transition-colors line-clamp-1">
+                    {currentService.title}
+                  </p>
+                </div>
+                <p className="text-muted-foreground text-sm line-clamp-2 mb-3 italic">
+                  "{currentService.description}"
+                </p>
+                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {currentService.location}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                    {categoryLabels[currentService.category as ServiceCategory] || "Other"}
+                  </span>
+                </div>
+                {/* Progress indicator */}
+                <div className="flex justify-center gap-1.5 mt-4">
+                  {services.slice(0, Math.min(services.length, 8)).map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentServiceIndex(idx);
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        idx === currentServiceIndex 
+                          ? "bg-primary w-6" 
+                          : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                      }`}
+                      aria-label={`View service ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </Link>
+            )}
           </div>
 
           {/* CTA Buttons */}
