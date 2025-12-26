@@ -74,64 +74,86 @@ export function HeroSection() {
           </p>
 
           {/* Live Service Preview Carousel */}
-          <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-6 mb-10 max-w-xl mx-auto border border-border/50 animate-fade-up cozy-shadow relative overflow-hidden" style={{
-          animationDelay: "0.25s"
-        }}>
-            {isLoading || !currentService ? (
-              <div className="animate-pulse">
-                <div className="h-4 bg-muted rounded w-24 mx-auto mb-3"></div>
-                <div className="h-5 bg-muted rounded w-3/4 mx-auto mb-2"></div>
-                <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
-              </div>
-            ) : (
-              <Link 
-                to={`/services/${currentService.id}`}
-                className="block group transition-all duration-300"
-                key={currentService.id}
-              >
-                <p className="text-xs text-muted-foreground/70 uppercase tracking-wide mb-2">
-                  Now Available on SwapSkills
-                </p>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-xl">
-                    {categoryIcons[currentService.category as ServiceCategory] || "✨"}
-                  </span>
-                  <p className="text-foreground font-semibold text-lg group-hover:text-primary transition-colors line-clamp-1">
-                    {currentService.title}
+          <div className="relative mb-10 max-w-xl mx-auto animate-fade-up" style={{ animationDelay: "0.25s" }}>
+            {/* Gradient border wrapper */}
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/40 via-accent/30 to-highlight/40 blur-sm"></div>
+            <div className="relative bg-gradient-to-br from-card via-card to-card/95 backdrop-blur-xl rounded-3xl p-8 border border-border/30 shadow-xl overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-accent/10 to-transparent rounded-tr-full"></div>
+              
+              {isLoading || !currentService ? (
+                <div className="animate-pulse space-y-4">
+                  <div className="h-3 bg-muted rounded-full w-32 mx-auto"></div>
+                  <div className="h-6 bg-muted rounded-full w-3/4 mx-auto"></div>
+                  <div className="h-4 bg-muted rounded-full w-2/3 mx-auto"></div>
+                  <div className="flex justify-center gap-3">
+                    <div className="h-6 bg-muted rounded-full w-20"></div>
+                    <div className="h-6 bg-muted rounded-full w-28"></div>
+                  </div>
+                </div>
+              ) : (
+                <Link 
+                  to={`/services/${currentService.id}`}
+                  className="block group relative z-10"
+                  key={currentService.id}
+                >
+                  {/* Header badge */}
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    </span>
+                    <span className="text-xs font-semibold text-primary uppercase tracking-wider">Now Available</span>
+                  </div>
+                  
+                  {/* Title with icon */}
+                  <div className="flex items-center justify-center gap-3 mb-4">
+                    <span className="text-3xl transform group-hover:scale-110 transition-transform duration-300">
+                      {categoryIcons[currentService.category as ServiceCategory] || "✨"}
+                    </span>
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
+                      {currentService.title}
+                    </h3>
+                  </div>
+                  
+                  {/* Description */}
+                  <p className="text-muted-foreground text-sm md:text-base line-clamp-2 mb-5 leading-relaxed max-w-md mx-auto">
+                    <span className="italic">"{currentService.description}"</span>
                   </p>
-                </div>
-                <p className="text-muted-foreground text-sm line-clamp-2 mb-3 italic">
-                  "{currentService.description}"
-                </p>
-                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1">
-                    <MapPin className="h-3 w-3" />
-                    {currentService.location}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                    {categoryLabels[currentService.category as ServiceCategory] || "Other"}
-                  </span>
-                </div>
-                {/* Progress indicator */}
-                <div className="flex justify-center gap-1.5 mt-4">
-                  {services.slice(0, Math.min(services.length, 8)).map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentServiceIndex(idx);
-                      }}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                        idx === currentServiceIndex 
-                          ? "bg-primary w-6" 
-                          : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                      }`}
-                      aria-label={`View service ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-              </Link>
-            )}
+                  
+                  {/* Location and category tags */}
+                  <div className="flex items-center justify-center gap-3 flex-wrap">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 text-muted-foreground text-sm font-medium">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {currentService.location}
+                    </span>
+                    <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 text-primary text-sm font-semibold border border-primary/20">
+                      {categoryLabels[currentService.category as ServiceCategory] || "Other"}
+                    </span>
+                  </div>
+                  
+                  {/* Progress indicator - pill style */}
+                  <div className="flex justify-center items-center gap-2 mt-6">
+                    {services.slice(0, Math.min(services.length, 8)).map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentServiceIndex(idx);
+                        }}
+                        className={`h-2 rounded-full transition-all duration-500 ease-out ${
+                          idx === currentServiceIndex 
+                            ? "bg-gradient-to-r from-primary to-accent w-8 shadow-md shadow-primary/30" 
+                            : "bg-muted-foreground/20 hover:bg-muted-foreground/40 w-2"
+                        }`}
+                        aria-label={`View service ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                </Link>
+              )}
+            </div>
           </div>
 
           {/* CTA Buttons */}
