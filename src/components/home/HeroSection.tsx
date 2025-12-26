@@ -85,7 +85,7 @@ export function HeroSection() {
               </div>
             ) : (
               <Link 
-                to={`/service/${currentService.id}`}
+                to={`/services/${currentService.id}`}
                 className="block group transition-all duration-300"
                 key={currentService.id}
               >
