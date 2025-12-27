@@ -7,10 +7,6 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, MessageCircle, ExternalLink, Home, Heart, Users, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import jenniferDeliaImage from "@/assets/jennifer-delia-carlow-edited.png";
-import spanishFamilyImage from "@/assets/spanish-family-carlow.png";
-import spainPoolImage from "@/assets/spain-pool.png";
-import catIrelandImage from "@/assets/cat-ireland.png";
-import catSpainImage from "@/assets/cat-spain.png";
 
 // Featured real story
 const featuredStory = {
@@ -45,21 +41,20 @@ export default function Stories() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-16 md:py-24 bg-gradient-to-b from-primary/5 to-background">
+        <section className="relative py-12 md:py-16 bg-gradient-to-b from-primary/5 to-background">
           <div className="container">
             <div className="max-w-3xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
                 <BookOpen className="h-4 w-4" />
                 <span className="text-sm font-medium">Community Stories</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
+              <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">
                 Swap-Skill <span className="text-primary">Stories</span>
               </h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                Discover how our community members are exchanging skills, building connections, 
-                and creating value through the power of skill swapping.
+              <p className="text-muted-foreground mb-6">
+                Discover how our community members are exchanging skills and building connections.
               </p>
-              <Button variant="hero" size="lg" asChild>
+              <Button variant="hero" asChild>
                 <Link to="/auth?mode=signup">Share Your Story</Link>
               </Button>
             </div>
@@ -67,167 +62,143 @@ export default function Stories() {
         </section>
 
         {/* Founder Story Section */}
-        <section className="py-12 md:py-16 bg-gradient-to-b from-background to-primary/5">
-          <div className="container">
-            <div className="flex items-center gap-2 mb-8">
+        <section className="py-10 md:py-12 bg-gradient-to-b from-background to-primary/5">
+          <div className="container max-w-4xl">
+            <div className="flex items-center gap-2 mb-6">
               <Badge variant="default" className="bg-amber-600 text-white">
                 Founder's Story
               </Badge>
               <span className="text-sm text-muted-foreground">The inspiration behind Swap-Skills</span>
             </div>
 
-            <Card className="overflow-hidden border-amber-200 dark:border-amber-800/50 shadow-lg">
+            <Card className="overflow-hidden border-amber-200 dark:border-amber-800/50">
               <CardContent className="p-0">
-                {/* Hero Image Grid */}
-                <div className="grid md:grid-cols-2 gap-0">
-                  <div className="relative aspect-video md:aspect-auto">
+                {/* Hero Image Grid - Compact */}
+                <div className="grid grid-cols-2 gap-1">
+                  <div className="relative aspect-[4/3]">
                     <img 
-                      src={spainPoolImage} 
+                      src="/images/spain-pool.png" 
                       alt="Family enjoying pool time in Spain during home exchange" 
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
-                    <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-2 py-1 rounded-full">
                       <span className="text-xs font-medium">Spain 🇪🇸</span>
                     </div>
                   </div>
-                  <div className="relative aspect-video md:aspect-auto">
+                  <div className="relative aspect-[4/3]">
                     <img 
-                      src={spanishFamilyImage} 
+                      src="/images/spanish-family-carlow-blurred.png" 
                       alt="Spanish exchange family exploring Duckett's Grove Castle in Carlow, Ireland" 
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
-                    <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-2 py-1 rounded-full">
                       <span className="text-xs font-medium">Carlow 🇮🇪</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Story Content */}
-                <div className="p-8 md:p-12">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Home className="h-5 w-5 text-amber-600" />
-                    <span className="text-amber-600 font-medium">Home Exchange Experience</span>
+                {/* Story Content - More Compact */}
+                <div className="p-6 md:p-8">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Home className="h-4 w-4 text-amber-600" />
+                    <span className="text-amber-600 font-medium text-sm">Home Exchange Experience</span>
                   </div>
                   
-                  <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-1">
                     From Home Exchange to Skill Exchange
                   </h2>
-                  <h3 className="text-xl text-primary font-medium mb-8">
+                  <h3 className="text-lg text-primary font-medium mb-6">
                     Why I Built Swap-Skills
                   </h3>
 
-                  <div className="prose prose-lg dark:prose-invert max-w-none space-y-6">
-                    <p className="text-lg text-muted-foreground leading-relaxed">
-                      Last summer, my family and I did something that—if you had asked me a few years ago—I might have politely dismissed as "not for us."
+                  <div className="space-y-4 text-muted-foreground">
+                    <p>
+                      Last summer, my family and I did something that—if you had asked me a few years ago—I might have politely dismissed as "not for us." <strong className="text-foreground">We swapped homes.</strong>
                     </p>
                     
-                    <p className="text-lg font-medium text-foreground">
-                      We swapped homes.
-                    </p>
-                    
-                    <p className="text-muted-foreground">
+                    <p>
                       For two weeks, we stayed in Spain with our three children, while a young family of four stayed in our home in Carlow. No money exchanged hands for accommodation. Just trust, communication, and a shared belief that this could work.
                     </p>
 
-                    <p className="text-muted-foreground italic">
-                      At first, I'll be honest — I was nervous.
+                    <p className="italic">
+                      At first, I'll be honest — I was nervous. Letting strangers into your home goes against everything modern media conditions us to feel comfortable with.
                     </p>
 
-                    <p className="text-muted-foreground">
-                      Letting strangers into your home, and staying in theirs, goes against everything modern media conditions us to feel comfortable with. We're constantly warned to be on guard, to expect the worst, to protect ourselves at all costs.
-                    </p>
-
-                    <p className="text-foreground font-medium">
+                    <p className="font-medium text-foreground">
                       But something interesting happened.
                     </p>
                   </div>
 
-                  {/* Trust Section */}
-                  <div className="mt-10 p-6 bg-primary/5 rounded-xl border border-primary/10">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Heart className="h-5 w-5 text-primary" />
-                      <h4 className="text-xl font-bold text-foreground">Trust Grew Through Communication</h4>
+                  {/* Trust Section - Compact */}
+                  <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/10">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Heart className="h-4 w-4 text-primary" />
+                      <h4 className="font-bold text-foreground">Trust Grew Through Communication</h4>
                     </div>
-                    <div className="space-y-4 text-muted-foreground">
-                      <p>
-                        From the very beginning, communication made all the difference. Messages back and forth, small details shared, questions answered, reassurances given. Slowly, that nervous feeling was replaced with confidence.
-                      </p>
-                      <p>
-                        While we explored Spain — beaches, food, slow mornings and spontaneous adventures — we'd excitedly read messages about what they were up to in Carlow. Walks, cafés, little discoveries we take for granted suddenly felt new again through their eyes.
-                      </p>
-                      <p className="font-medium text-foreground">
-                        Over those two weeks, we didn't just exchange homes. We shared experiences. We connected as families. We realised how similar our lives actually were.
-                      </p>
-                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      From the very beginning, communication made all the difference. Messages back and forth, small details shared, questions answered. While we explored Spain, we'd excitedly read messages about what they were up to in Carlow. Over those two weeks, we didn't just exchange homes — we shared experiences and connected as families.
+                    </p>
                   </div>
 
-                  {/* Pet Minding Section */}
-                  <div className="mt-8">
-                    <div className="flex items-center gap-2 mb-6">
-                      <Sparkles className="h-5 w-5 text-amber-600" />
-                      <h4 className="text-xl font-bold text-foreground">Even the Pets Were Happy!</h4>
+                  {/* Pet Minding Section - Compact */}
+                  <div className="mt-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Sparkles className="h-4 w-4 text-amber-600" />
+                      <h4 className="font-bold text-foreground">Even the Pets Were Happy!</h4>
                     </div>
-                    <p className="text-muted-foreground mb-6">
-                      One of the sweetest parts of the exchange? Both families' cats were happily minded in their own homes during the swap. Our black and white cat stayed comfortable in Carlow while the Spanish family's tabby stayed relaxed poolside in Spain — no stressful travel, no kennels, just familiar surroundings and caring hands.
+                    <p className="text-sm text-muted-foreground mb-4">
+                      One of the sweetest parts? Both families' cats were happily minded in their own homes during the swap. Our black and white cat stayed comfortable in Carlow while the Spanish family's tabby stayed relaxed poolside in Spain — no stressful travel, no kennels, just familiar surroundings and caring hands.
                     </p>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="relative rounded-xl overflow-hidden shadow-md">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="relative rounded-lg overflow-hidden shadow-sm">
                         <img 
-                          src={catIrelandImage} 
+                          src="/images/cat-ireland.png" 
                           alt="Our black and white cat being minded in Carlow during the home exchange" 
                           className="w-full aspect-square object-cover"
+                          loading="lazy"
                         />
-                        <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                          <span className="text-xs font-medium">Our cat in Carlow 🐱</span>
+                        <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                          <span className="text-xs font-medium">Our cat 🐱</span>
                         </div>
                       </div>
-                      <div className="relative rounded-xl overflow-hidden shadow-md">
+                      <div className="relative rounded-lg overflow-hidden shadow-sm">
                         <img 
-                          src={catSpainImage} 
+                          src="/images/cat-spain.png" 
                           alt="The Spanish family's tabby cat minded in Spain during the home exchange" 
                           className="w-full aspect-square object-cover"
+                          loading="lazy"
                         />
-                        <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                          <span className="text-xs font-medium">Their cat in Spain 🐱</span>
+                        <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                          <span className="text-xs font-medium">Their cat 🐱</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Cost Section */}
-                  <div className="mt-10 p-6 bg-amber-50 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-800/50">
-                    <p className="text-foreground font-medium mb-4">
-                      The cost of that holiday?
+                  {/* Cost Section - Compact */}
+                  <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800/50">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      <strong className="text-foreground">The cost of that holiday?</strong> Flights, a car rental, and whatever activities we chose. No accommodation bill. No financial stress.
                     </p>
-                    <p className="text-muted-foreground mb-4">
-                      Flights, a car rental, and whatever activities and meals we chose to enjoy. No accommodation bill hanging over us. No financial stress dictating how much we could relax.
-                    </p>
-                    <p className="text-lg font-bold text-amber-700 dark:text-amber-400">
-                      And most importantly — no bad experiences, no horror stories, no regret. Just people helping people.
+                    <p className="text-sm font-bold text-amber-700 dark:text-amber-400">
+                      And most importantly — no bad experiences, no horror stories. Just people helping people.
                     </p>
                   </div>
 
-                  {/* The Spark */}
-                  <div className="mt-10">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Users className="h-5 w-5 text-primary" />
-                      <h4 className="text-xl font-bold text-foreground">The Spark Behind Swap-Skills</h4>
+                  {/* The Spark - Compact */}
+                  <div className="mt-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Users className="h-4 w-4 text-primary" />
+                      <h4 className="font-bold text-foreground">The Spark Behind Swap-Skills</h4>
                     </div>
-                    <div className="space-y-4 text-muted-foreground">
+                    <div className="space-y-3 text-sm text-muted-foreground">
                       <p>
-                        That experience stayed with me long after we returned home.
-                      </p>
-                      <p className="font-medium text-foreground">
-                        It made me question something bigger: When did we become so disconnected from one another?
+                        That experience stayed with me long after we returned home. It made me question: <strong className="text-foreground">When did we become so disconnected from one another?</strong>
                       </p>
                       <p>
-                        Media headlines and constant scaremongering have quietly trained us to see risk before opportunity, fear before goodwill. We forget how often we're all in the same boat — juggling family life, work, finances, time, and energy.
-                      </p>
-                      <p>
-                        While a home exchange might not be for everyone, it planted a simple idea in my mind:
-                      </p>
-                      <p className="text-xl font-bold text-primary italic">
-                        What if reconnecting didn't require such a big leap?
+                        While a home exchange might not be for everyone, it planted a simple idea: <em className="text-primary font-medium">What if reconnecting didn't require such a big leap?</em>
                       </p>
                       <p className="font-medium text-foreground">
                         That's where Swap-Skills was born.
@@ -235,59 +206,40 @@ export default function Stories() {
                     </div>
                   </div>
 
-                  {/* A Smaller Step */}
-                  <div className="mt-10 p-6 bg-gradient-to-r from-primary/10 to-amber-500/10 rounded-xl">
-                    <h4 className="text-xl font-bold text-foreground mb-4">A Smaller Step — With Big Impact</h4>
-                    <p className="text-muted-foreground mb-4">
-                      Skill swapping is a gentler starting point.
+                  {/* A Smaller Step - Compact */}
+                  <div className="mt-6 p-4 bg-gradient-to-r from-primary/10 to-amber-500/10 rounded-lg">
+                    <h4 className="font-bold text-foreground mb-2">A Smaller Step — With Big Impact</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Skill swapping is a gentler starting point. One hour of your time for one hour of mine. No money involved. No judgement about whose skill is "worth more."
                     </p>
-                    <p className="text-foreground font-medium mb-4">
-                      One hour of your time for one hour of mine. No money involved. No judgement about whose skill is "worth more." Just two people helping each other.
+                    <p className="text-sm text-muted-foreground mb-2">
+                      German tutoring for babysitting. A massage for home cleaning. Gardening for tech help.
                     </p>
-                    <ul className="space-y-2 text-muted-foreground mb-4">
-                      <li>• Maybe it's German tutoring for occasional babysitting.</li>
-                      <li>• A massage in exchange for home cleaning.</li>
-                      <li>• Gardening for tech help.</li>
-                      <li>• Business advice for fitness coaching.</li>
-                    </ul>
-                    <p className="text-foreground font-medium">
-                      There's very little to lose — and a lot to gain: Confidence. Connection. Community. And often, friendships you didn't expect.
+                    <p className="text-sm font-medium text-foreground">
+                      There's very little to lose — and a lot to gain: Confidence, connection, community.
                     </p>
                   </div>
 
-                  {/* Why This Matters */}
-                  <div className="mt-10">
-                    <h4 className="text-xl font-bold text-foreground mb-4">Why This Matters (Especially Now)</h4>
-                    <div className="space-y-4 text-muted-foreground">
-                      <p>
-                        Swap-Skills isn't about avoiding money or replacing jobs. It's about restoring balance.
+                  {/* Why This Matters - Compact */}
+                  <div className="mt-6">
+                    <h4 className="font-bold text-foreground mb-2">Why This Matters</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Swap-Skills isn't about avoiding money or replacing jobs. It's about remembering that value isn't always measured in euros — sometimes it's measured in trust, time, and shared effort.
+                    </p>
+                    <blockquote className="border-l-4 border-primary pl-4 py-1 my-4">
+                      <p className="text-primary font-bold italic">
+                        Most people are good. Most people want to help. We just need a safe, simple way to start.
                       </p>
-                      <p>
-                        It's about remembering that value isn't always measured in euros — sometimes it's measured in trust, time, and shared effort.
-                      </p>
-                      <p>
-                        If we can start locally, county by county, neighbour by neighbour, then maybe we can gently push back against the idea that we're all strangers to one another.
-                      </p>
-                      <p className="text-lg font-medium text-foreground">
-                        Because my experience taught me something simple but powerful:
-                      </p>
-                      <blockquote className="border-l-4 border-primary pl-6 py-2 my-6">
-                        <p className="text-xl text-primary font-bold italic">
-                          Most people are good. Most people want to help. We just need a safe, simple way to start.
-                        </p>
-                      </blockquote>
-                      <p className="text-foreground font-medium">
-                        That's what Swap-Skills is trying to be.
-                      </p>
-                    </div>
+                    </blockquote>
+                    <p className="text-sm font-medium text-foreground">
+                      That's what Swap-Skills is trying to be.
+                    </p>
                   </div>
 
                   {/* Author */}
-                  <div className="mt-10 pt-6 border-t border-border flex items-center justify-between">
-                    <div className="text-sm">
-                      <span className="font-bold text-lg">— Kris</span>
-                      <span className="text-muted-foreground block">Founder of Swap-Skills</span>
-                    </div>
+                  <div className="mt-6 pt-4 border-t border-border">
+                    <span className="font-bold">— Kris</span>
+                    <span className="text-muted-foreground text-sm ml-2">Founder of Swap-Skills</span>
                   </div>
                 </div>
               </CardContent>
@@ -296,7 +248,7 @@ export default function Stories() {
         </section>
 
         {/* Featured Story */}
-        <section className="py-12 bg-primary/5">
+        <section className="py-10 bg-primary/5">
           <div className="container">
             <div className="flex items-center gap-2 mb-6">
               <Badge variant="default" className="bg-primary text-primary-foreground">
@@ -313,29 +265,28 @@ export default function Stories() {
                       <img src={featuredStory.image} alt={`${featuredStory.authors} - ${featuredStory.title}`} width={400} height={500} loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
                     </div>
                   </div>
-                  <div className="p-8 lg:p-10 flex flex-col lg:justify-start lg:pt-6">
-                    <div className="flex items-center gap-2 mb-4">
+                  <div className="p-6 lg:p-8 flex flex-col lg:justify-start lg:pt-6">
+                    <div className="flex items-center gap-2 mb-3">
                       <Badge variant="secondary">{featuredStory.category}</Badge>
                       <span className="text-xs text-muted-foreground">{featuredStory.date}</span>
                     </div>
                     
-                    <h2 className="text-2xl md:text-3xl font-display font-bold mb-2 text-primary">
+                    <h2 className="text-xl md:text-2xl font-display font-bold mb-2 text-primary">
                       {featuredStory.title}
                     </h2>
-                    <p className="font-bold text-foreground mb-6">
-                      Learn more about two business women from Carlow, with unique service offerings and how they connected by swapping their skills and forming a connection:
+                    <p className="font-medium text-foreground text-sm mb-4">
+                      Two business women from Carlow with unique offerings connected by swapping their skills:
                     </p>
                     
-                    <div className="space-y-4 text-muted-foreground">
+                    <div className="space-y-3 text-sm text-muted-foreground">
                       <p>{featuredStory.content.jennifer}</p>
-                      
                       <p className="font-medium text-foreground">{featuredStory.content.connection}</p>
                       <p>{featuredStory.content.exchange}</p>
                       <p className="italic">{featuredStory.content.outcome}</p>
                       <p className="font-medium text-foreground">{featuredStory.content.partnership}</p>
                     </div>
                     
-                    <div className="flex items-center gap-4 mt-8 pt-6 border-t border-border">
+                    <div className="flex items-center gap-4 mt-6 pt-4 border-t border-border">
                       <div className="text-sm">
                         <span className="font-medium">{featuredStory.authors}</span>
                         <span className="text-muted-foreground"> • {featuredStory.location}</span>
@@ -355,14 +306,14 @@ export default function Stories() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 bg-primary/5">
+        <section className="py-12 bg-primary/5">
           <div className="container">
             <div className="max-w-2xl mx-auto text-center">
-              <MessageCircle className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
+              <MessageCircle className="h-10 w-10 text-primary mx-auto mb-3" />
+              <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
                 Have a Swap-Skill Story to Share?
               </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-sm text-muted-foreground mb-4">
                 We'd love to hear about your skill swapping experience. Share your story 
                 and inspire others in our community.
               </p>
