@@ -126,7 +126,7 @@ export function Header() {
   ];
 
   const mainNavLinks = [
-    { href: "/stories", label: "Swap-Skill Stories" },
+    { href: "/stories", label: "Swap-Skill Stories", icon: BookOpen },
     ...(isAdvertiser ? [{ href: "/advertiser", label: "My Ads", icon: Megaphone }] : []),
   ];
 
@@ -248,12 +248,13 @@ export function Header() {
               key={link.href}
               to={link.href}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
+                "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                 location.pathname === link.href
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
+              {link.icon && <link.icon className="h-4 w-4" />}
               {link.label}
             </Link>
           ))}
