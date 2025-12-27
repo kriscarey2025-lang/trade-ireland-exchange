@@ -59,12 +59,17 @@ export default function Stories() {
     }
   };
 
+  // Dynamic OG image URL for the Founder's Story
+  const founderStoryOgImage = `https://lporltdxjhouspwmmrjd.supabase.co/functions/v1/generate-og-image?title=${encodeURIComponent("From Home Exchange to Skill Exchange")}&category=${encodeURIComponent("founder")}&location=${encodeURIComponent("Ireland")}&type=${encodeURIComponent("story")}`;
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEO 
-        title="Swap-Skill Stories" 
-        description="Read inspiring stories from our community members who have successfully swapped skills and made meaningful connections."
+        title="Swap-Skill Stories | Founder's Story" 
+        description="Discover how a home exchange experience in Spain inspired the creation of Swap-Skills - Ireland's community for trading skills without money."
         url="https://swap-skills.com/stories"
+        image={founderStoryOgImage}
+        keywords="skill swap, founder story, Ireland, community, skill exchange, home exchange"
       />
       <Header />
       
