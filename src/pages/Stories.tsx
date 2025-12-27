@@ -4,11 +4,33 @@ import { SEO } from "@/components/SEO";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, MessageCircle, ExternalLink, Home, Heart, Users, Sparkles } from "lucide-react";
+import { BookOpen, MessageCircle, ExternalLink, Home, Heart, Users, Sparkles, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import jenniferDeliaImage from "@/assets/jennifer-delia-carlow-edited.png";
 
-// Featured real story
+// Story index for navigation
+const stories = [
+  {
+    id: "founder-story",
+    title: "From Home Exchange to Skill Exchange",
+    subtitle: "Why I Built Swap-Skills",
+    author: "Kris",
+    badge: "Founder's Story",
+    badgeColor: "bg-amber-600",
+    preview: "A home exchange experience that sparked the idea for Swap-Skills..."
+  },
+  {
+    id: "jennifer-delia",
+    title: "A Real Life Story from Carlow",
+    subtitle: "Jennifer & Delia",
+    author: "Jennifer & Delia",
+    badge: "Community Story",
+    badgeColor: "bg-primary",
+    preview: "Two wellness professionals discovered the power of skill-trading..."
+  }
+];
+
+// Featured real story data
 const featuredStory = {
   id: 0,
   title: "A Real Life Story from Carlow",
@@ -30,6 +52,13 @@ const featuredStory = {
 };
 
 export default function Stories() {
+  const scrollToStory = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEO 
@@ -61,8 +90,39 @@ export default function Stories() {
           </div>
         </section>
 
+        {/* Story Index / Quick Navigation */}
+        <section className="py-8 bg-background border-b border-border">
+          <div className="container max-w-4xl">
+            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+              Jump to a Story
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {stories.map((story) => (
+                <button
+                  key={story.id}
+                  onClick={() => scrollToStory(story.id)}
+                  className="group flex items-start gap-3 p-4 rounded-lg border border-border bg-card hover:bg-accent/50 hover:border-primary/30 transition-all text-left"
+                >
+                  <Badge className={`${story.badgeColor} text-white shrink-0 mt-0.5`}>
+                    {story.badge}
+                  </Badge>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                      {story.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground line-clamp-1">
+                      {story.subtitle}
+                    </p>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Founder Story Section */}
-        <section className="py-10 md:py-12 bg-gradient-to-b from-background to-primary/5">
+        <section id="founder-story" className="py-10 md:py-12 scroll-mt-20">
           <div className="container max-w-4xl">
             <div className="flex items-center gap-2 mb-6">
               <Badge variant="default" className="bg-amber-600 text-white">
@@ -71,9 +131,9 @@ export default function Stories() {
               <span className="text-sm text-muted-foreground">The inspiration behind Swap-Skills</span>
             </div>
 
-            <Card className="overflow-hidden border-amber-200 dark:border-amber-800/50">
+            <Card className="overflow-hidden border-border">
               <CardContent className="p-0">
-                {/* Hero Image Grid - Compact */}
+                {/* Hero Image Grid */}
                 <div className="grid grid-cols-2 gap-1">
                   <div className="relative aspect-[4/3]">
                     <img 
@@ -99,7 +159,7 @@ export default function Stories() {
                   </div>
                 </div>
 
-                {/* Story Content - More Compact */}
+                {/* Story Content */}
                 <div className="p-6 md:p-8">
                   <div className="flex items-center gap-2 mb-3">
                     <Home className="h-4 w-4 text-amber-600" />
@@ -131,7 +191,7 @@ export default function Stories() {
                     </p>
                   </div>
 
-                  {/* Trust Section - Compact */}
+                  {/* Trust Section */}
                   <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/10">
                     <div className="flex items-center gap-2 mb-2">
                       <Heart className="h-4 w-4 text-primary" />
@@ -142,7 +202,7 @@ export default function Stories() {
                     </p>
                   </div>
 
-                  {/* Pet Minding Section - Compact */}
+                  {/* Pet Minding Section */}
                   <div className="mt-6">
                     <div className="flex items-center gap-2 mb-3">
                       <Sparkles className="h-4 w-4 text-amber-600" />
@@ -177,7 +237,7 @@ export default function Stories() {
                     </div>
                   </div>
 
-                  {/* Cost Section - Compact */}
+                  {/* Cost Section */}
                   <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800/50">
                     <p className="text-sm text-muted-foreground mb-2">
                       <strong className="text-foreground">The cost of that holiday?</strong> Flights, a car rental, and whatever activities we chose. No accommodation bill. No financial stress.
@@ -187,7 +247,7 @@ export default function Stories() {
                     </p>
                   </div>
 
-                  {/* The Spark - Compact */}
+                  {/* The Spark */}
                   <div className="mt-6">
                     <div className="flex items-center gap-2 mb-2">
                       <Users className="h-4 w-4 text-primary" />
@@ -206,7 +266,7 @@ export default function Stories() {
                     </div>
                   </div>
 
-                  {/* A Smaller Step - Compact */}
+                  {/* A Smaller Step */}
                   <div className="mt-6 p-4 bg-gradient-to-r from-primary/10 to-amber-500/10 rounded-lg">
                     <h4 className="font-bold text-foreground mb-2">A Smaller Step — With Big Impact</h4>
                     <p className="text-sm text-muted-foreground mb-3">
@@ -220,7 +280,7 @@ export default function Stories() {
                     </p>
                   </div>
 
-                  {/* Why This Matters - Compact */}
+                  {/* Why This Matters */}
                   <div className="mt-6">
                     <h4 className="font-bold text-foreground mb-2">Why This Matters</h4>
                     <p className="text-sm text-muted-foreground mb-3">
@@ -247,57 +307,71 @@ export default function Stories() {
           </div>
         </section>
 
-        {/* Featured Story */}
-        <section className="py-10 bg-primary/5">
-          <div className="container">
+        {/* Jennifer & Delia Story - Now with consistent styling */}
+        <section id="jennifer-delia" className="py-10 md:py-12 bg-muted/30 scroll-mt-20">
+          <div className="container max-w-4xl">
             <div className="flex items-center gap-2 mb-6">
               <Badge variant="default" className="bg-primary text-primary-foreground">
-                Featured Story
+                Community Story
               </Badge>
               <span className="text-sm text-muted-foreground">Real success from our community</span>
             </div>
             
-            <Card className="overflow-hidden border-primary/20">
+            <Card className="overflow-hidden border-border">
               <CardContent className="p-0">
-                <div className="grid lg:grid-cols-2 gap-0">
-                  <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-auto bg-gradient-to-br from-orange-400 via-amber-500 to-orange-600 p-4 md:p-6">
-                    <div className="relative w-full h-full rounded-lg overflow-hidden shadow-xl ring-4 ring-white/30">
-                      <img src={featuredStory.image} alt={`${featuredStory.authors} - ${featuredStory.title}`} width={400} height={500} loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
-                    </div>
+                {/* Image - Consistent with founder story layout */}
+                <div className="relative aspect-[16/9] md:aspect-[21/9] bg-gradient-to-br from-orange-400 via-amber-500 to-orange-600 flex items-center justify-center p-6 md:p-8">
+                  <div className="relative w-48 h-60 md:w-56 md:h-72 rounded-lg overflow-hidden shadow-2xl ring-4 ring-white/30">
+                    <img 
+                      src={featuredStory.image} 
+                      alt={`${featuredStory.authors} - ${featuredStory.title}`} 
+                      loading="lazy" 
+                      decoding="async" 
+                      className="w-full h-full object-cover object-top" 
+                    />
                   </div>
-                  <div className="p-6 lg:p-8 flex flex-col lg:justify-start lg:pt-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Badge variant="secondary">{featuredStory.category}</Badge>
-                      <span className="text-xs text-muted-foreground">{featuredStory.date}</span>
-                    </div>
-                    
-                    <h2 className="text-xl md:text-2xl font-display font-bold mb-2 text-primary">
-                      {featuredStory.title}
-                    </h2>
-                    <p className="font-medium text-foreground text-sm mb-4">
+                </div>
+
+                {/* Story Content - Matching founder story padding */}
+                <div className="p-6 md:p-8">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge variant="secondary">{featuredStory.category}</Badge>
+                    <span className="text-xs text-muted-foreground">{featuredStory.date}</span>
+                  </div>
+                  
+                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-1">
+                    {featuredStory.title}
+                  </h2>
+                  <h3 className="text-lg text-primary font-medium mb-6">
+                    {featuredStory.authors} • {featuredStory.location}
+                  </h3>
+                  
+                  <div className="space-y-4 text-muted-foreground">
+                    <p className="font-medium text-foreground">
                       Two business women from Carlow with unique offerings connected by swapping their skills:
                     </p>
+                    <p>{featuredStory.content.jennifer}</p>
                     
-                    <div className="space-y-3 text-sm text-muted-foreground">
-                      <p>{featuredStory.content.jennifer}</p>
-                      <p className="font-medium text-foreground">{featuredStory.content.connection}</p>
-                      <p>{featuredStory.content.exchange}</p>
-                      <p className="italic">{featuredStory.content.outcome}</p>
-                      <p className="font-medium text-foreground">{featuredStory.content.partnership}</p>
+                    <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
+                      <p className="font-medium text-foreground mb-2">{featuredStory.content.connection}</p>
+                      <p className="text-sm">{featuredStory.content.exchange}</p>
                     </div>
                     
-                    <div className="flex items-center gap-4 mt-6 pt-4 border-t border-border">
-                      <div className="text-sm">
-                        <span className="font-medium">{featuredStory.authors}</span>
-                        <span className="text-muted-foreground"> • {featuredStory.location}</span>
-                      </div>
-                      <a href={featuredStory.facebookLink} target="_blank" rel="noopener noreferrer" className="ml-auto">
-                        <Button variant="outline" size="sm" className="gap-2">
-                          <ExternalLink className="h-4 w-4" />
-                          Follow Their Journey
-                        </Button>
-                      </a>
+                    <p className="italic">{featuredStory.content.outcome}</p>
+                    <p className="font-medium text-foreground">{featuredStory.content.partnership}</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 mt-6 pt-4 border-t border-border">
+                    <div>
+                      <span className="font-bold">— {featuredStory.authors}</span>
+                      <span className="text-muted-foreground text-sm ml-2">{featuredStory.location}</span>
                     </div>
+                    <a href={featuredStory.facebookLink} target="_blank" rel="noopener noreferrer" className="ml-auto">
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <ExternalLink className="h-4 w-4" />
+                        Follow Their Journey
+                      </Button>
+                    </a>
                   </div>
                 </div>
               </CardContent>
@@ -310,10 +384,10 @@ export default function Stories() {
           <div className="container">
             <div className="max-w-2xl mx-auto text-center">
               <MessageCircle className="h-10 w-10 text-primary mx-auto mb-3" />
-              <h2 className="text-xl md:text-2xl font-display font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-display font-bold mb-4">
                 Have a Swap-Skill Story to Share?
               </h2>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-6">
                 We'd love to hear about your skill swapping experience. Share your story 
                 and inspire others in our community.
               </p>
