@@ -4,6 +4,7 @@ import { SEO } from "@/components/SEO";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SocialShareButtons } from "@/components/shared/SocialShareButtons";
 import { BookOpen, MessageCircle, ExternalLink, Home, Heart, Users, Sparkles, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import jenniferDeliaImage from "@/assets/jennifer-delia-carlow-edited.png";
@@ -301,10 +302,17 @@ export default function Stories() {
                     </p>
                   </div>
 
-                  {/* Author */}
-                  <div className="mt-6 pt-4 border-t border-border">
-                    <span className="font-bold">— Kris</span>
-                    <span className="text-muted-foreground text-sm ml-2">Founder of Swap-Skills</span>
+                  {/* Author & Share */}
+                  <div className="mt-6 pt-4 border-t border-border flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <span className="font-bold">— Kris</span>
+                      <span className="text-muted-foreground text-sm ml-2">Founder of Swap-Skills</span>
+                    </div>
+                    <SocialShareButtons 
+                      url="https://swap-skills.com/stories#founder-story"
+                      title="From Home Exchange to Skill Exchange - Why I Built Swap-Skills"
+                      description="A home exchange experience that inspired the creation of Ireland's community for trading skills without money."
+                    />
                   </div>
                 </div>
               </CardContent>
@@ -366,17 +374,24 @@ export default function Stories() {
                     <p className="font-medium text-foreground">{featuredStory.content.partnership}</p>
                   </div>
                   
-                  <div className="flex items-center gap-4 mt-6 pt-4 border-t border-border">
+                  <div className="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-border">
                     <div>
                       <span className="font-bold">— {featuredStory.authors}</span>
                       <span className="text-muted-foreground text-sm ml-2">{featuredStory.location}</span>
                     </div>
-                    <a href={featuredStory.facebookLink} target="_blank" rel="noopener noreferrer" className="ml-auto">
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <ExternalLink className="h-4 w-4" />
-                        Follow Their Journey
-                      </Button>
-                    </a>
+                    <div className="flex items-center gap-3 ml-auto flex-wrap">
+                      <SocialShareButtons 
+                        url="https://swap-skills.com/stories#jennifer-delia"
+                        title="A Real Life Story from Carlow - Jennifer & Delia"
+                        description="Two wellness professionals discovered the power of skill-trading and built a business partnership."
+                      />
+                      <a href={featuredStory.facebookLink} target="_blank" rel="noopener noreferrer">
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <ExternalLink className="h-4 w-4" />
+                          Follow Their Journey
+                        </Button>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </CardContent>
