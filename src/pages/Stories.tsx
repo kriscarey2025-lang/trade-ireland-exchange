@@ -77,8 +77,8 @@ export default function Stories() {
                 <div className="grid grid-cols-2 gap-1">
                   <div className="relative aspect-[4/3]">
                     <img 
-                      src="/images/spain-pool.png" 
-                      alt="Family enjoying pool time in Spain during home exchange" 
+                      src="/images/spain-street-blurred.png" 
+                      alt="Family exploring a Spanish street during home exchange" 
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
