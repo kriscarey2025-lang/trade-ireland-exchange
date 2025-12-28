@@ -256,7 +256,7 @@ export default function NewService() {
               </div>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-8">
+              <form id="new-service-form" onSubmit={handleSubmit} className="space-y-8 pb-24 md:pb-0">
                 {/* Post Type Selection */}
                 <div className="space-y-4">
                   <Label className="text-base font-semibold">What type of post is this?</Label>
@@ -420,8 +420,8 @@ export default function NewService() {
                   </div>
                 )}
 
-                {/* Submit */}
-                <div className="pt-4 flex gap-3">
+                {/* Submit - Desktop */}
+                <div className="hidden md:flex pt-4 gap-3">
                   <Button
                     type="submit"
                     variant="hero"
@@ -452,6 +452,40 @@ export default function NewService() {
               </form>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Mobile Sticky Submit Button */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 p-4 bg-background/95 backdrop-blur-xl border-t border-border safe-area-bottom">
+          <div className="flex gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate(-1)}
+              disabled={isSubmitting}
+              className="flex-shrink-0"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              form="new-service-form"
+              variant="hero"
+              className="flex-1"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Posting...
+                </>
+              ) : (
+                <>
+                  {getHeaderIcon()}
+                  <span className="ml-2">Post</span>
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </main>
     </div>
