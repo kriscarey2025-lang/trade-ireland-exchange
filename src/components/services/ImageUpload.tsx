@@ -1,9 +1,9 @@
 import { useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ImagePlus, X, Loader2, GripVertical } from "lucide-react";
+import { ImagePlus, X, Loader2, GripVertical, Star, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-
+import { Button } from "@/components/ui/button";
 interface ImageUploadProps {
   userId: string;
   images: string[];
@@ -220,54 +220,95 @@ export function ImageUpload({
 
       {/* Image Grid */}
       <div className="grid grid-cols-2 gap-4 relative">
-        {images.map((url, index) => (
-          <div 
-            key={url}
-            draggable={!disabled}
-            onDragStart={(e) => handleImageDragStart(e, index)}
-            onDragOver={(e) => handleImageDragOver(e, index)}
-            onDragLeave={handleImageDragLeave}
-            onDrop={(e) => handleImageDrop(e, index)}
-            onDragEnd={handleImageDragEnd}
-            className={cn(
-              "relative aspect-[4/3] rounded-xl overflow-hidden border-2 bg-muted group cursor-grab active:cursor-grabbing transition-all",
-              draggedIndex === index && "opacity-50 scale-95",
-              dragOverIndex === index && "border-primary ring-2 ring-primary/30",
-              draggedIndex === null && "border-border hover:border-primary/30"
-            )}
-          >
-            {/* Drag handle indicator */}
-            {!disabled && (
-              <div className="absolute top-2 left-2 p-1 rounded bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                <GripVertical className="h-4 w-4 text-muted-foreground" />
+        {images.map((url, index) => {
+          const isMainImage = index === 0;
+          
+          const handleSetAsMain = (e: React.MouseEvent) => {
+            e.stopPropagation();
+            if (index === 0) return;
+            const newImages = [...images];
+            const [selectedImage] = newImages.splice(index, 1);
+            newImages.unshift(selectedImage);
+            onImagesChange(newImages);
+            toast.success("Main display image updated!");
+          };
+          
+          return (
+            <div 
+              key={url}
+              draggable={!disabled}
+              onDragStart={(e) => handleImageDragStart(e, index)}
+              onDragOver={(e) => handleImageDragOver(e, index)}
+              onDragLeave={handleImageDragLeave}
+              onDrop={(e) => handleImageDrop(e, index)}
+              onDragEnd={handleImageDragEnd}
+              className={cn(
+                "relative aspect-[4/3] rounded-xl overflow-hidden border-2 bg-muted group cursor-grab active:cursor-grabbing transition-all",
+                isMainImage && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+                draggedIndex === index && "opacity-50 scale-95",
+                dragOverIndex === index && "border-primary ring-2 ring-primary/30",
+                draggedIndex === null && !isMainImage && "border-border hover:border-primary/30",
+                draggedIndex === null && isMainImage && "border-primary"
+              )}
+            >
+              {/* Main image badge */}
+              {isMainImage && (
+                <div className="absolute top-2 left-2 px-2 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold flex items-center gap-1 z-10">
+                  <Star className="h-3 w-3 fill-current" />
+                  Main
+                </div>
+              )}
+              
+              {/* Drag handle indicator - only show on non-main images */}
+              {!disabled && !isMainImage && (
+                <div className="absolute top-2 left-2 p-1 rounded bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <GripVertical className="h-4 w-4 text-muted-foreground" />
+                </div>
+              )}
+              
+              <img
+                src={url}
+                alt={`Service image ${index + 1}`}
+                className="w-full h-full object-contain bg-muted pointer-events-none"
+              />
+              
+              {/* Position indicator */}
+              <div className={cn(
+                "absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-xs font-medium",
+                isMainImage ? "bg-primary text-primary-foreground" : "bg-background/80"
+              )}>
+                {index + 1}
               </div>
-            )}
-            
-            <img
-              src={url}
-              alt={`Service image ${index + 1}`}
-              className="w-full h-full object-contain bg-muted pointer-events-none"
-            />
-            
-            {/* Position indicator */}
-            <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-background/80 text-xs font-medium">
-              {index + 1}
+              
+              {/* Set as main button - only show on hover for non-main images */}
+              {!disabled && !isMainImage && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  onClick={handleSetAsMain}
+                  className="absolute bottom-2 right-2 h-7 px-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 text-xs"
+                >
+                  <ArrowUp className="h-3 w-3 mr-1" />
+                  Set as Main
+                </Button>
+              )}
+              
+              {!disabled && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveImage(index);
+                  }}
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
-            
-            {!disabled && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveImage(index);
-                }}
-                className="absolute top-2 right-2 p-1.5 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity z-10"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-        ))}
+          );
+        })}
 
         {/* Upload Button */}
         {images.length < maxImages && !disabled && (
@@ -309,8 +350,13 @@ export function ImageUpload({
 
       {/* Helper Text */}
       <p className="text-xs text-muted-foreground text-center">
-        {images.length}/{maxImages} photos • Max 5MB each • Drag to reorder
+        {images.length}/{maxImages} photos • Max 5MB each • First image is the main display image
       </p>
+      {images.length > 1 && (
+        <p className="text-xs text-muted-foreground text-center">
+          Drag to reorder or click "Set as Main" on any image
+        </p>
+      )}
     </div>
   );
 }
