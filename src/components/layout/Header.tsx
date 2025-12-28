@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass, Facebook } from "lucide-react";
+import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Clover } from "lucide-react";
 
 // TikTok icon component (not in lucide-react)
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -23,6 +23,9 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
+import FeatureRequestDialog from "@/components/sidebar/FeatureRequestDialog";
+import FeedbackDialog from "@/components/sidebar/FeedbackDialog";
+import LeprechaunWizard from "@/components/sidebar/LeprechaunWizard";
 import swapSkillsLogo from "@/assets/swapskills-logo.png";
 
 export function Header() {
@@ -33,6 +36,9 @@ export function Header() {
   const [discoverMenuOpen, setDiscoverMenuOpen] = useState(false);
   const [browseMenuOpen, setBrowseMenuOpen] = useState(false);
   const [brainstormOpen, setBrainstormOpen] = useState(false);
+  const [featureDialogOpen, setFeatureDialogOpen] = useState(false);
+  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
+  const [wizardOpen, setWizardOpen] = useState(false);
   const adminMenuRef = useRef<HTMLDivElement>(null);
   const discoverMenuRef = useRef<HTMLDivElement>(null);
   const browseMenuRef = useRef<HTMLDivElement>(null);
@@ -462,6 +468,38 @@ export function Header() {
                   )
                 )}
 
+                {/* Feedback buttons - mobile only */}
+                <button
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:bg-muted w-full text-left"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setFeatureDialogOpen(true);
+                  }}
+                >
+                  <Lightbulb className="h-4 w-4" />
+                  Request a Feature
+                </button>
+                <button
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:bg-muted w-full text-left"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setFeedbackDialogOpen(true);
+                  }}
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Send Feedback
+                </button>
+                <button
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:bg-muted w-full text-left"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setWizardOpen(true);
+                  }}
+                >
+                  <span className="text-lg">🍀</span>
+                  Ask Lucky the Leprechaun
+                </button>
+
                 <div className="pt-2">
                   {mainNavLinks.map((link) => (
                     <Link
@@ -574,6 +612,9 @@ export function Header() {
 
       
       <BrainstormDialog open={brainstormOpen} onOpenChange={setBrainstormOpen} />
+      <FeatureRequestDialog open={featureDialogOpen} onOpenChange={setFeatureDialogOpen} />
+      <FeedbackDialog open={feedbackDialogOpen} onOpenChange={setFeedbackDialogOpen} />
+      <LeprechaunWizard open={wizardOpen} onOpenChange={setWizardOpen} />
     </header>
   );
 }

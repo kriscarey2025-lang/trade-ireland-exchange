@@ -13,7 +13,7 @@ const FeedbackSidebar = () => {
 
   return (
     <>
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2 bg-background/80 backdrop-blur-sm border-l border-t border-b rounded-l-xl shadow-lg">
+      <div className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 flex-col gap-2 p-2 bg-background/80 backdrop-blur-sm border-l border-t border-b rounded-l-xl shadow-lg">
         <TooltipProvider delayDuration={300}>
           <Tooltip>
             <TooltipTrigger asChild>
