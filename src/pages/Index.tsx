@@ -329,9 +329,6 @@ const Index = () => {
                 )}
               </div>
 
-              {/* Inline Ad */}
-              <InlineAd />
-
               {/* Services Grid */}
               {isLoading ? (
                 <div className="flex items-center justify-center py-16">
@@ -378,6 +375,9 @@ const Index = () => {
                   )}
                 </div>
               )}
+
+              {/* Inline Ad - Below Services */}
+              <InlineAd className="mt-8" />
 
               {/* Brainstorm CTA at bottom */}
               {!user && filteredServices.length > 0 && (
