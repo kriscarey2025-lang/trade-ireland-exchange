@@ -240,7 +240,7 @@ const Index = () => {
               </div>
 
               {/* Search & Filters */}
-              <div className="bg-card rounded-xl border border-border p-4 mb-6 shadow-soft">
+              <div className="bg-card rounded-xl border border-border p-4 mb-6 shadow-soft sticky top-16 z-40">
                 <div className="flex flex-col lg:flex-row gap-4">
                   {/* Search */}
                   <div className="flex-1 relative">
