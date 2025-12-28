@@ -15,8 +15,8 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Base URL for the site
-    const baseUrl = 'https://preview--swap-skills.lovable.app';
+    // Base URL for the site - update this when you get your .ie domain
+    const baseUrl = 'https://swap-skills.lovable.app';
 
     // Fetch all active, approved services
     const { data: services, error } = await supabase
