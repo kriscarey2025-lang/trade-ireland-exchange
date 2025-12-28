@@ -39,6 +39,7 @@ interface ServiceData {
   location: string;
   estimatedHours?: number;
   acceptedCategories?: string[];
+  images?: string[];
   user?: ServiceUser;
 }
 
@@ -108,9 +109,21 @@ export function ServiceCard({
     navigator.clipboard.writeText(shareUrl);
     toast.success("Link copied to clipboard!");
   };
+  const hasImage = service.images && service.images.length > 0 && service.images[0];
+
   return <Link to={`/services/${service.id}`}>
       <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-2 border-transparent hover:border-primary/20 bg-card transition-all duration-300", className)}>
-        <CardContent className="p-5">
+        {/* Service Image */}
+        {hasImage && (
+          <div className="relative w-full h-40 overflow-hidden bg-muted">
+            <img 
+              src={service.images![0]} 
+              alt={service.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        )}
+        <CardContent className={cn("p-5", hasImage && "pt-4")}>
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-4">
             <Badge variant={postTypeBadge.variant} className={cn("shrink-0 rounded-lg", postTypeBadge.className)}>
