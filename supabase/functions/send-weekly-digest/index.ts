@@ -94,7 +94,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         await resend.emails.send({
-          from: "SwapSkills <noreply@swap-skills.com>",
+          from: "SwapSkills <hello@swap-skills.com>",
           to: [testEmail],
           subject: "📬 Your Weekly SwapSkills Digest (TEST)",
           html: generateDigestEmail(
@@ -192,7 +192,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         await resend.emails.send({
-          from: "SwapSkills <noreply@swap-skills.com>",
+          from: "SwapSkills <hello@swap-skills.com>",
           to: [profile.email],
           subject: hasMatches 
             ? `🎯 ${matchingServices.length} new skill offers match your interests!` 
