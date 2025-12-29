@@ -154,13 +154,32 @@ const handler = async (req: Request): Promise<Response> => {
     let emailsSent = 0;
 
     for (const subscriber of subscribers as UserPreference[]) {
+      // DUPLICATE PREVENTION: Update timestamp FIRST before sending
+      // This prevents race conditions if cron runs again before completion
+      const sendTimestamp = new Date().toISOString();
+      const { error: lockError, data: lockResult } = await supabase
+        .from("user_preferences")
+        .update({ last_digest_sent_at: sendTimestamp })
+        .eq("user_id", subscriber.user_id)
+        .or(`last_digest_sent_at.is.null,last_digest_sent_at.lt.${twentyFourHoursAgo.toISOString()}`)
+        .select("user_id");
+
+      // If no rows updated, user was already processed (race condition prevented)
+      if (lockError || !lockResult || lockResult.length === 0) {
+        console.log(`Skipping ${subscriber.user_id} - already processed or locked`);
+        continue;
+      }
+
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("email, full_name")
         .eq("id", subscriber.user_id)
         .single();
 
-      if (profileError || !profile?.email) continue;
+      if (profileError || !profile?.email) {
+        console.log(`Skipping ${subscriber.user_id} - no email found`);
+        continue;
+      }
 
       const wantedSkills = [
         ...(subscriber.skills_wanted || []),
@@ -209,14 +228,12 @@ const handler = async (req: Request): Promise<Response> => {
         });
 
         emailsSent++;
-
-        await supabase
-          .from("user_preferences")
-          .update({ last_digest_sent_at: new Date().toISOString() })
-          .eq("user_id", subscriber.user_id);
+        console.log(`Successfully sent digest to ${profile.email}`);
 
       } catch (emailError) {
         console.error(`Failed to send email to ${profile.email}:`, emailError);
+        // Note: We don't rollback the timestamp - better to miss one email than send duplicates
+        // The user will receive the next weekly digest
       }
     }
 
