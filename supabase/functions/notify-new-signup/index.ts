@@ -26,7 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending new signup notification for:", email);
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <onboarding@resend.dev>",
+      from: "SwapSkills <hello@swap-skills.com>",
       to: ["krisokyay@gmail.com"],
       subject: "🎉 New SwapSkills User Signup!",
       html: `
