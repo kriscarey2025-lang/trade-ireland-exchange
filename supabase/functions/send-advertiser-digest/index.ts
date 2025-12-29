@@ -185,7 +185,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         // Send email
         const emailResponse = await resend.emails.send({
-          from: "SwapSkills <noreply@swapskills.ie>",
+          from: "SwapSkills <onboarding@resend.dev>",
           to: [advertiser.business_email],
           subject: `📊 Your Weekly Ad Performance - ${formatDate(weekAgo)} to ${formatDate(now)}`,
           html: `
