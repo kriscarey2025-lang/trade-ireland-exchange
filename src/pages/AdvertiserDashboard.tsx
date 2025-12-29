@@ -104,37 +104,73 @@ const [adImageUrl, setAdImageUrl] = useState("");
   const { data: impressions } = useQuery({
     queryKey: ["myImpressions", advertiser?.id, dateRange],
     queryFn: async () => {
-      if (!advertiser) return [];
-      const { data, error } = await supabase
-        .from("ad_impressions")
-        .select("ad_id, created_at")
-        .gte("created_at", dateRangeStart.toISOString());
+      if (!advertiser || !ads) return [];
+      const myAdIds = ads.map(a => a.id);
+      if (myAdIds.length === 0) return [];
       
-      if (error) throw error;
-      return data;
+      // Fetch all impressions for this advertiser's ads without the 1000 row limit
+      let allImpressions: { ad_id: string; created_at: string }[] = [];
+      let offset = 0;
+      const batchSize = 1000;
+      
+      while (true) {
+        const { data, error } = await supabase
+          .from("ad_impressions")
+          .select("ad_id, created_at")
+          .in("ad_id", myAdIds)
+          .gte("created_at", dateRangeStart.toISOString())
+          .range(offset, offset + batchSize - 1);
+        
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        
+        allImpressions = [...allImpressions, ...data];
+        if (data.length < batchSize) break;
+        offset += batchSize;
+      }
+      
+      return allImpressions;
     },
-    enabled: !!advertiser,
+    enabled: !!advertiser && !!ads,
   });
 
   const { data: clicks } = useQuery({
     queryKey: ["myClicks", advertiser?.id, dateRange],
     queryFn: async () => {
-      if (!advertiser) return [];
-      const { data, error } = await supabase
-        .from("ad_clicks")
-        .select("ad_id, created_at")
-        .gte("created_at", dateRangeStart.toISOString());
+      if (!advertiser || !ads) return [];
+      const myAdIds = ads.map(a => a.id);
+      if (myAdIds.length === 0) return [];
       
-      if (error) throw error;
-      return data;
+      // Fetch all clicks for this advertiser's ads without the 1000 row limit
+      let allClicks: { ad_id: string; created_at: string }[] = [];
+      let offset = 0;
+      const batchSize = 1000;
+      
+      while (true) {
+        const { data, error } = await supabase
+          .from("ad_clicks")
+          .select("ad_id, created_at")
+          .in("ad_id", myAdIds)
+          .gte("created_at", dateRangeStart.toISOString())
+          .range(offset, offset + batchSize - 1);
+        
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        
+        allClicks = [...allClicks, ...data];
+        if (data.length < batchSize) break;
+        offset += batchSize;
+      }
+      
+      return allClicks;
     },
-    enabled: !!advertiser,
+    enabled: !!advertiser && !!ads,
   });
 
-  // Filter data to only this advertiser's ads
+  // Data is already filtered by advertiser's ads in the queries
   const myAdIds = ads?.map(a => a.id) || [];
-  const myImpressions = impressions?.filter(i => myAdIds.includes(i.ad_id)) || [];
-  const myClicks = clicks?.filter(c => myAdIds.includes(c.ad_id)) || [];
+  const myImpressions = impressions || [];
+  const myClicks = clicks || [];
 
   // Calculate totals
   const totalImpressions = myImpressions.length;
