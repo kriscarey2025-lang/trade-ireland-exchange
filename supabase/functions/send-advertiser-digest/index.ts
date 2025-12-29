@@ -200,69 +200,76 @@ const handler = async (req: Request): Promise<Response> => {
               <meta charset="utf-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
             </head>
-            <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;">
-              <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px;">
-                <div style="text-align: center; margin-bottom: 30px;">
-                  <h1 style="color: #4F46E5; margin: 0; font-size: 28px;">📊 Weekly Performance Report</h1>
-                  <p style="color: #666; margin-top: 10px;">${formatDate(weekAgo)} - ${formatDate(now)}</p>
+            <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #FAF7F2;">
+              <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <!-- Header with brand colors -->
+                <div style="background: linear-gradient(135deg, #E86C3A 0%, #D4A574 100%); padding: 30px 40px; text-align: center;">
+                  <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">📊 Weekly Performance Report</h1>
+                  <p style="color: rgba(255,255,255,0.9); margin-top: 8px; font-size: 14px;">${formatDate(weekAgo)} - ${formatDate(now)}</p>
                 </div>
                 
-                <p style="color: #333; font-size: 16px;">Hi ${advertiser.business_name},</p>
-                
-                <p style="color: #666; font-size: 15px;">Here's your weekly ad performance summary on SwapSkills:</p>
-                
-                <div style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); border-radius: 12px; padding: 30px; margin: 25px 0; color: white;">
-                  <div style="display: flex; justify-content: space-around; text-align: center;">
-                    <div style="flex: 1;">
-                      <div style="font-size: 36px; font-weight: bold;">${totalImpressions.toLocaleString()}</div>
-                      <div style="font-size: 14px; opacity: 0.9;">Impressions</div>
-                    </div>
-                    <div style="flex: 1;">
-                      <div style="font-size: 36px; font-weight: bold;">${totalClicks.toLocaleString()}</div>
-                      <div style="font-size: 14px; opacity: 0.9;">Clicks</div>
-                    </div>
-                    <div style="flex: 1;">
-                      <div style="font-size: 36px; font-weight: bold;">${ctr}%</div>
-                      <div style="font-size: 14px; opacity: 0.9;">CTR</div>
-                    </div>
+                <div style="padding: 40px;">
+                  <p style="color: #2D5016; font-size: 18px; font-weight: 600; margin-top: 0;">Hi ${advertiser.business_name},</p>
+                  
+                  <p style="color: #666; font-size: 15px; line-height: 1.6;">Here's your weekly ad performance summary on <span style="color: #E86C3A; font-weight: 600;">SwapSkills</span>:</p>
+                  
+                  <!-- Stats cards with brand orange -->
+                  <div style="background: linear-gradient(135deg, #E86C3A 0%, #C45A2E 100%); border-radius: 12px; padding: 30px; margin: 25px 0; color: white;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="text-align: center;">
+                      <tr>
+                        <td style="padding: 10px;">
+                          <div style="font-size: 36px; font-weight: bold;">${totalImpressions.toLocaleString()}</div>
+                          <div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">Impressions</div>
+                        </td>
+                        <td style="padding: 10px;">
+                          <div style="font-size: 36px; font-weight: bold;">${totalClicks.toLocaleString()}</div>
+                          <div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">Clicks</div>
+                        </td>
+                        <td style="padding: 10px;">
+                          <div style="font-size: 36px; font-weight: bold;">${ctr}%</div>
+                          <div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">CTR</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  
+                  <h3 style="color: #2D5016; margin-top: 30px; font-size: 16px;">Ad Breakdown</h3>
+                  <table style="width: 100%; border-collapse: collapse; font-size: 14px; border-radius: 8px; overflow: hidden;">
+                    <thead>
+                      <tr style="background-color: #FEF3E7;">
+                        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #E86C3A; color: #2D5016;">Ad Title</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #E86C3A; color: #2D5016;">Impressions</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #E86C3A; color: #2D5016;">Clicks</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #E86C3A; color: #2D5016;">CTR</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${adBreakdownHtml}
+                    </tbody>
+                  </table>
+                  
+                  <div style="margin-top: 30px; padding: 20px; background-color: #FEF3E7; border-radius: 8px; border-left: 4px solid #E86C3A;">
+                    <p style="margin: 0; color: #666; font-size: 14px;">
+                      💡 <strong style="color: #2D5016;">Tip:</strong> A CTR above 1% is considered good for display ads. 
+                      Consider updating your ad creative if you'd like to improve engagement.
+                    </p>
+                  </div>
+                  
+                  <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://swapskills.ie/advertiser-dashboard" 
+                       style="display: inline-block; background-color: #E86C3A; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                      View Full Dashboard
+                    </a>
                   </div>
                 </div>
                 
-                <h3 style="color: #333; margin-top: 30px;">Ad Breakdown</h3>
-                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                  <thead>
-                    <tr style="background-color: #f8f9fa;">
-                      <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Ad Title</th>
-                      <th style="padding: 12px; text-align: center; border-bottom: 2px solid #dee2e6;">Impressions</th>
-                      <th style="padding: 12px; text-align: center; border-bottom: 2px solid #dee2e6;">Clicks</th>
-                      <th style="padding: 12px; text-align: center; border-bottom: 2px solid #dee2e6;">CTR</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${adBreakdownHtml}
-                  </tbody>
-                </table>
-                
-                <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
-                  <p style="margin: 0; color: #666; font-size: 14px;">
-                    💡 <strong>Tip:</strong> A CTR above 1% is considered good for display ads. 
-                    Consider updating your ad creative if you'd like to improve engagement.
+                <!-- Footer -->
+                <div style="background-color: #FAF7F2; padding: 20px 40px; text-align: center; border-top: 1px solid #eee;">
+                  <p style="color: #999; font-size: 12px; margin: 0;">
+                    You're receiving this because you're an advertiser on <span style="color: #E86C3A;">SwapSkills</span>.<br>
+                    🇮🇪 © ${new Date().getFullYear()} SwapSkills Ireland
                   </p>
                 </div>
-                
-                <div style="margin-top: 30px; text-align: center;">
-                  <a href="https://swapskills.ie/advertiser-dashboard" 
-                     style="display: inline-block; background-color: #4F46E5; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">
-                    View Full Dashboard
-                  </a>
-                </div>
-                
-                <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-                
-                <p style="color: #999; font-size: 12px; text-align: center;">
-                  You're receiving this because you're an advertiser on SwapSkills.<br>
-                  © ${new Date().getFullYear()} SwapSkills Ireland
-                </p>
               </div>
             </body>
             </html>
