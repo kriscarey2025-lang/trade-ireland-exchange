@@ -30,6 +30,15 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Parse request body for optional test_email parameter
+    let testEmail: string | null = null;
+    try {
+      const body = await req.json();
+      testEmail = body.test_email || null;
+    } catch {
+      // No body or invalid JSON, continue normally
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
@@ -40,11 +49,19 @@ const handler = async (req: Request): Promise<Response> => {
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const weekAgoISO = weekAgo.toISOString();
 
-    // Fetch all active advertisers
-    const { data: advertisers, error: advertisersError } = await supabaseAdmin
+    // Fetch advertisers - filter by test email if provided
+    let query = supabaseAdmin
       .from("advertisers")
-      .select("id, business_name, business_email, user_id, is_active")
-      .eq("is_active", true);
+      .select("id, business_name, business_email, user_id, is_active");
+    
+    if (testEmail) {
+      console.log(`Test mode: sending only to ${testEmail}`);
+      query = query.eq("business_email", testEmail);
+    } else {
+      query = query.eq("is_active", true);
+    }
+    
+    const { data: advertisers, error: advertisersError } = await query;
 
     if (advertisersError) {
       console.error("Error fetching advertisers:", advertisersError);
