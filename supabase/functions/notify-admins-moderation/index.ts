@@ -77,7 +77,7 @@ serve(async (req) => {
 
     // Send email to all admins
     const emailResponse = await resend.emails.send({
-      from: "Swap Skills <onboarding@resend.dev>",
+      from: "SwapSkills <hello@swap-skills.com>",
       to: adminEmails,
       subject: "⚠️ Post Flagged for Review - Swap Skills",
       html: `

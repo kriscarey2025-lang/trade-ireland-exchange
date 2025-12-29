@@ -27,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Sending rejection email to ${email} for business: ${business_name}`);
 
     const emailResponse = await resend.emails.send({
-      from: "Swap Skills <noreply@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.com>",
       to: [email],
       subject: `Update on Your SwapSkills Advertising Application`,
       html: `

@@ -27,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
     const firstName = fullName?.split(" ")[0] || "there";
 
     const { error } = await resend.emails.send({
-      from: "Swap Skills <noreply@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.com>",
       to: [email],
       subject: "Welcome to Swap Skills! 🎉",
       html: `

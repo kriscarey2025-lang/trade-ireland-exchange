@@ -63,7 +63,7 @@ serve(async (req) => {
     console.log(`Sending advertiser notification to ${adminEmails.length} admin(s)`);
 
     const emailResponse = await resend.emails.send({
-      from: "Swap Skills <onboarding@resend.dev>",
+      from: "SwapSkills <hello@swap-skills.com>",
       to: adminEmails,
       subject: "📢 New Advertiser Interest - Swap Skills",
       html: `
