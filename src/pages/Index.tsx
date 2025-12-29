@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -74,6 +74,22 @@ const Index = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [brainstormOpen, setBrainstormOpen] = useState(false);
 
+  const mobileFiltersRef = useRef<HTMLDivElement | null>(null);
+  const [mobileFiltersHeight, setMobileFiltersHeight] = useState(0);
+
+  useEffect(() => {
+    const el = mobileFiltersRef.current;
+    if (!el) return;
+
+    const update = () => setMobileFiltersHeight(el.offsetHeight);
+    update();
+
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+
+    return () => ro.disconnect();
+  }, []);
+
   // Debounce search query to avoid too many API calls
   const debouncedSearch = useDebounce(searchQuery, 300);
 
@@ -99,7 +115,83 @@ const Index = () => {
   };
 
   const hasActiveFilters =
-    searchQuery || selectedCategory !== "all" || selectedLocation !== "All Ireland" || selectedPostType !== "all";
+    searchQuery ||
+    selectedCategory !== "all" ||
+    selectedLocation !== "All Ireland" ||
+    selectedPostType !== "all";
+
+  const searchFiltersContent = (
+    <>
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* Search */}
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search services..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        {/* Quick Filters */}
+        <div className="flex flex-wrap gap-3">
+          <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Location" />
+            </SelectTrigger>
+            <SelectContent>
+              {locations.map((loc) => (
+                <SelectItem key={loc} value={loc}>
+                  {loc}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Button
+            variant={showFilters ? "secondary" : "outline"}
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <SlidersHorizontal className="h-4 w-4 mr-2" />
+            Categories
+          </Button>
+
+          {hasActiveFilters && (
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
+              <X className="h-4 w-4 mr-1" />
+              Clear
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Category Filters */}
+      {showFilters && (
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="flex flex-wrap gap-2">
+            <Badge
+              variant={selectedCategory === "all" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setSelectedCategory("all")}
+            >
+              All Categories
+            </Badge>
+            {allCategories.map((category) => (
+              <Badge
+                key={category}
+                variant={selectedCategory === category ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setSelectedCategory(category)}
+              >
+                {categoryIcons[category]} {categoryLabels[category]}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <>
@@ -174,6 +266,21 @@ const Index = () => {
 
             {/* Services Section */}
             <div className="container py-6 md:py-8">
+              {/* Mobile fixed Search & Filters */}
+              <div className="md:hidden">
+                <div className="fixed top-14 left-0 right-0 z-40">
+                  <div className="container">
+                    <div
+                      ref={mobileFiltersRef}
+                      className="bg-card rounded-xl border border-border p-4 shadow-soft"
+                    >
+                      {searchFiltersContent}
+                    </div>
+                  </div>
+                </div>
+                <div aria-hidden style={{ height: mobileFiltersHeight }} />
+              </div>
+
               {/* Auth Prompt Banner for Non-Logged-In Users */}
               {!user && (
                 <div className="mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -239,79 +346,9 @@ const Index = () => {
                 </Button>
               </div>
 
-              {/* Search & Filters */}
-              <div className="bg-card rounded-xl border border-border p-4 mb-6 shadow-soft md:sticky md:top-14 md:z-40">
-                <div className="flex flex-col lg:flex-row gap-4">
-                  {/* Search */}
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search services..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-
-                  {/* Quick Filters */}
-                  <div className="flex flex-wrap gap-3">
-                    <Select
-                      value={selectedLocation}
-                      onValueChange={setSelectedLocation}
-                    >
-                      <SelectTrigger className="w-[140px]">
-                        <SelectValue placeholder="Location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {locations.map((loc) => (
-                          <SelectItem key={loc} value={loc}>
-                            {loc}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Button
-                      variant={showFilters ? "secondary" : "outline"}
-                      onClick={() => setShowFilters(!showFilters)}
-                    >
-                      <SlidersHorizontal className="h-4 w-4 mr-2" />
-                      Categories
-                    </Button>
-
-                    {hasActiveFilters && (
-                      <Button variant="ghost" size="sm" onClick={clearFilters}>
-                        <X className="h-4 w-4 mr-1" />
-                        Clear
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Category Filters */}
-                {showFilters && (
-                  <div className="mt-4 pt-4 border-t border-border">
-                    <div className="flex flex-wrap gap-2">
-                      <Badge
-                        variant={selectedCategory === "all" ? "default" : "outline"}
-                        className="cursor-pointer"
-                        onClick={() => setSelectedCategory("all")}
-                      >
-                        All Categories
-                      </Badge>
-                      {allCategories.map((category) => (
-                        <Badge
-                          key={category}
-                          variant={selectedCategory === category ? "default" : "outline"}
-                          className="cursor-pointer"
-                          onClick={() => setSelectedCategory(category)}
-                        >
-                          {categoryIcons[category]} {categoryLabels[category]}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              {/* Search & Filters (desktop) */}
+              <div className="hidden md:block bg-card rounded-xl border border-border p-4 mb-6 shadow-soft sticky top-14 z-40">
+                {searchFiltersContent}
               </div>
 
               {/* Results count */}
