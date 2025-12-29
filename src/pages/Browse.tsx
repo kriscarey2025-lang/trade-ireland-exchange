@@ -183,9 +183,9 @@ export default function Browse() {
 
           {/* Search & Filters */}
           <div className="bg-card rounded-xl border border-border p-4 mb-8 shadow-soft">
-            <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex flex-col gap-3">
               {/* Search */}
-              <div className="flex-1 relative">
+              <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search services..."
@@ -196,15 +196,15 @@ export default function Browse() {
               </div>
 
               {/* Quick Filters */}
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Select
                   value={selectedLocation}
                   onValueChange={setSelectedLocation}
                 >
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-full sm:w-[160px]">
                     <SelectValue placeholder="Location" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-popover z-50">
                     {locations.map((loc) => (
                       <SelectItem key={loc} value={loc}>
                         {loc}
@@ -213,20 +213,23 @@ export default function Browse() {
                   </SelectContent>
                 </Select>
 
-                <Button
-                  variant={showFilters ? "secondary" : "outline"}
-                  onClick={() => setShowFilters(!showFilters)}
-                >
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  Categories
-                </Button>
-
-                {hasActiveFilters && (
-                  <Button variant="ghost" size="sm" onClick={clearFilters}>
-                    <X className="h-4 w-4 mr-1" />
-                    Clear
+                <div className="flex gap-2">
+                  <Button
+                    variant={showFilters ? "secondary" : "outline"}
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="flex-1 sm:flex-none"
+                  >
+                    <SlidersHorizontal className="h-4 w-4 mr-2" />
+                    Categories
                   </Button>
-                )}
+
+                  {hasActiveFilters && (
+                    <Button variant="ghost" size="sm" onClick={clearFilters} className="shrink-0">
+                      <X className="h-4 w-4 mr-1" />
+                      Clear
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
 
