@@ -30,11 +30,13 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Parse request body for optional test_email parameter
+    // Parse request body for optional test parameters
     let testEmail: string | null = null;
+    let overrideRecipient: string | null = null;
     try {
       const body = await req.json();
       testEmail = body.test_email || null;
+      overrideRecipient = body.override_recipient || null;
     } catch {
       // No body or invalid JSON, continue normally
     }
@@ -183,10 +185,13 @@ const handler = async (req: Request): Promise<Response> => {
           month: 'short' 
         });
 
-        // Send email
+        // Send email - use override recipient for testing if provided
+        const recipientEmail = overrideRecipient || advertiser.business_email;
+        console.log(`Sending email to: ${recipientEmail}`);
+        
         const emailResponse = await resend.emails.send({
           from: "SwapSkills <onboarding@resend.dev>",
-          to: [advertiser.business_email],
+          to: [recipientEmail],
           subject: `📊 Your Weekly Ad Performance - ${formatDate(weekAgo)} to ${formatDate(now)}`,
           html: `
             <!DOCTYPE html>
