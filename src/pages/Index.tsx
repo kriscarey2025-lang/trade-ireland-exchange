@@ -264,21 +264,21 @@ const Index = () => {
               </div>
             </section>
 
+              {/* Fixed Search & Filters (mobile + tablet) */}
+              <div className="xl:hidden fixed top-14 left-0 right-0 z-40 border-b border-border/40 bg-background/95 backdrop-blur-xl">
+                <div className="container py-3">
+                  <div
+                    ref={mobileFiltersRef}
+                    className="bg-card rounded-xl border border-border p-4 shadow-soft"
+                  >
+                    {searchFiltersContent}
+                  </div>
+                </div>
+              </div>
+
               <div className="container py-6 md:py-8">
-               {/* Fixed Search & Filters (mobile + tablet) */}
-               <div className="xl:hidden">
-                 <div className="fixed top-14 left-0 right-0 z-40 border-b border-border/40 bg-background/85 backdrop-blur-xl">
-                   <div className="container py-3">
-                     <div
-                       ref={mobileFiltersRef}
-                       className="bg-card rounded-xl border border-border p-4 shadow-soft"
-                     >
-                       {searchFiltersContent}
-                     </div>
-                   </div>
-                 </div>
-                 <div aria-hidden style={{ height: mobileFiltersHeight }} />
-               </div>
+               {/* Spacer for fixed filter bar on mobile/tablet */}
+               <div className="xl:hidden" style={{ height: mobileFiltersHeight + 24 }} />
 
                {/* Auth Prompt Banner for Non-Logged-In Users */}
                {!user && (
