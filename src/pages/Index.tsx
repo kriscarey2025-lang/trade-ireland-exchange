@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -74,21 +74,6 @@ const Index = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [brainstormOpen, setBrainstormOpen] = useState(false);
 
-  const mobileFiltersRef = useRef<HTMLDivElement | null>(null);
-  const [mobileFiltersHeight, setMobileFiltersHeight] = useState(0);
-
-  useEffect(() => {
-    const el = mobileFiltersRef.current;
-    if (!el) return;
-
-    const update = () => setMobileFiltersHeight(el.offsetHeight);
-    update();
-
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-
-    return () => ro.disconnect();
-  }, []);
 
   // Debounce search query to avoid too many API calls
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -264,21 +249,11 @@ const Index = () => {
               </div>
             </section>
 
-              {/* Fixed Search & Filters (mobile + tablet) */}
-              <div className="xl:hidden fixed top-14 left-0 right-0 z-40 border-b border-border/40 bg-background/95 backdrop-blur-xl">
-                <div className="container py-3">
-                  <div
-                    ref={mobileFiltersRef}
-                    className="bg-card rounded-xl border border-border p-4 shadow-soft"
-                  >
-                    {searchFiltersContent}
-                  </div>
-                </div>
-              </div>
-
               <div className="container py-6 md:py-8">
-               {/* Spacer for fixed filter bar on mobile/tablet */}
-               <div className="xl:hidden" style={{ height: mobileFiltersHeight + 24 }} />
+               {/* Search & Filters (mobile + tablet) */}
+               <div className="xl:hidden bg-card rounded-xl border border-border p-4 mb-6 shadow-soft">
+                 {searchFiltersContent}
+               </div>
 
                {/* Auth Prompt Banner for Non-Logged-In Users */}
                {!user && (
