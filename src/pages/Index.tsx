@@ -264,92 +264,91 @@ const Index = () => {
               </div>
             </section>
 
-            {/* Services Section */}
-            <div className="container py-6 md:py-8">
-              {/* Mobile fixed Search & Filters */}
-              <div className="md:hidden">
-                <div className="fixed top-14 left-0 right-0 z-40">
-                  <div className="container">
-                    <div
-                      ref={mobileFiltersRef}
-                      className="bg-card rounded-xl border border-border p-4 shadow-soft"
-                    >
-                      {searchFiltersContent}
-                    </div>
-                  </div>
-                </div>
-                <div aria-hidden style={{ height: mobileFiltersHeight }} />
-              </div>
+              <div className="container py-6 md:py-8">
+               {/* Fixed Search & Filters (mobile + tablet) */}
+               <div className="xl:hidden">
+                 <div className="fixed top-14 left-0 right-0 z-40 border-b border-border/40 bg-background/85 backdrop-blur-xl">
+                   <div className="container py-3">
+                     <div
+                       ref={mobileFiltersRef}
+                       className="bg-card rounded-xl border border-border p-4 shadow-soft"
+                     >
+                       {searchFiltersContent}
+                     </div>
+                   </div>
+                 </div>
+                 <div aria-hidden style={{ height: mobileFiltersHeight }} />
+               </div>
 
-              {/* Auth Prompt Banner for Non-Logged-In Users */}
-              {!user && (
-                <div className="mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="flex items-start sm:items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg shrink-0">
-                      <UserCheck className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">See full profiles & verification status</p>
-                      <p className="text-sm text-muted-foreground">Sign in to view verified badges and complete service information.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 shrink-0">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link to="/auth">
-                        <LogIn className="h-4 w-4 mr-1" />
-                        Sign In
-                      </Link>
-                    </Button>
-                    <Button size="sm" asChild>
-                      <Link to="/auth?mode=signup">Join Free</Link>
-                    </Button>
-                  </div>
-                </div>
-              )}
+               {/* Auth Prompt Banner for Non-Logged-In Users */}
+               {!user && (
+                 <div className="mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                   <div className="flex items-start sm:items-center gap-3">
+                     <div className="p-2 bg-primary/10 rounded-lg shrink-0">
+                       <UserCheck className="h-5 w-5 text-primary" />
+                     </div>
+                     <div>
+                       <p className="font-medium text-foreground">See full profiles & verification status</p>
+                       <p className="text-sm text-muted-foreground">Sign in to view verified badges and complete service information.</p>
+                     </div>
+                   </div>
+                   <div className="flex gap-2 shrink-0">
+                     <Button variant="outline" size="sm" asChild>
+                       <Link to="/auth">
+                         <LogIn className="h-4 w-4 mr-1" />
+                         Sign In
+                       </Link>
+                     </Button>
+                     <Button size="sm" asChild>
+                       <Link to="/auth?mode=signup">Join Free</Link>
+                     </Button>
+                   </div>
+                 </div>
+               )}
 
-              {/* Post Type Filters */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                <Button
-                  variant={selectedPostType === "all" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedPostType("all")}
-                  className="gap-2"
-                >
-                  All Types
-                </Button>
-                <Button
-                  variant={selectedPostType === "free_offer" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedPostType("free_offer")}
-                  className="gap-2"
-                >
-                  <Gift className="h-4 w-4" />
-                  {postCategoryLabels.free_offer}
-                </Button>
-                <Button
-                  variant={selectedPostType === "help_request" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedPostType("help_request")}
-                  className="gap-2"
-                >
-                  <HelpCircle className="h-4 w-4" />
-                  {postCategoryLabels.help_request}
-                </Button>
-                <Button
-                  variant={selectedPostType === "skill_swap" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedPostType("skill_swap")}
-                  className="gap-2"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  {postCategoryLabels.skill_swap}
-                </Button>
-              </div>
+               {/* Post Type Filters */}
+               <div className="flex flex-wrap gap-2 mb-6">
+                 <Button
+                   variant={selectedPostType === "all" ? "default" : "outline"}
+                   size="sm"
+                   onClick={() => setSelectedPostType("all")}
+                   className="gap-2"
+                 >
+                   All Types
+                 </Button>
+                 <Button
+                   variant={selectedPostType === "free_offer" ? "default" : "outline"}
+                   size="sm"
+                   onClick={() => setSelectedPostType("free_offer")}
+                   className="gap-2"
+                 >
+                   <Gift className="h-4 w-4" />
+                   {postCategoryLabels.free_offer}
+                 </Button>
+                 <Button
+                   variant={selectedPostType === "help_request" ? "default" : "outline"}
+                   size="sm"
+                   onClick={() => setSelectedPostType("help_request")}
+                   className="gap-2"
+                 >
+                   <HelpCircle className="h-4 w-4" />
+                   {postCategoryLabels.help_request}
+                 </Button>
+                 <Button
+                   variant={selectedPostType === "skill_swap" ? "default" : "outline"}
+                   size="sm"
+                   onClick={() => setSelectedPostType("skill_swap")}
+                   className="gap-2"
+                 >
+                   <RefreshCw className="h-4 w-4" />
+                   {postCategoryLabels.skill_swap}
+                 </Button>
+               </div>
 
-              {/* Search & Filters (desktop) */}
-              <div className="hidden md:block bg-card rounded-xl border border-border p-4 mb-6 shadow-soft sticky top-14 z-40">
-                {searchFiltersContent}
-              </div>
+               {/* Search & Filters (desktop) */}
+               <div className="hidden xl:block bg-card rounded-xl border border-border p-4 mb-6 shadow-soft sticky top-14 z-40">
+                 {searchFiltersContent}
+               </div>
 
               {/* Results count */}
               <div className="mb-4 flex items-center justify-between">
