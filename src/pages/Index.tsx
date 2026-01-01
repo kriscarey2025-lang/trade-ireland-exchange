@@ -85,10 +85,18 @@ const Index = () => {
     search: debouncedSearch || undefined,
   });
 
-  // Filter services by post type on the client side
+  // Filter services by post type on the client side and sort "Website Creation" to the bottom
   const filteredServices = useMemo(() => {
-    if (selectedPostType === "all") return services;
-    return services.filter((service) => service.type === selectedPostType);
+    let result = selectedPostType === "all" ? services : services.filter((service) => service.type === selectedPostType);
+    
+    // Move "Website Creation" service to the bottom
+    return [...result].sort((a, b) => {
+      const aIsWebsite = a.title.toLowerCase().includes("website creation");
+      const bIsWebsite = b.title.toLowerCase().includes("website creation");
+      if (aIsWebsite && !bIsWebsite) return 1;
+      if (!aIsWebsite && bIsWebsite) return -1;
+      return 0;
+    });
   }, [services, selectedPostType]);
 
   const clearFilters = () => {
