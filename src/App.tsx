@@ -9,7 +9,6 @@ import { BackToTop } from "@/components/BackToTop";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { AuthProvider } from "@/hooks/useAuth";
 import { EngagementTracker } from "@/components/tracking/EngagementTracker";
-import { PromoBanner } from "@/components/layout/PromoBanner";
 import FeedbackSidebar from "@/components/sidebar/FeedbackSidebar";
 import { PageLoader } from "@/components/ui/page-loader";
 
@@ -68,7 +67,6 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <PromoBanner />
           <ScrollToTop />
           <BackToTop />
           <EngagementTracker />
