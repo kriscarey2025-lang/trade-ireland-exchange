@@ -38,7 +38,7 @@ export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
           >
             <Link to={user ? "/new-service" : "/auth?mode=signup"}>
               {user ? <PenLine className="mr-2 h-5 w-5" /> : <Heart className="mr-2 h-5 w-5" />}
-              {user ? "Start a Post" : "Join the community"}
+              {user ? "Start a Post" : "Sign up for free"}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

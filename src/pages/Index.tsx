@@ -221,7 +221,7 @@ const Index = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4">
                     <Button size="lg" className="group shadow-lg hover:shadow-xl rounded-full px-6 md:px-8" asChild>
                       <Link to="/auth?mode=signup">
-                        Join the Community
+                        Sign up for free
                         <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </Button>
