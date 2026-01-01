@@ -115,11 +115,11 @@ export function ServiceCard({
       <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-2 border-transparent hover:border-primary/20 bg-card transition-all duration-300", className)}>
         {/* Service Image - Always show on mobile and desktop */}
         {hasImage && (
-          <div className="relative w-full h-32 sm:h-40 overflow-hidden bg-muted">
+          <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted">
             <img 
               src={service.images![0]} 
               alt={service.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
               loading="lazy"
             />
           </div>
