@@ -7,6 +7,13 @@ export function MobileBottomNav() {
   const location = useLocation();
   const { user } = useAuth();
 
+  // Hide the bottom nav on pages with their own sticky action buttons
+  const hiddenPaths = ["/new-service", "/services/new"];
+  const shouldHide = hiddenPaths.some(path => location.pathname.startsWith(path)) || 
+                     location.pathname.match(/^\/services\/[^/]+\/edit$/);
+  
+  if (shouldHide) return null;
+
   const navItems = [
     { href: "/", icon: Home, label: "Home" },
     { href: "/browse", icon: Search, label: "Browse" },
