@@ -112,7 +112,7 @@ export function ServiceCard({
   const hasImage = service.images && service.images.length > 0 && service.images[0];
 
   return <Link to={`/services/${service.id}`}>
-      <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-2 border-transparent hover:border-primary/20 bg-card transition-all duration-300", className)}>
+      <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-[3px] border-primary/40 hover:border-primary bg-card transition-all duration-300 shadow-md", className)}>
         {/* Service Image - Always show on mobile and desktop */}
         {hasImage && (
           <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted">
