@@ -13,7 +13,7 @@ interface SEOProps {
 const defaultMeta = {
   title: "Swap Skills | Trade Skills, Not Money",
   description: "Ireland's community for trading skills and services without money. Exchange tiling, tutoring, gardening, childcare and more with verified neighbours.",
-  image: "https://swap-skills.com/og-image-social.png",
+  image: "https://swap-skills.com/og-image-social.png?v=3",
   url: "https://swap-skills.com",
 };
 
@@ -42,8 +42,8 @@ export function SEO({
       <meta property="og:description" content={description} />
       <meta property="og:type" content={type} />
       <meta property="og:image" content={image} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1280" />
+      <meta property="og:image:height" content="720" />
       <meta property="og:url" content={url} />
       <meta property="og:site_name" content="SwapSkills" />
 
