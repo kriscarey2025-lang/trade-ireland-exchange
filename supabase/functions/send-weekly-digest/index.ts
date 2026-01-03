@@ -152,8 +152,15 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     let emailsSent = 0;
+    
+    // Helper to delay between emails (Resend rate limit: 2/second)
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     for (const subscriber of subscribers as UserPreference[]) {
+      // Wait 600ms between emails to stay within Resend's 2 req/sec limit
+      if (emailsSent > 0) {
+        await delay(600);
+      }
       // Simply update the timestamp - the SELECT already filtered eligible users
       // The 24-hour check in the initial query prevents duplicates
       const sendTimestamp = new Date().toISOString();
