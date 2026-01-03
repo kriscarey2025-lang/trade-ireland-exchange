@@ -40,6 +40,7 @@ interface CommunityPost {
 interface RequestBody {
   test_email?: string;
   dry_run?: boolean; // If true, logs what would be sent but doesn't actually send
+  only_emails?: string[]; // If provided, only send to these specific email addresses
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -52,16 +53,22 @@ const handler = async (req: Request): Promise<Response> => {
 
     let testEmail: string | null = null;
     let dryRun = false;
+    let onlyEmails: string[] | null = null;
     try {
       const body: RequestBody = await req.json();
       testEmail = body.test_email || null;
       dryRun = body.dry_run || false;
+      onlyEmails = body.only_emails || null;
     } catch {
       // No body or invalid JSON
     }
 
     if (dryRun) {
       console.log("🧪 DRY RUN MODE - No emails will actually be sent");
+    }
+    
+    if (onlyEmails && onlyEmails.length > 0) {
+      console.log(`📧 TARGETED MODE - Only sending to: ${onlyEmails.join(", ")}`);
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -185,6 +192,11 @@ const handler = async (req: Request): Promise<Response> => {
 
       if (profileError || !profile?.email) {
         console.log(`Skipping ${subscriber.user_id} - no email found`);
+        continue;
+      }
+
+      // If only_emails is specified, skip users not in that list
+      if (onlyEmails && onlyEmails.length > 0 && !onlyEmails.includes(profile.email)) {
         continue;
       }
 
