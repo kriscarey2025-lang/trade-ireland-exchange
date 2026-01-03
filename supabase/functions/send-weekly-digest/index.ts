@@ -207,7 +207,7 @@ const handler = async (req: Request): Promise<Response> => {
       const unsubscribeToken = btoa(subscriber.user_id);
 
       try {
-        await resend.emails.send({
+        const { data: emailData, error: emailError } = await resend.emails.send({
           from: "SwapSkills <hello@swap-skills.com>",
           to: [profile.email],
           subject: hasMatches 
@@ -224,8 +224,13 @@ const handler = async (req: Request): Promise<Response> => {
           ),
         });
 
+        if (emailError) {
+          console.error(`Resend API error for ${profile.email}:`, JSON.stringify(emailError));
+          continue;
+        }
+
         emailsSent++;
-        console.log(`Successfully sent digest to ${profile.email}`);
+        console.log(`Successfully sent digest to ${profile.email} (id: ${emailData?.id})`);
 
       } catch (emailError) {
         console.error(`Failed to send email to ${profile.email}:`, emailError);
