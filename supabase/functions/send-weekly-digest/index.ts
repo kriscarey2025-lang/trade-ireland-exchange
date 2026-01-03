@@ -39,6 +39,7 @@ interface CommunityPost {
 
 interface RequestBody {
   test_email?: string;
+  dry_run?: boolean; // If true, logs what would be sent but doesn't actually send
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -50,11 +51,17 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Starting weekly digest job...");
 
     let testEmail: string | null = null;
+    let dryRun = false;
     try {
       const body: RequestBody = await req.json();
       testEmail = body.test_email || null;
+      dryRun = body.dry_run || false;
     } catch {
       // No body or invalid JSON
+    }
+
+    if (dryRun) {
+      console.log("🧪 DRY RUN MODE - No emails will actually be sent");
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -153,14 +160,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     let emailsSent = 0;
     
-    // Helper to delay between emails (Resend rate limit: 2/second)
+    // Helper to delay between emails (Resend rate limit: 2/second, so we use 1 second for safety)
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     for (const subscriber of subscribers as UserPreference[]) {
-      // Wait 600ms between emails to stay within Resend's 2 req/sec limit
-      if (emailsSent > 0) {
-        await delay(600);
-      }
       // Simply update the timestamp - the SELECT already filtered eligible users
       // The 24-hour check in the initial query prevents duplicates
       const sendTimestamp = new Date().toISOString();
@@ -213,6 +216,13 @@ const handler = async (req: Request): Promise<Response> => {
       const hasMatches = matchingServices.length > 0;
       const unsubscribeToken = btoa(subscriber.user_id);
 
+      // DRY RUN: Just log what would be sent
+      if (dryRun) {
+        console.log(`[DRY RUN] Would send digest to ${profile.email} (${firstName}), matches: ${hasMatches ? matchingServices.length : 0}`);
+        emailsSent++;
+        continue;
+      }
+
       try {
         const { data: emailData, error: emailError } = await resend.emails.send({
           from: "SwapSkills <hello@swap-skills.com>",
@@ -238,6 +248,9 @@ const handler = async (req: Request): Promise<Response> => {
 
         emailsSent++;
         console.log(`Successfully sent digest to ${profile.email} (id: ${emailData?.id})`);
+        
+        // Wait 1 second AFTER sending to respect Resend's 2 req/sec rate limit
+        await delay(1000);
 
       } catch (emailError) {
         console.error(`Failed to send email to ${profile.email}:`, emailError);
