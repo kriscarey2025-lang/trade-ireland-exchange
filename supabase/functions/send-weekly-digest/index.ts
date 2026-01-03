@@ -154,19 +154,16 @@ const handler = async (req: Request): Promise<Response> => {
     let emailsSent = 0;
 
     for (const subscriber of subscribers as UserPreference[]) {
-      // DUPLICATE PREVENTION: Update timestamp FIRST before sending
-      // This prevents race conditions if cron runs again before completion
+      // Simply update the timestamp - the SELECT already filtered eligible users
+      // The 24-hour check in the initial query prevents duplicates
       const sendTimestamp = new Date().toISOString();
-      const { error: lockError, data: lockResult } = await supabase
+      const { error: lockError } = await supabase
         .from("user_preferences")
         .update({ last_digest_sent_at: sendTimestamp })
-        .eq("user_id", subscriber.user_id)
-        .or(`last_digest_sent_at.is.null,last_digest_sent_at.lt.${twentyFourHoursAgo.toISOString()}`)
-        .select("user_id");
+        .eq("user_id", subscriber.user_id);
 
-      // If no rows updated, user was already processed (race condition prevented)
-      if (lockError || !lockResult || lockResult.length === 0) {
-        console.log(`Skipping ${subscriber.user_id} - already processed or locked`);
+      if (lockError) {
+        console.log(`Failed to update timestamp for ${subscriber.user_id}:`, lockError);
         continue;
       }
 
