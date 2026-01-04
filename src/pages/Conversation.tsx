@@ -39,6 +39,8 @@ interface ConversationDetails {
   accepted_by_2: boolean;
   agreed_completion_date: string | null;
   swap_status: string;
+  offered_skill: string | null;
+  offered_skill_category: string | null;
   service?: { id: string; title: string; category?: string; type?: string; user_id?: string } | null;
   other_profile?: { id: string; full_name: string | null; avatar_url: string | null } | null;
 }
@@ -349,6 +351,8 @@ export default function Conversation() {
               swapStatus={conversation.swap_status || 'pending'}
               otherUserName={formatDisplayName(conversation.other_profile?.full_name)}
               serviceTitle={conversation.service.title}
+              offeredSkill={conversation.offered_skill || undefined}
+              offeredSkillCategory={conversation.offered_skill_category || undefined}
             />
           )}
 

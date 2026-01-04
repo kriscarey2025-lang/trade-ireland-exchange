@@ -16,6 +16,7 @@ interface SkillTradeNotificationRequest {
   notification_type: 'initiated' | 'accepted' | 'counter_proposal';
   proposed_date: string;
   service_title?: string;
+  offered_skill?: string;
   test_email?: string; // For testing - overrides recipient email lookup
   test_sender_name?: string; // For testing - overrides sender name lookup
 }
@@ -33,6 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
       notification_type, 
       proposed_date,
       service_title,
+      offered_skill,
       test_email,
       test_sender_name
     }: SkillTradeNotificationRequest = await req.json();
@@ -106,25 +108,32 @@ const handler = async (req: Request): Promise<Response> => {
     let emoji: string;
     let ctaText: string;
 
+    // Build swap description
+    const swapDescription = offered_skill && service_title 
+      ? `<strong>${offered_skill}</strong> ↔ <strong>${service_title}</strong>`
+      : service_title 
+        ? `"${service_title}"` 
+        : '';
+
     switch (notification_type) {
       case 'initiated':
         subject = `${senderName} wants to swap skills with you!`;
-        headline = `Skill Trade Request`;
-        message = `<strong style="color: #f97316;">${senderName}</strong> wants to exchange skills${service_title ? ` for "${service_title}"` : ''} with you and has proposed a completion date of <strong>${formattedDate}</strong>.`;
+        headline = `Skill Trade Proposal`;
+        message = `<strong style="color: #f97316;">${senderName}</strong> wants to exchange skills with you${swapDescription ? `: ${swapDescription}` : ''}. Proposed completion date: <strong>${formattedDate}</strong>.`;
         emoji = "🤝";
         ctaText = "View & Respond";
         break;
       case 'accepted':
         subject = `${senderName} accepted your skill trade!`;
         headline = `Trade Accepted!`;
-        message = `Great news! <strong style="color: #f97316;">${senderName}</strong> has accepted your skill trade request${service_title ? ` for "${service_title}"` : ''}. The exchange is now in progress with a completion date of <strong>${formattedDate}</strong>.`;
+        message = `Great news! <strong style="color: #f97316;">${senderName}</strong> has accepted your skill trade${swapDescription ? `: ${swapDescription}` : ''}. The exchange is now in progress with a completion date of <strong>${formattedDate}</strong>.`;
         emoji = "✅";
         ctaText = "View Exchange";
         break;
       case 'counter_proposal':
         subject = `${senderName} proposed a different date`;
         headline = `New Date Proposed`;
-        message = `<strong style="color: #f97316;">${senderName}</strong> would like to suggest a different completion date for your skill trade${service_title ? ` for "${service_title}"` : ''}: <strong>${formattedDate}</strong>.`;
+        message = `<strong style="color: #f97316;">${senderName}</strong> would like to suggest a different completion date${swapDescription ? ` for ${swapDescription}` : ''}: <strong>${formattedDate}</strong>.`;
         emoji = "📅";
         ctaText = "Review Proposal";
         break;
