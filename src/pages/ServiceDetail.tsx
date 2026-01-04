@@ -39,7 +39,8 @@ import {
   Trash2,
   Linkedin,
   Facebook,
-  Instagram
+  Instagram,
+  Handshake
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
@@ -53,6 +54,7 @@ import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { ReportServiceDialog } from "@/components/reports/ReportServiceDialog";
 import { InterestButton } from "@/components/services/InterestButton";
+import { useGetOrCreateConversation } from "@/hooks/useMessaging";
 
 // Response from secure database function
 interface SecureServiceDetail {
@@ -88,6 +90,7 @@ export default function ServiceDetail() {
   const { user } = useAuth();
   const [contactOpen, setContactOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const getOrCreateConversation = useGetOrCreateConversation();
 
   const { data: service, isLoading, error } = useQuery({
     queryKey: ["service", id],
@@ -120,6 +123,35 @@ export default function ServiceDetail() {
     }
 
     setContactOpen(true);
+  };
+
+  const handleInitiateSkillTrade = async () => {
+    if (!user) {
+      toast.error("Please sign in to initiate a skill trade");
+      navigate('/auth');
+      return;
+    }
+
+    if (user.id === service?.user_id) {
+      toast.error("You can't trade with yourself!");
+      return;
+    }
+
+    if (!service?.user_id) {
+      toast.error("Unable to contact this user");
+      return;
+    }
+
+    try {
+      const conversationId = await getOrCreateConversation.mutateAsync({
+        providerId: service.user_id,
+        serviceId: service.id,
+      });
+      
+      navigate(`/messages/${conversationId}?newTrade=true`);
+    } catch (error) {
+      toast.error("Failed to open conversation");
+    }
   };
 
   const handleShare = async () => {
@@ -528,6 +560,15 @@ export default function ServiceDetail() {
                         >
                           <MessageCircle className="h-4 w-4 mr-2" />
                           Contact Provider
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                          onClick={handleInitiateSkillTrade}
+                          disabled={getOrCreateConversation.isPending}
+                        >
+                          <Handshake className="h-4 w-4 mr-2" />
+                          Initiate Skill Exchange
                         </Button>
                         <InterestButton 
                           serviceId={service.id} 
