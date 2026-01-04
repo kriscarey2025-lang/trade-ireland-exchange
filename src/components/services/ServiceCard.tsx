@@ -264,24 +264,24 @@ export function ServiceCard({
 
           {/* Actions */}
           <div className="flex justify-between items-center pt-3 border-t border-border mt-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <Button
                 size="sm"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
+                className="h-7 px-2.5 bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
               >
-                <span className="text-xs font-medium">Read more</span>
-                <ArrowUpRight className="h-3.5 w-3.5" />
+                <span className="text-[11px] font-medium">Read more</span>
+                <ArrowUpRight className="h-3 w-3" />
               </Button>
               {service.user?.id !== user?.id && (
                 <Button
                   size="sm"
                   variant="outline"
-                  className="gap-1.5 border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                  className="h-7 px-2.5 gap-1 border-accent text-accent hover:bg-accent hover:text-accent-foreground"
                   onClick={handleInitiateSkillTrade}
                   disabled={startConversation.isPending}
                 >
-                  <Handshake className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium hidden sm:inline">Initiate Trade</span>
+                  <Handshake className="h-3 w-3" />
+                  <span className="text-[11px] font-medium hidden sm:inline">Initiate Trade</span>
                 </Button>
               )}
             </div>
