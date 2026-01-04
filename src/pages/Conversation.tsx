@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle, MoreVertical, Lock } from "lucide-react";
+import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle, MoreVertical, Lock, Lightbulb, X } from "lucide-react";
 import { ReportUserDialog } from "@/components/reports/ReportUserDialog";
 import {
   DropdownMenu,
@@ -47,6 +47,7 @@ interface ConversationDetails {
 
 export default function Conversation() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, loading: authLoading } = useAuth();
@@ -55,6 +56,7 @@ export default function Conversation() {
   const [showContactCard, setShowContactCard] = useState(false);
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [isMarkingComplete, setIsMarkingComplete] = useState(false);
+  const [showNewTradeBanner, setShowNewTradeBanner] = useState(searchParams.get('newTrade') === 'true');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: conversation, isLoading: convLoading } = useQuery({
@@ -339,6 +341,39 @@ export default function Conversation() {
               )}
             </CollapsibleContent>
           </Collapsible>
+
+          {/* New Trade Info Banner */}
+          {showNewTradeBanner && (
+            <div className="mb-4 p-4 rounded-lg bg-accent/10 border border-accent/30 relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 h-6 w-6"
+                onClick={() => {
+                  setShowNewTradeBanner(false);
+                  searchParams.delete('newTrade');
+                  setSearchParams(searchParams);
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              <div className="flex items-start gap-3 pr-6">
+                <Lightbulb className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-accent">Tips for a Successful Skill Trade</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• <strong>Share what you can offer</strong> in exchange for their skill</li>
+                    <li>• <strong>Be clear about expectations</strong> — time commitment, skill level, etc.</li>
+                    <li>• <strong>Discuss availability</strong> and preferred meeting/communication methods</li>
+                    <li>• <strong>Ask questions</strong> about their experience and what they're looking for</li>
+                  </ul>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Once you've agreed on terms, use the "Initiate Skill Trade" button below to formalise your exchange!
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Swap Acceptance Card */}
           {conversation.service && (
