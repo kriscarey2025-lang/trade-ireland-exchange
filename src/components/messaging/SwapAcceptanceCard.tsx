@@ -9,9 +9,10 @@ import {
   CheckCircle2, 
   Loader2,
   Clock,
-  X
+  ArrowLeftRight,
+  Play
 } from "lucide-react";
-import { format, isBefore, startOfToday, isToday } from "date-fns";
+import { format, isBefore, startOfToday, isToday, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -41,10 +42,10 @@ export function SwapAcceptanceCard({
   onSwapCompleted
 }: SwapAcceptanceCardProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    agreedCompletionDate ? new Date(agreedCompletionDate) : undefined
+    agreedCompletionDate ? new Date(agreedCompletionDate) : addDays(new Date(), 7)
   );
-  const [isAccepting, setIsAccepting] = useState(false);
-  const [isUpdatingDate, setIsUpdatingDate] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const queryClient = useQueryClient();
 
   const hasAccepted = isParticipant1 ? acceptedBy1 : acceptedBy2;
@@ -53,107 +54,187 @@ export function SwapAcceptanceCard({
   const completionDateReached = agreedCompletionDate && 
     (isBefore(new Date(agreedCompletionDate), startOfToday()) || isToday(new Date(agreedCompletionDate)));
 
-  const handleAcceptSwap = async () => {
+  // Determine who initiated (first to accept)
+  const initiatorIsParticipant1 = acceptedBy1 && !acceptedBy2;
+  const initiatorIsParticipant2 = acceptedBy2 && !acceptedBy1;
+  const currentUserInitiated = (isParticipant1 && initiatorIsParticipant1) || (!isParticipant1 && initiatorIsParticipant2);
+  const otherUserInitiated = (isParticipant1 && initiatorIsParticipant2) || (!isParticipant1 && initiatorIsParticipant1);
+
+  // Initial state: No one has initiated yet
+  const noOneInitiated = !acceptedBy1 && !acceptedBy2;
+
+  const handleInitiateSwap = async () => {
     if (!selectedDate) {
       toast.error("Please select a completion date first");
       return;
     }
 
-    setIsAccepting(true);
+    setIsSubmitting(true);
     try {
       const updateField = isParticipant1 ? "accepted_by_1" : "accepted_by_2";
       
-      const updateData: Record<string, unknown> = { 
-        [updateField]: true,
-        agreed_completion_date: format(selectedDate, 'yyyy-MM-dd')
-      };
-
-      // If both will have accepted after this, update status
-      if (otherHasAccepted) {
-        updateData.swap_status = 'accepted';
-        updateData.accepted_at = new Date().toISOString();
-      }
-
       const { error } = await supabase
         .from("conversations")
-        .update(updateData)
+        .update({ 
+          [updateField]: true,
+          agreed_completion_date: format(selectedDate, 'yyyy-MM-dd'),
+          swap_status: 'pending'
+        })
         .eq("id", conversationId);
 
       if (error) throw error;
 
       await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
       
-      toast.success(
-        otherHasAccepted 
-          ? "Swap accepted! Both parties have agreed." 
-          : "You've accepted! Waiting for the other party."
-      );
+      toast.success(`Skill trade request sent to ${otherUserName}!`);
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : "Failed to accept swap");
+      toast.error(error instanceof Error ? error.message : "Failed to initiate swap");
     } finally {
-      setIsAccepting(false);
+      setIsSubmitting(false);
     }
   };
 
-  const handleUpdateDate = async (date: Date) => {
-    setIsUpdatingDate(true);
+  const handleAcceptSwap = async () => {
+    setIsSubmitting(true);
     try {
+      const updateField = isParticipant1 ? "accepted_by_1" : "accepted_by_2";
+      
       const { error } = await supabase
         .from("conversations")
-        .update({ agreed_completion_date: format(date, 'yyyy-MM-dd') })
+        .update({ 
+          [updateField]: true,
+          swap_status: 'accepted',
+          accepted_at: new Date().toISOString()
+        })
         .eq("id", conversationId);
 
       if (error) throw error;
 
-      setSelectedDate(date);
       await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
-      toast.success("Completion date updated");
+      
+      toast.success("Skill trade accepted! Exchange is now in progress.");
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : "Failed to update date");
+      toast.error(error instanceof Error ? error.message : "Failed to accept swap");
     } finally {
-      setIsUpdatingDate(false);
+      setIsSubmitting(false);
     }
   };
 
-  // If swap is closed, don't show anything
-  if (swapStatus === 'closed') {
+  const handleProposeNewDate = async () => {
+    if (!selectedDate) {
+      toast.error("Please select a new date first");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Reset the other party's acceptance and set our acceptance with new date
+      const myAcceptField = isParticipant1 ? "accepted_by_1" : "accepted_by_2";
+      const otherAcceptField = isParticipant1 ? "accepted_by_2" : "accepted_by_1";
+      
+      const { error } = await supabase
+        .from("conversations")
+        .update({ 
+          [myAcceptField]: true,
+          [otherAcceptField]: false, // Reset other party's acceptance
+          agreed_completion_date: format(selectedDate, 'yyyy-MM-dd'),
+          swap_status: 'pending'
+        })
+        .eq("id", conversationId);
+
+      if (error) throw error;
+
+      await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
+      setShowDatePicker(false);
+      
+      toast.success(`New date proposed! Waiting for ${otherUserName} to accept.`);
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to propose new date");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // If swap is closed or completed, don't show this card
+  if (swapStatus === 'closed' || swapStatus === 'completed') {
     return null;
   }
 
-  return (
-    <Card className="border-primary/20 bg-primary/5">
-      <CardContent className="p-4 space-y-3">
-        {/* Status Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Handshake className="h-5 w-5 text-primary" />
-            <span className="font-medium text-sm">
-              {swapStatus === 'pending' && 'Swap Agreement'}
-              {swapStatus === 'accepted' && 'Swap Accepted'}
-              {swapStatus === 'completed' && 'Swap Completed'}
+  // In Progress state - both accepted, waiting for completion date
+  if (bothAccepted && swapStatus === 'accepted' && !completionDateReached) {
+    return (
+      <Card className="border-blue-500/30 bg-blue-50 dark:bg-blue-950/20 mb-4">
+        <CardContent className="p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Play className="h-5 w-5 text-blue-600" />
+              <span className="font-medium text-sm text-blue-700 dark:text-blue-400">
+                Skill Trade In Progress
+              </span>
+            </div>
+            
+            {agreedCompletionDate && (
+              <div className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-100 dark:bg-blue-900/50 px-2 py-1 rounded-full">
+                <CalendarIcon className="h-3 w-3" />
+                Complete by {format(new Date(agreedCompletionDate), 'dd MMM yyyy')}
+              </div>
+            )}
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            Both parties have agreed! Complete your skill exchange by the agreed date.
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+              <CheckCircle2 className="h-3 w-3 text-green-500" />
+              You accepted
+            </span>
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+              <CheckCircle2 className="h-3 w-3 text-green-500" />
+              {otherUserName} accepted
             </span>
           </div>
-          
-          {bothAccepted && agreedCompletionDate && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-              <CalendarIcon className="h-3 w-3" />
-              {format(new Date(agreedCompletionDate), 'dd MMM yyyy')}
-            </div>
-          )}
-        </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
-        {/* Pending State - Date Selection & Accept */}
-        {swapStatus === 'pending' && !hasAccepted && (
-          <div className="space-y-3">
+  // Completion date reached - show different UI
+  if (bothAccepted && completionDateReached) {
+    return (
+      <Card className="border-green-500/30 bg-green-50 dark:bg-green-950/20 mb-4">
+        <CardContent className="p-4 space-y-2">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-green-600" />
+            <span className="font-medium text-sm text-green-700 dark:text-green-400">
+              Completion Date Reached!
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Mark the trade as complete below and leave a review.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="border-primary/20 bg-primary/5 mb-4">
+      <CardContent className="p-4 space-y-3">
+        {/* No one has initiated yet - Show "Initiate Skill Trade" */}
+        {noOneInitiated && (
+          <>
+            <div className="flex items-center gap-2">
+              <Handshake className="h-5 w-5 text-primary" />
+              <span className="font-medium text-sm">Initiate Skill Trade</span>
+            </div>
+            
             <p className="text-sm text-muted-foreground">
-              {otherHasAccepted 
-                ? `${otherUserName} has proposed a swap. Select a completion date and accept to confirm.`
-                : `Propose a completion date for ${serviceTitle ? `"${serviceTitle}"` : 'this swap'}.`
-              }
+              Ready to exchange skills{serviceTitle ? ` for "${serviceTitle}"` : ''}? Select a target completion date and send a trade request.
             </p>
             
-            {/* Date Picker */}
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -177,92 +258,136 @@ export function SwapAcceptanceCard({
                   />
                 </PopoverContent>
               </Popover>
-            </div>
 
-            <Button 
-              onClick={handleAcceptSwap}
-              disabled={isAccepting || !selectedDate}
-              className="w-full gap-2"
-            >
-              {isAccepting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Handshake className="h-4 w-4" />
-              )}
-              Accept Swap
-            </Button>
-          </div>
+              <Button 
+                onClick={handleInitiateSwap}
+                disabled={isSubmitting || !selectedDate}
+                className="gap-2"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <ArrowLeftRight className="h-4 w-4" />
+                )}
+                Initiate Skill Trade
+              </Button>
+            </div>
+          </>
         )}
 
-        {/* Waiting for other party */}
-        {swapStatus === 'pending' && hasAccepted && !otherHasAccepted && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="h-4 w-4" />
-            <span>Waiting for {otherUserName} to accept...</span>
-          </div>
-        )}
-
-        {/* Both Accepted - Show completion date and status */}
-        {bothAccepted && agreedCompletionDate && !completionDateReached && (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-green-600">
-              <CheckCircle2 className="h-4 w-4" />
-              <span>Both parties have agreed!</span>
+        {/* Current user initiated, waiting for other party */}
+        {currentUserInitiated && !bothAccepted && (
+          <>
+            <div className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-amber-500" />
+              <span className="font-medium text-sm">Awaiting Response</span>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Complete the skill exchange by {format(new Date(agreedCompletionDate), 'PPP')}. 
-              You'll be able to leave reviews after that date.
-            </p>
             
-            {/* Option to update date */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-xs">
-                  <CalendarIcon className="mr-1 h-3 w-3" />
-                  Change date
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => date && handleUpdateDate(date)}
-                  disabled={(date) => isBefore(date, startOfToday()) || isUpdatingDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-        )}
-
-        {/* Completion date reached - Show review prompt */}
-        {bothAccepted && completionDateReached && swapStatus !== 'completed' && (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-primary">
-              <CheckCircle2 className="h-4 w-4" />
-              <span>Completion date reached!</span>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Time to mark the swap as complete and leave a review.
+            <p className="text-sm text-muted-foreground">
+              You've sent a skill trade request to {otherUserName} with a proposed completion date of{' '}
+              <strong>{agreedCompletionDate && format(new Date(agreedCompletionDate), 'PPP')}</strong>.
             </p>
-          </div>
+
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Waiting for {otherUserName} to accept or propose a different date...</span>
+            </div>
+          </>
         )}
 
-        {/* Acceptance Status Badges */}
-        <div className="flex flex-wrap gap-2">
-          {hasAccepted && (
-            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-              <CheckCircle2 className="h-3 w-3 text-green-500" />
-              You accepted
-            </span>
-          )}
-          {otherHasAccepted && (
-            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-              <CheckCircle2 className="h-3 w-3 text-green-500" />
-              {otherUserName} accepted
-            </span>
-          )}
-        </div>
+        {/* Other user initiated, current user needs to respond */}
+        {otherUserInitiated && !bothAccepted && (
+          <>
+            <div className="flex items-center gap-2">
+              <Handshake className="h-5 w-5 text-primary" />
+              <span className="font-medium text-sm">Skill Trade Request</span>
+            </div>
+            
+            <p className="text-sm text-muted-foreground">
+              {otherUserName} wants to exchange skills{serviceTitle ? ` for "${serviceTitle}"` : ''}!
+            </p>
+
+            <div className="p-3 bg-muted/50 rounded-lg">
+              <p className="text-sm">
+                <strong>Proposed completion date:</strong>{' '}
+                {agreedCompletionDate && format(new Date(agreedCompletionDate), 'PPP')}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button 
+                onClick={handleAcceptSwap}
+                disabled={isSubmitting}
+                className="flex-1 gap-2"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="h-4 w-4" />
+                )}
+                Accept Trade
+              </Button>
+              
+              <Button 
+                variant="outline"
+                onClick={() => setShowDatePicker(!showDatePicker)}
+                disabled={isSubmitting}
+                className="flex-1 gap-2"
+              >
+                <CalendarIcon className="h-4 w-4" />
+                Propose Different Date
+              </Button>
+            </div>
+
+            {/* Date picker for proposing new date */}
+            {showDatePicker && (
+              <div className="space-y-2 p-3 bg-muted/30 rounded-lg border">
+                <p className="text-sm font-medium">Select a new completion date:</p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "flex-1 justify-start text-left font-normal",
+                          !selectedDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDate ? format(selectedDate, "PPP") : "Select new date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        disabled={(date) => isBefore(date, startOfToday())}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+                  <Button 
+                    onClick={handleProposeNewDate}
+                    disabled={isSubmitting || !selectedDate}
+                    className="gap-2"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <ArrowLeftRight className="h-4 w-4" />
+                    )}
+                    Send Counter-Proposal
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  This will send the request back to {otherUserName} with your proposed date.
+                </p>
+              </div>
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   );
