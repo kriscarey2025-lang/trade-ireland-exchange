@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Handshake, 
   CalendarIcon, 
@@ -17,6 +20,8 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { categoryLabels, categoryIcons, allCategories } from "@/lib/categories";
+import { ServiceCategory } from "@/types";
 
 interface SwapAcceptanceCardProps {
   conversationId: string;
@@ -27,6 +32,8 @@ interface SwapAcceptanceCardProps {
   swapStatus: string;
   otherUserName: string;
   serviceTitle?: string;
+  offeredSkill?: string;
+  offeredSkillCategory?: string;
   onSwapCompleted?: () => void;
 }
 
@@ -39,6 +46,8 @@ export function SwapAcceptanceCard({
   swapStatus,
   otherUserName,
   serviceTitle,
+  offeredSkill,
+  offeredSkillCategory,
   onSwapCompleted
 }: SwapAcceptanceCardProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -46,6 +55,8 @@ export function SwapAcceptanceCard({
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [myOfferedSkill, setMyOfferedSkill] = useState("");
+  const [myOfferedCategory, setMyOfferedCategory] = useState<ServiceCategory | "">("");
   const queryClient = useQueryClient();
 
   const hasAccepted = isParticipant1 ? acceptedBy1 : acceptedBy2;
@@ -66,7 +77,8 @@ export function SwapAcceptanceCard({
   const sendTradeNotification = async (
     recipientId: string | null,
     notificationType: 'initiated' | 'accepted' | 'counter_proposal',
-    proposedDate: string
+    proposedDate: string,
+    skillOffered?: string
   ) => {
     if (!recipientId) return;
     
@@ -81,7 +93,8 @@ export function SwapAcceptanceCard({
           conversation_id: conversationId,
           notification_type: notificationType,
           proposed_date: proposedDate,
-          service_title: serviceTitle
+          service_title: serviceTitle,
+          offered_skill: skillOffered
         }
       });
     } catch (error) {
@@ -92,6 +105,16 @@ export function SwapAcceptanceCard({
   const handleInitiateSwap = async () => {
     if (!selectedDate) {
       toast.error("Please select a completion date first");
+      return;
+    }
+
+    if (!myOfferedSkill.trim()) {
+      toast.error("Please enter the skill you're offering");
+      return;
+    }
+
+    if (!myOfferedCategory) {
+      toast.error("Please select a skill category");
       return;
     }
 
@@ -112,7 +135,9 @@ export function SwapAcceptanceCard({
         .update({ 
           [updateField]: true,
           agreed_completion_date: dateString,
-          swap_status: 'pending'
+          swap_status: 'pending',
+          offered_skill: myOfferedSkill.trim(),
+          offered_skill_category: myOfferedCategory
         })
         .eq("id", conversationId);
 
@@ -120,7 +145,7 @@ export function SwapAcceptanceCard({
 
       // Send email notification
       const recipientId = isParticipant1 ? conversation?.participant_2 : conversation?.participant_1;
-      await sendTradeNotification(recipientId, 'initiated', dateString);
+      await sendTradeNotification(recipientId, 'initiated', dateString, myOfferedSkill.trim());
 
       await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
       
@@ -221,6 +246,19 @@ export function SwapAcceptanceCard({
     return null;
   }
 
+  // Format the swap description
+  const getSwapDescription = () => {
+    if (offeredSkill && serviceTitle) {
+      const categoryIcon = offeredSkillCategory ? categoryIcons[offeredSkillCategory as ServiceCategory] || "" : "";
+      return (
+        <span className="font-medium">
+          {categoryIcon} {offeredSkill} <ArrowLeftRight className="inline h-3 w-3 mx-1" /> {serviceTitle}
+        </span>
+      );
+    }
+    return null;
+  };
+
   // In Progress state - both accepted, waiting for completion date
   if (bothAccepted && swapStatus === 'accepted' && !completionDateReached) {
     return (
@@ -241,6 +279,12 @@ export function SwapAcceptanceCard({
               </div>
             )}
           </div>
+
+          {getSwapDescription() && (
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-sm text-center">
+              {getSwapDescription()}
+            </div>
+          )}
 
           <p className="text-sm text-muted-foreground">
             Both parties have agreed! Complete your skill exchange by the agreed date.
@@ -272,6 +316,11 @@ export function SwapAcceptanceCard({
               Completion Date Reached!
             </span>
           </div>
+          {getSwapDescription() && (
+            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-sm text-center">
+              {getSwapDescription()}
+            </div>
+          )}
           <p className="text-sm text-muted-foreground">
             Mark the trade as complete below and leave a review.
           </p>
@@ -283,17 +332,51 @@ export function SwapAcceptanceCard({
   return (
     <Card className="border-primary/20 bg-primary/5 mb-4">
       <CardContent className="p-4 space-y-3">
-        {/* No one has initiated yet - Show "Initiate Skill Trade" */}
+        {/* No one has initiated yet - Show "Propose Skill Trade" */}
         {noOneInitiated && (
           <>
             <div className="flex items-center gap-2">
               <Handshake className="h-5 w-5 text-primary" />
-              <span className="font-medium text-sm">Initiate Skill Trade</span>
+              <span className="font-medium text-sm">Propose Skill Trade</span>
             </div>
             
             <p className="text-sm text-muted-foreground">
-              Ready to exchange skills{serviceTitle ? ` for "${serviceTitle}"` : ''}? Select a target completion date and send a trade request.
+              Want to exchange skills{serviceTitle ? ` for "${serviceTitle}"` : ''}? Propose what you'll offer in return.
             </p>
+
+            {/* Skill offering inputs */}
+            <div className="space-y-3 p-3 bg-muted/30 rounded-lg border">
+              <div className="space-y-2">
+                <Label htmlFor="offered-skill" className="text-sm font-medium">
+                  What skill will you offer in return?
+                </Label>
+                <Input
+                  id="offered-skill"
+                  placeholder="e.g., Spanish lessons, Garden maintenance..."
+                  value={myOfferedSkill}
+                  onChange={(e) => setMyOfferedSkill(e.target.value)}
+                  className="bg-background"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="skill-category" className="text-sm font-medium">
+                  Skill category
+                </Label>
+                <Select value={myOfferedCategory} onValueChange={(v) => setMyOfferedCategory(v as ServiceCategory)}>
+                  <SelectTrigger id="skill-category" className="bg-background">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allCategories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {categoryIcons[cat]} {categoryLabels[cat]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-2">
               <Popover>
@@ -316,13 +399,14 @@ export function SwapAcceptanceCard({
                     onSelect={setSelectedDate}
                     disabled={(date) => isBefore(date, startOfToday())}
                     initialFocus
+                    className="pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
 
               <Button 
                 onClick={handleInitiateSwap}
-                disabled={isSubmitting || !selectedDate}
+                disabled={isSubmitting || !selectedDate || !myOfferedSkill.trim() || !myOfferedCategory}
                 className="gap-2"
               >
                 {isSubmitting ? (
@@ -330,9 +414,15 @@ export function SwapAcceptanceCard({
                 ) : (
                   <ArrowLeftRight className="h-4 w-4" />
                 )}
-                Initiate Skill Trade
+                Send Proposal
               </Button>
             </div>
+
+            {myOfferedSkill && myOfferedCategory && serviceTitle && (
+              <p className="text-xs text-muted-foreground text-center">
+                Proposing: <strong>{categoryIcons[myOfferedCategory]} {myOfferedSkill}</strong> for <strong>{serviceTitle}</strong>
+              </p>
+            )}
           </>
         )}
 
@@ -344,8 +434,14 @@ export function SwapAcceptanceCard({
               <span className="font-medium text-sm">Awaiting Response</span>
             </div>
             
+            {getSwapDescription() && (
+              <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-sm text-center">
+                {getSwapDescription()}
+              </div>
+            )}
+
             <p className="text-sm text-muted-foreground">
-              You've sent a skill trade request to {otherUserName} with a proposed completion date of{' '}
+              You've sent a skill trade proposal to {otherUserName} with a completion date of{' '}
               <strong>{agreedCompletionDate && format(new Date(agreedCompletionDate), 'PPP')}</strong>.
             </p>
 
@@ -361,16 +457,25 @@ export function SwapAcceptanceCard({
           <>
             <div className="flex items-center gap-2">
               <Handshake className="h-5 w-5 text-primary" />
-              <span className="font-medium text-sm">Skill Trade Request</span>
+              <span className="font-medium text-sm">Skill Trade Proposal</span>
             </div>
             
             <p className="text-sm text-muted-foreground">
-              {otherUserName} wants to exchange skills{serviceTitle ? ` for "${serviceTitle}"` : ''}!
+              {otherUserName} has proposed a skill trade!
             </p>
 
-            <div className="p-3 bg-muted/50 rounded-lg">
-              <p className="text-sm">
-                <strong>Proposed completion date:</strong>{' '}
+            <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+              {offeredSkill && serviceTitle && (
+                <div className="text-sm text-center">
+                  <span className="font-medium">
+                    {offeredSkillCategory && categoryIcons[offeredSkillCategory as ServiceCategory]} {offeredSkill}
+                  </span>
+                  <ArrowLeftRight className="inline h-3 w-3 mx-2" />
+                  <span className="font-medium">{serviceTitle}</span>
+                </div>
+              )}
+              <p className="text-sm text-center">
+                <strong>Completion date:</strong>{' '}
                 {agreedCompletionDate && format(new Date(agreedCompletionDate), 'PPP')}
               </p>
             </div>
@@ -425,6 +530,7 @@ export function SwapAcceptanceCard({
                         onSelect={setSelectedDate}
                         disabled={(date) => isBefore(date, startOfToday())}
                         initialFocus
+                        className="pointer-events-auto"
                       />
                     </PopoverContent>
                   </Popover>
