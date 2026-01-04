@@ -153,8 +153,8 @@ export function ServiceCard({
 
   return <Link to={`/services/${service.id}`} className="h-full">
       <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-[3px] border-primary/40 hover:border-primary bg-card transition-all duration-300 shadow-md h-full flex flex-col", className)}>
-        {/* Service Image - Always show on mobile and desktop */}
-        {hasImage && (
+        {/* Service Image or Description Preview */}
+        {hasImage ? (
           <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted">
             <img 
               src={service.images![0]} 
@@ -163,7 +163,13 @@ export function ServiceCard({
               loading="lazy"
             />
           </div>
-        )}
+        ) : service.description ? (
+          <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted/30 p-4 flex items-center justify-center">
+            <p className="text-sm text-muted-foreground line-clamp-4 text-center italic">
+              "{service.description}"
+            </p>
+          </div>
+        ) : null}
         <CardContent className={cn("p-5 flex-1 flex flex-col", hasImage && "pt-4")}>
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-4">
