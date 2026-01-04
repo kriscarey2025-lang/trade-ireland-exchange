@@ -1215,6 +1215,7 @@ export type Database = {
         Returns: {
           accepted_categories: string[]
           category: string
+          completed_swaps_count: number
           created_at: string
           description: string
           id: string
