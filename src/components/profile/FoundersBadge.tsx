@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import { Award } from "lucide-react";
 import {
   Tooltip,
@@ -35,41 +34,42 @@ const sizeConfig = {
   },
 };
 
-export const FoundersBadge = forwardRef<HTMLSpanElement, FoundersBadgeProps>(
-  ({ size = "md", showLabel = false, className }, ref) => {
-    const config = sizeConfig[size];
+export function FoundersBadge({ 
+  size = "md", 
+  showLabel = false,
+  className 
+}: FoundersBadgeProps) {
+  const config = sizeConfig[size];
 
-    const badge = (
-      <span
-        ref={ref}
-        className={cn(
-          "inline-flex items-center rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-sm",
-          config.padding,
-          config.gap,
-          config.text,
-          className
-        )}
-      >
-        <Award className={cn(config.icon, "fill-white/20")} />
-        {showLabel && <span>Founding Member</span>}
-      </span>
-    );
+  const badge = (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-sm",
+        config.padding,
+        config.gap,
+        config.text,
+        className
+      )}
+    >
+      <Award className={cn(config.icon, "fill-white/20")} />
+      {showLabel && <span>Founding Member</span>}
+    </span>
+  );
 
-    if (showLabel) {
-      return badge;
-    }
-
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>{badge}</TooltipTrigger>
-          <TooltipContent>
-            <p className="text-sm">🏆 Founding Member - One of the first 50 to join Swap Skills!</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
+  if (showLabel) {
+    return badge;
   }
-);
 
-FoundersBadge.displayName = "FoundersBadge";
+  return (
+    <TooltipProvider delayDuration={0}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="inline-flex">{badge}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="text-sm">🏆 Founding Member - One of the first 50 to join Swap Skills!</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
