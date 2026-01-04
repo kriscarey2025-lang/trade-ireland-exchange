@@ -585,12 +585,21 @@ export default function ServiceDetail() {
                             <p>Start a formal skill swap proposal with this provider</p>
                           </TooltipContent>
                         </Tooltip>
-                        <InterestButton 
-                          serviceId={service.id} 
-                          serviceTitle={service.title}
-                          ownerId={service.user_id}
-                          className="w-full"
-                        />
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="w-full">
+                              <InterestButton 
+                                serviceId={service.id} 
+                                serviceTitle={service.title}
+                                ownerId={service.user_id}
+                                className="w-full"
+                              />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Casually let the provider know you're interested and share your profile</p>
+                          </TooltipContent>
+                        </Tooltip>
                       </>
                     
                     ) : (
