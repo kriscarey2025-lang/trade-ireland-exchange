@@ -63,6 +63,32 @@ export function SwapAcceptanceCard({
   // Initial state: No one has initiated yet
   const noOneInitiated = !acceptedBy1 && !acceptedBy2;
 
+  const sendTradeNotification = async (
+    recipientId: string | null,
+    notificationType: 'initiated' | 'accepted' | 'counter_proposal',
+    proposedDate: string
+  ) => {
+    if (!recipientId) return;
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    try {
+      await supabase.functions.invoke('send-skill-trade-notification', {
+        body: {
+          recipient_id: recipientId,
+          sender_id: user.id,
+          conversation_id: conversationId,
+          notification_type: notificationType,
+          proposed_date: proposedDate,
+          service_title: serviceTitle
+        }
+      });
+    } catch (error) {
+      console.error('Failed to send trade notification:', error);
+    }
+  };
+
   const handleInitiateSwap = async () => {
     if (!selectedDate) {
       toast.error("Please select a completion date first");
@@ -72,17 +98,29 @@ export function SwapAcceptanceCard({
     setIsSubmitting(true);
     try {
       const updateField = isParticipant1 ? "accepted_by_1" : "accepted_by_2";
+      const dateString = format(selectedDate, 'yyyy-MM-dd');
       
+      // Get the other participant's ID
+      const { data: conversation } = await supabase
+        .from("conversations")
+        .select("participant_1, participant_2")
+        .eq("id", conversationId)
+        .single();
+
       const { error } = await supabase
         .from("conversations")
         .update({ 
           [updateField]: true,
-          agreed_completion_date: format(selectedDate, 'yyyy-MM-dd'),
+          agreed_completion_date: dateString,
           swap_status: 'pending'
         })
         .eq("id", conversationId);
 
       if (error) throw error;
+
+      // Send email notification
+      const recipientId = isParticipant1 ? conversation?.participant_2 : conversation?.participant_1;
+      await sendTradeNotification(recipientId, 'initiated', dateString);
 
       await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
       
@@ -99,6 +137,13 @@ export function SwapAcceptanceCard({
     try {
       const updateField = isParticipant1 ? "accepted_by_1" : "accepted_by_2";
       
+      // Get the other participant's ID
+      const { data: conversation } = await supabase
+        .from("conversations")
+        .select("participant_1, participant_2, agreed_completion_date")
+        .eq("id", conversationId)
+        .single();
+
       const { error } = await supabase
         .from("conversations")
         .update({ 
@@ -109,6 +154,10 @@ export function SwapAcceptanceCard({
         .eq("id", conversationId);
 
       if (error) throw error;
+
+      // Send email notification
+      const recipientId = isParticipant1 ? conversation?.participant_2 : conversation?.participant_1;
+      await sendTradeNotification(recipientId, 'accepted', conversation?.agreed_completion_date || '');
 
       await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
       
@@ -131,18 +180,30 @@ export function SwapAcceptanceCard({
       // Reset the other party's acceptance and set our acceptance with new date
       const myAcceptField = isParticipant1 ? "accepted_by_1" : "accepted_by_2";
       const otherAcceptField = isParticipant1 ? "accepted_by_2" : "accepted_by_1";
+      const dateString = format(selectedDate, 'yyyy-MM-dd');
       
+      // Get the other participant's ID
+      const { data: conversation } = await supabase
+        .from("conversations")
+        .select("participant_1, participant_2")
+        .eq("id", conversationId)
+        .single();
+
       const { error } = await supabase
         .from("conversations")
         .update({ 
           [myAcceptField]: true,
           [otherAcceptField]: false, // Reset other party's acceptance
-          agreed_completion_date: format(selectedDate, 'yyyy-MM-dd'),
+          agreed_completion_date: dateString,
           swap_status: 'pending'
         })
         .eq("id", conversationId);
 
       if (error) throw error;
+
+      // Send email notification
+      const recipientId = isParticipant1 ? conversation?.participant_2 : conversation?.participant_1;
+      await sendTradeNotification(recipientId, 'counter_proposal', dateString);
 
       await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
       setShowDatePicker(false);
