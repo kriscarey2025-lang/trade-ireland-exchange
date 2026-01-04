@@ -252,6 +252,59 @@ export function useStartConversation() {
   });
 }
 
+// Creates or finds a conversation WITHOUT sending a message - for draft mode
+export function useGetOrCreateConversation() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ serviceId, providerId }: { 
+      serviceId: string; 
+      providerId: string; 
+    }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      // Check if conversation already exists
+      const { data: existing } = await supabase
+        .from("conversations")
+        .select("id")
+        .eq("service_id", serviceId)
+        .or(`and(participant_1.eq.${user.id},participant_2.eq.${providerId}),and(participant_1.eq.${providerId},participant_2.eq.${user.id})`)
+        .single();
+
+      if (existing) {
+        return existing.id;
+      }
+
+      // Create new conversation without sending a message
+      const { data: newConv, error: convError } = await supabase
+        .from("conversations")
+        .insert({
+          service_id: serviceId,
+          participant_1: user.id,
+          participant_2: providerId,
+        })
+        .select()
+        .single();
+
+      if (convError) throw convError;
+
+      // Track contact initiated for new conversations
+      if (user) {
+        trackContactInitiated(user.id, newConv.id, providerId);
+      }
+
+      return newConv.id;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["conversations", user?.id] });
+    },
+    onError: () => {
+      toast.error("Failed to open conversation");
+    },
+  });
+}
+
 export function useMarkAsRead() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
