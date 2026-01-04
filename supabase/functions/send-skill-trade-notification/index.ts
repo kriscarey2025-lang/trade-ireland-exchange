@@ -115,6 +115,49 @@ const handler = async (req: Request): Promise<Response> => {
         throw new Error(`Unknown notification type: ${notification_type}`);
     }
 
+    // Create in-app notification
+    let notificationTitle: string;
+    let notificationMessage: string;
+    let notificationType: string;
+
+    switch (notification_type) {
+      case 'initiated':
+        notificationTitle = `Skill Trade Request`;
+        notificationMessage = `${senderName} wants to swap skills with you${service_title ? ` for "${service_title}"` : ''}. Proposed completion: ${formattedDate}`;
+        notificationType = 'skill_trade_request';
+        break;
+      case 'accepted':
+        notificationTitle = `Trade Accepted!`;
+        notificationMessage = `${senderName} accepted your skill trade${service_title ? ` for "${service_title}"` : ''}. Exchange in progress until ${formattedDate}`;
+        notificationType = 'skill_trade_accepted';
+        break;
+      case 'counter_proposal':
+        notificationTitle = `New Date Proposed`;
+        notificationMessage = `${senderName} proposed a different completion date${service_title ? ` for "${service_title}"` : ''}: ${formattedDate}`;
+        notificationType = 'skill_trade_counter';
+        break;
+      default:
+        throw new Error(`Unknown notification type: ${notification_type}`);
+    }
+
+    // Insert in-app notification
+    const { error: notificationError } = await supabase
+      .from("notifications")
+      .insert({
+        user_id: recipient_id,
+        type: notificationType,
+        title: notificationTitle,
+        message: notificationMessage,
+        read: false,
+      });
+
+    if (notificationError) {
+      console.error("Error creating in-app notification:", notificationError);
+    } else {
+      console.log("In-app notification created successfully");
+    }
+
+    // Send email notification
     const emailResponse = await resend.emails.send({
       from: "SwapSkills <hello@swap-skills.com>",
       to: [recipientProfile.email],
@@ -134,7 +177,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Skill trade notification email sent successfully:", emailResponse);
 
     return new Response(
-      JSON.stringify({ success: true, emailResponse }),
+      JSON.stringify({ success: true, emailResponse, notificationCreated: !notificationError }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error: any) {
