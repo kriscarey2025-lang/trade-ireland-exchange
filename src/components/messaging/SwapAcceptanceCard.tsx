@@ -474,19 +474,20 @@ export function SwapAcceptanceCard({
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "flex-1 justify-start text-left font-normal",
-                      !selectedDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedDate ? format(selectedDate, "PPP") : "Select completion date"}
-                  </Button>
+            <div className="space-y-2">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "flex-1 justify-start text-left font-normal",
+                        !selectedDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDate ? format(selectedDate, "PPP") : "Select completion date"}
+                    </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
@@ -498,20 +499,24 @@ export function SwapAcceptanceCard({
                     className="pointer-events-auto"
                   />
                 </PopoverContent>
-              </Popover>
+                </Popover>
 
-              <Button 
-                onClick={handleInitiateSwap}
-                disabled={isSubmitting || !selectedDate || !myOfferedSkill.trim() || !myOfferedCategory}
-                className="gap-2"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <ArrowLeftRight className="h-4 w-4" />
-                )}
-                Send Proposal
-              </Button>
+                <Button 
+                  onClick={handleInitiateSwap}
+                  disabled={isSubmitting || !selectedDate || !myOfferedSkill.trim() || !myOfferedCategory}
+                  className="gap-2"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <ArrowLeftRight className="h-4 w-4" />
+                  )}
+                  Send Proposal
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                This is the suggested completion date for your skill exchange. Once this date is reached, you'll be able to mark the trade as complete and leave a review for each other.
+              </p>
             </div>
 
             {myOfferedSkill && myOfferedCategory && serviceTitle && (
