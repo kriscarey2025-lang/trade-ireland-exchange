@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle, MoreVertical } from "lucide-react";
+import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle, MoreVertical, Lock } from "lucide-react";
 import { ReportUserDialog } from "@/components/reports/ReportUserDialog";
 import {
   DropdownMenu,
@@ -18,12 +18,14 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useMessages, useSendMessage, useMarkAsRead } from "@/hooks/useMessaging";
-import { format, isToday, isYesterday } from "date-fns";
+import { format, isToday, isYesterday, isBefore, startOfToday } from "date-fns";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ContactSharingCard } from "@/components/messaging/ContactSharingCard";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ReviewDialog } from "@/components/reviews/ReviewDialog";
 import { ConversationPrompts } from "@/components/messaging/ConversationPrompts";
+import { SwapAcceptanceCard } from "@/components/messaging/SwapAcceptanceCard";
+import { SwapCompletionCard } from "@/components/messaging/SwapCompletionCard";
 import { useToast } from "@/hooks/use-toast";
 
 interface ConversationDetails {
@@ -33,7 +35,11 @@ interface ConversationDetails {
   participant_2: string;
   completed_by_1: boolean;
   completed_by_2: boolean;
-  service?: { id: string; title: string; category?: string; type?: string } | null;
+  accepted_by_1: boolean;
+  accepted_by_2: boolean;
+  agreed_completion_date: string | null;
+  swap_status: string;
+  service?: { id: string; title: string; category?: string; type?: string; user_id?: string } | null;
   other_profile?: { id: string; full_name: string | null; avatar_url: string | null } | null;
 }
 
@@ -58,7 +64,7 @@ export default function Conversation() {
         .from("conversations")
         .select(`
           *,
-          service:service_id (id, title, category, type)
+          service:service_id (id, title, category, type, user_id)
         `)
         .eq("id", id)
         .single();
@@ -104,7 +110,38 @@ export default function Conversation() {
   const otherHasMarkedComplete = isParticipant1 
     ? conversation?.completed_by_2 
     : conversation?.completed_by_1;
-  const canReview = (hasMarkedComplete || otherHasMarkedComplete) && !existingReview;
+  
+  // Swap acceptance status
+  const bothAccepted = conversation?.accepted_by_1 && conversation?.accepted_by_2;
+  const completionDateReached = conversation?.agreed_completion_date && 
+    (isBefore(new Date(conversation.agreed_completion_date), startOfToday()) || 
+     isToday(new Date(conversation.agreed_completion_date)));
+  const canShowReviewOptions = bothAccepted && completionDateReached;
+  const canReview = canShowReviewOptions && (hasMarkedComplete || otherHasMarkedComplete) && !existingReview;
+  
+  // Check if current user is the service owner
+  const isServiceOwner = conversation?.service?.user_id === user?.id;
+  
+  // Check if both parties have reviewed
+  const { data: otherReview } = useQuery({
+    queryKey: ["other-review", id, conversation?.other_profile?.id],
+    queryFn: async () => {
+      if (!id || !conversation?.other_profile?.id) return null;
+      const { data } = await supabase
+        .from("reviews")
+        .select("id")
+        .eq("conversation_id", id)
+        .eq("reviewer_id", conversation.other_profile.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!id && !!conversation?.other_profile?.id,
+  });
+  
+  const bothReviewed = !!existingReview && !!otherReview;
+  
+  // Check if swap is closed (no more messaging)
+  const isSwapClosed = conversation?.swap_status === 'closed';
 
   const handleMarkComplete = async () => {
     if (!id || !user || !conversation) return;
@@ -301,57 +338,84 @@ export default function Conversation() {
             </CollapsibleContent>
           </Collapsible>
 
-          {/* Trade Completion & Review Actions */}
-          <div className="mb-4 flex flex-wrap gap-2">
-            {!hasMarkedComplete && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleMarkComplete}
-                disabled={isMarkingComplete}
-                className="gap-2"
-              >
-                {isMarkingComplete ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <CheckCircle2 className="h-4 w-4" />
-                )}
-                Mark Trade Complete
-              </Button>
-            )}
-            
-            {hasMarkedComplete && !existingReview && (
-              <Button
-                size="sm"
-                onClick={() => setShowReviewDialog(true)}
-                className="gap-2"
-              >
-                <Star className="h-4 w-4" />
-                Leave a Review
-              </Button>
-            )}
-            
-            {hasMarkedComplete && (
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                <CheckCircle2 className="h-3 w-3 text-green-500" />
-                You marked this complete
-              </span>
-            )}
-            
-            {otherHasMarkedComplete && (
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                <CheckCircle2 className="h-3 w-3 text-green-500" />
-                {formatDisplayName(conversation.other_profile?.full_name)} marked complete
-              </span>
-            )}
-            
-            {existingReview && (
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                Review submitted
-              </span>
-            )}
-          </div>
+          {/* Swap Acceptance Card */}
+          {conversation.service && (
+            <SwapAcceptanceCard
+              conversationId={conversation.id}
+              isParticipant1={isParticipant1}
+              acceptedBy1={conversation.accepted_by_1 || false}
+              acceptedBy2={conversation.accepted_by_2 || false}
+              agreedCompletionDate={conversation.agreed_completion_date}
+              swapStatus={conversation.swap_status || 'pending'}
+              otherUserName={formatDisplayName(conversation.other_profile?.full_name)}
+              serviceTitle={conversation.service.title}
+            />
+          )}
+
+          {/* Swap Completion Card - For service owner after both reviewed */}
+          <SwapCompletionCard
+            conversationId={conversation.id}
+            serviceId={conversation.service_id}
+            serviceTitle={conversation.service?.title}
+            isServiceOwner={isServiceOwner}
+            bothReviewed={bothReviewed}
+            swapStatus={conversation.swap_status || 'pending'}
+            onClose={() => navigate("/messages")}
+          />
+
+          {/* Trade Completion & Review Actions - Only show after completion date reached */}
+          {canShowReviewOptions && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {!hasMarkedComplete && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleMarkComplete}
+                  disabled={isMarkingComplete}
+                  className="gap-2"
+                >
+                  {isMarkingComplete ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="h-4 w-4" />
+                  )}
+                  Mark Trade Complete
+                </Button>
+              )}
+              
+              {hasMarkedComplete && !existingReview && (
+                <Button
+                  size="sm"
+                  onClick={() => setShowReviewDialog(true)}
+                  className="gap-2"
+                >
+                  <Star className="h-4 w-4" />
+                  Leave a Review
+                </Button>
+              )}
+              
+              {hasMarkedComplete && (
+                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                  <CheckCircle2 className="h-3 w-3 text-green-500" />
+                  You marked this complete
+                </span>
+              )}
+              
+              {otherHasMarkedComplete && (
+                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                  <CheckCircle2 className="h-3 w-3 text-green-500" />
+                  {formatDisplayName(conversation.other_profile?.full_name)} marked complete
+                </span>
+              )}
+              
+              {existingReview && (
+                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                  <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                  Review submitted
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Safety Reminder */}
           <div className="mb-4 p-3 rounded-lg bg-muted/50 border border-border">
@@ -412,46 +476,55 @@ export default function Conversation() {
               <div ref={messagesEndRef} />
             </CardContent>
 
-            {/* Input */}
-            <div className="p-4 border-t space-y-3">
-              {/* AI Suggested Prompts */}
-              <ConversationPrompts
-                serviceTitle={conversation.service?.title}
-                serviceCategory={conversation.service?.category}
-                serviceType={conversation.service?.type}
-                onSelectPrompt={(prompt) => setNewMessage(prompt)}
-              />
-              
-              <div className="flex gap-2">
-                <div className="flex-1 space-y-1">
-                  <Textarea
-                    placeholder="Type a message..."
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    rows={1}
-                    maxLength={10000}
-                    className="resize-none min-h-[44px]"
-                  />
-                  {newMessage.length > 9000 && (
-                    <p className="text-xs text-muted-foreground text-right">
-                      {newMessage.length}/10000
-                    </p>
-                  )}
+            {/* Input - Disabled if swap is closed */}
+            {isSwapClosed ? (
+              <div className="p-4 border-t">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground py-3">
+                  <Lock className="h-4 w-4" />
+                  <span className="text-sm">This swap has been closed. Messaging is disabled.</span>
                 </div>
-                <Button
-                  onClick={handleSend}
-                  disabled={!newMessage.trim() || sendMessage.isPending}
-                  className="shrink-0"
-                >
-                  {sendMessage.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                </Button>
               </div>
-            </div>
+            ) : (
+              <div className="p-4 border-t space-y-3">
+                {/* AI Suggested Prompts */}
+                <ConversationPrompts
+                  serviceTitle={conversation.service?.title}
+                  serviceCategory={conversation.service?.category}
+                  serviceType={conversation.service?.type}
+                  onSelectPrompt={(prompt) => setNewMessage(prompt)}
+                />
+                
+                <div className="flex gap-2">
+                  <div className="flex-1 space-y-1">
+                    <Textarea
+                      placeholder="Type a message..."
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      rows={1}
+                      maxLength={10000}
+                      className="resize-none min-h-[44px]"
+                    />
+                    {newMessage.length > 9000 && (
+                      <p className="text-xs text-muted-foreground text-right">
+                        {newMessage.length}/10000
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    onClick={handleSend}
+                    disabled={!newMessage.trim() || sendMessage.isPending}
+                    className="shrink-0"
+                  >
+                    {sendMessage.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
           </Card>
         </div>
       </main>
