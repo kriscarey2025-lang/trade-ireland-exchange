@@ -11,7 +11,7 @@ import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useStartConversation } from "@/hooks/useMessaging";
+import { useGetOrCreateConversation } from "@/hooks/useMessaging";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -68,7 +68,7 @@ export function ServiceCard({
 }: ServiceCardProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const startConversation = useStartConversation();
+  const getOrCreateConversation = useGetOrCreateConversation();
   const postTypeBadge = getPostTypeBadge(service.type);
   const isSkillSwap = service.type === "skill_swap";
 
@@ -93,16 +93,15 @@ export function ServiceCard({
     }
 
     try {
-      const conversationId = await startConversation.mutateAsync({
+      const conversationId = await getOrCreateConversation.mutateAsync({
         providerId: service.user.id,
         serviceId: service.id,
-        initialMessage: `Hi! I'm interested in your "${service.title}" and would like to discuss a skill trade. Looking forward to connecting!`
       });
       
-      // Navigate to messages with a flag to show the info banner
+      // Navigate to the conversation as a draft - user can compose their message
       navigate(`/messages/${conversationId}?newTrade=true`);
     } catch (error) {
-      toast.error("Failed to start conversation");
+      toast.error("Failed to open conversation");
     }
   };
 
@@ -285,7 +284,7 @@ export function ServiceCard({
                   variant="outline"
                   className="h-7 px-2.5 gap-1 border-accent text-accent hover:bg-accent hover:text-accent-foreground"
                   onClick={handleInitiateSkillTrade}
-                  disabled={startConversation.isPending}
+                  disabled={getOrCreateConversation.isPending}
                 >
                   <Handshake className="h-3 w-3" />
                   <span className="text-[11px] font-medium hidden sm:inline">Initiate Trade</span>
