@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -553,23 +554,37 @@ export default function ServiceDetail() {
                   <div className="space-y-3">
                     {!isOwner ? (
                       <>
-                        <Button
-                          variant="hero"
-                          className="w-full"
-                          onClick={handleContact}
-                        >
-                          <MessageCircle className="h-4 w-4 mr-2" />
-                          Contact Provider
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-                          onClick={handleInitiateSkillTrade}
-                          disabled={getOrCreateConversation.isPending}
-                        >
-                          <Handshake className="h-4 w-4 mr-2" />
-                          Initiate Skill Exchange
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="hero"
+                              className="w-full"
+                              onClick={handleContact}
+                            >
+                              <MessageCircle className="h-4 w-4 mr-2" />
+                              Contact Provider
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Send a message to ask questions about this service</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                              onClick={handleInitiateSkillTrade}
+                              disabled={getOrCreateConversation.isPending}
+                            >
+                              <Handshake className="h-4 w-4 mr-2" />
+                              Initiate Skill Exchange
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Start a formal skill swap proposal with this provider</p>
+                          </TooltipContent>
+                        </Tooltip>
                         <InterestButton 
                           serviceId={service.id} 
                           serviceTitle={service.title}
