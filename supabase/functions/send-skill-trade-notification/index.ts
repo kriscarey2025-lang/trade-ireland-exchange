@@ -16,6 +16,8 @@ interface SkillTradeNotificationRequest {
   notification_type: 'initiated' | 'accepted' | 'counter_proposal';
   proposed_date: string;
   service_title?: string;
+  test_email?: string; // For testing - overrides recipient email lookup
+  test_sender_name?: string; // For testing - overrides sender name lookup
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -30,49 +32,64 @@ const handler = async (req: Request): Promise<Response> => {
       conversation_id, 
       notification_type, 
       proposed_date,
-      service_title 
+      service_title,
+      test_email,
+      test_sender_name
     }: SkillTradeNotificationRequest = await req.json();
 
-    console.log(`Sending skill trade notification (${notification_type}) to:`, recipient_id);
+    console.log(`Sending skill trade notification (${notification_type}) to:`, test_email || recipient_id);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get recipient's email and preferences
-    const { data: recipientProfile, error: recipientError } = await supabase
-      .from("profiles")
-      .select("email, full_name")
-      .eq("id", recipient_id)
-      .single();
+    let recipientEmail: string;
+    let recipientName: string;
+    let senderName: string;
 
-    if (recipientError || !recipientProfile?.email) {
-      console.log("No email found for recipient:", recipient_id);
-      return new Response(
-        JSON.stringify({ success: false, message: "No email found for recipient" }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
+    // Test mode - use provided test values
+    if (test_email) {
+      recipientEmail = test_email;
+      recipientName = "there";
+      senderName = test_sender_name || "John D.";
+      console.log("Test mode enabled - sending to:", test_email);
+    } else {
+      // Production mode - look up from database
+      const { data: recipientProfile, error: recipientError } = await supabase
+        .from("profiles")
+        .select("email, full_name")
+        .eq("id", recipient_id)
+        .single();
+
+      if (recipientError || !recipientProfile?.email) {
+        console.log("No email found for recipient:", recipient_id);
+        return new Response(
+          JSON.stringify({ success: false, message: "No email found for recipient" }),
+          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+
+      // Get sender's profile
+      const { data: senderProfile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", sender_id)
+        .single();
+
+      // Format name as "FirstName L." for privacy
+      const formatDisplayName = (fullName: string | null): string => {
+        if (!fullName) return "Someone";
+        const parts = fullName.trim().split(/\s+/);
+        if (parts.length === 1) return parts[0];
+        const firstName = parts[0];
+        const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
+        return `${firstName} ${lastInitial}.`;
+      };
+
+      recipientEmail = recipientProfile.email;
+      recipientName = recipientProfile.full_name?.split(' ')[0] || "there";
+      senderName = formatDisplayName(senderProfile?.full_name);
     }
-
-    // Get sender's profile
-    const { data: senderProfile } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .eq("id", sender_id)
-      .single();
-
-    // Format name as "FirstName L." for privacy
-    const formatDisplayName = (fullName: string | null): string => {
-      if (!fullName) return "Someone";
-      const parts = fullName.trim().split(/\s+/);
-      if (parts.length === 1) return parts[0];
-      const firstName = parts[0];
-      const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
-      return `${firstName} ${lastInitial}.`;
-    };
-
-    const senderName = formatDisplayName(senderProfile?.full_name);
-    const recipientName = recipientProfile.full_name?.split(' ')[0] || "there";
 
     // Format the date nicely
     const formattedDate = new Date(proposed_date).toLocaleDateString('en-IE', {
@@ -160,7 +177,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send email notification
     const emailResponse = await resend.emails.send({
       from: "SwapSkills <hello@swap-skills.com>",
-      to: [recipientProfile.email],
+      to: [recipientEmail],
       subject,
       html: generateSkillTradeEmail(
         recipientName,
