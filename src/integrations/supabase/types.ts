@@ -418,6 +418,8 @@ export type Database = {
           completed_by_2: boolean | null
           created_at: string
           id: string
+          offered_skill: string | null
+          offered_skill_category: string | null
           participant_1: string
           participant_2: string
           service_id: string | null
@@ -433,6 +435,8 @@ export type Database = {
           completed_by_2?: boolean | null
           created_at?: string
           id?: string
+          offered_skill?: string | null
+          offered_skill_category?: string | null
           participant_1: string
           participant_2: string
           service_id?: string | null
@@ -448,6 +452,8 @@ export type Database = {
           completed_by_2?: boolean | null
           created_at?: string
           id?: string
+          offered_skill?: string | null
+          offered_skill_category?: string | null
           participant_1?: string
           participant_2?: string
           service_id?: string | null
