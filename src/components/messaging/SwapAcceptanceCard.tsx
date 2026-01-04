@@ -13,7 +13,9 @@ import {
   Loader2,
   Clock,
   ArrowLeftRight,
-  Play
+  Play,
+  Pencil,
+  X
 } from "lucide-react";
 import { format, isBefore, startOfToday, isToday, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -57,6 +59,7 @@ export function SwapAcceptanceCard({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [myOfferedSkill, setMyOfferedSkill] = useState("");
   const [myOfferedCategory, setMyOfferedCategory] = useState<ServiceCategory | "">("");
+  const [isEditing, setIsEditing] = useState(false);
   const queryClient = useQueryClient();
 
   const hasAccepted = isParticipant1 ? acceptedBy1 : acceptedBy2;
@@ -236,6 +239,99 @@ export function SwapAcceptanceCard({
       toast.success(`New date proposed! Waiting for ${otherUserName} to accept.`);
     } catch (error: unknown) {
       toast.error(error instanceof Error ? error.message : "Failed to propose new date");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancelProposal = async () => {
+    setIsSubmitting(true);
+    try {
+      const myAcceptField = isParticipant1 ? "accepted_by_1" : "accepted_by_2";
+
+      const { error } = await supabase
+        .from("conversations")
+        .update({ 
+          [myAcceptField]: false,
+          agreed_completion_date: null,
+          swap_status: 'pending',
+          offered_skill: null,
+          offered_skill_category: null
+        })
+        .eq("id", conversationId);
+
+      if (error) throw error;
+
+      await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
+      setIsEditing(false);
+      setMyOfferedSkill("");
+      setMyOfferedCategory("");
+      
+      toast.success("Skill trade proposal cancelled");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to cancel proposal");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleStartEditing = () => {
+    setMyOfferedSkill(offeredSkill || "");
+    setMyOfferedCategory((offeredSkillCategory as ServiceCategory) || "");
+    if (agreedCompletionDate) {
+      setSelectedDate(new Date(agreedCompletionDate));
+    }
+    setIsEditing(true);
+  };
+
+  const handleUpdateProposal = async () => {
+    if (!selectedDate) {
+      toast.error("Please select a completion date first");
+      return;
+    }
+
+    if (!myOfferedSkill.trim()) {
+      toast.error("Please enter the skill you're offering");
+      return;
+    }
+
+    if (!myOfferedCategory) {
+      toast.error("Please select a skill category");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const dateString = format(selectedDate, 'yyyy-MM-dd');
+      
+      // Get the other participant's ID
+      const { data: conversation } = await supabase
+        .from("conversations")
+        .select("participant_1, participant_2")
+        .eq("id", conversationId)
+        .single();
+
+      const { error } = await supabase
+        .from("conversations")
+        .update({ 
+          agreed_completion_date: dateString,
+          offered_skill: myOfferedSkill.trim(),
+          offered_skill_category: myOfferedCategory
+        })
+        .eq("id", conversationId);
+
+      if (error) throw error;
+
+      // Send email notification about updated proposal
+      const recipientId = isParticipant1 ? conversation?.participant_2 : conversation?.participant_1;
+      await sendTradeNotification(recipientId, 'initiated', dateString, myOfferedSkill.trim());
+
+      await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
+      setIsEditing(false);
+      
+      toast.success("Proposal updated!");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to update proposal");
     } finally {
       setIsSubmitting(false);
     }
@@ -429,26 +525,143 @@ export function SwapAcceptanceCard({
         {/* Current user initiated, waiting for other party */}
         {currentUserInitiated && !bothAccepted && (
           <>
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-amber-500" />
-              <span className="font-medium text-sm">Awaiting Response</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Clock className="h-5 w-5 text-amber-500" />
+                <span className="font-medium text-sm">Awaiting Response</span>
+              </div>
+              {!isEditing && (
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleStartEditing}
+                    disabled={isSubmitting}
+                    className="h-7 px-2 text-xs"
+                  >
+                    <Pencil className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancelProposal}
+                    disabled={isSubmitting}
+                    className="h-7 px-2 text-xs text-destructive hover:text-destructive"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Cancel
+                  </Button>
+                </div>
+              )}
             </div>
             
-            {getSwapDescription() && (
-              <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-sm text-center">
-                {getSwapDescription()}
-              </div>
+            {isEditing ? (
+              <>
+                {/* Editing mode */}
+                <div className="space-y-3 p-3 bg-muted/30 rounded-lg border">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-offered-skill" className="text-sm font-medium">
+                      Skill you're offering
+                    </Label>
+                    <Input
+                      id="edit-offered-skill"
+                      placeholder="e.g., Spanish lessons, Garden maintenance..."
+                      value={myOfferedSkill}
+                      onChange={(e) => setMyOfferedSkill(e.target.value)}
+                      className="bg-background"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-skill-category" className="text-sm font-medium">
+                      Skill category
+                    </Label>
+                    <Select value={myOfferedCategory} onValueChange={(v) => setMyOfferedCategory(v as ServiceCategory)}>
+                      <SelectTrigger id="edit-skill-category" className="bg-background">
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {allCategories.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {categoryIcons[cat]} {categoryLabels[cat]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Completion date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !selectedDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {selectedDate ? format(selectedDate, "PPP") : "Select completion date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={selectedDate}
+                          onSelect={setSelectedDate}
+                          disabled={(date) => isBefore(date, startOfToday())}
+                          initialFocus
+                          className="pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline"
+                    onClick={() => setIsEditing(false)}
+                    disabled={isSubmitting}
+                    className="flex-1"
+                  >
+                    Cancel Edit
+                  </Button>
+                  <Button 
+                    onClick={handleUpdateProposal}
+                    disabled={isSubmitting || !selectedDate || !myOfferedSkill.trim() || !myOfferedCategory}
+                    className="flex-1 gap-2"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <CheckCircle2 className="h-4 w-4" />
+                    )}
+                    Update Proposal
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                {getSwapDescription() && (
+                  <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-sm text-center">
+                    {getSwapDescription()}
+                  </div>
+                )}
+
+                <p className="text-sm text-muted-foreground">
+                  You've sent a skill trade proposal to {otherUserName} with a completion date of{' '}
+                  <strong>{agreedCompletionDate && format(new Date(agreedCompletionDate), 'PPP')}</strong>.
+                </p>
+
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Waiting for {otherUserName} to accept or propose a different date...</span>
+                </div>
+              </>
             )}
-
-            <p className="text-sm text-muted-foreground">
-              You've sent a skill trade proposal to {otherUserName} with a completion date of{' '}
-              <strong>{agreedCompletionDate && format(new Date(agreedCompletionDate), 'PPP')}</strong>.
-            </p>
-
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Waiting for {otherUserName} to accept or propose a different date...</span>
-            </div>
           </>
         )}
 
