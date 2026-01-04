@@ -151,8 +151,8 @@ export function ServiceCard({
   };
   const hasImage = service.images && service.images.length > 0 && service.images[0];
 
-  return <Link to={`/services/${service.id}`}>
-      <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-[3px] border-primary/40 hover:border-primary bg-card transition-all duration-300 shadow-md", className)}>
+  return <Link to={`/services/${service.id}`} className="h-full">
+      <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-[3px] border-primary/40 hover:border-primary bg-card transition-all duration-300 shadow-md h-full flex flex-col", className)}>
         {/* Service Image - Always show on mobile and desktop */}
         {hasImage && (
           <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted">
@@ -164,7 +164,7 @@ export function ServiceCard({
             />
           </div>
         )}
-        <CardContent className={cn("p-5", hasImage && "pt-4")}>
+        <CardContent className={cn("p-5 flex-1 flex flex-col", hasImage && "pt-4")}>
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-4">
             <Badge variant={postTypeBadge.variant} className={cn("shrink-0 rounded-lg", postTypeBadge.className)}>
@@ -263,7 +263,7 @@ export function ServiceCard({
             </div>}
 
           {/* Actions */}
-          <div className="flex justify-between items-center pt-3 border-t border-border mt-4">
+          <div className="flex justify-between items-center pt-3 border-t border-border mt-auto">
             <div className="flex items-center gap-1.5">
               <Button
                 size="sm"
