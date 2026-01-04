@@ -74,3 +74,6 @@ verify_jwt = false
 
 [functions.seed-service-images]
 verify_jwt = false
+
+[functions.send-skill-trade-notification]
+verify_jwt = false
