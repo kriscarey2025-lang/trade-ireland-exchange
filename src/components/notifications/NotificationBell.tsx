@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Bell, Check, Trash2, MessageCircle, Sparkles, Heart, X } from "lucide-react";
+import { Bell, Check, Trash2, MessageCircle, Sparkles, Heart, X, Handshake, CalendarCheck, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -42,6 +42,12 @@ export function NotificationBell() {
         return <Sparkles className="h-4 w-4 text-accent-foreground" />;
       case "interest":
         return <Heart className="h-4 w-4 text-destructive" />;
+      case "skill_trade_request":
+        return <Handshake className="h-4 w-4 text-primary" />;
+      case "skill_trade_accepted":
+        return <CalendarCheck className="h-4 w-4 text-green-600" />;
+      case "skill_trade_counter":
+        return <CalendarClock className="h-4 w-4 text-amber-600" />;
       default:
         return <Bell className="h-4 w-4 text-muted-foreground" />;
     }
