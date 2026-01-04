@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2, Copy } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2, Copy, Handshake } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -10,6 +10,8 @@ import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { useStartConversation } from "@/hooks/useMessaging";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,8 +66,45 @@ export function ServiceCard({
   service,
   className
 }: ServiceCardProps) {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const startConversation = useStartConversation();
   const postTypeBadge = getPostTypeBadge(service.type);
   const isSkillSwap = service.type === "skill_swap";
+
+  const handleInitiateSkillTrade = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      toast.error("Please sign in to initiate a skill trade");
+      navigate("/auth");
+      return;
+    }
+
+    if (service.user?.id === user.id) {
+      toast.error("You can't trade with yourself!");
+      return;
+    }
+
+    if (!service.user?.id) {
+      toast.error("Unable to contact this user");
+      return;
+    }
+
+    try {
+      const conversationId = await startConversation.mutateAsync({
+        providerId: service.user.id,
+        serviceId: service.id,
+        initialMessage: `Hi! I'm interested in your "${service.title}" and would like to discuss a skill trade. Looking forward to connecting!`
+      });
+      
+      // Navigate to messages with a flag to show the info banner
+      navigate(`/messages/${conversationId}?newTrade=true`);
+    } catch (error) {
+      toast.error("Failed to start conversation");
+    }
+  };
 
   const shareUrl = `https://swap-skills.com/services/${service.id}`;
   const shareText = `Check out "${service.title}" on SwapSkills - Trade skills, not money! 🔄`;
@@ -225,13 +264,27 @@ export function ServiceCard({
 
           {/* Actions */}
           <div className="flex justify-between items-center pt-3 border-t border-border mt-4">
-            <Button
-              size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
-            >
-              <span className="text-xs font-medium">Read more</span>
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
+              >
+                <span className="text-xs font-medium">Read more</span>
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </Button>
+              {service.user?.id !== user?.id && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5 border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                  onClick={handleInitiateSkillTrade}
+                  disabled={startConversation.isPending}
+                >
+                  <Handshake className="h-3.5 w-3.5" />
+                  <span className="text-xs font-medium hidden sm:inline">Initiate Trade</span>
+                </Button>
+              )}
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
                 <Button
