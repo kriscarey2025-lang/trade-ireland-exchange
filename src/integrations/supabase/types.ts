@@ -410,6 +410,10 @@ export type Database = {
       }
       conversations: {
         Row: {
+          accepted_at: string | null
+          accepted_by_1: boolean | null
+          accepted_by_2: boolean | null
+          agreed_completion_date: string | null
           completed_by_1: boolean | null
           completed_by_2: boolean | null
           created_at: string
@@ -417,9 +421,14 @@ export type Database = {
           participant_1: string
           participant_2: string
           service_id: string | null
+          swap_status: string | null
           updated_at: string
         }
         Insert: {
+          accepted_at?: string | null
+          accepted_by_1?: boolean | null
+          accepted_by_2?: boolean | null
+          agreed_completion_date?: string | null
           completed_by_1?: boolean | null
           completed_by_2?: boolean | null
           created_at?: string
@@ -427,9 +436,14 @@ export type Database = {
           participant_1: string
           participant_2: string
           service_id?: string | null
+          swap_status?: string | null
           updated_at?: string
         }
         Update: {
+          accepted_at?: string | null
+          accepted_by_1?: boolean | null
+          accepted_by_2?: boolean | null
+          agreed_completion_date?: string | null
           completed_by_1?: boolean | null
           completed_by_2?: boolean | null
           created_at?: string
@@ -437,6 +451,7 @@ export type Database = {
           participant_1?: string
           participant_2?: string
           service_id?: string | null
+          swap_status?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -803,6 +818,7 @@ export type Database = {
         Row: {
           accepted_categories: string[] | null
           category: string
+          completed_swaps_count: number | null
           created_at: string
           description: string | null
           id: string
@@ -822,6 +838,7 @@ export type Database = {
         Insert: {
           accepted_categories?: string[] | null
           category: string
+          completed_swaps_count?: number | null
           created_at?: string
           description?: string | null
           id?: string
@@ -841,6 +858,7 @@ export type Database = {
         Update: {
           accepted_categories?: string[] | null
           category?: string
+          completed_swaps_count?: number | null
           created_at?: string
           description?: string | null
           id?: string
@@ -1294,6 +1312,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_completed_swaps: {
+        Args: { _service_id: string }
+        Returns: undefined
       }
       insert_advertiser_interest: {
         Args: {
