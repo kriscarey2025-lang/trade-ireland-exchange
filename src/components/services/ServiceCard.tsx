@@ -40,6 +40,7 @@ interface ServiceData {
   estimatedHours?: number;
   acceptedCategories?: string[];
   images?: string[];
+  completedSwapsCount?: number;
   user?: ServiceUser;
 }
 
@@ -214,9 +215,9 @@ export function ServiceCard({
                       <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
                       <span>·</span>
                     </> : <span className="text-muted-foreground italic">No reviews</span>}
-                  {service.user.completedTrades > 0 && <>
+                  {(service.completedSwapsCount ?? 0) > 0 && <>
                       {service.user.rating !== null && <span>·</span>}
-                      <span>{service.user.completedTrades} swaps</span>
+                      <span className="font-medium text-primary">{service.completedSwapsCount} swaps ✓</span>
                     </>}
                 </div>
               </div>

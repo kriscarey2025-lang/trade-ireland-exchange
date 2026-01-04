@@ -26,6 +26,7 @@ interface SecureServiceResponse {
   provider_instagram: string | null;
   provider_verification_status: string | null;
   provider_is_founder: boolean | null;
+  completed_swaps_count: number | null;
 }
 
 export interface DatabaseService {
@@ -62,6 +63,7 @@ export interface ServiceWithUser {
   location: string;
   status: "active" | "paused" | "completed";
   acceptedCategories?: string[];
+  completedSwapsCount?: number;
   user?: {
     id: string | null;
     name: string;
@@ -86,6 +88,8 @@ const mapType = (type: string | null): PostCategory => {
 };
 
 function transformSecureService(service: SecureServiceResponse): ServiceWithUser {
+  const completedSwapsCount = service.completed_swaps_count || 0;
+  
   return {
     id: service.id,
     userId: service.user_id,
@@ -98,12 +102,13 @@ function transformSecureService(service: SecureServiceResponse): ServiceWithUser
     location: service.location || "Ireland",
     status: (service.status as "active" | "paused" | "completed") || "active",
     acceptedCategories: service.accepted_categories || undefined,
+    completedSwapsCount,
     user: service.provider_name ? {
       id: service.user_id,
       name: formatDisplayName(service.provider_name),
       avatar: service.provider_avatar || undefined,
       rating: null,
-      completedTrades: 0,
+      completedTrades: completedSwapsCount,
       verificationStatus: (service.provider_verification_status as "verified" | "pending" | "unverified") || "unverified",
       linkedinUrl: service.provider_linkedin || undefined,
       facebookUrl: service.provider_facebook || undefined,
