@@ -110,25 +110,18 @@ export default function Browse() {
         <Header />
         <main className="flex-1 bg-secondary/20">
         <div className="container py-8">
-          {/* AI Matches CTA Banner - Show for logged-in users */}
+          {/* AI Matches CTA - Compact button for logged-in users */}
           {user && (
-            <button 
-              onClick={() => setMatchesDialogOpen(true)}
-              className="w-full mb-6 bg-gradient-to-r from-primary via-primary/90 to-primary/80 rounded-xl p-4 flex items-center justify-between gap-4 group hover:shadow-lg transition-all duration-300 text-left"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-white/20 rounded-lg shrink-0">
-                  <Sparkles className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-white">Check Your Matches ✨</p>
-                  <p className="text-sm text-white/80">See who wants your skills & message them instantly</p>
-                </div>
-              </div>
-              <div className="shrink-0 bg-white/20 rounded-full p-2 group-hover:bg-white/30 transition-colors">
-                <ArrowRight className="h-5 w-5 text-white" />
-              </div>
-            </button>
+            <div className="mb-6 flex justify-end">
+              <button 
+                onClick={() => setMatchesDialogOpen(true)}
+                className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-white px-5 py-2.5 rounded-full font-medium shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+              >
+                <Sparkles className="h-4 w-4 animate-pulse" />
+                <span>Find Your Matches</span>
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
           )}
 
           {/* Matches Dialog */}
