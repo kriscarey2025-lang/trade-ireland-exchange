@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const handleBanCheck = async (userId: string, currentSession: Session | null) => {
+  const handleBanCheck = async (userId: string, currentSession: Session | null, skipIpLog = false) => {
     const banned = await checkBanStatus(userId);
     if (banned) {
       setIsBanned(true);
@@ -79,14 +79,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return true;
     }
     
-    const { ipBanned } = await logIpAndCheckBan(currentSession);
-    if (ipBanned) {
-      setIsBanned(true);
-      await supabase.auth.signOut();
-      setUser(null);
-      setSession(null);
-      setLoading(false);
-      return true;
+    // Only log IP on fresh sign-in, not on initial load with cached session
+    if (!skipIpLog) {
+      const { ipBanned } = await logIpAndCheckBan(currentSession);
+      if (ipBanned) {
+        setIsBanned(true);
+        await supabase.auth.signOut();
+        setUser(null);
+        setSession(null);
+        setLoading(false);
+        return true;
+      }
     }
     
     setIsBanned(false);
@@ -103,9 +106,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }, 10000);
 
-    // Listen for auth changes - SYNC only, defer async work
+    // Listen for auth changes - handle fresh sign-ins for IP logging
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         // Synchronous state updates only
         setSession(session);
         setUser(session?.user ?? null);
@@ -115,16 +118,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           ipLoggedRef.current = false;
           setLoading(false);
         }
+        
+        // Log IP only on fresh sign-in or token refresh (not initial session)
+        if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user && !ipLoggedRef.current) {
+          // Use setTimeout to avoid blocking the auth state change
+          setTimeout(async () => {
+            await logIpAndCheckBan(session);
+          }, 100);
+        }
       }
     );
 
-    // Get initial session
+    // Get initial session - skip IP logging for cached sessions
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        const wasBanned = await handleBanCheck(session.user.id, session);
+        // Skip IP logging on initial load - will be done on TOKEN_REFRESHED if session is valid
+        const wasBanned = await handleBanCheck(session.user.id, session, true);
         if (wasBanned) {
           clearTimeout(safetyTimeout);
           return;
