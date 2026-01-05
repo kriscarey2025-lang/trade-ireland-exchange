@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -22,7 +23,50 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email, fullName }: WelcomeEmailRequest = await req.json();
 
-    console.log("Sending welcome email to:", email);
+    console.log("Welcome email request received for:", email);
+
+    // Initialize Supabase client with service role for deduplication check
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Check if welcome email was already sent to this email
+    const { data: existingEmail, error: checkError } = await supabase
+      .from("welcome_emails_sent")
+      .select("id")
+      .eq("email", email.toLowerCase())
+      .maybeSingle();
+
+    if (checkError) {
+      console.error("Error checking for existing welcome email:", checkError);
+      // Continue anyway - better to risk a duplicate than fail to send
+    }
+
+    if (existingEmail) {
+      console.log("Welcome email already sent to:", email, "- skipping duplicate");
+      return new Response(JSON.stringify({ success: true, skipped: true, reason: "already_sent" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    // Record that we're sending this email (do this BEFORE sending to prevent race conditions)
+    const { error: insertError } = await supabase
+      .from("welcome_emails_sent")
+      .insert({ email: email.toLowerCase() });
+
+    if (insertError) {
+      // If insert fails due to unique constraint, another request already sent the email
+      if (insertError.code === "23505") {
+        console.log("Welcome email already being sent by another request:", email);
+        return new Response(JSON.stringify({ success: true, skipped: true, reason: "concurrent_request" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+      console.error("Error recording welcome email:", insertError);
+      // Continue anyway - better to risk a duplicate than fail to send
+    }
 
     const firstName = fullName?.split(" ")[0] || "there";
 
@@ -150,6 +194,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (error) {
       console.error("Error sending welcome email:", error);
+      // Remove the record since we failed to send
+      await supabase.from("welcome_emails_sent").delete().eq("email", email.toLowerCase());
       throw new Error(error.message);
     }
 
