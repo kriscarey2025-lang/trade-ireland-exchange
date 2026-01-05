@@ -24,6 +24,7 @@ import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { ReviewsList } from "@/components/reviews/ReviewsList";
 import { InterestedUsersCard } from "@/components/profile/InterestedUsersCard";
 import { PendingSwapRequestsCard } from "@/components/profile/PendingSwapRequestsCard";
+import { SkillsManagementCard } from "@/components/profile/SkillsManagementCard";
 
 const profileSchema = z.object({
   full_name: z.string().trim().min(1, "Name is required").max(100),
@@ -496,6 +497,9 @@ export default function Profile() {
               }}
             />
           )}
+
+          {/* Skill Preferences Card */}
+          {user && <SkillsManagementCard userId={user.id} />}
 
           {/* ID Verification Card */}
           {user && profile && (
