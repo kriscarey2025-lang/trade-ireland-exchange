@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { useStartConversation } from "@/hooks/useMessaging";
 import { toast } from "sonner";
+import { fireConfetti } from "@/hooks/useConfetti";
 
 interface Match {
   id: string;
@@ -134,6 +135,9 @@ export function PostCreationMatchDialog({
         initialMessage: matchMessage,
       });
 
+      // Fire confetti on successful message send!
+      fireConfetti();
+      
       toast.success("Message sent! 🎉", {
         description: "Great job making the first move!",
       });
