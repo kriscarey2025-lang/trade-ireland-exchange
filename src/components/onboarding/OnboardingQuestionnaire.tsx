@@ -192,7 +192,7 @@ export function OnboardingQuestionnaire() {
     }
 
     toast.success("You're all set! Let's find you some matches.");
-    navigate("/");
+    navigate("/welcome");
   };
 
   const handleSkip = async () => {

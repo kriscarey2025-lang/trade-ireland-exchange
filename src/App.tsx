@@ -47,6 +47,7 @@ const CommunityBoard = lazy(() => import("./pages/CommunityBoard"));
 const Stories = lazy(() => import("./pages/Stories"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const SeedImages = lazy(() => import("./pages/SeedImages"));
+const Welcome = lazy(() => import("./pages/Welcome"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -107,6 +108,7 @@ const App = () => (
               <Route path="/stories" element={<Stories />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route path="/seed-images" element={<SeedImages />} />
+              <Route path="/welcome" element={<Welcome />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
