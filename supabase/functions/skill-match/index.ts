@@ -14,8 +14,14 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'No authorization header' }), {
-        status: 401,
+      // Return empty matches instead of 401 to handle gracefully
+      console.warn('skill-match: No authorization header');
+      return new Response(JSON.stringify({ 
+        matches: [],
+        message: 'Please sign in to see your matches.',
+        skipped: true 
+      }), {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -29,9 +35,14 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
     
     if (userError || !user) {
-      console.error('Auth error:', userError);
-      return new Response(JSON.stringify({ error: 'Invalid token' }), {
-        status: 401,
+      // Return empty matches instead of 401 for expired/invalid sessions
+      console.warn('skill-match: Invalid token or session expired', userError?.message);
+      return new Response(JSON.stringify({ 
+        matches: [],
+        message: 'Your session has expired. Please sign in again.',
+        skipped: true 
+      }), {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
