@@ -24,9 +24,11 @@ serve(async (req) => {
     // Get auth token from request
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
+      // Return 200 so client code doesn't treat this as a hard failure.
+      // This can happen when a local cached session is stale.
       return new Response(
-        JSON.stringify({ error: 'No authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, skipped: true, reason: 'no_authorization_header' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -43,9 +45,11 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
     
     if (userError || !user) {
+      console.warn('log-ip: invalid user/session', userError?.message);
+      // Return 200 to avoid surfacing as a runtime error in the client.
       return new Response(
-        JSON.stringify({ error: 'Invalid user' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, skipped: true, reason: 'invalid_user' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -56,13 +60,13 @@ serve(async (req) => {
     const { data: isBanned } = await supabaseAdmin.rpc('is_ip_banned', { _ip_address: clientIp });
     
     if (isBanned) {
-      // Sign out the user if their IP is banned
       return new Response(
-        JSON.stringify({ 
-          banned: true, 
-          message: 'Access denied. Your IP address has been blocked.' 
+        JSON.stringify({
+          success: true,
+          banned: true,
+          message: 'Access denied. Your IP address has been blocked.'
         }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
