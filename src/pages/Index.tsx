@@ -288,7 +288,7 @@ const Index = () => {
                   <div className="w-px h-4 bg-border" />
                   <div className="flex items-center gap-1.5">
                     <span className="text-lg md:text-xl">🤝</span>
-                    <span>Free Forever</span>
+                    <span>100% Free</span>
                   </div>
                   <div className="w-px h-4 bg-border hidden sm:block" />
                   <div className="hidden sm:flex items-center gap-1.5">
