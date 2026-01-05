@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, ArrowRight, Lightbulb, Sparkles } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, ArrowRight, Lightbulb, Sparkles, Heart } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
@@ -199,46 +199,88 @@ const Index = () => {
         <Header />
         <main className="flex-1 bg-secondary/20">
           <AdsLayout>
-            {/* Hero Tagline Section */}
-            <section className="py-8 md:py-12 bg-gradient-to-b from-background to-secondary/30">
-              <div className="container text-center">
+            {/* Hero Tagline Section - Enhanced for mobile conversion */}
+            <section className="py-8 md:py-12 bg-gradient-to-b from-background to-secondary/30 relative overflow-hidden">
+              {/* Subtle animated background */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-accent/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: "1s" }} />
+              </div>
+              
+              <div className="container text-center relative">
+                {/* Urgency badge for mobile */}
+                {!user && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold mb-4 animate-fade-up">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                    </span>
+                    Join 25+ neighbours already swapping!
+                  </div>
+                )}
+                
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-3 md:mb-4">
                   <span className="gradient-text">Swap skills.</span>{" "}
                   <span className="gradient-text">Make friends.</span>{" "}
                   <span className="text-foreground">Save money.</span>
                 </h1>
+                
                 <p className="text-sm md:text-lg font-medium text-muted-foreground mb-2">
-                  A free, local platform for exchanging skills — no money involved.
+                  Trade your talents with neighbours — <span className="text-foreground font-semibold">100% free, forever.</span>
                 </p>
-                <p className="text-xs md:text-sm font-medium tracking-wide mb-4">
+                <p className="text-xs md:text-sm font-medium tracking-wide mb-5">
                   <span className="inline-block bg-gradient-to-r from-primary via-accent to-highlight bg-clip-text text-transparent">
                     Ireland's first digital & free Barter System
                   </span>
                 </p>
                 
-                {/* Quick CTA for non-logged in users */}
+                {/* Enhanced CTA for non-logged in users */}
                 {!user && (
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4">
-                    <Button size="lg" className="group shadow-lg hover:shadow-xl rounded-full px-6 md:px-8" asChild>
+                  <div className="flex flex-col items-center gap-3 mt-4">
+                    {/* Primary CTA - Full width on mobile, very prominent */}
+                    <Button 
+                      size="lg" 
+                      className="group shadow-xl hover:shadow-2xl rounded-full px-8 w-full sm:w-auto text-base h-14 font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary animate-fade-up" 
+                      asChild
+                    >
                       <Link to="/auth?mode=signup">
-                        Sign up for free
-                        <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
+                        <Heart className="mr-2 h-5 w-5 animate-pulse" />
+                        Get Started — It's Free!
+                        <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="lg" 
-                      className="rounded-full px-6"
-                      onClick={() => setBrainstormOpen(true)}
-                    >
-                      <Lightbulb className="mr-2 h-4 w-4" />
-                      Not sure where to start?
-                    </Button>
+                    
+                    {/* Secondary options */}
+                    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                      <Button 
+                        variant="outline" 
+                        size="lg" 
+                        className="rounded-full px-6 w-full sm:w-auto"
+                        asChild
+                      >
+                        <Link to="/browse">
+                          Browse 12+ active offers
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                      <button 
+                        onClick={() => setBrainstormOpen(true)}
+                        className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1.5 py-2"
+                      >
+                        <Lightbulb className="h-4 w-4" />
+                        Need ideas? Let's brainstorm
+                      </button>
+                    </div>
+                    
+                    {/* Trust signals for mobile */}
+                    <p className="text-xs text-muted-foreground mt-2">
+                      ✓ No payment required · ✓ No spam · ✓ Cancel anytime
+                    </p>
                   </div>
                 )}
                 
-                {/* Quick social proof */}
-                <div className="mt-4 md:mt-6 flex items-center justify-center gap-4 md:gap-6 text-xs md:text-sm text-muted-foreground">
+                {/* Social proof badges */}
+                <div className="mt-5 md:mt-6 flex items-center justify-center gap-4 md:gap-6 text-xs md:text-sm text-muted-foreground">
                   <div className="flex items-center gap-1.5">
                     <span className="text-lg md:text-xl">🇮🇪</span>
                     <span>100% Irish</span>
@@ -423,6 +465,23 @@ const Index = () => {
           </AdsLayout>
         </main>
         <Footer />
+        
+        {/* Sticky Mobile CTA - Shows for non-logged users */}
+        {!user && (
+          <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-t border-border p-3 shadow-2xl safe-bottom">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground truncate">Ready to swap skills?</p>
+                <p className="text-xs text-muted-foreground">Join free — no card needed</p>
+              </div>
+              <Button size="sm" className="shrink-0 rounded-full px-4 shadow-lg" asChild>
+                <Link to="/auth?mode=signup">
+                  Sign Up Free
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
       <BrainstormDialog open={brainstormOpen} onOpenChange={setBrainstormOpen} />
     </>
