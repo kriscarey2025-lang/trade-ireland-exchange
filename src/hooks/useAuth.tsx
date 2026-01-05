@@ -33,9 +33,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logIpAndCheckBan = async () => {
-    // Only log IP once per session
-    if (ipLoggedRef.current) {
+  const logIpAndCheckBan = async (currentSession: Session | null) => {
+    // Only log IP once per session and only if we have a valid session
+    if (ipLoggedRef.current || !currentSession?.access_token) {
       return { ipBanned: false };
     }
     
@@ -53,6 +53,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearTimeout(timeoutId);
       
       if (error) {
+        // If session is invalid (401), don't treat as error - just skip IP logging
+        if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+          console.log('Session invalid for IP logging, skipping');
+          return { ipBanned: false };
+        }
         console.error('Failed to log IP:', error);
         return { ipBanned: false };
       }
@@ -63,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const handleBanCheck = async (userId: string) => {
+  const handleBanCheck = async (userId: string, currentSession: Session | null) => {
     const banned = await checkBanStatus(userId);
     if (banned) {
       setIsBanned(true);
@@ -74,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return true;
     }
     
-    const { ipBanned } = await logIpAndCheckBan();
+    const { ipBanned } = await logIpAndCheckBan(currentSession);
     if (ipBanned) {
       setIsBanned(true);
       await supabase.auth.signOut();
@@ -119,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        const wasBanned = await handleBanCheck(session.user.id);
+        const wasBanned = await handleBanCheck(session.user.id, session);
         if (wasBanned) {
           clearTimeout(safetyTimeout);
           return;
