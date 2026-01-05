@@ -110,19 +110,6 @@ export default function Browse() {
         <Header />
         <main className="flex-1 bg-secondary/20">
         <div className="container py-8">
-          {/* AI Matches CTA - Compact button for logged-in users */}
-          {user && (
-            <div className="mb-6 flex justify-end">
-              <button 
-                onClick={() => setMatchesDialogOpen(true)}
-                className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-white px-5 py-2.5 rounded-full font-medium shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
-              >
-                <Sparkles className="h-4 w-4 animate-pulse" />
-                <span>Find Your Matches</span>
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            </div>
-          )}
 
           {/* Matches Dialog */}
           <MatchesDialog 
@@ -203,6 +190,20 @@ export default function Browse() {
               {postCategoryLabels.skill_swap}
             </Button>
           </div>
+
+          {/* AI Matches CTA - Above search bar */}
+          {user && (
+            <div className="mb-4 flex justify-start">
+              <button 
+                onClick={() => setMatchesDialogOpen(true)}
+                className="group inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-white px-5 py-2.5 rounded-full font-medium shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+              >
+                <Sparkles className="h-4 w-4 animate-pulse" />
+                <span>Find Your Matches</span>
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          )}
 
           {/* Search & Filters */}
           <div className="bg-card rounded-xl border border-border p-4 mb-8 shadow-soft">
