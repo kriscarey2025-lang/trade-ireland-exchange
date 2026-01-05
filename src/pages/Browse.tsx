@@ -21,6 +21,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { SEO } from "@/components/SEO";
 import { useAuth } from "@/hooks/useAuth";
 import { postCategoryLabels } from "@/lib/postCategories";
+import { MatchesDialog } from "@/components/matching/MatchesDialog";
 
 const locations = [
   "All Ireland",
@@ -68,6 +69,7 @@ export default function Browse() {
   const [selectedLocation, setSelectedLocation] = useState("All Ireland");
   const [selectedPostType, setSelectedPostType] = useState<PostCategory | "all">("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [matchesDialogOpen, setMatchesDialogOpen] = useState(false);
 
   // Debounce search query to avoid too many API calls
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -110,9 +112,9 @@ export default function Browse() {
         <div className="container py-8">
           {/* AI Matches CTA Banner - Show for logged-in users */}
           {user && (
-            <Link 
-              to="/matches" 
-              className="mb-6 bg-gradient-to-r from-primary via-primary/90 to-primary/80 rounded-xl p-4 flex items-center justify-between gap-4 group hover:shadow-lg transition-all duration-300"
+            <button 
+              onClick={() => setMatchesDialogOpen(true)}
+              className="w-full mb-6 bg-gradient-to-r from-primary via-primary/90 to-primary/80 rounded-xl p-4 flex items-center justify-between gap-4 group hover:shadow-lg transition-all duration-300 text-left"
             >
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-white/20 rounded-lg shrink-0">
@@ -126,8 +128,15 @@ export default function Browse() {
               <div className="shrink-0 bg-white/20 rounded-full p-2 group-hover:bg-white/30 transition-colors">
                 <ArrowRight className="h-5 w-5 text-white" />
               </div>
-            </Link>
+            </button>
           )}
+
+          {/* Matches Dialog */}
+          <MatchesDialog 
+            open={matchesDialogOpen} 
+            onOpenChange={setMatchesDialogOpen} 
+            userId={user?.id} 
+          />
 
           {/* Auth Prompt Banner for Non-Logged-In Users */}
           {!user && (
