@@ -1,11 +1,16 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
+import { MapPin, Sparkles, Send, CheckCircle, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
+import { useStartConversation } from "@/hooks/useMessaging";
+import { toast } from "sonner";
+import { fireConfetti } from "@/hooks/useConfetti";
 
 interface AIMatchCardProps {
   match: {
@@ -31,9 +36,22 @@ interface AIMatchCardProps {
       is_founder?: boolean;
     };
   };
+  isNewMatch?: boolean;
 }
 
-export function AIMatchCard({ match }: AIMatchCardProps) {
+const PLACEHOLDER_MESSAGES = [
+  "Hi! I'd love to swap skills with you! 👋",
+  "Hey! I think we'd be a great match for a swap!",
+  "Hi there! Interested in a skill exchange?",
+];
+
+export function AIMatchCard({ match, isNewMatch }: AIMatchCardProps) {
+  const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [messageSent, setMessageSent] = useState(false);
+  const navigate = useNavigate();
+  const startConversation = useStartConversation();
+
   const getScoreColor = (score: number) => {
     if (score >= 80) return "bg-green-500/20 text-green-700 border-green-500/30";
     if (score >= 60) return "bg-yellow-500/20 text-yellow-700 border-yellow-500/30";
@@ -49,8 +67,48 @@ export function AIMatchCard({ match }: AIMatchCardProps) {
     return `${firstName} ${lastInitial}.`;
   };
 
+  const getPlaceholder = () => {
+    const index = Math.floor(Math.random() * PLACEHOLDER_MESSAGES.length);
+    return PLACEHOLDER_MESSAGES[index];
+  };
+
+  const handleSendMessage = async () => {
+    if (!message.trim()) {
+      toast.error("Please write a message first");
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      const conversationId = await startConversation.mutateAsync({
+        serviceId: match.service.id,
+        providerId: match.provider.id,
+        initialMessage: message.trim(),
+      });
+
+      fireConfetti();
+      
+      toast.success("Message sent! 🎉", {
+        description: "Great job making the first move!",
+      });
+      
+      setMessageSent(true);
+      setMessage("");
+      
+      // Navigate to conversation after a short delay
+      setTimeout(() => {
+        navigate(`/messages/${conversationId}`);
+      }, 1500);
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+      toast.error("Failed to send message");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 border-border/50">
+    <Card className={`overflow-hidden hover:shadow-lg transition-all duration-300 border-border/50 ${isNewMatch ? 'ring-2 ring-primary/50' : ''}`}>
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row">
           {/* Image Section */}
@@ -71,6 +129,11 @@ export function AIMatchCard({ match }: AIMatchCardProps) {
             >
               {match.match_score}% Match
             </Badge>
+            {isNewMatch && (
+              <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
+                New!
+              </Badge>
+            )}
           </div>
 
           {/* Content Section */}
@@ -85,7 +148,9 @@ export function AIMatchCard({ match }: AIMatchCardProps) {
                     {match.service.category}
                   </Badge>
                 </div>
-                <h3 className="font-semibold text-lg line-clamp-1">{match.service.title}</h3>
+                <Link to={`/services/${match.service.id}`} className="hover:underline">
+                  <h3 className="font-semibold text-lg line-clamp-1">{match.service.title}</h3>
+                </Link>
               </div>
             </div>
 
@@ -107,37 +172,66 @@ export function AIMatchCard({ match }: AIMatchCardProps) {
             </div>
 
             {/* Provider Info */}
-            <div className="flex items-center justify-between pt-2 border-t border-border/50">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={match.provider?.avatar_url} />
-                  <AvatarFallback>
-                    {match.provider?.full_name?.charAt(0) || '?'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex items-center gap-1">
-                  <span className="text-sm font-medium">{formatDisplayName(match.provider?.full_name)}</span>
-                  {match.provider?.verification_status === 'verified' && (
-                    <VerifiedBadge status="verified" size="sm" />
-                  )}
-                  {match.provider?.is_founder && (
-                    <FoundersBadge size="sm" />
-                  )}
-                </div>
+            <div className="flex items-center gap-2 pt-2 border-t border-border/50">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={match.provider?.avatar_url} />
+                <AvatarFallback>
+                  {match.provider?.full_name?.charAt(0) || '?'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex items-center gap-1 flex-1 min-w-0">
+                <span className="text-sm font-medium truncate">{formatDisplayName(match.provider?.full_name)}</span>
+                {match.provider?.verification_status === 'verified' && (
+                  <VerifiedBadge status="verified" size="sm" />
+                )}
+                {match.provider?.is_founder && (
+                  <FoundersBadge size="sm" />
+                )}
                 {match.service.location && (
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground ml-1">
                     <MapPin className="h-3 w-3" />
-                    {match.service.location}
+                    <span className="truncate">{match.service.location}</span>
                   </div>
                 )}
               </div>
-              <Button asChild size="sm">
-                <Link to={`/services/${match.service.id}`}>
-                  View
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
             </div>
+
+            {/* Inline Message Input */}
+            {messageSent ? (
+              <div className="flex items-center gap-2 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 p-3 rounded-lg text-sm">
+                <CheckCircle className="h-4 w-4" />
+                Message sent! Taking you to the conversation...
+              </div>
+            ) : (
+              <div className="flex gap-2 pt-2">
+                <input
+                  type="text"
+                  placeholder={getPlaceholder()}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="flex-1 min-w-0 text-sm px-3 py-2 rounded-md border border-input bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  maxLength={200}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                />
+                <Button
+                  size="sm"
+                  onClick={handleSendMessage}
+                  disabled={!message.trim() || isSending}
+                  className="px-3"
+                >
+                  {isSending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

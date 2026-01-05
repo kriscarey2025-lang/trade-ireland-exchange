@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,12 @@ import { SEO } from "@/components/SEO";
 export default function AIMatches() {
   const { user } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const location = useLocation();
+  const navigationState = location.state as { 
+    showNewMatches?: boolean; 
+    newServiceTitle?: string;
+    newServiceCategory?: string;
+  } | null;
   
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['ai-matches', user?.id],
@@ -94,11 +101,12 @@ export default function AIMatches() {
             <span className="text-sm font-medium">AI-Powered Matching</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-3">
-            Your Perfect Skill Matches
+            {navigationState?.showNewMatches ? "People Want Your Skill! 🎉" : "Your Perfect Skill Matches"}
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Our AI analyzes your services, skill preferences, and location to find the best 
-            potential swap partners within your preferred radius.
+            {navigationState?.showNewMatches 
+              ? "Make the first move - just say hi! First movers are 3x more likely to complete a swap."
+              : "Our AI analyzes your services, skill preferences, and location to find the best potential swap partners."}
           </p>
           <p className="text-xs text-muted-foreground mt-2">
             <Link to="/onboarding" className="text-primary hover:underline">Update your preferences</Link> to improve your matches.
