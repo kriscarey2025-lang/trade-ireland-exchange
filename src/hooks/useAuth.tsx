@@ -142,46 +142,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
         
-        // Send welcome email for new OAuth users (check if profile was just created)
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('created_at, email, full_name, location')
-          .eq('id', session.user.id)
-          .maybeSingle();
+        // Send welcome email for new OAuth users ONLY (check if profile was just created)
+        // Email/password signups are handled in the signUp function
+        const provider = session.user.app_metadata?.provider;
+        const isOAuthUser = provider && provider !== 'email';
         
-        if (profile) {
-          const createdAt = new Date(profile.created_at);
-          const now = new Date();
-          const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
+        if (isOAuthUser) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('created_at, email, full_name, location')
+            .eq('id', session.user.id)
+            .maybeSingle();
           
-          // If profile was created in the last 60 seconds, send welcome email and submit to HubSpot (only once)
-          if (diffSeconds < 60 && !welcomeEmailSentRef.current) {
-            welcomeEmailSentRef.current = true;
-            const userEmail = profile.email || session.user.email || '';
-            const userName = profile.full_name || 'there';
+          if (profile) {
+            const createdAt = new Date(profile.created_at);
+            const now = new Date();
+            const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
             
-            // Send welcome email
-            try {
-              await supabase.functions.invoke('send-welcome-email', {
-                body: { 
-                  email: userEmail, 
-                  fullName: userName 
-                }
-              });
-            } catch (e) {
-              console.error('Failed to send welcome email:', e);
-            }
-            
-            // Submit to HubSpot for OAuth users
-            if (userEmail) {
-              const { firstname, lastname } = parseFullName(userName);
-              submitToHubSpot({
-                email: userEmail,
-                firstname,
-                lastname,
-                city: profile.location || undefined,
-                form_source: 'google_oauth_signup',
-              }).catch(e => console.error('Failed to submit to HubSpot:', e));
+            // If profile was created in the last 60 seconds, send welcome email and submit to HubSpot (only once)
+            if (diffSeconds < 60 && !welcomeEmailSentRef.current) {
+              welcomeEmailSentRef.current = true;
+              const userEmail = profile.email || session.user.email || '';
+              const userName = profile.full_name || 'there';
+              
+              // Send welcome email
+              try {
+                await supabase.functions.invoke('send-welcome-email', {
+                  body: { 
+                    email: userEmail, 
+                    fullName: userName 
+                  }
+                });
+              } catch (e) {
+                console.error('Failed to send welcome email:', e);
+              }
+              
+              // Submit to HubSpot for OAuth users
+              if (userEmail) {
+                const { firstname, lastname } = parseFullName(userName);
+                submitToHubSpot({
+                  email: userEmail,
+                  firstname,
+                  lastname,
+                  city: profile.location || undefined,
+                  form_source: 'google_oauth_signup',
+                }).catch(e => console.error('Failed to submit to HubSpot:', e));
+              }
             }
           }
         }
