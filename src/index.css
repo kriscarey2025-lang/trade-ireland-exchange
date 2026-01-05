@@ -503,3 +503,8 @@
 .font-handwriting {
   font-family: 'Caveat', cursive;
 }
+
+/* Safe area padding for mobile sticky elements */
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
