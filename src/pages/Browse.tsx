@@ -111,7 +111,7 @@ export default function Browse() {
           {/* AI Matches CTA Banner - Show for logged-in users */}
           {user && (
             <Link 
-              to="/ai-matches" 
+              to="/matches" 
               className="mb-6 bg-gradient-to-r from-primary via-primary/90 to-primary/80 rounded-xl p-4 flex items-center justify-between gap-4 group hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-center gap-3">
