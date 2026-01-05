@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, Sparkles, ArrowRight } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
@@ -108,6 +108,27 @@ export default function Browse() {
         <Header />
         <main className="flex-1 bg-secondary/20">
         <div className="container py-8">
+          {/* AI Matches CTA Banner - Show for logged-in users */}
+          {user && (
+            <Link 
+              to="/ai-matches" 
+              className="mb-6 bg-gradient-to-r from-primary via-primary/90 to-primary/80 rounded-xl p-4 flex items-center justify-between gap-4 group hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white/20 rounded-lg shrink-0">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Check Your Matches ✨</p>
+                  <p className="text-sm text-white/80">See who wants your skills & message them instantly</p>
+                </div>
+              </div>
+              <div className="shrink-0 bg-white/20 rounded-full p-2 group-hover:bg-white/30 transition-colors">
+                <ArrowRight className="h-5 w-5 text-white" />
+              </div>
+            </Link>
+          )}
+
           {/* Auth Prompt Banner for Non-Logged-In Users */}
           {!user && (
             <div className="mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
