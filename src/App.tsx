@@ -101,8 +101,8 @@ const App = () => (
               <Route path="/admin/moderation" element={<AdminModeration />} />
               <Route path="/admin/feedback" element={<AdminFeedback />} />
               <Route path="/matches" element={<AIMatches />} />
+              <Route path="/ai-matches" element={<AIMatches />} />
               <Route path="/advertiser" element={<AdvertiserDashboard />} />
-              <Route path="/advertise" element={<Advertise />} />
               <Route path="/getting-started" element={<GettingStarted />} />
               <Route path="/community" element={<CommunityBoard />} />
               <Route path="/stories" element={<Stories />} />

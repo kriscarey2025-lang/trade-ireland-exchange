@@ -31,7 +31,7 @@ export function PostCreationMatchDialog({
       });
       
       // Navigate to AI Matches page with a flag to highlight new matches
-      navigate("/ai-matches", { 
+      navigate("/matches", { 
         state: { 
           newServiceCategory,
           newServiceTitle,
