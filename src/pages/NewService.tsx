@@ -28,6 +28,7 @@ import { trackServiceCreated } from "@/hooks/useEngagementTracking";
 import { useContentModeration } from "@/hooks/useContentModeration";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { trackServiceCreatedHubSpot } from "@/hooks/useHubSpot";
+import { PostCreationMatchDialog } from "@/components/services/PostCreationMatchDialog";
 
 const serviceSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
@@ -52,6 +53,10 @@ export default function NewService() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [moderationWarning, setModerationWarning] = useState<string | null>(null);
+  
+  // Match dialog state
+  const [showMatchDialog, setShowMatchDialog] = useState(false);
+  const [createdServiceId, setCreatedServiceId] = useState<string | null>(null);
   
   // Get initial post category from URL param, default to skill_swap
   const getInitialPostCategory = (): PostCategory => {
@@ -184,7 +189,15 @@ export default function NewService() {
       toast.success("Posted successfully!");
     }
     
-    navigate("/browse");
+    setIsSubmitting(false);
+    
+    // For skill_swap posts, show the match dialog instead of navigating away
+    if (postCategory === "skill_swap" && moderationResult.approved) {
+      setCreatedServiceId(newService.id);
+      setShowMatchDialog(true);
+    } else {
+      navigate("/browse");
+    }
   };
 
   const getHeaderIcon = () => {
@@ -488,6 +501,23 @@ export default function NewService() {
           </div>
         </div>
       </main>
+
+      {/* Post-creation match dialog */}
+      {user && createdServiceId && (
+        <PostCreationMatchDialog
+          open={showMatchDialog}
+          onOpenChange={(open) => {
+            setShowMatchDialog(open);
+            if (!open) {
+              navigate("/browse");
+            }
+          }}
+          newServiceId={createdServiceId}
+          newServiceTitle={title}
+          newServiceCategory={category}
+          userId={user.id}
+        />
+      )}
     </div>
   );
 }
