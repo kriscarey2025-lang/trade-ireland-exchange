@@ -36,10 +36,10 @@ interface PostCreationMatchDialogProps {
   userId: string;
 }
 
-const CONVERSATION_STARTERS = [
-  "Hi! I just posted my skill and saw yours - I think we could be a great match for a swap!",
-  "Hey there! I noticed your skill and I'd love to explore a swap. What do you think?",
-  "Hi! I'm new here and your skill caught my eye. Would you be open to trading skills?",
+const PLACEHOLDER_MESSAGES = [
+  "Hi! I'd love to swap skills with you! 👋",
+  "Hey! I think we'd be a great match for a swap!",
+  "Hi there! Interested in a skill exchange?",
 ];
 
 export function PostCreationMatchDialog({
@@ -52,8 +52,7 @@ export function PostCreationMatchDialog({
 }: PostCreationMatchDialogProps) {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
-  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Record<string, string>>({});
   const [sendingTo, setSendingTo] = useState<string | null>(null);
   const navigate = useNavigate();
   const startConversation = useStartConversation();
@@ -121,7 +120,8 @@ export function PostCreationMatchDialog({
   };
 
   const handleSendMessage = async (match: Match) => {
-    if (!message.trim()) {
+    const matchMessage = messages[match.id]?.trim();
+    if (!matchMessage) {
       toast.error("Please write a message first");
       return;
     }
@@ -131,20 +131,23 @@ export function PostCreationMatchDialog({
       const conversationId = await startConversation.mutateAsync({
         serviceId: match.id,
         providerId: match.user_id,
-        initialMessage: message,
+        initialMessage: matchMessage,
       });
 
       toast.success("Message sent! 🎉", {
         description: "Great job making the first move!",
       });
       
-      setMessage("");
-      setSelectedMatch(null);
+      // Clear message for this match and remove from list
+      setMessages(prev => {
+        const updated = { ...prev };
+        delete updated[match.id];
+        return updated;
+      });
+      setMatches(prev => prev.filter(m => m.id !== match.id));
       
-      // Ask if they want to message more or continue
-      if (matches.length > 1) {
-        // Stay in dialog to message more
-      } else {
+      // If no more matches, close and navigate
+      if (matches.length <= 1) {
         onOpenChange(false);
         navigate(`/messages/${conversationId}`);
       }
@@ -161,157 +164,119 @@ export function PostCreationMatchDialog({
     navigate("/browse");
   };
 
-  const handleUseStarter = (starter: string) => {
-    setMessage(starter);
+  const getPlaceholder = (index: number) => {
+    return PLACEHOLDER_MESSAGES[index % PLACEHOLDER_MESSAGES.length];
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            People Are Looking for Your Skill!
+      <DialogContent className="max-w-[95vw] sm:max-w-md max-h-[80vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="space-y-1">
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            People Want Your Skill!
           </DialogTitle>
-          <DialogDescription>
-            These members want exactly what you just posted. Take the first step and say hi!
+          <DialogDescription className="text-xs sm:text-sm">
+            Make the first move - just say hi! 👋
           </DialogDescription>
         </DialogHeader>
 
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
         ) : matches.length === 0 ? (
-          <div className="text-center py-8 space-y-4">
-            <div className="text-4xl">🌱</div>
-            <p className="text-muted-foreground">
-              No matches yet, but don't worry! We'll notify you when someone's looking for your skill.
+          <div className="text-center py-6 space-y-3">
+            <div className="text-3xl">🌱</div>
+            <p className="text-muted-foreground text-sm">
+              No matches yet - we'll notify you when someone's looking!
             </p>
-            <Button onClick={handleSkip} variant="hero">
-              Continue to Browse
-              <ArrowRight className="h-4 w-4 ml-2" />
+            <Button onClick={handleSkip} variant="hero" size="sm">
+              Continue Browsing
+              <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
         ) : (
-          <div className="space-y-4">
-            {/* Encouragement message */}
-            <div className="bg-primary/10 rounded-lg p-3 text-sm text-center">
-              <span className="font-medium">💡 Pro tip:</span> People who make the first move are 3x more likely to complete a swap!
+          <div className="space-y-3">
+            {/* Compact encouragement */}
+            <div className="bg-primary/10 rounded-lg p-2 text-xs text-center">
+              💡 First movers are 3x more likely to complete a swap!
             </div>
 
-            {matches.map((match) => (
+            {matches.map((match, index) => (
               <div
                 key={match.id}
-                className="border rounded-lg p-4 space-y-3 hover:border-primary/50 transition-colors"
+                className="border rounded-lg p-3 space-y-2"
               >
-                {/* Match header */}
-                <div className="flex items-start gap-3">
-                  <Avatar className="h-12 w-12">
+                {/* Compact match header */}
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-9 w-9 flex-shrink-0">
                     <AvatarImage src={match.provider_avatar || undefined} />
-                    <AvatarFallback className="bg-primary/10 text-primary">
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
                       {getInitials(match.provider_name)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">
+                    <p className="font-medium text-sm truncate">
                       {match.provider_name || "SwapSkills Member"}
                     </p>
-                    <p className="text-sm text-muted-foreground truncate">
+                    <p className="text-xs text-muted-foreground truncate">
                       {match.title}
                     </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="secondary" className="text-xs">
-                        {categoryIcons[match.category as keyof typeof categoryIcons]} {categoryLabels[match.category as keyof typeof categoryLabels] || match.category}
-                      </Badge>
-                      {match.location && (
-                        <span className="text-xs text-muted-foreground">
-                          📍 {match.location}
-                        </span>
-                      )}
-                    </div>
                   </div>
                 </div>
 
-                {/* Message input */}
-                {selectedMatch?.id === match.id ? (
-                  <div className="space-y-3">
-                    {/* Quick starters */}
-                    <div className="flex flex-wrap gap-1">
-                      {CONVERSATION_STARTERS.map((starter, i) => (
-                        <Button
-                          key={i}
-                          variant="outline"
-                          size="sm"
-                          className="text-xs h-auto py-1 px-2"
-                          onClick={() => handleUseStarter(starter)}
-                        >
-                          Use template {i + 1}
-                        </Button>
-                      ))}
-                    </div>
-                    
-                    <Textarea
-                      placeholder="Write a friendly message..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      rows={3}
-                      className="resize-none"
-                      maxLength={500}
-                    />
-                    
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedMatch(null);
-                          setMessage("");
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => handleSendMessage(match)}
-                        disabled={!message.trim() || sendingTo === match.id}
-                      >
-                        {sendingTo === match.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin mr-1" />
-                        ) : (
-                          <Send className="h-4 w-4 mr-1" />
-                        )}
-                        Send
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
+                {/* Category & location compact */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="secondary" className="text-xs py-0 h-5">
+                    {categoryIcons[match.category as keyof typeof categoryIcons]} {categoryLabels[match.category as keyof typeof categoryLabels] || match.category}
+                  </Badge>
+                  {match.location && (
+                    <span className="text-xs text-muted-foreground">
+                      📍 {match.location}
+                    </span>
+                  )}
+                </div>
+
+                {/* Inline message input - always visible */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder={getPlaceholder(index)}
+                    value={messages[match.id] || ""}
+                    onChange={(e) => setMessages(prev => ({ ...prev, [match.id]: e.target.value }))}
+                    className="flex-1 min-w-0 text-sm px-3 py-2 rounded-md border border-input bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    maxLength={200}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage(match);
+                      }
+                    }}
+                  />
                   <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => setSelectedMatch(match)}
+                    size="sm"
+                    onClick={() => handleSendMessage(match)}
+                    disabled={!messages[match.id]?.trim() || sendingTo === match.id}
+                    className="px-3"
                   >
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Say Hello
+                    {sendingTo === match.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
                   </Button>
-                )}
+                </div>
               </div>
             ))}
 
-            {/* Footer */}
-            <div className="pt-4 border-t space-y-2">
-              <p className="text-xs text-center text-muted-foreground">
-                Don't overthink it - a simple "hi" can lead to amazing swaps! 🌟
-              </p>
-              <Button
-                variant="ghost"
-                className="w-full text-muted-foreground"
-                onClick={handleSkip}
-              >
-                Maybe later, browse more skills
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </div>
+            {/* Compact footer */}
+            <button
+              className="w-full text-xs text-muted-foreground py-2 hover:text-foreground transition-colors"
+              onClick={handleSkip}
+            >
+              Skip for now →
+            </button>
           </div>
         )}
       </DialogContent>
