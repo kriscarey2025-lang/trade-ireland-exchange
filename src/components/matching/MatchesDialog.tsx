@@ -35,7 +35,7 @@ export function MatchesDialog({ open, onOpenChange, userId }: MatchesDialogProps
       return response.data;
     },
     enabled: !!userId && open,
-    staleTime: 5 * 60 * 1000 // Cache for 5 minutes
+    staleTime: 5 * 60 * 1000
   });
 
   const handleRefresh = async () => {
@@ -44,79 +44,74 @@ export function MatchesDialog({ open, onOpenChange, userId }: MatchesDialogProps
     setIsRefreshing(false);
   };
 
-  // Non-logged-in users - prompt to sign in
   if (!userId) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Sparkles className="h-5 w-5 text-primary" />
-              </div>
-              <DialogTitle className="text-xl">AI Skill Matches</DialogTitle>
+        <DialogContent className="sm:max-w-md">
+          <div className="text-center py-6">
+            <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+              <LogIn className="h-7 w-7 text-primary" />
             </div>
-            <DialogDescription>
-              Get personalized matches based on your skills and preferences.
-            </DialogDescription>
-          </DialogHeader>
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <LogIn className="h-12 w-12 mx-auto text-primary mb-4" />
-              <h2 className="text-xl font-semibold mb-2">Sign in to see your matches</h2>
-              <p className="text-muted-foreground mb-4">
-                Our AI finds people who want the skills you offer.
-              </p>
-              <Button asChild onClick={() => onOpenChange(false)}>
-                <Link to="/auth">Sign In</Link>
-              </Button>
-            </CardContent>
-          </Card>
+            <h2 className="text-xl font-semibold mb-2">Sign in to see matches</h2>
+            <p className="text-muted-foreground text-sm mb-5">
+              Our AI finds people who want the skills you offer.
+            </p>
+            <Button asChild onClick={() => onOpenChange(false)}>
+              <Link to="/auth">Sign In</Link>
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     );
   }
 
+  const matchCount = data?.matches?.length || 0;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
-        <DialogHeader>
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Sparkles className="h-5 w-5 text-primary" />
+      <DialogContent className="sm:max-w-3xl max-h-[90vh] p-0 gap-0 overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-primary to-primary/80 px-6 py-5 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/20 rounded-lg">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-bold text-white mb-0.5">
+                  {matchCount > 0 ? `${matchCount} People Want Your Skills! 🎉` : "Your Skill Matches"}
+                </DialogTitle>
+                <DialogDescription className="text-white/80 text-sm">
+                  First movers are 3x more likely to complete a swap
+                </DialogDescription>
+              </div>
             </div>
-            <DialogTitle className="text-xl">People Want Your Skills! 🎉</DialogTitle>
+            <Button 
+              onClick={handleRefresh} 
+              disabled={isLoading || isRefreshing} 
+              variant="secondary" 
+              size="sm" 
+              className="bg-white/20 hover:bg-white/30 text-white border-0"
+            >
+              <RefreshCw className={`h-4 w-4 mr-1.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
           </div>
-          <DialogDescription>
-            Make the first move - just say hi! First movers are 3x more likely to complete a swap.
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="flex justify-between items-center">
-          <Button onClick={handleRefresh} disabled={isLoading || isRefreshing} variant="outline" size="sm" className="gap-2">
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            {isRefreshing ? 'Finding...' : 'Refresh'}
-          </Button>
-          <Button variant="ghost" size="sm" asChild onClick={() => onOpenChange(false)}>
-            <Link to="/matches" className="text-primary">
-              View full page
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          </Button>
         </div>
 
-        <ScrollArea className="flex-1 -mx-6 px-6">
-          <div className="space-y-4 pb-4">
+        {/* Content */}
+        <ScrollArea className="flex-1 max-h-[60vh]">
+          <div className="p-5 space-y-4">
             {/* Loading State */}
             {isLoading && (
               <div className="space-y-4">
                 {[1, 2].map(i => (
-                  <Card key={i}>
+                  <Card key={i} className="overflow-hidden">
                     <CardContent className="p-4">
                       <div className="flex gap-4">
-                        <Skeleton className="w-32 h-32 rounded-lg" />
+                        <Skeleton className="w-36 h-36 rounded-lg flex-shrink-0" />
                         <div className="flex-1 space-y-3">
-                          <Skeleton className="h-6 w-3/4" />
+                          <Skeleton className="h-5 w-2/3" />
                           <Skeleton className="h-16 w-full" />
                           <Skeleton className="h-4 w-1/2" />
                         </div>
@@ -129,16 +124,12 @@ export function MatchesDialog({ open, onOpenChange, userId }: MatchesDialogProps
 
             {/* Error State */}
             {error && (
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <AlertCircle className="h-10 w-10 mx-auto text-destructive mb-3" />
-                  <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {error.message}
-                  </p>
-                  <Button onClick={handleRefresh} size="sm">Try Again</Button>
-                </CardContent>
-              </Card>
+              <div className="text-center py-8">
+                <AlertCircle className="h-10 w-10 mx-auto text-destructive mb-3" />
+                <h3 className="font-semibold mb-1">Something went wrong</h3>
+                <p className="text-sm text-muted-foreground mb-4">{error.message}</p>
+                <Button onClick={handleRefresh} size="sm">Try Again</Button>
+              </div>
             )}
 
             {/* Results */}
@@ -151,28 +142,39 @@ export function MatchesDialog({ open, onOpenChange, userId }: MatchesDialogProps
                     ))}
                   </div>
                 ) : (
-                  <Card>
-                    <CardContent className="pt-6 text-center">
-                      <Sparkles className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
-                      <h2 className="text-lg font-semibold mb-2">
-                        {data.message || "No matches found yet"}
-                      </h2>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Create more services to get personalized AI matches.
-                      </p>
-                      <Button asChild size="sm" onClick={() => onOpenChange(false)}>
-                        <Link to="/services/new">
-                          Create a Service
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <div className="text-center py-10">
+                    <div className="mx-auto w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-4">
+                      <Sparkles className="h-7 w-7 text-muted-foreground" />
+                    </div>
+                    <h3 className="font-semibold mb-1">{data.message || "No matches yet"}</h3>
+                    <p className="text-sm text-muted-foreground mb-5">
+                      Post a skill to start getting matched with people.
+                    </p>
+                    <Button asChild size="sm" onClick={() => onOpenChange(false)}>
+                      <Link to="/services/new">
+                        Post a Skill
+                        <ArrowRight className="ml-1.5 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
                 )}
               </>
             )}
           </div>
         </ScrollArea>
+
+        {/* Footer */}
+        <div className="border-t px-5 py-3 flex justify-between items-center bg-muted/30">
+          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+            Close
+          </Button>
+          <Button variant="outline" size="sm" asChild onClick={() => onOpenChange(false)}>
+            <Link to="/matches">
+              View all matches
+              <ArrowRight className="ml-1.5 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
