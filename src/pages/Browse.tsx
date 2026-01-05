@@ -196,7 +196,7 @@ export default function Browse() {
             <div className="mb-4 flex justify-start">
               <button 
                 onClick={() => setMatchesDialogOpen(true)}
-                className="group inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-white px-5 py-2.5 rounded-full font-medium shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+                className="group inline-flex items-center gap-2 bg-gradient-to-r from-success to-success/80 text-white px-5 py-2.5 rounded-full font-medium shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
               >
                 <Sparkles className="h-4 w-4 animate-pulse" />
                 <span>Find Your Matches</span>
