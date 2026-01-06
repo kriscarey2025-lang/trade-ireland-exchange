@@ -30,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
     const firstName = fullName?.split(' ')[0] || 'there';
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <noreply@swapskills.ie>",
+      from: "SwapSkills <onboarding@resend.dev>",
       to: [email],
       subject: "Verify your SwapSkills account 🤝",
       html: `
