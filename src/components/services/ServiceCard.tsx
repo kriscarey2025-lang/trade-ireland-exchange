@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2, Copy, Handshake, Send, Loader2 } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2, Copy, Handshake, Send, Loader2, AlertTriangle, Zap } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useGetOrCreateConversation, useStartConversation } from "@/hooks/useMessaging";
 import { useState } from "react";
+import { format, isToday, isTomorrow, differenceInDays } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,6 +46,8 @@ interface ServiceData {
   acceptedCategories?: string[];
   images?: string[];
   completedSwapsCount?: number;
+  isTimeSensitive?: boolean;
+  neededByDate?: Date | null;
   user?: ServiceUser;
 }
 
@@ -64,6 +67,19 @@ const getPostTypeBadge = (type: PostCategory) => {
   }
 };
 
+const getNeededByLabel = (date: Date | null | undefined, isTimeSensitive: boolean | undefined): string | null => {
+  if (!isTimeSensitive) return null;
+  if (!date) return "ASAP";
+  
+  if (isToday(date)) return "Today";
+  if (isTomorrow(date)) return "Tomorrow";
+  
+  const daysAway = differenceInDays(date, new Date());
+  if (daysAway <= 7) return `In ${daysAway} days`;
+  
+  return format(date, "MMM d");
+};
+
 export function ServiceCard({
   service,
   className
@@ -77,6 +93,7 @@ export function ServiceCard({
   const postTypeBadge = getPostTypeBadge(service.type);
   const isSkillSwap = service.type === "skill_swap";
   const isOwnService = service.user?.id === user?.id;
+  const neededByLabel = getNeededByLabel(service.neededByDate, service.isTimeSensitive);
 
   const handleQuickMessage = async (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
@@ -183,7 +200,22 @@ export function ServiceCard({
   const hasImage = service.images && service.images.length > 0 && service.images[0];
 
   return <Link to={`/services/${service.id}`} className="h-full">
-      <Card className={cn("group overflow-hidden hover-lift cursor-pointer border-[3px] border-primary/40 hover:border-primary bg-card transition-all duration-300 shadow-md h-full flex flex-col", className)}>
+      <Card className={cn(
+        "group overflow-hidden hover-lift cursor-pointer border-[3px] hover:border-primary bg-card transition-all duration-300 shadow-md h-full flex flex-col",
+        service.isTimeSensitive 
+          ? "border-orange-400 dark:border-orange-500 ring-2 ring-orange-200 dark:ring-orange-900/50" 
+          : "border-primary/40",
+        className
+      )}>
+        {/* Time Sensitive Banner */}
+        {service.isTimeSensitive && (
+          <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 flex items-center justify-center gap-2">
+            <Zap className="h-4 w-4 animate-pulse" />
+            <span className="text-sm font-semibold">
+              {neededByLabel === "ASAP" ? "Needed ASAP!" : `Needed by ${neededByLabel}`}
+            </span>
+          </div>
+        )}
         {/* Service Image */}
         {hasImage && (
           <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted">

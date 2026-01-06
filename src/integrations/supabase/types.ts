@@ -829,10 +829,12 @@ export type Database = {
           description: string | null
           id: string
           images: string[] | null
+          is_time_sensitive: boolean | null
           location: string | null
           moderated_at: string | null
           moderation_reason: string | null
           moderation_status: string | null
+          needed_by_date: string | null
           price: number | null
           price_type: string | null
           status: string | null
@@ -849,10 +851,12 @@ export type Database = {
           description?: string | null
           id?: string
           images?: string[] | null
+          is_time_sensitive?: boolean | null
           location?: string | null
           moderated_at?: string | null
           moderation_reason?: string | null
           moderation_status?: string | null
+          needed_by_date?: string | null
           price?: number | null
           price_type?: string | null
           status?: string | null
@@ -869,10 +873,12 @@ export type Database = {
           description?: string | null
           id?: string
           images?: string[] | null
+          is_time_sensitive?: boolean | null
           location?: string | null
           moderated_at?: string | null
           moderation_reason?: string | null
           moderation_status?: string | null
+          needed_by_date?: string | null
           price?: number | null
           price_type?: string | null
           status?: string | null
