@@ -213,8 +213,12 @@ export function ServiceCard({
             <ArrowUpRight className="inline-block ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
           </h3>
 
-          {/* Description */}
-          
+          {/* Description - always show */}
+          {service.description && (
+            <p className="text-sm text-muted-foreground line-clamp-3 mb-4 italic">
+              "{service.description}"
+            </p>
+          )}
 
           {/* Meta Info */}
           <div className="flex flex-wrap gap-2 mb-4">
@@ -257,12 +261,6 @@ export function ServiceCard({
               )}
             </div>}
 
-          {/* Description preview - show when no image */}
-          {!hasImage && service.description && (
-            <p className="text-sm text-muted-foreground line-clamp-3 mb-4 italic">
-              "{service.description}"
-            </p>
-          )}
 
           {/* User */}
           {service.user && <div className="flex items-center gap-3 pt-4 border-t border-border">
