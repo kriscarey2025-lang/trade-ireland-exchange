@@ -14,8 +14,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw, AlertTriangle } from "lucide-react";
+import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw, AlertTriangle, Zap, CalendarIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
@@ -29,6 +32,8 @@ import { useContentModeration } from "@/hooks/useContentModeration";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { trackServiceCreatedHubSpot } from "@/hooks/useHubSpot";
 import { PostCreationMatchDialog } from "@/components/services/PostCreationMatchDialog";
+import { format, addDays } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const serviceSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
@@ -80,6 +85,11 @@ export default function NewService() {
   const [acceptedSkills, setAcceptedSkills] = useState<string[]>([]);
   const [customSkills, setCustomSkills] = useState<string[]>([]);
   const [openToGeneralOffers, setOpenToGeneralOffers] = useState(false);
+  
+  // Time-sensitive options
+  const [isTimeSensitive, setIsTimeSensitive] = useState(false);
+  const [neededByDate, setNeededByDate] = useState<Date | null>(null);
+  const [neededByOption, setNeededByOption] = useState<"asap" | "date">("asap");
 
   // Redirect if not logged in
   useEffect(() => {
@@ -152,6 +162,8 @@ export default function NewService() {
       type: postCategory,
       moderation_status: moderationStatus,
       moderation_reason: moderationReason,
+      is_time_sensitive: isTimeSensitive,
+      needed_by_date: isTimeSensitive && neededByOption === "date" && neededByDate ? neededByDate.toISOString() : null,
     }).select().single();
 
     if (error) {
@@ -432,6 +444,107 @@ export default function NewService() {
                     />
                   </div>
                 )}
+
+                {/* Section: Time Sensitive */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 pb-2 border-b border-border">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-500 text-white text-sm font-bold">
+                      <Zap className="h-3.5 w-3.5" />
+                    </span>
+                    <h3 className="font-semibold text-lg">Time Sensitive?</h3>
+                    <span className="text-sm text-muted-foreground">(optional)</span>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/30">
+                      <div className="space-y-1">
+                        <Label htmlFor="time-sensitive" className="text-base font-medium cursor-pointer">
+                          This is time sensitive
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          Let others know you need this urgently
+                        </p>
+                      </div>
+                      <Switch
+                        id="time-sensitive"
+                        checked={isTimeSensitive}
+                        onCheckedChange={(checked) => {
+                          setIsTimeSensitive(checked);
+                          if (!checked) {
+                            setNeededByDate(null);
+                            setNeededByOption("asap");
+                          }
+                        }}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+
+                    {isTimeSensitive && (
+                      <div className="space-y-3 pl-4 border-l-2 border-orange-400">
+                        <Label className="text-sm font-medium">When do you need this by?</Label>
+                        <RadioGroup
+                          value={neededByOption}
+                          onValueChange={(v) => {
+                            setNeededByOption(v as "asap" | "date");
+                            if (v === "asap") {
+                              setNeededByDate(null);
+                            }
+                          }}
+                          className="space-y-2"
+                        >
+                          <label className={cn(
+                            "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
+                            neededByOption === "asap" ? "border-orange-400 bg-orange-50 dark:bg-orange-950/30" : "border-border hover:border-orange-300"
+                          )}>
+                            <RadioGroupItem value="asap" />
+                            <div className="flex items-center gap-2">
+                              <Zap className="h-4 w-4 text-orange-500" />
+                              <span className="font-medium">ASAP - As soon as possible</span>
+                            </div>
+                          </label>
+
+                          <label className={cn(
+                            "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
+                            neededByOption === "date" ? "border-orange-400 bg-orange-50 dark:bg-orange-950/30" : "border-border hover:border-orange-300"
+                          )}>
+                            <RadioGroupItem value="date" />
+                            <div className="flex items-center gap-2">
+                              <CalendarIcon className="h-4 w-4 text-orange-500" />
+                              <span className="font-medium">Specific date</span>
+                            </div>
+                          </label>
+                        </RadioGroup>
+
+                        {neededByOption === "date" && (
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal",
+                                  !neededByDate && "text-muted-foreground"
+                                )}
+                                disabled={isSubmitting}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {neededByDate ? format(neededByDate, "PPP") : "Pick a date"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={neededByDate || undefined}
+                                onSelect={(date) => setNeededByDate(date || null)}
+                                disabled={(date) => date < new Date()}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 {/* Submit - Desktop */}
                 <div className="hidden md:flex pt-4 gap-3">

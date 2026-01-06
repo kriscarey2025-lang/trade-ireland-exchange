@@ -27,6 +27,8 @@ interface SecureServiceResponse {
   provider_verification_status: string | null;
   provider_is_founder: boolean | null;
   completed_swaps_count: number | null;
+  is_time_sensitive: boolean | null;
+  needed_by_date: string | null;
 }
 
 export interface DatabaseService {
@@ -44,6 +46,8 @@ export interface DatabaseService {
   accepted_categories: string[] | null;
   created_at: string;
   updated_at: string;
+  is_time_sensitive: boolean | null;
+  needed_by_date: string | null;
   profiles?: {
     full_name: string | null;
     avatar_url: string | null;
@@ -64,6 +68,8 @@ export interface ServiceWithUser {
   status: "active" | "paused" | "completed";
   acceptedCategories?: string[];
   completedSwapsCount?: number;
+  isTimeSensitive?: boolean;
+  neededByDate?: Date | null;
   user?: {
     id: string | null;
     name: string;
@@ -103,6 +109,8 @@ function transformSecureService(service: SecureServiceResponse): ServiceWithUser
     status: (service.status as "active" | "paused" | "completed") || "active",
     acceptedCategories: service.accepted_categories || undefined,
     completedSwapsCount,
+    isTimeSensitive: service.is_time_sensitive || false,
+    neededByDate: service.needed_by_date ? new Date(service.needed_by_date) : null,
     user: service.provider_name ? {
       id: service.user_id,
       name: formatDisplayName(service.provider_name),
@@ -131,6 +139,8 @@ function transformService(dbService: DatabaseService): ServiceWithUser {
     location: dbService.location || "Ireland",
     status: (dbService.status as "active" | "paused" | "completed") || "active",
     acceptedCategories: dbService.accepted_categories || undefined,
+    isTimeSensitive: dbService.is_time_sensitive || false,
+    neededByDate: dbService.needed_by_date ? new Date(dbService.needed_by_date) : null,
     user: dbService.profiles ? {
       id: dbService.user_id,
       name: formatDisplayName(dbService.profiles.full_name),
