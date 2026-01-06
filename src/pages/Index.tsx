@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, ArrowRight, Lightbulb, Sparkles, Heart } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, ArrowRight, Lightbulb, Sparkles, Heart, Zap } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
@@ -20,6 +20,7 @@ import { postCategoryLabels } from "@/lib/postCategories";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { InlineAd } from "@/components/ads/InlineAd";
 import { useABTest } from "@/hooks/useABTest";
+import { TimeSensitiveDemo } from "@/components/home/TimeSensitiveDemo";
 
 const locations = ["All Ireland", "Antrim", "Armagh", "Carlow", "Cavan", "Clare", "Cork", "Derry", "Donegal", "Down", "Dublin", "Fermanagh", "Galway", "Kerry", "Kildare", "Kilkenny", "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", "Waterford", "Westmeath", "Wexford", "Wicklow"];
 const Index = () => {
@@ -32,6 +33,7 @@ const Index = () => {
   const [selectedPostType, setSelectedPostType] = useState<PostCategory | "all">("all");
   const [showFilters, setShowFilters] = useState(false);
   const [brainstormOpen, setBrainstormOpen] = useState(false);
+  const [showTimeSensitiveDemo, setShowTimeSensitiveDemo] = useState(false);
 
   // Debounce search query to avoid too many API calls
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -195,6 +197,10 @@ const Index = () => {
                       <button onClick={() => setBrainstormOpen(true)} className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1.5 py-2">
                         <Lightbulb className="h-4 w-4" />
                         Need ideas? Let's brainstorm
+                      </button>
+                      <button onClick={() => setShowTimeSensitiveDemo(true)} className="text-sm text-orange-500 hover:text-orange-600 flex items-center gap-1.5 py-2">
+                        <Zap className="h-4 w-4" />
+                        See urgent requests demo
                       </button>
                     </div>
                     
@@ -423,6 +429,7 @@ const Index = () => {
           </div>}
       </div>
       <BrainstormDialog open={brainstormOpen} onOpenChange={setBrainstormOpen} />
+      {showTimeSensitiveDemo && <TimeSensitiveDemo onClose={() => setShowTimeSensitiveDemo(false)} />}
     </>;
 };
 export default Index;
