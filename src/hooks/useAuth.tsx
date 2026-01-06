@@ -207,7 +207,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string, location: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/onboarding`;
     
     try {
       // Use rate-limited signup edge function
@@ -228,30 +228,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error: new Error('Too many signup attempts. Please try again later.') };
       }
 
-      // Sign in the user after successful account creation
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (signInError) {
-        console.error('Auto sign-in error:', signInError);
-        // Account was created but sign in failed - still a success
-        return { error: null };
-      }
-
-      // Send welcome email (only if not already sent)
-      if (!welcomeEmailSentRef.current) {
-        welcomeEmailSentRef.current = true;
-        try {
-          await supabase.functions.invoke('send-welcome-email', {
-            body: { email, fullName }
-          });
-        } catch (e) {
-          console.error('Failed to send welcome email:', e);
-        }
-      }
-
+      // Account created successfully - user needs to verify email
+      // Do NOT auto sign-in, as email is not confirmed
+      // The verification email has been sent by the edge function
+      
       return { error: null };
     } catch (e: any) {
       console.error('Signup error:', e);
