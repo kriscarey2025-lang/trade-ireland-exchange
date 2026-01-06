@@ -1250,7 +1250,9 @@ export type Database = {
           description: string
           id: string
           images: string[]
+          is_time_sensitive: boolean
           location: string
+          needed_by_date: string
           price: number
           price_type: string
           provider_avatar: string
