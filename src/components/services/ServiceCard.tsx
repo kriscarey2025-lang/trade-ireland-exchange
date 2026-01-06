@@ -2,16 +2,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2, Copy, Handshake } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2, Copy, Handshake, Send, Loader2 } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useGetOrCreateConversation } from "@/hooks/useMessaging";
+import { useGetOrCreateConversation, useStartConversation } from "@/hooks/useMessaging";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,8 +71,38 @@ export function ServiceCard({
   const navigate = useNavigate();
   const { user } = useAuth();
   const getOrCreateConversation = useGetOrCreateConversation();
+  const startConversation = useStartConversation();
+  const [quickMessage, setQuickMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const postTypeBadge = getPostTypeBadge(service.type);
   const isSkillSwap = service.type === "skill_swap";
+  const isOwnService = service.user?.id === user?.id;
+
+  const handleQuickMessage = async (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!quickMessage.trim() || !service.user?.id) return;
+
+    setIsSending(true);
+    try {
+      const conversationId = await startConversation.mutateAsync({
+        providerId: service.user.id,
+        serviceId: service.id,
+        initialMessage: quickMessage.trim(),
+      });
+      
+      toast.success("Message sent!", {
+        description: "You've started a conversation.",
+      });
+      setQuickMessage("");
+      navigate(`/messages/${conversationId}`);
+    } catch (error) {
+      toast.error("Failed to send message");
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   const handleInitiateSkillTrade = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -267,6 +299,41 @@ export function ServiceCard({
                 </div>
               </div>
             </div>}
+
+          {/* Quick Message Field - Only for logged in users who don't own this service */}
+          {user && service.user?.id && !isOwnService && (
+            <div className="pt-3 border-t border-border space-y-2" onClick={(e) => e.preventDefault()}>
+              <div className="flex items-center gap-2">
+                <Input
+                  placeholder="Say hi or ask a question..."
+                  value={quickMessage}
+                  onChange={(e) => setQuickMessage(e.target.value)}
+                  className="h-9 text-sm flex-1"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && quickMessage.trim()) {
+                      e.preventDefault();
+                      handleQuickMessage(e);
+                    }
+                  }}
+                />
+                <Button
+                  size="sm"
+                  className="h-9 px-3 shrink-0"
+                  disabled={!quickMessage.trim() || isSending}
+                  onClick={handleQuickMessage}
+                >
+                  {isSending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+              <p className="text-[11px] text-muted-foreground text-center">
+                💬 Most swaps start with a simple message. No pressure, no obligation.
+              </p>
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex justify-between items-center pt-3 border-t border-border mt-auto">
