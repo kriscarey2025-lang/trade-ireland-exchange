@@ -213,8 +213,8 @@ export function ServiceCard({
             <ArrowUpRight className="inline-block ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
           </h3>
 
-          {/* Description - always show */}
-          {service.description && (
+          {/* Description - only show when no image */}
+          {!hasImage && service.description && (
             <p className="text-sm text-muted-foreground line-clamp-3 mb-4 italic">
               "{service.description}"
             </p>
