@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Leaf, Shield, ArrowRight, UserPlus, ListChecks, MessageCircle, HandshakeIcon, Star, Flag, MapPin, Clock, Sprout, Globe, HeartHandshake, Coins } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { BreadcrumbJsonLd, OrganizationJsonLd, PersonJsonLd } from "@/components/seo/JsonLd";
-import founderImage from "@/assets/founder-kristina.png";
+import founderImage from "@/assets/founder-kristina-new.png";
 
 const values = [
   {
