@@ -209,34 +209,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string, fullName: string, location: string) => {
     const redirectUrl = `${window.location.origin}/onboarding`;
     
-    try {
-      // Use rate-limited signup edge function
-      const { data, error: invokeError } = await supabase.functions.invoke('rate-limited-signup', {
-        body: { email, password, fullName, location, redirectUrl }
-      });
-
-      if (invokeError) {
-        console.error('Signup invoke error:', invokeError);
-        return { error: new Error('Unable to create account. Please try again.') };
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName,
+          location: location,
+        }
       }
+    });
 
-      if (data?.error) {
-        return { error: new Error(data.error) };
-      }
-
-      if (data?.rateLimited) {
-        return { error: new Error('Too many signup attempts. Please try again later.') };
-      }
-
-      // Account created successfully - user needs to verify email
-      // Do NOT auto sign-in, as email is not confirmed
-      // The verification email has been sent by the edge function
-      
-      return { error: null };
-    } catch (e: any) {
-      console.error('Signup error:', e);
-      return { error: new Error('Unable to create account. Please try again.') };
+    if (error) {
+      return { error };
     }
+
+    // Update profile with location after signup
+    if (data.user) {
+      await supabase
+        .from('profiles')
+        .update({ location, full_name: fullName })
+        .eq('id', data.user.id);
+
+      // Send welcome email
+      try {
+        await supabase.functions.invoke('send-welcome-email', {
+          body: { email, fullName }
+        });
+      } catch (e) {
+        console.error('Failed to send welcome email:', e);
+      }
+
+      // Submit to HubSpot
+      const { firstname, lastname } = parseFullName(fullName);
+      submitToHubSpot({
+        email,
+        firstname,
+        lastname,
+        city: location || undefined,
+        form_source: 'email_signup',
+      }).catch(e => console.error('Failed to submit to HubSpot:', e));
+    }
+
+    return { error: null };
   };
 
   const signIn = async (email: string, password: string) => {
