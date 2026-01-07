@@ -70,7 +70,7 @@ const sizeConfig = {
 };
 
 export const VerifiedBadge = forwardRef<HTMLDivElement, VerifiedBadgeProps>(
-  ({ status, size = "md", showLabel = false, className }, ref) => {
+  function VerifiedBadgeComponent({ status, size = "md", showLabel = false, className }, ref) {
     const config = statusConfig[status];
     const sizes = sizeConfig[size];
 
