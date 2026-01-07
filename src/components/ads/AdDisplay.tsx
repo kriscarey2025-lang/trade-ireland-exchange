@@ -1,3 +1,4 @@
+import { forwardRef, useCallback } from "react";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { Megaphone, ExternalLink } from "lucide-react";
 
@@ -16,8 +17,22 @@ interface AdDisplayProps {
   showPlaceholder?: boolean;
 }
 
-export function AdDisplay({ ad, variant = "side", className = "", showPlaceholder = true }: AdDisplayProps) {
-  const { setAdRef, trackClick } = useAdTracking(ad?.id || null);
+export const AdDisplay = forwardRef<HTMLDivElement, AdDisplayProps>(
+  ({ ad, variant = "side", className = "", showPlaceholder = true }, ref) => {
+    const { setAdRef, trackClick } = useAdTracking(ad?.id || null);
+
+    // Combine refs
+    const combinedRef = useCallback(
+      (element: HTMLDivElement | null) => {
+        setAdRef(element);
+        if (typeof ref === "function") {
+          ref(element);
+        } else if (ref) {
+          ref.current = element;
+        }
+      },
+      [ref, setAdRef]
+    );
 
   const handleClick = () => {
     if (ad?.link_url) {
@@ -26,36 +41,37 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
     }
   };
 
-  // Show placeholder if no ad
-  if (!ad) {
-    if (!showPlaceholder) return null;
-    
-    return (
-      <div 
-        className={`
-          bg-muted/30 border border-border/30 rounded-md
-          flex flex-col items-center justify-center text-center p-3
-          transition-all hover:border-border/50
-          ${variant === "side" ? "min-h-[120px]" : "py-4"}
-          ${className}
-        `}
-      >
-        <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center mb-2">
-          <Megaphone className="w-4 h-4 text-primary/40" />
+    // Show placeholder if no ad
+    if (!ad) {
+      if (!showPlaceholder) return null;
+      
+      return (
+        <div 
+          ref={combinedRef}
+          className={`
+            bg-muted/30 border border-border/30 rounded-md
+            flex flex-col items-center justify-center text-center p-3
+            transition-all hover:border-border/50
+            ${variant === "side" ? "min-h-[120px]" : "py-4"}
+            ${className}
+          `}
+        >
+          <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center mb-2">
+            <Megaphone className="w-4 h-4 text-primary/40" />
+          </div>
+          <p className="text-xs text-muted-foreground/70">
+            Ad Space
+          </p>
         </div>
-        <p className="text-xs text-muted-foreground/70">
-          Ad Space
-        </p>
-      </div>
-    );
-  }
+      );
+    }
 
-  // Inline variant: horizontal layout (image left, text right)
-  if (variant === "inline") {
-    return (
-      <div
-        ref={setAdRef}
-        onClick={handleClick}
+    // Inline variant: horizontal layout (image left, text right)
+    if (variant === "inline") {
+      return (
+        <div
+          ref={combinedRef}
+          onClick={handleClick}
         className={`
           bg-card/50 border border-border/40 rounded-lg overflow-hidden
           cursor-pointer transition-all hover:border-border hover:bg-card
@@ -100,11 +116,11 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
     );
   }
 
-  // Side variant: vertical layout (image top, text below)
-  return (
-    <div
-      ref={setAdRef}
-      onClick={handleClick}
+    // Side variant: vertical layout (image top, text below)
+    return (
+      <div
+        ref={combinedRef}
+        onClick={handleClick}
       className={`
         bg-card/50 border border-border/40 rounded-md overflow-hidden
         cursor-pointer transition-all hover:border-border hover:bg-card
@@ -138,11 +154,14 @@ export function AdDisplay({ ad, variant = "side", className = "", showPlaceholde
         )}
       </div>
       
-      <div className="px-2 pb-1.5">
-        <span className="text-[9px] text-muted-foreground/50 uppercase tracking-wide">
-          Ad
-        </span>
+        <div className="px-2 pb-1.5">
+          <span className="text-[9px] text-muted-foreground/50 uppercase tracking-wide">
+            Ad
+          </span>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
+
+AdDisplay.displayName = "AdDisplay";
