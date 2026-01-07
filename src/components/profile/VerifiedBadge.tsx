@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { BadgeCheck, Clock, ShieldX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -68,50 +69,50 @@ const sizeConfig = {
   },
 };
 
-export function VerifiedBadge({ 
-  status, 
-  size = "md", 
-  showLabel = false,
-  className 
-}: VerifiedBadgeProps) {
-  const config = statusConfig[status];
-  const sizes = sizeConfig[size];
+export const VerifiedBadge = forwardRef<HTMLDivElement, VerifiedBadgeProps>(
+  ({ status, size = "md", showLabel = false, className }, ref) => {
+    const config = statusConfig[status];
+    const sizes = sizeConfig[size];
 
-  if (status === "unverified" || !config.icon) {
-    return null;
-  }
+    if (status === "unverified" || !config.icon) {
+      return null;
+    }
 
-  const Icon = config.icon;
+    const Icon = config.icon;
 
-  const badge = (
-    <div
-      className={cn(
-        "inline-flex items-center rounded-full font-medium",
-        sizes.gap,
-        showLabel ? sizes.padding : "",
-        showLabel ? config.bgClass : "",
-        className
-      )}
-    >
-      <Icon className={cn(sizes.icon, config.iconClass)} />
-      {showLabel && (
-        <span className={cn(sizes.text, config.iconClass)}>{config.label}</span>
-      )}
-    </div>
-  );
-
-  if (!showLabel) {
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>{badge}</TooltipTrigger>
-          <TooltipContent>
-            <p>{config.tooltip}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+    const badge = (
+      <div
+        ref={ref}
+        className={cn(
+          "inline-flex items-center rounded-full font-medium",
+          sizes.gap,
+          showLabel ? sizes.padding : "",
+          showLabel ? config.bgClass : "",
+          className
+        )}
+      >
+        <Icon className={cn(sizes.icon, config.iconClass)} />
+        {showLabel && (
+          <span className={cn(sizes.text, config.iconClass)}>{config.label}</span>
+        )}
+      </div>
     );
-  }
 
-  return badge;
-}
+    if (!showLabel) {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>{badge}</TooltipTrigger>
+            <TooltipContent>
+              <p>{config.tooltip}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    return badge;
+  }
+);
+
+VerifiedBadge.displayName = "VerifiedBadge";
