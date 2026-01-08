@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ServiceCard } from "@/components/services/ServiceCard";
+import { ServiceCardMobile } from "@/components/services/ServiceCardMobile";
 import { ServiceCardCompact } from "@/components/services/ServiceCardCompact";
 import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
 import { Button } from "@/components/ui/button";
@@ -76,10 +77,10 @@ export default function Browse() {
   const [matchesDialogOpen, setMatchesDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // Set default to list view on mobile for better performance
+  // Set default to grid view on mobile (Vinted-style 2 columns)
   useEffect(() => {
     if (isMobile) {
-      setViewMode("list");
+      setViewMode("grid");
     }
   }, [isMobile]);
 
@@ -324,7 +325,7 @@ export default function Browse() {
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
                 <ServiceCardSkeleton key={i} />
               ))}
@@ -337,19 +338,31 @@ export default function Browse() {
               </p>
             </div>
           ) : filteredServices.length > 0 ? (
-            viewMode === "list" ? (
-              <div className="flex flex-col gap-2">
-                {filteredServices.map((service) => (
-                  <ServiceCardCompact key={service.id} service={service} />
-                ))}
+            <>
+              {/* Mobile View - Vinted style 2-column grid or list */}
+              <div className="sm:hidden">
+                {viewMode === "list" ? (
+                  <div className="flex flex-col gap-2">
+                    {filteredServices.map((service) => (
+                      <ServiceCardCompact key={service.id} service={service} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {filteredServices.map((service) => (
+                      <ServiceCardMobile key={service.id} service={service} />
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              
+              {/* Desktop View - Full cards */}
+              <div className="hidden sm:grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredServices.map((service) => (
                   <ServiceCard key={service.id} service={service} />
                 ))}
               </div>
-            )
+            </>
           ) : (
             <div className="text-center py-16">
               <PackageOpen className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
