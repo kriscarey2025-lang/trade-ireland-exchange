@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ServiceCard } from "@/components/services/ServiceCard";
+import { ServiceCardCompact } from "@/components/services/ServiceCardCompact";
 import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, Sparkles, ArrowRight } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, Sparkles, ArrowRight, LayoutGrid, List } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
@@ -23,6 +24,7 @@ import { SEO } from "@/components/SEO";
 import { useAuth } from "@/hooks/useAuth";
 import { postCategoryLabels } from "@/lib/postCategories";
 import { MatchesDialog } from "@/components/matching/MatchesDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const locations = [
   "All Ireland",
@@ -62,6 +64,7 @@ const locations = [
 
 export default function Browse() {
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">(
@@ -71,6 +74,14 @@ export default function Browse() {
   const [selectedPostType, setSelectedPostType] = useState<PostCategory | "all">("all");
   const [showFilters, setShowFilters] = useState(false);
   const [matchesDialogOpen, setMatchesDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  // Set default to list view on mobile for better performance
+  useEffect(() => {
+    if (isMobile) {
+      setViewMode("list");
+    }
+  }, [isMobile]);
 
   // Debounce search query to avoid too many API calls
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -284,11 +295,32 @@ export default function Browse() {
             )}
           </div>
 
-          {/* Results */}
-          <div className="mb-4">
+          {/* Results Header with View Toggle */}
+          <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-muted-foreground">
               {isLoading ? "Loading..." : `${filteredServices.length} service${filteredServices.length !== 1 ? "s" : ""} found`}
             </p>
+            {/* View toggle - show on mobile */}
+            <div className="flex items-center gap-1 sm:hidden">
+              <Button
+                variant={viewMode === "grid" ? "secondary" : "ghost"}
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={() => setViewMode("grid")}
+                aria-label="Grid view"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "secondary" : "ghost"}
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={() => setViewMode("list")}
+                aria-label="List view"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {isLoading ? (
@@ -305,11 +337,19 @@ export default function Browse() {
               </p>
             </div>
           ) : filteredServices.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredServices.map((service) => (
-                <ServiceCard key={service.id} service={service} />
-              ))}
-            </div>
+            viewMode === "list" ? (
+              <div className="flex flex-col gap-2">
+                {filteredServices.map((service) => (
+                  <ServiceCardCompact key={service.id} service={service} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {filteredServices.map((service) => (
+                  <ServiceCard key={service.id} service={service} />
+                ))}
+              </div>
+            )
           ) : (
             <div className="text-center py-16">
               <PackageOpen className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
