@@ -41,7 +41,8 @@ import {
   Linkedin,
   Facebook,
   Instagram,
-  Handshake
+  Handshake,
+  Quote
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
@@ -110,6 +111,31 @@ export default function ServiceDetail() {
       return data[0] as SecureServiceDetail;
     },
     enabled: !!id,
+  });
+
+  // Fetch the latest review for this provider
+  const { data: latestReview } = useQuery({
+    queryKey: ["latest-review", service?.user_id],
+    queryFn: async () => {
+      if (!service?.user_id) return null;
+      
+      const { data, error } = await supabase
+        .from("reviews")
+        .select(`
+          *,
+          reviewer:reviewer_id (
+            full_name
+          )
+        `)
+        .eq("reviewed_user_id", service.user_id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!service?.user_id,
   });
 
   const handleContact = () => {
@@ -535,6 +561,23 @@ export default function ServiceDetail() {
                               <Instagram className="h-4 w-4 text-muted-foreground" />
                             </a>
                           )}
+                        </div>
+                      )}
+
+                      {/* Featured Review */}
+                      {latestReview?.review_text && (
+                        <div className="mt-4 p-3 bg-secondary/50 rounded-lg border border-border/50">
+                          <div className="flex items-start gap-2">
+                            <Quote className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-sm text-foreground italic line-clamp-3">
+                                "{latestReview.review_text}"
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                — {(latestReview.reviewer as any)?.full_name || "Anonymous"}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </>
