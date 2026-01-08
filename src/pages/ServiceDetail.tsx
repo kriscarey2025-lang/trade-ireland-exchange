@@ -180,6 +180,25 @@ export default function ServiceDetail() {
     enabled: !!service?.user_id,
   });
 
+  // Fetch completed swaps count for this provider
+  const { data: completedSwapsCount = 0 } = useQuery({
+    queryKey: ["completed-swaps-count", service?.user_id],
+    queryFn: async () => {
+      if (!service?.user_id) return 0;
+
+      const { count, error } = await supabase
+        .from("conversations")
+        .select("*", { count: "exact", head: true })
+        .or(`participant_1.eq.${service.user_id},participant_2.eq.${service.user_id}`)
+        .eq("completed_by_1", true)
+        .eq("completed_by_2", true);
+
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!service?.user_id,
+  });
+
   const handleContact = () => {
     if (!user) {
       toast.error("Please sign in to contact the provider");
@@ -550,7 +569,15 @@ export default function ServiceDetail() {
                             {service.provider_is_founder && <FoundersBadge size="sm" />}
                           </div>
                           {service.user_id && (
-                            <UserRatingBadge userId={service.user_id} size="sm" />
+                            <div className="flex items-center gap-3 flex-wrap">
+                              <UserRatingBadge userId={service.user_id} size="sm" />
+                              {completedSwapsCount > 0 && (
+                                <span className="text-xs font-medium text-primary flex items-center gap-1">
+                                  <Handshake className="h-3 w-3" />
+                                  {completedSwapsCount} swap{completedSwapsCount !== 1 ? "s" : ""} completed
+                                </span>
+                              )}
+                            </div>
                           )}
                           {service.provider_location && (
                             <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
