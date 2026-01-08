@@ -508,3 +508,20 @@
 .safe-bottom {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
+
+/* Mobile scroll performance */
+@media (max-width: 768px) {
+  .grid {
+    contain: layout style;
+  }
+  
+  /* Disable heavy animations on mobile for better scrolling */
+  * {
+    scroll-behavior: auto !important;
+  }
+  
+  /* GPU acceleration for smooth scrolling */
+  main {
+    -webkit-overflow-scrolling: touch;
+  }
+}
