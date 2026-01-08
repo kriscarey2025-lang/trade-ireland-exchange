@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +13,31 @@ function formatDisplayName(fullName: string | null | undefined): string {
   const firstName = parts[0];
   const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
   return `${firstName} ${lastInitial}.`;
+}
+
+const TRUNCATE_LENGTH = 150;
+
+function ExpandableText({ text }: { text: string }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const needsTruncation = text.length > TRUNCATE_LENGTH;
+
+  if (!needsTruncation) {
+    return <p className="text-sm text-foreground">{text}</p>;
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-foreground">
+        {isExpanded ? text : `${text.slice(0, TRUNCATE_LENGTH)}...`}
+      </p>
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="text-xs text-primary hover:underline mt-1"
+      >
+        {isExpanded ? "Show less" : "Read more"}
+      </button>
+    </div>
+  );
 }
 
 interface ReviewsListProps {
@@ -163,9 +189,7 @@ export function ReviewsList({ userId }: ReviewsListProps) {
                   )}
 
                   {review.review_text && (
-                    <p className="text-sm text-foreground">
-                      {review.review_text}
-                    </p>
+                    <ExpandableText text={review.review_text} />
                   )}
                 </div>
               </div>
