@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AdsLayout } from "@/components/layout/AdsLayout";
 import { ServiceCard } from "@/components/services/ServiceCard";
+import { ServiceCardMobile } from "@/components/services/ServiceCardMobile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -232,14 +233,19 @@ const Index = () => {
                         <Loader2 className="h-6 w-6 animate-spin text-primary" />
                       </div>
                     ) : heroPreviewServices.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-4xl mx-auto">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto">
                         {heroPreviewServices.map((service) => (
                           <div 
                             key={service.id} 
                             className="text-left"
                             onClick={() => trackConversion("service_click")}
                           >
-                            <ServiceCard service={service} />
+                            <div className="md:hidden">
+                              <ServiceCardMobile service={service} />
+                            </div>
+                            <div className="hidden md:block">
+                              <ServiceCard service={service} />
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -360,13 +366,25 @@ const Index = () => {
                   <p className="text-muted-foreground mb-4">
                     Please try again later
                   </p>
-                </div> : filteredServices.length > 0 ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredServices.map((service, index) => <div key={service.id} className="animate-fade-up" style={{
-                animationDelay: `${index * 0.05}s`
-              }}>
-                      <ServiceCard service={service} />
-                    </div>)}
-                </div> : <div className="text-center py-16">
+                </div> : filteredServices.length > 0 ? <>
+                  <div className="grid grid-cols-2 gap-3 md:hidden">
+                    {filteredServices.map((service) => (
+                      <ServiceCardMobile key={service.id} service={service} />
+                    ))}
+                  </div>
+
+                  <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredServices.map((service, index) => (
+                      <div
+                        key={service.id}
+                        className="animate-fade-up"
+                        style={{ animationDelay: `${index * 0.05}s` }}
+                      >
+                        <ServiceCard service={service} />
+                      </div>
+                    ))}
+                  </div>
+                </> : <div className="text-center py-16">
                   <PackageOpen className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
                   <p className="text-xl font-medium mb-2">No services found</p>
                   <p className="text-muted-foreground mb-4">
