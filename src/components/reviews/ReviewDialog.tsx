@@ -145,14 +145,14 @@ export function ReviewDialog({
           <StarRating
             rating={userRating}
             onRatingChange={setUserRating}
-            label={`How was your experience with ${reviewedUserName}?`}
+            label={`How was your experience receiving the service from ${reviewedUserName}?`}
           />
 
           {serviceTitle && (
             <StarRating
               rating={serviceRating}
               onRatingChange={setServiceRating}
-              label={`How was the service "${serviceTitle}"?`}
+              label="How was your experience providing your service?"
             />
           )}
 
