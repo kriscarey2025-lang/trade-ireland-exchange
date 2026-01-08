@@ -26,6 +26,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { postCategoryLabels } from "@/lib/postCategories";
 import { MatchesDialog } from "@/components/matching/MatchesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { HeroSection } from "@/components/home/HeroSection";
 
 const locations = [
   "All Ireland",
@@ -121,6 +122,7 @@ export default function Browse() {
       />
       <div className="min-h-screen flex flex-col">
         <Header />
+        <HeroSection />
         <main className="flex-1 bg-secondary/20">
         <div className="container py-8">
 
