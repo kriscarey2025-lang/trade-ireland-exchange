@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
@@ -84,6 +84,40 @@ interface SecureServiceDetail {
   provider_instagram: string | null;
   provider_verification_status: string | null;
   provider_is_founder: boolean | null;
+}
+
+const REVIEW_TRUNCATE_LENGTH = 120;
+
+function FeaturedReview({ text, reviewerName }: { text: string; reviewerName: string }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const needsTruncation = text.length > REVIEW_TRUNCATE_LENGTH;
+  const displayText = needsTruncation && !isExpanded 
+    ? `${text.slice(0, REVIEW_TRUNCATE_LENGTH)}...` 
+    : text;
+
+  return (
+    <div className="mt-4 p-3 bg-secondary/50 rounded-lg border border-border/50">
+      <div className="flex items-start gap-2">
+        <Quote className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+        <div className="min-w-0">
+          <p className="text-sm text-foreground italic">
+            "{displayText}"
+          </p>
+          {needsTruncation && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-xs text-primary hover:underline mt-1"
+            >
+              {isExpanded ? "Show less" : "Read more"}
+            </button>
+          )}
+          <p className="text-xs text-muted-foreground mt-1">
+            — {formatDisplayName(reviewerName)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function ServiceDetail() {
@@ -574,19 +608,10 @@ export default function ServiceDetail() {
 
                       {/* Featured Review */}
                       {latestReview?.review_text && (
-                        <div className="mt-4 p-3 bg-secondary/50 rounded-lg border border-border/50">
-                          <div className="flex items-start gap-2">
-                            <Quote className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
-                            <div className="min-w-0">
-                              <p className="text-sm text-foreground italic line-clamp-3">
-                                "{latestReview.review_text}"
-                              </p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                — {formatDisplayName((latestReview.reviewer as any)?.full_name || "Anonymous")}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+                        <FeaturedReview 
+                          text={latestReview.review_text} 
+                          reviewerName={(latestReview.reviewer as any)?.full_name || "Anonymous"} 
+                        />
                       )}
                     </>
                   ) : (
