@@ -56,6 +56,7 @@ import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { ReportServiceDialog } from "@/components/reports/ReportServiceDialog";
 import { InterestButton } from "@/components/services/InterestButton";
 import { useGetOrCreateConversation } from "@/hooks/useMessaging";
+import { ReviewsList } from "@/components/reviews/ReviewsList";
 
 // Response from secure database function
 interface SecureServiceDetail {
@@ -685,6 +686,16 @@ export default function ServiceDetail() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Reviews Card */}
+              {service.user_id && (
+                <Card className="shadow-elevated border-border/50">
+                  <CardContent className="p-6">
+                    <h2 className="text-lg font-semibold mb-4">Reviews</h2>
+                    <ReviewsList userId={service.user_id} />
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </div>
