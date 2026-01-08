@@ -51,7 +51,7 @@ export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
             className="border-2 border-white/50 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full px-8 w-full sm:w-auto"
             asChild
           >
-            <Link to="/browse">{user ? "Browse more services" : "Have a look around first"}</Link>
+            <Link to="/">{user ? "Browse more services" : "Have a look around first"}</Link>
           </Button>
         </div>
         
