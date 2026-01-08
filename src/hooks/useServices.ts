@@ -174,7 +174,34 @@ export function useServices(options: UseServicesOptions = {}) {
         throw error;
       }
 
-      return (data as SecureServiceResponse[]).map(transformSecureService);
+      const services = (data as SecureServiceResponse[]).map(transformSecureService);
+      
+      // Fetch ratings for all unique user IDs
+      const userIds = [...new Set(services.map(s => s.userId).filter(Boolean))] as string[];
+      
+      if (userIds.length > 0) {
+        const ratingsPromises = userIds.map(userId => 
+          supabase.rpc("get_user_ratings", { _user_id: userId })
+        );
+        
+        const ratingsResults = await Promise.all(ratingsPromises);
+        
+        const ratingsMap = new Map<string, number>();
+        ratingsResults.forEach((result, index) => {
+          if (result.data && result.data[0] && result.data[0].total_reviews > 0) {
+            ratingsMap.set(userIds[index], result.data[0].avg_user_rating);
+          }
+        });
+        
+        // Update services with ratings
+        services.forEach(service => {
+          if (service.user && service.userId && ratingsMap.has(service.userId)) {
+            service.user.rating = ratingsMap.get(service.userId) || null;
+          }
+        });
+      }
+      
+      return services;
     },
   });
 }
