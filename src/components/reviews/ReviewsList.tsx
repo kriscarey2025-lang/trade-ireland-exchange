@@ -5,6 +5,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 
+function formatDisplayName(fullName: string | null | undefined): string {
+  if (!fullName) return "Anonymous";
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0];
+  const firstName = parts[0];
+  const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
+  return `${firstName} ${lastInitial}.`;
+}
+
 interface ReviewsListProps {
   userId: string;
 }
@@ -126,7 +135,7 @@ export function ReviewsList({ userId }: ReviewsListProps) {
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <div>
                       <p className="font-medium text-sm">
-                        {reviewer?.full_name || "Anonymous"}
+                        {formatDisplayName(reviewer?.full_name)}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {formatDistanceToNow(new Date(review.created_at), { addSuffix: true })}
