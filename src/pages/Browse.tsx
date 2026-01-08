@@ -302,7 +302,7 @@ export default function Browse() {
               {isLoading ? "Loading..." : `${filteredServices.length} service${filteredServices.length !== 1 ? "s" : ""} found`}
             </p>
             {/* View toggle - show on mobile */}
-            <div className="flex items-center gap-1 sm:hidden">
+            <div className="flex items-center gap-1 md:hidden">
               <Button
                 variant={viewMode === "grid" ? "secondary" : "ghost"}
                 size="sm"
@@ -327,13 +327,13 @@ export default function Browse() {
           {isLoading ? (
             <>
               {/* Mobile skeleton - 2 column grid */}
-              <div className="grid grid-cols-2 gap-3 sm:hidden">
+              <div className="grid grid-cols-2 gap-3 md:hidden">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="aspect-square rounded-lg bg-muted animate-pulse" />
                 ))}
               </div>
               {/* Desktop skeleton */}
-              <div className="hidden sm:grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <ServiceCardSkeleton key={i} />
                 ))}
@@ -349,7 +349,7 @@ export default function Browse() {
           ) : filteredServices.length > 0 ? (
             <>
               {/* Mobile View - Vinted style 2-column grid or list */}
-              <div className="sm:hidden">
+              <div className="md:hidden">
                 {viewMode === "list" ? (
                   <div className="flex flex-col gap-2">
                     {filteredServices.map((service) => (
@@ -366,7 +366,7 @@ export default function Browse() {
               </div>
               
               {/* Desktop View - Full cards */}
-              <div className="hidden sm:grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredServices.map((service) => (
                   <ServiceCard key={service.id} service={service} />
                 ))}
