@@ -176,27 +176,33 @@ export function useServices(options: UseServicesOptions = {}) {
 
       const services = (data as SecureServiceResponse[]).map(transformSecureService);
       
-      // Fetch ratings for all unique user IDs
+      // Fetch ratings in a single batch query instead of individual calls
       const userIds = [...new Set(services.map(s => s.userId).filter(Boolean))] as string[];
       
       if (userIds.length > 0) {
-        const ratingsPromises = userIds.map(userId => 
-          supabase.rpc("get_user_ratings", { _user_id: userId })
-        );
+        // Use a single query to get all reviews and aggregate on client
+        const { data: reviewsData } = await supabase
+          .from("reviews")
+          .select("reviewed_user_id, user_rating")
+          .in("reviewed_user_id", userIds);
         
-        const ratingsResults = await Promise.all(ratingsPromises);
+        const ratingsMap = new Map<string, { sum: number; count: number }>();
         
-        const ratingsMap = new Map<string, number>();
-        ratingsResults.forEach((result, index) => {
-          if (result.data && result.data[0] && result.data[0].total_reviews > 0) {
-            ratingsMap.set(userIds[index], result.data[0].avg_user_rating);
-          }
-        });
+        if (reviewsData) {
+          reviewsData.forEach(review => {
+            const existing = ratingsMap.get(review.reviewed_user_id) || { sum: 0, count: 0 };
+            ratingsMap.set(review.reviewed_user_id, {
+              sum: existing.sum + review.user_rating,
+              count: existing.count + 1
+            });
+          });
+        }
         
-        // Update services with ratings
+        // Update services with calculated average ratings
         services.forEach(service => {
           if (service.user && service.userId && ratingsMap.has(service.userId)) {
-            service.user.rating = ratingsMap.get(service.userId) || null;
+            const rating = ratingsMap.get(service.userId)!;
+            service.user.rating = rating.sum / rating.count;
           }
         });
       }
