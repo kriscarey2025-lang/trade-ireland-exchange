@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink } from "lucide-react";
-import swapskillsLogo from "@/assets/swapskills-logo.png";
+import swapskillsLogo from "@/assets/swapskills-logo-full.png";
 
 const PressKit = () => {
   const stats = [
