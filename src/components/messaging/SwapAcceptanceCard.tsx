@@ -17,7 +17,7 @@ import {
   Pencil,
   X
 } from "lucide-react";
-import { format, isBefore, startOfToday, isToday, addDays } from "date-fns";
+import { format, isBefore, startOfToday, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -65,8 +65,6 @@ export function SwapAcceptanceCard({
   const hasAccepted = isParticipant1 ? acceptedBy1 : acceptedBy2;
   const otherHasAccepted = isParticipant1 ? acceptedBy2 : acceptedBy1;
   const bothAccepted = acceptedBy1 && acceptedBy2;
-  const completionDateReached = agreedCompletionDate && 
-    (isBefore(new Date(agreedCompletionDate), startOfToday()) || isToday(new Date(agreedCompletionDate)));
 
   // Determine who initiated (first to accept)
   const initiatorIsParticipant1 = acceptedBy1 && !acceptedBy2;
@@ -355,8 +353,8 @@ export function SwapAcceptanceCard({
     return null;
   };
 
-  // In Progress state - both accepted, waiting for completion date
-  if (bothAccepted && swapStatus === 'accepted' && !completionDateReached) {
+  // In Progress state - both accepted
+  if (bothAccepted && swapStatus === 'accepted') {
     return (
       <Card className="border-blue-500/30 bg-blue-50 dark:bg-blue-950/20 mb-4">
         <CardContent className="p-4 space-y-3">
@@ -371,7 +369,7 @@ export function SwapAcceptanceCard({
             {agreedCompletionDate && (
               <div className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-100 dark:bg-blue-900/50 px-2 py-1 rounded-full">
                 <CalendarIcon className="h-3 w-3" />
-                Complete by {format(new Date(agreedCompletionDate), 'dd MMM yyyy')}
+                Target: {format(new Date(agreedCompletionDate), 'dd MMM yyyy')}
               </div>
             )}
           </div>
@@ -383,7 +381,7 @@ export function SwapAcceptanceCard({
           )}
 
           <p className="text-sm text-muted-foreground">
-            Both parties have agreed! Complete your skill exchange by the agreed date.
+            Both parties have agreed! You can mark the trade as complete and leave a review at any time using the buttons below.
           </p>
 
           <div className="flex flex-wrap gap-2">
@@ -396,30 +394,6 @@ export function SwapAcceptanceCard({
               {otherUserName} accepted
             </span>
           </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Completion date reached - show different UI
-  if (bothAccepted && completionDateReached) {
-    return (
-      <Card className="border-green-500/30 bg-green-50 dark:bg-green-950/20 mb-4">
-        <CardContent className="p-4 space-y-2">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-green-600" />
-            <span className="font-medium text-sm text-green-700 dark:text-green-400">
-              Completion Date Reached!
-            </span>
-          </div>
-          {getSwapDescription() && (
-            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg text-sm text-center">
-              {getSwapDescription()}
-            </div>
-          )}
-          <p className="text-sm text-muted-foreground">
-            Mark the trade as complete below and leave a review.
-          </p>
         </CardContent>
       </Card>
     );

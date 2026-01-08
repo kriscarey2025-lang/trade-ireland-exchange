@@ -117,10 +117,9 @@ export default function Conversation() {
   
   // Swap acceptance status
   const bothAccepted = conversation?.accepted_by_1 && conversation?.accepted_by_2;
-  const completionDateReached = conversation?.agreed_completion_date && 
-    (isBefore(new Date(conversation.agreed_completion_date), startOfToday()) || 
-     isToday(new Date(conversation.agreed_completion_date)));
-  const canShowReviewOptions = bothAccepted && completionDateReached;
+  const swapInProgress = bothAccepted && conversation?.swap_status === 'accepted';
+  // Allow marking complete at any stage once swap is accepted
+  const canShowReviewOptions = swapInProgress;
   const canReview = canShowReviewOptions && (hasMarkedComplete || otherHasMarkedComplete) && !existingReview;
   
   // Check if current user is the service owner
@@ -402,7 +401,7 @@ export default function Conversation() {
             onClose={() => navigate("/messages")}
           />
 
-          {/* Trade Completion & Review Actions - Only show after completion date reached */}
+          {/* Trade Completion & Review Actions - Show once swap is accepted */}
           {canShowReviewOptions && (
             <div className="mb-4 flex flex-wrap gap-2">
               {!hasMarkedComplete && (
