@@ -27,27 +27,58 @@ function StarDisplay({ rating }: { rating: number }) {
 }
 
 export function ReviewsList({ userId }: ReviewsListProps) {
-  const { data: reviews, isLoading } = useQuery({
+  const {
+    data: reviews,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["user-reviews", userId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: rawReviews, error: reviewsError } = await supabase
         .from("reviews")
-        .select(`
-          *,
-          reviewer:reviewer_id (
-            id,
-            full_name,
-            avatar_url
-          ),
-          service:service_id (
-            title
-          )
-        `)
+        .select(
+          "id, created_at, reviewer_id, reviewed_user_id, service_id, user_rating, service_rating, review_text",
+        )
         .eq("reviewed_user_id", userId)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      return data;
+      if (reviewsError) throw reviewsError;
+      if (!rawReviews || rawReviews.length === 0) return [];
+
+      const reviewerIds = Array.from(
+        new Set(rawReviews.map((r: any) => r.reviewer_id).filter(Boolean)),
+      );
+      const serviceIds = Array.from(
+        new Set(rawReviews.map((r: any) => r.service_id).filter(Boolean)),
+      );
+
+      const [reviewersRes, servicesRes] = await Promise.all([
+        reviewerIds.length
+          ? supabase
+              .from("profiles")
+              .select("id, full_name, avatar_url")
+              .in("id", reviewerIds)
+          : Promise.resolve({ data: [], error: null }),
+        serviceIds.length
+          ? supabase.from("services").select("id, title").in("id", serviceIds)
+          : Promise.resolve({ data: [], error: null }),
+      ]);
+
+      if (reviewersRes.error) throw reviewersRes.error;
+      if (servicesRes.error) throw servicesRes.error;
+
+      const reviewerMap = new Map(
+        (reviewersRes.data || []).map((p: any) => [p.id, p]),
+      );
+      const serviceMap = new Map(
+        (servicesRes.data || []).map((s: any) => [s.id, s]),
+      );
+
+      return (rawReviews || []).map((review: any) => ({
+        ...review,
+        reviewer: reviewerMap.get(review.reviewer_id) ?? null,
+        service: review.service_id ? serviceMap.get(review.service_id) ?? null : null,
+      }));
     },
     enabled: !!userId,
   });

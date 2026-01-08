@@ -118,22 +118,30 @@ export default function ServiceDetail() {
     queryKey: ["latest-review", service?.user_id],
     queryFn: async () => {
       if (!service?.user_id) return null;
-      
-      const { data, error } = await supabase
+
+      const { data: review, error: reviewError } = await supabase
         .from("reviews")
-        .select(`
-          *,
-          reviewer:reviewer_id (
-            full_name
-          )
-        `)
+        .select("id, created_at, reviewer_id, review_text")
         .eq("reviewed_user_id", service.user_id)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
 
-      if (error) throw error;
-      return data;
+      if (reviewError) throw reviewError;
+      if (!review) return null;
+
+      const { data: reviewer, error: reviewerError } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .eq("id", review.reviewer_id)
+        .maybeSingle();
+
+      if (reviewerError) throw reviewerError;
+
+      return {
+        ...review,
+        reviewer,
+      } as any;
     },
     enabled: !!service?.user_id,
   });
