@@ -94,9 +94,8 @@ export default function PublicProfile() {
     return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
   };
 
-  const loading = authLoading || profileLoading;
-
-  if (loading) {
+  // Wait for auth to fully load before making any decisions
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -104,6 +103,7 @@ export default function PublicProfile() {
     );
   }
 
+  // Only show sign-in prompt if auth is fully loaded AND user is null
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
@@ -124,6 +124,15 @@ export default function PublicProfile() {
             </Card>
           </div>
         </main>
+      </div>
+    );
+  }
+
+  // Show loading state for profile data after auth is confirmed
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }

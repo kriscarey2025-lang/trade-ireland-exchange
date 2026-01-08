@@ -227,20 +227,20 @@ export function ServiceCard({
             />
           </div>
         )}
-        <CardContent className={cn("p-5 flex-1 flex flex-col", hasImage && "pt-4")}>
+        <CardContent className={cn("p-4 sm:p-5 flex-1 flex flex-col", hasImage && "pt-3 sm:pt-4")}>
           {/* Header */}
-          <div className="flex items-start justify-between gap-3 mb-4">
-            <Badge variant={postTypeBadge.variant} className={cn("shrink-0 rounded-lg", postTypeBadge.className)}>
+          <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <Badge variant={postTypeBadge.variant} className={cn("shrink-0 rounded-lg text-xs", postTypeBadge.className)}>
               {postTypeBadge.label}
             </Badge>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted text-xs text-muted-foreground font-medium">
+            <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-muted text-xs text-muted-foreground font-medium">
               <span>{categoryIcons[service.category]}</span>
               <span className="hidden sm:inline">{categoryLabels[service.category]}</span>
             </div>
           </div>
 
           {/* Title */}
-          <h3 className="font-display font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="font-display font-semibold text-base sm:text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {service.title}
             <ArrowUpRight className="inline-block ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
           </h3>
@@ -253,12 +253,12 @@ export function ServiceCard({
           )}
 
           {/* Meta Info */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary text-xs font-medium text-secondary-foreground">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+            <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-secondary text-[11px] sm:text-xs font-medium text-secondary-foreground">
               <MapPin className="h-3 w-3" />
               {service.location}
             </div>
-            {service.estimatedHours && <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-secondary text-xs font-medium text-secondary-foreground">
+            {service.estimatedHours && <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-secondary text-[11px] sm:text-xs font-medium text-secondary-foreground">
                 <Clock className="h-3 w-3" />
                 ~{service.estimatedHours}h
               </div>}
@@ -295,28 +295,28 @@ export function ServiceCard({
 
 
           {/* User */}
-          {service.user && <div className="flex items-center gap-3 pt-4 border-t border-border">
-              <Avatar className="h-14 w-14 ring-2 ring-background shadow-md shrink-0">
+          {service.user && <div className="flex items-center gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-border">
+              <Avatar className="h-10 w-10 sm:h-14 sm:w-14 ring-2 ring-background shadow-md shrink-0">
                 <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover object-top" />
-                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm sm:text-lg">
                   {service.user.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="font-medium text-sm truncate">
+                <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+                  <span className="font-medium text-xs sm:text-sm truncate">
                     {formatDisplayName(service.user.name)}
                   </span>
                   <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                   {service.user.isFounder && <FoundersBadge size="sm" />}
-                  {/* Social Media Icons */}
-                  {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && <div className="flex items-center gap-1 ml-1">
-                      {service.user.linkedinUrl && <Linkedin className="h-3.5 w-3.5 text-[#0A66C2] shrink-0" />}
-                      {service.user.facebookUrl && <Facebook className="h-3.5 w-3.5 text-[#1877F2] shrink-0" />}
-                      {service.user.instagramUrl && <Instagram className="h-3.5 w-3.5 text-[#E4405F] shrink-0" />}
+                  {/* Social Media Icons - Hide on very small screens */}
+                  {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && <div className="hidden xs:flex items-center gap-1 ml-1">
+                      {service.user.linkedinUrl && <Linkedin className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#0A66C2] shrink-0" />}
+                      {service.user.facebookUrl && <Facebook className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#1877F2] shrink-0" />}
+                      {service.user.instagramUrl && <Instagram className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#E4405F] shrink-0" />}
                     </div>}
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
                   {service.user.rating !== null ? <>
                       <Star className="h-3 w-3 fill-warning text-warning" />
                       <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
