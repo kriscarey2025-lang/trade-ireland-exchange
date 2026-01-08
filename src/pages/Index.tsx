@@ -20,13 +20,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { postCategoryLabels } from "@/lib/postCategories";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { InlineAd } from "@/components/ads/InlineAd";
-import { useABTest } from "@/hooks/useABTest";
 
 
 const locations = ["All Ireland", "Antrim", "Armagh", "Carlow", "Cavan", "Clare", "Cork", "Derry", "Donegal", "Down", "Dublin", "Fermanagh", "Galway", "Kerry", "Kildare", "Kilkenny", "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", "Waterford", "Westmeath", "Wexford", "Wicklow"];
 const Index = () => {
   const { user } = useAuth();
-  const { variant: heroVariant, trackConversion } = useABTest("homepage_hero_cta");
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">(searchParams.get("category") as ServiceCategory || "all");
@@ -163,15 +161,14 @@ const Index = () => {
                   </span>
                 </p>
                 
-                {/* Enhanced CTA for non-logged in users */}
-                {!user && heroVariant === "A" && (
+                {/* CTA for non-logged in users */}
+                {!user && (
                   <div className="flex flex-col items-center gap-3 mt-4">
                     {/* Primary CTA - Full width on mobile, very prominent */}
                     <Button 
                       size="lg" 
                       className="group shadow-xl hover:shadow-2xl rounded-full px-8 w-full sm:w-auto text-base h-14 font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary animate-fade-up" 
                       asChild
-                      onClick={() => trackConversion("signup_click")}
                     >
                       <Link to="/auth?mode=signup">
                         <Heart className="mr-2 h-5 w-5 animate-pulse" />
@@ -187,9 +184,8 @@ const Index = () => {
                         size="lg" 
                         className="rounded-full px-6 w-full sm:w-auto" 
                         asChild
-                        onClick={() => trackConversion("browse_click")}
                       >
-                        <Link to="/browse">
+                        <Link to="/">
                           Browse {filteredServices.length}+ active offers
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
@@ -204,70 +200,6 @@ const Index = () => {
                     <p className="text-xs text-muted-foreground mt-2">
                       ✓ No payment required · ✓ No spam · ✓ Cancel anytime
                     </p>
-                  </div>
-                )}
-
-                {/* Variant B: Show services directly in hero */}
-                {!user && heroVariant === "B" && (
-                  <div className="mt-6 animate-fade-up">
-                    {/* Primary CTA above services */}
-                    <Button 
-                      size="lg" 
-                      className="group shadow-xl hover:shadow-2xl rounded-full px-8 w-full sm:w-auto text-base h-12 font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary mb-5" 
-                      asChild
-                      onClick={() => trackConversion("signup_click")}
-                    >
-                      <Link to="/auth?mode=signup">
-                        <Heart className="mr-2 h-5 w-5 animate-pulse" />
-                        Get Started — It's Free!
-                        <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                      </Link>
-                    </Button>
-
-                    {/* Services preview */}
-                    <p className="text-sm font-medium text-muted-foreground mb-3">
-                      See what neighbours are offering:
-                    </p>
-                    {isLoading ? (
-                      <div className="flex justify-center py-8">
-                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                      </div>
-                    ) : heroPreviewServices.length > 0 ? (
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto">
-                        {heroPreviewServices.map((service) => (
-                          <div 
-                            key={service.id} 
-                            className="text-left"
-                            onClick={() => trackConversion("service_click")}
-                          >
-                            <div className="md:hidden">
-                              <ServiceCardMobile service={service} />
-                            </div>
-                            <div className="hidden md:block">
-                              <ServiceCard service={service} />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : null}
-                    
-                    <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="rounded-full" 
-                        asChild
-                        onClick={() => trackConversion("browse_click")}
-                      >
-                        <Link to="/browse">
-                          View all {filteredServices.length} offers
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
-                      <p className="text-xs text-muted-foreground">
-                        ✓ No payment required · ✓ No spam
-                      </p>
-                    </div>
                   </div>
                 )}
                 
