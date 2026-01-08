@@ -45,6 +45,7 @@ const Advertise = lazy(() => import("./pages/Advertise"));
 const GettingStarted = lazy(() => import("./pages/GettingStarted"));
 const CommunityBoard = lazy(() => import("./pages/CommunityBoard"));
 const Stories = lazy(() => import("./pages/Stories"));
+const PressKit = lazy(() => import("./pages/PressKit"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const SeedImages = lazy(() => import("./pages/SeedImages"));
 const Welcome = lazy(() => import("./pages/Welcome"));
@@ -106,6 +107,7 @@ const App = () => (
               <Route path="/getting-started" element={<GettingStarted />} />
               <Route path="/community" element={<CommunityBoard />} />
               <Route path="/stories" element={<Stories />} />
+              <Route path="/press" element={<PressKit />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route path="/seed-images" element={<SeedImages />} />
               <Route path="/welcome" element={<Welcome />} />
