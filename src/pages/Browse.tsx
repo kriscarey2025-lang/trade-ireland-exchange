@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ServiceCard } from "@/components/services/ServiceCard";
+import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -291,8 +292,10 @@ export default function Browse() {
           </div>
 
           {isLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ServiceCardSkeleton key={i} />
+              ))}
             </div>
           ) : error ? (
             <div className="text-center py-16">
