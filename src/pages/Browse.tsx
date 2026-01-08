@@ -305,15 +305,9 @@ export default function Browse() {
               </p>
             </div>
           ) : filteredServices.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredServices.map((service, index) => (
-                <div
-                  key={service.id}
-                  className="animate-fade-up"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <ServiceCard service={service} />
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {filteredServices.map((service) => (
+                <ServiceCard key={service.id} service={service} />
               ))}
             </div>
           ) : (

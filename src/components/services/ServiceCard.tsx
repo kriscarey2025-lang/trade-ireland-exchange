@@ -199,18 +199,19 @@ export function ServiceCard({
   };
   const hasImage = service.images && service.images.length > 0 && service.images[0];
 
-  return <Link to={`/services/${service.id}`} className="h-full">
+  return <Link to={`/services/${service.id}`} className="block h-full">
       <Card className={cn(
-        "group overflow-hidden hover-lift cursor-pointer border-[3px] hover:border-primary bg-card transition-all duration-300 shadow-md h-full flex flex-col",
+        "overflow-hidden cursor-pointer border-2 bg-card h-full flex flex-col will-change-auto",
+        "sm:hover:border-primary sm:hover:shadow-lg sm:transition-shadow sm:duration-200",
         service.isTimeSensitive 
-          ? "border-orange-400 dark:border-orange-500 ring-2 ring-orange-200 dark:ring-orange-900/50" 
-          : "border-primary/40",
+          ? "border-orange-400 dark:border-orange-500" 
+          : "border-primary/30",
         className
       )}>
         {/* Time Sensitive Banner */}
         {service.isTimeSensitive && (
           <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 flex items-center justify-center gap-2">
-            <Zap className="h-4 w-4 animate-pulse" />
+            <Zap className="h-4 w-4" />
             <span className="text-sm font-semibold">
               {neededByLabel === "ASAP" ? "Needed ASAP!" : `Needed by ${neededByLabel}`}
             </span>
@@ -222,8 +223,9 @@ export function ServiceCard({
             <img 
               src={service.images![0]} 
               alt={service.title}
-              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover object-center"
               loading="lazy"
+              decoding="async"
             />
           </div>
         )}
@@ -240,9 +242,8 @@ export function ServiceCard({
           </div>
 
           {/* Title */}
-          <h3 className="font-display font-semibold text-base sm:text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="font-display font-semibold text-base sm:text-lg mb-2 line-clamp-2">
             {service.title}
-            <ArrowUpRight className="inline-block ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
           </h3>
 
           {/* Description - only show when no image */}
