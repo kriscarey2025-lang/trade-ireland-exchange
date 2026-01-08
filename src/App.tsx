@@ -12,11 +12,11 @@ import { EngagementTracker } from "@/components/tracking/EngagementTracker";
 import FeedbackSidebar from "@/components/sidebar/FeedbackSidebar";
 import { PageLoader } from "@/components/ui/page-loader";
 
-// Eagerly load Index for fastest initial paint
-import Index from "./pages/Index";
+// Eagerly load Browse for fastest initial paint (main landing page)
+import Browse from "./pages/Browse";
 
 // Lazy load all other pages for code splitting
-const Browse = lazy(() => import("./pages/Browse"));
+const Index = lazy(() => import("./pages/Index"));
 const HowItWorks = lazy(() => import("./pages/HowItWorks"));
 const About = lazy(() => import("./pages/About"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -75,8 +75,8 @@ const App = () => (
           <MobileBottomNav />
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/browse" element={<Browse />} />
+              <Route path="/" element={<Browse />} />
+              <Route path="/home" element={<Index />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/about" element={<About />} />
               <Route path="/auth" element={<Auth />} />
