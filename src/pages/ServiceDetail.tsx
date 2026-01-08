@@ -582,7 +582,7 @@ export default function ServiceDetail() {
                                 "{latestReview.review_text}"
                               </p>
                               <p className="text-xs text-muted-foreground mt-1">
-                                — {(latestReview.reviewer as any)?.full_name || "Anonymous"}
+                                — {formatDisplayName((latestReview.reviewer as any)?.full_name || "Anonymous")}
                               </p>
                             </div>
                           </div>
