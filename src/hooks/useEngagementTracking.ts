@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -54,17 +54,19 @@ export const usePageTimeTracking = () => {
   const sessionStartRef = useRef<number>(Date.now());
   const lastPathRef = useRef<string>(location.pathname);
   const isTrackingRef = useRef(false);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const isAdminRef = useRef<boolean | null>(null);
 
   // Check admin status once on mount
   useEffect(() => {
     if (user?.id) {
-      checkIsAdmin(user.id).then(setIsAdmin);
+      checkIsAdmin(user.id).then((result) => {
+        isAdminRef.current = result;
+      });
     }
   }, [user?.id]);
 
   const recordSession = useCallback(async (path: string, durationSeconds: number) => {
-    if (!user?.id || durationSeconds < 5 || isAdmin) return; // Skip admins
+    if (!user?.id || durationSeconds < 5 || isAdminRef.current) return; // Skip admins
     
     try {
       await supabase.from('user_engagement').insert({
@@ -76,7 +78,7 @@ export const usePageTimeTracking = () => {
     } catch (error) {
       console.error('Failed to track session:', error);
     }
-  }, [user?.id, isAdmin]);
+  }, [user?.id]);
 
   // Track page changes
   useEffect(() => {
