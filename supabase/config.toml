@@ -77,3 +77,6 @@ verify_jwt = false
 
 [functions.send-skill-trade-notification]
 verify_jwt = false
+
+[functions.send-review-notification]
+verify_jwt = false

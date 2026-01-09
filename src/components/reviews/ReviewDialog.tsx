@@ -95,6 +95,13 @@ export function ReviewDialog({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Get reviewer's name for the notification
+      const { data: reviewerProfile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
       const { error } = await supabase.from("reviews").insert({
         conversation_id: conversationId,
         reviewer_id: user.id,
@@ -106,6 +113,23 @@ export function ReviewDialog({
       });
 
       if (error) throw error;
+
+      // Send email notification to the reviewed user
+      try {
+        await supabase.functions.invoke("send-review-notification", {
+          body: {
+            reviewed_user_id: reviewedUserId,
+            reviewer_name: reviewerProfile?.full_name || "Someone",
+            review_text: reviewText.trim() || null,
+            user_rating: userRating,
+            conversation_id: conversationId,
+            reviewer_id: user.id,
+          },
+        });
+      } catch (notifError) {
+        console.error("Failed to send review notification:", notifError);
+        // Don't fail the whole operation if notification fails
+      }
 
       toast({
         title: "Review submitted",
