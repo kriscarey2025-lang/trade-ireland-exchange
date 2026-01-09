@@ -1,11 +1,26 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
-// Track service creation
+// Check if user is an admin (excluded from tracking)
+const checkIsAdmin = async (userId: string): Promise<boolean> => {
+  try {
+    const { data } = await supabase
+      .rpc('has_role', { _user_id: userId, _role: 'admin' });
+    return data === true;
+  } catch {
+    return false;
+  }
+};
+
+// Track service creation (skip admins)
 export const trackServiceCreated = async (userId: string, serviceId: string, serviceTitle: string) => {
   try {
+    // Check if admin - skip tracking
+    const isAdmin = await checkIsAdmin(userId);
+    if (isAdmin) return;
+
     await supabase.from('user_engagement').insert({
       user_id: userId,
       event_type: 'service_created',
@@ -16,9 +31,12 @@ export const trackServiceCreated = async (userId: string, serviceId: string, ser
   }
 };
 
-// Track contact initiated (conversation started)
+// Track contact initiated (conversation started) - skip admins
 export const trackContactInitiated = async (userId: string, conversationId: string, providerId: string) => {
   try {
+    const isAdmin = await checkIsAdmin(userId);
+    if (isAdmin) return;
+
     await supabase.from('user_engagement').insert({
       user_id: userId,
       event_type: 'contact_initiated',
@@ -36,9 +54,17 @@ export const usePageTimeTracking = () => {
   const sessionStartRef = useRef<number>(Date.now());
   const lastPathRef = useRef<string>(location.pathname);
   const isTrackingRef = useRef(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+
+  // Check admin status once on mount
+  useEffect(() => {
+    if (user?.id) {
+      checkIsAdmin(user.id).then(setIsAdmin);
+    }
+  }, [user?.id]);
 
   const recordSession = useCallback(async (path: string, durationSeconds: number) => {
-    if (!user?.id || durationSeconds < 5) return; // Only track sessions > 5 seconds
+    if (!user?.id || durationSeconds < 5 || isAdmin) return; // Skip admins
     
     try {
       await supabase.from('user_engagement').insert({
@@ -50,7 +76,7 @@ export const usePageTimeTracking = () => {
     } catch (error) {
       console.error('Failed to track session:', error);
     }
-  }, [user?.id]);
+  }, [user?.id, isAdmin]);
 
   // Track page changes
   useEffect(() => {
