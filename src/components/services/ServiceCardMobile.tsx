@@ -125,11 +125,11 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
     <div className={cn("relative", className)}>
       <Link 
         to={`/services/${service.id}`} 
-        className="block"
+        className="block active:scale-[0.98] transition-transform"
       >
         {/* Image Container - Square aspect ratio like Vinted */}
         <div className={cn(
-          "relative aspect-square rounded-lg overflow-hidden bg-muted",
+          "relative aspect-square rounded-xl overflow-hidden bg-muted",
           service.isTimeSensitive && "ring-2 ring-orange-400"
         )}>
           {hasImage ? (
@@ -161,21 +161,45 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
             {postType.emoji} {postType.label}
           </div>
           
-          {/* Message Button Overlay - Like Vinted's heart */}
+          {/* Message Button Overlay - Larger touch target */}
           {!isOwnService && (
             <button
               onClick={handleMessageClick}
-              className="absolute bottom-2 right-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full p-2 shadow-md active:scale-95 transition-transform"
+              className="absolute bottom-2 right-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full p-2.5 shadow-md active:scale-95 transition-transform min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Send message"
             >
               <MessageCircle className="h-5 w-5 text-primary" />
             </button>
           )}
         </div>
         
-        {/* Content Below Image */}
-        <div className="mt-2 space-y-1">
+        {/* Content Below Image - More padding for touch */}
+        <div className="mt-2.5 space-y-1.5 pb-1">
+          {/* User Info with Trust Signals - MOVED TO TOP */}
+          {service.user && (
+            <div className="flex items-center gap-1.5 mb-1">
+              <Avatar className="h-5 w-5 ring-1 ring-border">
+                <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover" />
+                <AvatarFallback className="text-[8px] bg-primary/10 text-primary">
+                  {service.user.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-[11px] font-medium truncate max-w-[60px]">
+                {formatDisplayName(service.user.name).split(' ')[0]}
+              </span>
+              <VerifiedBadge status={service.user.verificationStatus} size="sm" />
+              {service.user.isFounder && <FoundersBadge size="sm" />}
+              {service.user.rating !== null && (
+                <span className="flex items-center gap-0.5 text-[11px] text-warning ml-auto">
+                  <Star className="h-3 w-3 fill-current" />
+                  {service.user.rating.toFixed(1)}
+                </span>
+              )}
+            </div>
+          )}
+
           {/* Title */}
-          <h3 className="font-medium text-sm line-clamp-2 leading-tight">
+          <h3 className="font-semibold text-sm line-clamp-2 leading-tight">
             {service.title}
           </h3>
           
@@ -212,28 +236,6 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
             </div>
           )}
           
-          {/* User Info */}
-          {service.user && (
-            <div className="flex items-center gap-1.5 pt-1">
-              <Avatar className="h-5 w-5">
-                <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover" />
-                <AvatarFallback className="text-[8px] bg-primary/10 text-primary">
-                  {service.user.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-[11px] font-medium truncate">
-                {formatDisplayName(service.user.name).split(' ')[0]}
-              </span>
-              <VerifiedBadge status={service.user.verificationStatus} size="sm" />
-              {service.user.isFounder && <FoundersBadge size="sm" />}
-              {service.user.rating !== null && (
-                <span className="flex items-center gap-0.5 text-[11px] text-warning ml-auto">
-                  <Star className="h-2.5 w-2.5 fill-current" />
-                  {service.user.rating.toFixed(1)}
-                </span>
-              )}
-            </div>
-          )}
         </div>
       </Link>
 

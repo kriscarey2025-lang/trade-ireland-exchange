@@ -191,8 +191,8 @@ export function OnboardingQuestionnaire() {
       return;
     }
 
-    toast.success("You're all set! Let's find you some matches.");
-    navigate("/welcome");
+    toast.success("You're all set! Let's create your first post.");
+    navigate("/getting-started");
   };
 
   const handleSkip = async () => {

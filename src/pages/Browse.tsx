@@ -27,6 +27,7 @@ import { postCategoryLabels } from "@/lib/postCategories";
 import { MatchesDialog } from "@/components/matching/MatchesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { HeroSection } from "@/components/home/HeroSection";
+import { LocalOffersSection } from "@/components/browse/LocalOffersSection";
 
 const locations = [
   "All Ireland",
@@ -159,9 +160,16 @@ export default function Browse() {
             </div>
           )}
 
+          {/* Local Offers Section - People near you */}
+          <LocalOffersSection 
+            services={services} 
+            isLoading={isLoading} 
+            userLocation={selectedLocation !== "All Ireland" ? selectedLocation : undefined}
+          />
+
           {/* Page Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Browse Services</h1>
+            <h1 className="text-3xl font-bold mb-2">Browse All Services</h1>
             <p className="text-muted-foreground">
               Find services you need or see what others are looking for
             </p>
