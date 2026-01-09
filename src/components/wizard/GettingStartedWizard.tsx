@@ -44,7 +44,7 @@ import { trackServiceCreated } from "@/hooks/useEngagementTracking";
 import { postCategoryLabels, postCategoryIcons } from "@/lib/postCategories";
 import { ImageUpload } from "@/components/services/ImageUpload";
 
-type WizardStep = "goal" | "details" | "generating" | "review" | "checklist" | "complete";
+type WizardStep = "choice" | "post-type" | "goal" | "details" | "generating" | "review" | "checklist" | "complete";
 
 interface GeneratedPost {
   title: string;
@@ -70,7 +70,7 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  const [currentStep, setCurrentStep] = useState<WizardStep>("goal");
+  const [currentStep, setCurrentStep] = useState<WizardStep>("choice");
   const [isLoading, setIsLoading] = useState(false);
   
   // Step 1: Goal - now maps to PostCategory
@@ -96,9 +96,42 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
   const [wantsWeeklyDigest, setWantsWeeklyDigest] = useState(false);
 
   const getProgress = () => {
-    const steps: WizardStep[] = ["goal", "details", "generating", "review", "checklist", "complete"];
-    const index = steps.indexOf(currentStep);
-    return ((index + 1) / steps.length) * 100;
+    // Only count progress from goal step onwards (the AI wizard flow)
+    const wizardSteps: WizardStep[] = ["goal", "details", "generating", "review", "checklist", "complete"];
+    if (currentStep === "choice" || currentStep === "post-type") {
+      return 0; // Choice screens don't show progress
+    }
+    const index = wizardSteps.indexOf(currentStep);
+    return ((index + 1) / wizardSteps.length) * 100;
+  };
+
+  const handleBrowseChoice = () => {
+    navigate("/browse");
+  };
+
+  const handlePostChoice = () => {
+    setCurrentStep("post-type");
+  };
+
+  const handlePostTypeSelect = (type: "free_offer" | "help_request" | "skill_swap") => {
+    setGoal(type);
+  };
+
+  const handleUseWizard = () => {
+    if (!goal) {
+      toast.error("Please select a post type first");
+      return;
+    }
+    setCurrentStep("details");
+  };
+
+  const handleFreestyle = () => {
+    if (!goal) {
+      toast.error("Please select a post type first");
+      return;
+    }
+    // Navigate to new service with pre-selected type
+    navigate(`/new-service?type=${goal}`);
   };
 
   const handleGoalNext = () => {
@@ -240,6 +273,158 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
 
   const renderStep = () => {
     switch (currentStep) {
+      case "choice":
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center mb-4">
+                <PartyPopper className="h-8 w-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">Welcome to SwapSkills! 🎉</h2>
+              <p className="text-muted-foreground">
+                What would you like to do first?
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={handleBrowseChoice}
+                className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-accent/50 transition-all text-left"
+              >
+                <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                  <Search className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="flex-1">
+                  <span className="font-semibold text-lg">Browse available skills</span>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    See what others are offering and find help for what you need
+                  </p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground mt-1" />
+              </button>
+
+              <button
+                onClick={handlePostChoice}
+                className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-accent/50 transition-all text-left"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Edit className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <span className="font-semibold text-lg">Post your skill or request</span>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Share what you can offer or ask for help from the community
+                  </p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground mt-1" />
+              </button>
+            </div>
+          </div>
+        );
+
+      case "post-type":
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold mb-2">What type of post?</h2>
+              <p className="text-muted-foreground">
+                Select what you'd like to share
+              </p>
+            </div>
+
+            <RadioGroup value={goal} onValueChange={(v) => handlePostTypeSelect(v as "free_offer" | "help_request" | "skill_swap")}>
+              <div className="space-y-3">
+                <label 
+                  className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    goal === "skill_swap" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <RadioGroupItem value="skill_swap" className="mt-1" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <RefreshCw className="h-5 w-5 text-primary" />
+                      <span className="font-semibold">Swap Skills</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Trade your skills for something you need in return
+                    </p>
+                  </div>
+                </label>
+
+                <label 
+                  className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    goal === "help_request" ? "border-amber-500 bg-amber-50 dark:bg-amber-900/20" : "border-border hover:border-amber-400"
+                  }`}
+                >
+                  <RadioGroupItem value="help_request" className="mt-1" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Search className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      <span className="font-semibold">Looking for Help</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Request help from the community
+                    </p>
+                  </div>
+                </label>
+
+                <label 
+                  className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    goal === "free_offer" ? "border-green-500 bg-green-50 dark:bg-green-900/20" : "border-border hover:border-green-400"
+                  }`}
+                >
+                  <RadioGroupItem value="free_offer" className="mt-1" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Gift className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      <span className="font-semibold">Offering Help for Free</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Share your skills to help others without expecting anything back
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </RadioGroup>
+
+            {goal && (
+              <div className="space-y-3 pt-4 border-t">
+                <p className="text-sm text-muted-foreground text-center mb-4">
+                  How would you like to create your post?
+                </p>
+                
+                <Button 
+                  variant="hero" 
+                  className="w-full" 
+                  onClick={handleUseWizard}
+                >
+                  <Wand2 className="mr-2 h-4 w-4" />
+                  Use AI Wizard
+                  <Sparkles className="ml-2 h-4 w-4" />
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={handleFreestyle}
+                >
+                  <Edit className="mr-2 h-4 w-4" />
+                  Create manually
+                </Button>
+              </div>
+            )}
+
+            <Button 
+              variant="ghost" 
+              className="w-full" 
+              onClick={() => setCurrentStep("choice")}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+          </div>
+        );
+
       case "goal":
         return (
           <div className="space-y-6">
