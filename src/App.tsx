@@ -112,6 +112,7 @@ const App = () => (
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route path="/seed-images" element={<SeedImages />} />
               <Route path="/welcome" element={<Welcome />} />
+              <Route path="/advertise" element={<Advertise />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
