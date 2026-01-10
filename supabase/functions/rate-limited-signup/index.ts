@@ -101,11 +101,11 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    // Create user via Supabase Admin API - NOT auto-confirmed, requires email verification
+    // Create user via Supabase Admin API - AUTO-CONFIRMED, no email verification
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: false, // Require email verification
+      email_confirm: true, // Auto-confirm - no email verification required
       user_metadata: {
         full_name: fullName,
         location: location,
@@ -136,7 +136,7 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log("User created successfully:", authData.user.id);
+    console.log("User created and auto-confirmed:", authData.user.id);
 
     // Update profile with location
     await supabaseAdmin
@@ -144,56 +144,10 @@ serve(async (req: Request): Promise<Response> => {
       .update({ location })
       .eq("id", authData.user.id);
 
-    // Generate confirmation URL using Supabase's generateLink
-    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'signup',
-      email,
-      password, // Required for signup type
-      options: {
-        redirectTo: redirectUrl,
-      }
-    });
-
-    if (linkError) {
-      console.error("Error generating confirmation link:", linkError);
-      // User was created but we couldn't send verification - they can resend from login
-      return new Response(
-        JSON.stringify({ 
-          success: true,
-          needsVerification: true,
-          user: { id: authData.user.id, email: authData.user.email }
-        }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
-    // Send custom branded verification email via Resend
-    try {
-      const verificationResponse = await fetch(`${supabaseUrl}/functions/v1/send-signup-verification`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabaseServiceKey}`,
-        },
-        body: JSON.stringify({
-          email,
-          confirmationUrl: linkData.properties.action_link,
-          fullName,
-        }),
-      });
-
-      if (!verificationResponse.ok) {
-        console.error("Failed to send verification email:", await verificationResponse.text());
-      } else {
-        console.log("Verification email sent successfully");
-      }
-    } catch (emailError) {
-      console.error("Error sending verification email:", emailError);
-    }
-
     return new Response(
       JSON.stringify({ 
         success: true,
+        autoConfirmed: true,
         user: {
           id: authData.user.id,
           email: authData.user.email,
