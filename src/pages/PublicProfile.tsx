@@ -1,17 +1,18 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, MapPin, ArrowLeft, User, Calendar, RefreshCw, FileText, Star, Sparkles } from "lucide-react";
+import { Loader2, MapPin, ArrowLeft, User, Calendar, RefreshCw, FileText, Star, Sparkles, MessageCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
-import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { ReviewsList } from "@/components/reviews/ReviewsList";
 import { ServiceCard } from "@/components/services/ServiceCard";
+import { ProfileContactDialog } from "@/components/messaging/ProfileContactDialog";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { categoryLabels } from "@/lib/categories";
@@ -36,6 +37,7 @@ interface UserStats {
   skillsOffered: string[];
   skillsWanted: string[];
   reviewCount: number;
+  avgRating: number | null;
 }
 
 interface Service {
@@ -72,6 +74,7 @@ function getSkillLabel(skillKey: string): string {
 export default function PublicProfile() {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
+  const [showContactDialog, setShowContactDialog] = useState(false);
 
   // Fetch public profile using the RPC function
   const { data: profile, isLoading: profileLoading, error: profileError } = useQuery({
@@ -102,11 +105,11 @@ export default function PublicProfile() {
     enabled: !!id && !authLoading,
   });
 
-  // Fetch user's stats (skills, posts, swaps)
+  // Fetch user's stats (skills, posts, swaps, rating)
   const { data: stats } = useQuery({
     queryKey: ['user-stats', id],
     queryFn: async (): Promise<UserStats> => {
-      if (!id) return { activePosts: 0, closedPosts: 0, totalSwaps: 0, skillsOffered: [], skillsWanted: [], reviewCount: 0 };
+      if (!id) return { activePosts: 0, closedPosts: 0, totalSwaps: 0, skillsOffered: [], skillsWanted: [], reviewCount: 0, avgRating: null };
       
       // Fetch user preferences for skills
       const { data: prefs } = await supabase
@@ -124,11 +127,11 @@ export default function PublicProfile() {
       const closedPosts = userServices.filter((s: any) => s.status !== 'active').length;
       const totalSwaps = userServices.reduce((sum: number, s: any) => sum + (s.completed_swaps_count || 0), 0);
       
-      // Fetch review count
-      const { count: reviewCount } = await supabase
-        .from('reviews')
-        .select('id', { count: 'exact', head: true })
-        .eq('reviewed_user_id', id);
+      // Fetch review count and average rating
+      const { data: ratings } = await supabase
+        .rpc("get_user_ratings", { _user_id: id });
+      
+      const ratingData = ratings?.[0] || null;
       
       return {
         activePosts,
@@ -136,7 +139,8 @@ export default function PublicProfile() {
         totalSwaps,
         skillsOffered: prefs?.skills_offered || [],
         skillsWanted: prefs?.skills_wanted || [],
-        reviewCount: reviewCount || 0,
+        reviewCount: ratingData?.total_reviews || 0,
+        avgRating: ratingData?.avg_user_rating || null,
       };
     },
     enabled: !!id && !authLoading && !!user,
@@ -291,33 +295,68 @@ export default function PublicProfile() {
                   </AvatarFallback>
                 </Avatar>
               </div>
-              <div className="pt-14">
-                <CardTitle className="text-2xl flex items-center gap-2 flex-wrap">
-                  {displayName}
-                  <VerifiedBadge status={profile.verification_status} size="md" />
-                  {profile.is_founder && <FoundersBadge size="md" />}
-                </CardTitle>
-                <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                  {profile.location && (
+              <div className="pt-14 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div>
+                  <CardTitle className="text-2xl flex items-center gap-2 flex-wrap">
+                    {displayName}
+                    <VerifiedBadge status={profile.verification_status} size="md" />
+                    {profile.is_founder && <FoundersBadge size="md" />}
+                  </CardTitle>
+                  <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                    {profile.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {profile.location}
+                      </span>
+                    )}
                     <span className="flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {profile.location}
+                      <Calendar className="h-3.5 w-3.5" />
+                      Member since {format(new Date(profile.created_at), 'MMM yyyy')}
                     </span>
+                  </div>
+                  {/* Rating display */}
+                  {stats?.avgRating && (
+                    <div className="flex items-center gap-1 mt-2 text-sm">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="font-medium">{stats.avgRating}</span>
+                      <span className="text-muted-foreground">
+                        ({stats.reviewCount} {stats.reviewCount === 1 ? 'review' : 'reviews'})
+                      </span>
+                    </div>
                   )}
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5" />
-                    Member since {format(new Date(profile.created_at), 'MMM yyyy')}
-                  </span>
                 </div>
-                <div className="mt-3">
-                  <UserRatingBadge userId={id!} />
-                </div>
+                {/* Contact Button */}
+                <Button 
+                  onClick={() => setShowContactDialog(true)}
+                  className="rounded-xl shrink-0"
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Contact
+                </Button>
               </div>
             </CardHeader>
           </Card>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card className="shadow-sm border-border/50">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500/10 mx-auto mb-2">
+                  <Star className="h-5 w-5 text-yellow-600" />
+                </div>
+                <p className="text-2xl font-bold flex items-center justify-center gap-1">
+                  {stats?.avgRating ? (
+                    <>
+                      {stats.avgRating}
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    </>
+                  ) : (
+                    <span className="text-muted-foreground text-base">No ratings</span>
+                  )}
+                </p>
+                <p className="text-xs text-muted-foreground">{stats?.reviewCount || 0} Reviews</p>
+              </CardContent>
+            </Card>
             <Card className="shadow-sm border-border/50">
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 mx-auto mb-2">
@@ -343,15 +382,6 @@ export default function PublicProfile() {
                 </div>
                 <p className="text-2xl font-bold">{stats?.closedPosts || 0}</p>
                 <p className="text-xs text-muted-foreground">Closed Posts</p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-sm border-border/50">
-              <CardContent className="p-4 text-center">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500/10 mx-auto mb-2">
-                  <Star className="h-5 w-5 text-yellow-600" />
-                </div>
-                <p className="text-2xl font-bold">{stats?.reviewCount || 0}</p>
-                <p className="text-xs text-muted-foreground">Reviews</p>
               </CardContent>
             </Card>
           </div>
@@ -504,6 +534,14 @@ export default function PublicProfile() {
           </Card>
         </div>
       </main>
+
+      {/* Contact Dialog */}
+      <ProfileContactDialog
+        open={showContactDialog}
+        onOpenChange={setShowContactDialog}
+        profileId={id!}
+        profileName={displayName}
+      />
     </div>
   );
 }
