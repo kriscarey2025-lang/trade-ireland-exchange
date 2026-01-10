@@ -3,8 +3,8 @@ import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Loader2, MapPin, ArrowLeft, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, MapPin, ArrowLeft, User, Calendar, RefreshCw, FileText, Star, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
@@ -13,6 +13,8 @@ import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { ReviewsList } from "@/components/reviews/ReviewsList";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { categoryLabels } from "@/lib/categories";
 
 type VerificationStatus = "unverified" | "pending" | "verified" | "rejected";
 
@@ -24,6 +26,16 @@ interface PublicProfile {
   bio: string | null;
   verification_status: VerificationStatus;
   is_founder: boolean | null;
+  created_at: string;
+}
+
+interface UserStats {
+  activePosts: number;
+  closedPosts: number;
+  totalSwaps: number;
+  skillsOffered: string[];
+  skillsWanted: string[];
+  reviewCount: number;
 }
 
 interface Service {
@@ -34,10 +46,27 @@ interface Service {
   type: string;
   location: string | null;
   images: string[] | null;
+  status: string;
   provider_name: string | null;
   provider_avatar: string | null;
   provider_verification_status: string | null;
   provider_is_founder: boolean | null;
+}
+
+// Format name as "First Name + Last Initial"
+function formatDisplayName(fullName: string | null): string {
+  if (!fullName) return "SwapSkills Member";
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0];
+  const firstName = parts[0];
+  const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
+  return `${firstName} ${lastInitial}.`;
+}
+
+// Get skill label from category key
+function getSkillLabel(skillKey: string): string {
+  const label = categoryLabels[skillKey as keyof typeof categoryLabels];
+  return label || skillKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
 export default function PublicProfile() {
@@ -56,10 +85,10 @@ export default function PublicProfile() {
       if (error) throw error;
       if (!data || data.length === 0) return null;
       
-      // Get verification status and founder status separately
+      // Get verification status, founder status, and created_at
       const { data: fullProfile } = await supabase
         .from('profiles')
-        .select('verification_status, is_founder')
+        .select('verification_status, is_founder, created_at')
         .eq('id', id)
         .maybeSingle();
       
@@ -67,26 +96,72 @@ export default function PublicProfile() {
         ...data[0],
         verification_status: (fullProfile?.verification_status as VerificationStatus) || 'unverified',
         is_founder: fullProfile?.is_founder || false,
+        created_at: fullProfile?.created_at || new Date().toISOString(),
       } as PublicProfile;
     },
     enabled: !!id && !authLoading,
   });
 
-  // Fetch user's services
+  // Fetch user's stats (skills, posts, swaps)
+  const { data: stats } = useQuery({
+    queryKey: ['user-stats', id],
+    queryFn: async (): Promise<UserStats> => {
+      if (!id) return { activePosts: 0, closedPosts: 0, totalSwaps: 0, skillsOffered: [], skillsWanted: [], reviewCount: 0 };
+      
+      // Fetch user preferences for skills
+      const { data: prefs } = await supabase
+        .from('user_preferences')
+        .select('skills_offered, skills_wanted')
+        .eq('user_id', id)
+        .maybeSingle();
+      
+      // Fetch services for post counts and swap count
+      const { data: services } = await supabase
+        .rpc('get_public_services', {});
+      
+      const userServices = (services || []).filter((s: any) => s.user_id === id);
+      const activePosts = userServices.filter((s: any) => s.status === 'active').length;
+      const closedPosts = userServices.filter((s: any) => s.status !== 'active').length;
+      const totalSwaps = userServices.reduce((sum: number, s: any) => sum + (s.completed_swaps_count || 0), 0);
+      
+      // Fetch review count
+      const { count: reviewCount } = await supabase
+        .from('reviews')
+        .select('id', { count: 'exact', head: true })
+        .eq('reviewed_user_id', id);
+      
+      return {
+        activePosts,
+        closedPosts,
+        totalSwaps,
+        skillsOffered: prefs?.skills_offered || [],
+        skillsWanted: prefs?.skills_wanted || [],
+        reviewCount: reviewCount || 0,
+      };
+    },
+    enabled: !!id && !authLoading && !!user,
+  });
+
+  // Fetch user's services (both active and closed)
   const { data: services, isLoading: servicesLoading } = useQuery({
     queryKey: ['user-services', id],
     queryFn: async () => {
-      if (!id) return [];
+      if (!id) return { active: [], closed: [] };
       
       const { data, error } = await supabase
-        .rpc('get_public_services', { _status: 'active' });
+        .rpc('get_public_services', {});
       
       if (error) throw error;
       
       // Filter to only this user's services
-      return (data || []).filter((s: any) => s.user_id === id) as Service[];
+      const userServices = (data || []).filter((s: any) => s.user_id === id) as Service[];
+      
+      return {
+        active: userServices.filter(s => s.status === 'active'),
+        closed: userServices.filter(s => s.status !== 'active'),
+      };
     },
-    enabled: !!id && !authLoading,
+    enabled: !!id && !authLoading && !!user,
   });
 
   const getInitials = (name: string | null) => {
@@ -189,11 +264,13 @@ export default function PublicProfile() {
     );
   }
 
+  const displayName = formatDisplayName(profile.full_name);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
       <Header />
       <main className="container py-8 md:py-12">
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-3xl mx-auto space-y-6">
           {/* Back button */}
           <Button asChild variant="ghost" size="sm" className="rounded-xl">
             <Link to="/browse">
@@ -216,22 +293,107 @@ export default function PublicProfile() {
               </div>
               <div className="pt-14">
                 <CardTitle className="text-2xl flex items-center gap-2 flex-wrap">
-                  {profile.full_name || "SwapSkills Member"}
+                  {displayName}
                   <VerifiedBadge status={profile.verification_status} size="md" />
                   {profile.is_founder && <FoundersBadge size="md" />}
                 </CardTitle>
-                {profile.location && (
-                  <CardDescription className="flex items-center gap-1 mt-1">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {profile.location}
-                  </CardDescription>
-                )}
-                <div className="mt-2">
+                <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                  {profile.location && (
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {profile.location}
+                    </span>
+                  )}
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3.5 w-3.5" />
+                    Member since {format(new Date(profile.created_at), 'MMM yyyy')}
+                  </span>
+                </div>
+                <div className="mt-3">
                   <UserRatingBadge userId={id!} />
                 </div>
               </div>
             </CardHeader>
           </Card>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card className="shadow-sm border-border/50">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 mx-auto mb-2">
+                  <RefreshCw className="h-5 w-5 text-primary" />
+                </div>
+                <p className="text-2xl font-bold">{stats?.totalSwaps || 0}</p>
+                <p className="text-xs text-muted-foreground">Swaps Completed</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm border-border/50">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500/10 mx-auto mb-2">
+                  <FileText className="h-5 w-5 text-green-600" />
+                </div>
+                <p className="text-2xl font-bold">{stats?.activePosts || 0}</p>
+                <p className="text-xs text-muted-foreground">Active Posts</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm border-border/50">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-muted mx-auto mb-2">
+                  <FileText className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <p className="text-2xl font-bold">{stats?.closedPosts || 0}</p>
+                <p className="text-xs text-muted-foreground">Closed Posts</p>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm border-border/50">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500/10 mx-auto mb-2">
+                  <Star className="h-5 w-5 text-yellow-600" />
+                </div>
+                <p className="text-2xl font-bold">{stats?.reviewCount || 0}</p>
+                <p className="text-xs text-muted-foreground">Reviews</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Skills Preferences */}
+          {((stats?.skillsOffered && stats.skillsOffered.length > 0) || 
+            (stats?.skillsWanted && stats.skillsWanted.length > 0)) && (
+            <Card className="shadow-elevated border-border/50">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Skill Preferences
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {stats?.skillsOffered && stats.skillsOffered.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium mb-2 text-muted-foreground">Can Offer:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {stats.skillsOffered.map((skill) => (
+                        <Badge key={skill} variant="secondary" className="rounded-full">
+                          {getSkillLabel(skill)}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {stats?.skillsWanted && stats.skillsWanted.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium mb-2 text-muted-foreground">Looking For:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {stats.skillsWanted.map((skill) => (
+                        <Badge key={skill} variant="outline" className="rounded-full">
+                          {getSkillLabel(skill)}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Bio Card */}
           {profile.bio && (
@@ -245,18 +407,61 @@ export default function PublicProfile() {
             </Card>
           )}
 
-          {/* User's Services */}
-          {!servicesLoading && services && services.length > 0 && (
+          {/* Active Posts */}
+          {!servicesLoading && services?.active && services.active.length > 0 && (
             <Card className="shadow-elevated border-border/50">
               <CardHeader>
-                <CardTitle className="text-lg">Skills Offered</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500" />
+                  Active Posts
+                </CardTitle>
                 <CardDescription>
-                  Services this member can offer
+                  Current offerings from {displayName}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
-                  {services.map((service) => (
+                  {services.active.map((service) => (
+                    <ServiceCard
+                      key={service.id}
+                      service={{
+                        id: service.id,
+                        title: service.title,
+                        description: service.description || "",
+                        category: service.category as any,
+                        type: service.type as any,
+                        location: service.location || "Ireland",
+                        user: service.provider_name ? {
+                          name: service.provider_name,
+                          avatar: service.provider_avatar || undefined,
+                          rating: null,
+                          completedTrades: 0,
+                          verificationStatus: (service.provider_verification_status as any) || "unverified",
+                          isFounder: service.provider_is_founder || false,
+                        } : undefined,
+                      }}
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Closed Posts */}
+          {!servicesLoading && services?.closed && services.closed.length > 0 && (
+            <Card className="shadow-elevated border-border/50">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-muted-foreground">
+                  <span className="w-2 h-2 rounded-full bg-muted-foreground" />
+                  Closed Posts
+                </CardTitle>
+                <CardDescription>
+                  Past offerings that are no longer active
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 opacity-75">
+                  {services.closed.slice(0, 3).map((service) => (
                     <ServiceCard
                       key={service.id}
                       service={{
@@ -285,9 +490,12 @@ export default function PublicProfile() {
           {/* Reviews */}
           <Card className="shadow-elevated border-border/50">
             <CardHeader>
-              <CardTitle className="text-lg">Reviews</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                Reviews
+              </CardTitle>
               <CardDescription>
-                What others say about this member
+                What others say about {displayName}
               </CardDescription>
             </CardHeader>
             <CardContent>
