@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Eye, EyeOff, ArrowRight, Loader2, Mail, CheckCircle2, Users, Shield, Clock, Heart, Sparkles, MapPin } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Loader2, CheckCircle2, Users, Shield, Heart, Sparkles, MapPin } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
@@ -48,9 +48,6 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [showVerificationScreen, setShowVerificationScreen] = useState(false);
-  const [verificationEmail, setVerificationEmail] = useState("");
-  const [isResending, setIsResending] = useState(false);
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
@@ -67,25 +64,6 @@ export default function Auth() {
     }
   };
 
-  const handleResendVerification = async () => {
-    if (!verificationEmail) return;
-    setIsResending(true);
-    
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email: verificationEmail,
-      options: {
-        emailRedirectTo: `${window.location.origin}/onboarding`,
-      },
-    });
-    
-    if (error) {
-      toast.error("Failed to resend verification email. Please try again.");
-    } else {
-      toast.success("Verification email sent! Check your inbox.");
-    }
-    setIsResending(false);
-  };
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
@@ -270,126 +248,6 @@ export default function Auth() {
     );
   }
 
-  // Email verification confirmation screen
-  if (showVerificationScreen) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-secondary via-background to-secondary/50">
-        <Header />
-        <main className="container py-8 md:py-16">
-          <div className="max-w-lg mx-auto animate-fade-up">
-            <Card className="shadow-lg border-border/50 overflow-hidden">
-              <div className="h-2 bg-gradient-to-r from-primary via-accent to-primary" />
-              <CardHeader className="text-center pb-4 pt-8">
-                <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-4 animate-bounce-soft">
-                  <Mail className="h-10 w-10 text-primary" />
-                </div>
-                <CardTitle className="text-2xl md:text-3xl">Check your email</CardTitle>
-                <CardDescription className="text-base mt-2">
-                  We've sent a verification link to
-                </CardDescription>
-                <p className="font-semibold text-foreground text-lg mt-1 break-all">{verificationEmail}</p>
-              </CardHeader>
-              <CardContent className="space-y-6 pb-8">
-                <div className="bg-muted/50 rounded-xl p-5 space-y-4">
-                  {[
-                    { step: 1, title: "Open your email", desc: "Look for an email from SwapSkills" },
-                    { step: 2, title: "Click the verification link", desc: "This confirms your email address" },
-                    { step: 3, title: "Start swapping skills!", desc: "Complete your profile and browse services" },
-                  ].map((item, index) => (
-                    <div 
-                      key={item.step} 
-                      className="flex items-start gap-4 animate-fade-up"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                        <span className="text-sm font-bold text-primary">{item.step}</span>
-                      </div>
-                      <div>
-                        <p className="font-medium">{item.title}</p>
-                        <p className="text-sm text-muted-foreground">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
-                  <p className="text-sm text-amber-800 dark:text-amber-200">
-                    <strong>Can't find the email?</strong> Check your spam or junk folder. The email might take a minute to arrive.
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  <Button
-                    variant="outline"
-                    className="w-full h-12 text-base"
-                    onClick={handleResendVerification}
-                    disabled={isResending}
-                  >
-                    {isResending ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Mail className="mr-2 h-5 w-5" />
-                        Resend verification email
-                      </>
-                    )}
-                  </Button>
-                  
-                  <Button
-                    variant="ghost"
-                    className="w-full"
-                    onClick={() => {
-                      setShowVerificationScreen(false);
-                      setVerificationEmail("");
-                    }}
-                  >
-                    Use a different email
-                  </Button>
-                </div>
-
-                <Separator />
-
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground mb-3">Already verified?</p>
-                  <Button
-                    variant="hero"
-                    className="w-full h-12 text-base"
-                    onClick={() => navigate('/auth?mode=login')}
-                  >
-                    Sign in to your account
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Trust indicators */}
-            <div className="mt-8 grid grid-cols-3 gap-6 text-center">
-              {[
-                { icon: Users, label: "Local Community" },
-                { icon: Shield, label: "Verified Users" },
-                { icon: Clock, label: "Quick Setup" },
-              ].map((item, index) => (
-                <div 
-                  key={item.label}
-                  className="space-y-2 animate-fade-up"
-                  style={{ animationDelay: `${(index + 3) * 100}ms` }}
-                >
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto">
-                    <item.icon className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <p className="text-xs text-muted-foreground font-medium">{item.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary via-background to-secondary/50">
