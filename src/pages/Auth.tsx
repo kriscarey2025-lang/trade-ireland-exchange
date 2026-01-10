@@ -237,11 +237,6 @@ export default function Auth() {
       return;
     }
 
-    // Show verification screen instead of navigating immediately
-    setVerificationEmail(signupEmail);
-    setShowVerificationScreen(true);
-    setIsLoading(false);
-    
     // Submit to HubSpot
     const { firstname, lastname } = parseFullName(signupName);
     submitToHubSpot({
@@ -254,6 +249,10 @@ export default function Auth() {
     
     // Celebrate the signup!
     setTimeout(() => fireConfetti(), 300);
+    
+    // Navigate directly to onboarding - no email verification needed
+    toast.success("Welcome to SwapSkills! Let's set up your profile.");
+    navigate('/onboarding');
   };
 
   if (authLoading) {
