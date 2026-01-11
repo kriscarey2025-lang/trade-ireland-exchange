@@ -75,7 +75,7 @@ export function LocalOffersSection({ services, isLoading, userLocation }: LocalO
         const targetLocation = effectiveLocation.toLowerCase();
         return serviceLocation.includes(targetLocation) || targetLocation.includes(serviceLocation);
       })
-      .slice(0, 4); // Show max 4
+      .slice(0, 8); // Show max 8
   }, [services, effectiveLocation]);
 
   // If no location or no local services, don't show this section
