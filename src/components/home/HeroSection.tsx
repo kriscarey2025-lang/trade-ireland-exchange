@@ -1,45 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Coffee, Sparkles, Lightbulb, MapPin } from "lucide-react";
+import { ArrowRight, Heart, Coffee, Sparkles, Lightbulb } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
-import { useServices } from "@/hooks/useServices";
-import { categoryLabels, categoryIcons } from "@/lib/categories";
-import { ServiceCategory } from "@/types";
 
 export function HeroSection() {
   const { user } = useAuth();
   const [brainstormOpen, setBrainstormOpen] = useState(false);
-  const [currentServiceIndex, setCurrentServiceIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const { data: services = [], isLoading } = useServices({ status: "active" });
-
-  // Auto-rotate services every 5 seconds with animation
-  useEffect(() => {
-    if (services.length <= 1) return;
-    
-    const interval = setInterval(() => {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCurrentServiceIndex((prev) => (prev + 1) % services.length);
-        setIsTransitioning(false);
-      }, 300);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [services.length]);
-
-  const handleDotClick = (idx: number) => {
-    if (idx === currentServiceIndex) return;
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentServiceIndex(idx);
-      setIsTransitioning(false);
-    }, 300);
-  };
-
-  const currentService = services[currentServiceIndex];
   
   return (
     <section className="relative overflow-hidden min-h-[65vh] md:min-h-[80vh] flex items-center pt-2 md:pt-0">
@@ -104,93 +72,6 @@ export function HeroSection() {
             </Button>
           </div>
 
-          {/* Live Service Preview Carousel - more compact on mobile */}
-          <div className="relative mb-6 md:mb-10 max-w-xl mx-auto animate-fade-up" style={{ animationDelay: "0.3s" }}>
-            {/* Gradient border wrapper */}
-            <div className="absolute inset-0 rounded-2xl md:rounded-3xl bg-gradient-to-br from-primary/40 via-accent/30 to-highlight/40 blur-sm"></div>
-            <div className="relative bg-gradient-to-br from-card via-card to-card/95 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-8 border border-border/30 shadow-xl overflow-hidden">
-              {/* Decorative elements - hidden on mobile */}
-              <div className="hidden md:block absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full"></div>
-              <div className="hidden md:block absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-accent/10 to-transparent rounded-tr-full"></div>
-              
-              {isLoading || !currentService ? (
-                <div className="animate-pulse space-y-3">
-                  <div className="h-3 bg-muted rounded-full w-32 mx-auto"></div>
-                  <div className="h-5 bg-muted rounded-full w-3/4 mx-auto"></div>
-                  <div className="h-4 bg-muted rounded-full w-2/3 mx-auto"></div>
-                </div>
-              ) : (
-                <Link 
-                  to={`/services/${currentService.id}`}
-                  className="block group relative z-10"
-                  key={currentService.id}
-                >
-                  {/* Animated content wrapper */}
-                  <div 
-                    className={`transition-all duration-300 ease-out ${
-                      isTransitioning 
-                        ? "opacity-0 translate-y-4 scale-95" 
-                        : "opacity-100 translate-y-0 scale-100"
-                    }`}
-                  >
-                    {/* Header badge */}
-                    <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-primary/10 border border-primary/20 mb-2 md:mb-4">
-                      <span className="relative flex h-1.5 w-1.5 md:h-2 md:w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 md:h-2 md:w-2 bg-primary"></span>
-                      </span>
-                      <span className="text-[10px] md:text-xs font-semibold text-primary uppercase tracking-wider">Now Available</span>
-                    </div>
-                    
-                    {/* Title with icon */}
-                    <div className="flex items-center justify-center gap-2 md:gap-3 mb-2 md:mb-4">
-                      <span className="text-xl md:text-3xl transform group-hover:scale-110 transition-transform duration-300">
-                        {categoryIcons[currentService.category as ServiceCategory] || "✨"}
-                      </span>
-                      <h3 className="text-base md:text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
-                        {currentService.title}
-                      </h3>
-                    </div>
-                    
-                    {/* Description - hidden on small mobile */}
-                    <p className="hidden sm:block text-muted-foreground text-xs md:text-base line-clamp-2 mb-3 md:mb-5 leading-relaxed max-w-md mx-auto">
-                      <span className="italic">"{currentService.description}"</span>
-                    </p>
-                    
-                    {/* Location and category tags */}
-                    <div className="flex items-center justify-center gap-2 md:gap-3 flex-wrap">
-                      <span className="inline-flex items-center gap-1 px-2 md:px-3 py-1 md:py-1.5 rounded-full bg-muted/50 text-muted-foreground text-xs md:text-sm font-medium">
-                        <MapPin className="h-3 w-3 md:h-3.5 md:w-3.5" />
-                        {currentService.location}
-                      </span>
-                      <span className="px-2.5 md:px-4 py-1 md:py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 text-primary text-xs md:text-sm font-semibold border border-primary/20">
-                        {categoryLabels[currentService.category as ServiceCategory] || "Other"}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  {/* Progress indicator - pill style */}
-                  <div className="flex justify-center items-center gap-1.5 md:gap-2 mt-4 md:mt-6">
-                    {services.slice(0, Math.min(services.length, 6)).map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleDotClick(idx);
-                        }}
-                        className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ease-out ${
-                          idx === currentServiceIndex 
-                            ? "bg-gradient-to-r from-primary to-accent w-5 md:w-8 shadow-md shadow-primary/30" 
-                            : "bg-muted-foreground/20 hover:bg-muted-foreground/40 w-1.5 md:w-2"
-                        }`}
-                        aria-label={`View service ${idx + 1}`}
-                      />
-                    ))}
-                  </div>
-                </Link>
-              )}
-            </div>
-          </div>
 
           {/* Brainstorm CTA - More compact on mobile */}
           <div className="animate-fade-up" style={{ animationDelay: "0.35s" }}>
