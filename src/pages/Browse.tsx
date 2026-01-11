@@ -125,7 +125,7 @@ export default function Browse() {
         <Header />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
-        <div className="container py-8">
+        <div id="services-section" className="container py-8">
 
           {/* Matches Dialog */}
           <MatchesDialog 
