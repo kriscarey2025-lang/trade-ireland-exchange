@@ -168,26 +168,26 @@ export function Header() {
           <Link
             to="/stories"
             className={cn(
-              "flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
               location.pathname === "/stories"
                 ? "text-primary bg-primary/10"
                 : "text-muted-foreground"
             )}
           >
             <BookOpen className="h-3.5 w-3.5" />
-            <span className="hidden xs:inline">Stories</span>
+            Stories
           </Link>
           <Link
             to="/how-it-works"
             className={cn(
-              "flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
               location.pathname === "/how-it-works"
                 ? "text-primary bg-primary/10"
                 : "text-muted-foreground"
             )}
           >
             <Compass className="h-3.5 w-3.5" />
-            <span className="hidden xs:inline">How</span>
+            How It Works
           </Link>
         </nav>
 
