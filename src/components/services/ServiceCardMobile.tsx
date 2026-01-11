@@ -9,7 +9,7 @@ import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
-import { format, isToday, isTomorrow, differenceInDays } from "date-fns";
+import { format, isToday, isTomorrow, differenceInDays, formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { useStartConversation } from "@/hooks/useMessaging";
 import { toast } from "sonner";
@@ -35,6 +35,7 @@ interface ServiceData {
   acceptedCategories?: string[];
   isTimeSensitive?: boolean;
   neededByDate?: Date | null;
+  createdAt?: Date;
   user?: ServiceUser;
 }
 
@@ -207,12 +208,18 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
             {service.title}
           </h3>
           
-          {/* Category & Location */}
+          {/* Category & Location & Date */}
           <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
             <span>{categoryLabels[service.category]}</span>
             <span>·</span>
             <MapPin className="h-2.5 w-2.5" />
             <span className="truncate">{service.location}</span>
+            {service.createdAt && (
+              <>
+                <span>·</span>
+                <span className="shrink-0">{formatDistanceToNow(service.createdAt, { addSuffix: false }).replace('about ', '').replace('less than a minute', 'now')}</span>
+              </>
+            )}
           </div>
           
           {/* What they want in exchange - for skill swaps */}
