@@ -64,11 +64,16 @@ export function HeroSection() {
                 <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
-            <Button variant="outline" size="lg" className="rounded-full px-6 md:px-8 w-full sm:w-auto text-sm md:text-base h-11 md:h-12" asChild>
-              <Link to="/browse">
-                See what's on offer
-                <Coffee className="ml-2 h-4 w-4" />
-              </Link>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="rounded-full px-6 md:px-8 w-full sm:w-auto text-sm md:text-base h-11 md:h-12"
+              onClick={() => {
+                document.getElementById('services-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              See what's on offer
+              <Coffee className="ml-2 h-4 w-4" />
             </Button>
           </div>
 
