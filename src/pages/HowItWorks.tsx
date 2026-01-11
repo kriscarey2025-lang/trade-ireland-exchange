@@ -6,13 +6,15 @@ import { BreadcrumbJsonLd, HowToJsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/button";
 import {
   UserPlus,
-  ListChecks,
+  PenLine,
   Search,
   MessageCircle,
   HandshakeIcon,
   Star,
   ArrowRight,
   CheckCircle2,
+  Clock,
+  Calendar,
 } from "lucide-react";
 
 const steps = [
@@ -24,39 +26,46 @@ const steps = [
     details: ["Free to join", "No credit card required", "Takes 2 minutes"],
   },
   {
-    icon: ListChecks,
-    title: "2. Post Your Services",
+    icon: null, // Special dual-option step
+    title: "2. Post a Service or Browse",
     description:
-      "List what you can offer and what you're looking for in return. Be specific about your skills, experience, and availability.",
-    details: ["Post unlimited services", "Add photos & qualifications", "Set your own terms"],
-  },
-  {
-    icon: Search,
-    title: "3. Browse & Discover",
-    description:
-      "Search through services in your area. Filter by category, location, and type to find exactly what you need.",
-    details: ["Smart search filters", "See ratings & reviews", "View provider profiles"],
+      "You have two paths: share what you can offer, or browse what others are offering. Or do both!",
+    isChoice: true,
+    options: [
+      {
+        icon: PenLine,
+        label: "Post Your Service",
+        description: "Share your skills with the community",
+        details: ["Time-Sensitive Ads — Need help urgently? Mark it!", "Long-Term Ads — Ongoing services at your pace"],
+      },
+      {
+        icon: Search,
+        label: "Browse Services",
+        description: "Find what you need from neighbours",
+        details: ["Smart filters by category & location", "See ratings & reviews"],
+      },
+    ],
   },
   {
     icon: MessageCircle,
-    title: "4. Propose a Swap",
+    title: "3. Get in Touch",
     description:
-      "Found something you need? Reach out and propose a direct swap! Discuss what you can offer in exchange.",
-    details: ["In-app messaging", "Discuss terms", "Agree on the exchange"],
+      "Found something you need or interested in a service? Reach out through our in-app messaging to start the conversation.",
+    details: ["Safe in-app messaging", "Discuss the details", "Get to know each other"],
   },
   {
     icon: HandshakeIcon,
-    title: "5. Complete the Exchange",
+    title: "4. Propose a Swap",
     description:
-      "Meet up and exchange services. Both parties confirm completion when satisfied with the swap.",
-    details: ["Safety guidelines provided", "Mutual confirmation", "Fair exchange guaranteed"],
+      "Agree on what you'll exchange and set a completion date. Both parties confirm the terms of the swap before moving forward.",
+    details: ["Set a completion date", "Agree on exchange terms", "Mutual confirmation required"],
   },
   {
     icon: Star,
-    title: "6. Rate & Review",
+    title: "5. Rate & Review",
     description:
-      "Leave honest feedback to help the community. Good reviews build your reputation and trust.",
-    details: ["5-star rating system", "Written reviews", "Earn trust badges"],
+      "Once the completion date has passed, you'll be able to rate and review each other. Honest feedback builds trust in our community.",
+    details: ["Available after completion date", "5-star rating system", "Written reviews to share your experience"],
   },
 ];
 
@@ -101,30 +110,67 @@ export default function HowItWorks() {
           {/* Steps */}
           <section className="py-16">
             <div className="container">
-              <div className="max-w-3xl mx-auto space-y-12">
+              <div className="max-w-4xl mx-auto space-y-12">
                 {steps.map((step, index) => (
                   <div
                     key={index}
-                    className="flex gap-6 animate-fade-up"
+                    className="animate-fade-up"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
-                    <div className="flex-shrink-0">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center text-primary-foreground">
-                        <step.icon className="h-8 w-8" />
+                    {step.isChoice ? (
+                      // Special rendering for the choice step
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                        <p className="text-muted-foreground mb-6">{step.description}</p>
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          {step.options?.map((option, optIndex) => (
+                            <div
+                              key={optIndex}
+                              className="bg-card border border-border/50 rounded-2xl p-6 hover:border-primary/30 transition-colors"
+                            >
+                              <div className="flex items-center gap-3 mb-3">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-hero flex items-center justify-center text-primary-foreground">
+                                  <option.icon className="h-6 w-6" />
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold">{option.label}</h4>
+                                  <p className="text-sm text-muted-foreground">{option.description}</p>
+                                </div>
+                              </div>
+                              <div className="space-y-2 mt-4">
+                                {option.details.map((detail, i) => (
+                                  <div key={i} className="flex items-start gap-2 text-sm">
+                                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                    <span>{detail}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                      <p className="text-muted-foreground mb-4">{step.description}</p>
-                      <div className="flex flex-wrap gap-3">
-                        {step.details.map((detail, i) => (
-                          <div key={i} className="flex items-center gap-1.5 text-sm">
-                            <CheckCircle2 className="h-4 w-4 text-primary" />
-                            <span>{detail}</span>
+                    ) : (
+                      // Standard step rendering
+                      <div className="flex gap-6">
+                        <div className="flex-shrink-0">
+                          <div className="w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center text-primary-foreground">
+                            {step.icon && <step.icon className="h-8 w-8" />}
                           </div>
-                        ))}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                          <p className="text-muted-foreground mb-4">{step.description}</p>
+                          <div className="flex flex-wrap gap-3">
+                            {step.details?.map((detail, i) => (
+                              <div key={i} className="flex items-center gap-1.5 text-sm">
+                                <CheckCircle2 className="h-4 w-4 text-primary" />
+                                <span>{detail}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ))}
               </div>
