@@ -136,28 +136,43 @@ export default function Browse() {
 
           {/* Auth Prompt Banner for Non-Logged-In Users */}
           {!user && (
-            <div className="mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-start sm:items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg shrink-0">
-                  <UserCheck className="h-5 w-5 text-primary" />
+            <>
+              {/* Mobile: Floating text banner */}
+              <div className="md:hidden mb-4">
+                <Link 
+                  to="/auth?mode=signup"
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-full text-xs font-medium text-foreground hover:bg-primary/15 transition-colors"
+                >
+                  <UserCheck className="h-3.5 w-3.5 text-primary" />
+                  <span>Sign up to see verified profiles & badges</span>
+                  <ArrowRight className="h-3 w-3 text-primary" />
+                </Link>
+              </div>
+              
+              {/* Desktop: Full banner */}
+              <div className="hidden md:flex mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-start sm:items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg shrink-0">
+                    <UserCheck className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">See full profiles & verification status</p>
+                    <p className="text-sm text-muted-foreground">Sign in to view verified badges and complete service information.</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-foreground">See full profiles & verification status</p>
-                  <p className="text-sm text-muted-foreground">Sign in to view verified badges and complete service information.</p>
+                <div className="flex gap-2 shrink-0">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/auth">
+                      <LogIn className="h-4 w-4 mr-1" />
+                      Sign In
+                    </Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link to="/auth">Join Free</Link>
+                  </Button>
                 </div>
               </div>
-              <div className="flex gap-2 shrink-0">
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/auth">
-                    <LogIn className="h-4 w-4 mr-1" />
-                    Sign In
-                  </Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link to="/auth">Join Free</Link>
-                </Button>
-              </div>
-            </div>
+            </>
           )}
 
           {/* Local Offers Section - People near you */}
