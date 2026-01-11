@@ -173,27 +173,32 @@ export function AIMatchCard({ match, isNewMatch }: AIMatchCardProps) {
 
             {/* Provider Info */}
             <div className="flex items-center gap-2 pt-2 border-t border-border/50">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={match.provider?.avatar_url} />
-                <AvatarFallback>
-                  {match.provider?.full_name?.charAt(0) || '?'}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex items-center gap-1 flex-1 min-w-0">
-                <span className="text-sm font-medium truncate">{formatDisplayName(match.provider?.full_name)}</span>
-                {match.provider?.verification_status === 'verified' && (
-                  <VerifiedBadge status="verified" size="sm" />
-                )}
-                {match.provider?.is_founder && (
-                  <FoundersBadge size="sm" />
-                )}
-                {match.service.location && (
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground ml-1">
-                    <MapPin className="h-3 w-3" />
-                    <span className="truncate">{match.service.location}</span>
-                  </div>
-                )}
-              </div>
+              <Link
+                to={`/profile/${match.provider.id}`}
+                className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-80 transition-opacity"
+              >
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={match.provider?.avatar_url} />
+                  <AvatarFallback>
+                    {match.provider?.full_name?.charAt(0) || '?'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex items-center gap-1 flex-1 min-w-0">
+                  <span className="text-sm font-medium truncate hover:underline">{formatDisplayName(match.provider?.full_name)}</span>
+                  {match.provider?.verification_status === 'verified' && (
+                    <VerifiedBadge status="verified" size="sm" />
+                  )}
+                  {match.provider?.is_founder && (
+                    <FoundersBadge size="sm" />
+                  )}
+                  {match.service.location && (
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground ml-1">
+                      <MapPin className="h-3 w-3" />
+                      <span className="truncate">{match.service.location}</span>
+                    </div>
+                  )}
+                </div>
+              </Link>
             </div>
 
             {/* Inline Message Input */}

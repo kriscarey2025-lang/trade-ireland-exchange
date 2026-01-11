@@ -177,14 +177,18 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
         <div className="mt-2.5 space-y-1.5 pb-1">
           {/* User Info with Trust Signals - MOVED TO TOP */}
           {service.user && (
-            <div className="flex items-center gap-1.5 mb-1">
+            <Link
+              to={`/profile/${service.user.id}`}
+              className="flex items-center gap-1.5 mb-1 hover:opacity-80 transition-opacity"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Avatar className="h-5 w-5 ring-1 ring-border">
                 <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover" />
                 <AvatarFallback className="text-[8px] bg-primary/10 text-primary">
                   {service.user.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-[11px] font-medium truncate max-w-[60px]">
+              <span className="text-[11px] font-medium truncate max-w-[60px] hover:underline">
                 {formatDisplayName(service.user.name).split(' ')[0]}
               </span>
               <VerifiedBadge status={service.user.verificationStatus} size="sm" />
@@ -195,7 +199,7 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
                   {service.user.rating.toFixed(1)}
                 </span>
               )}
-            </div>
+            </Link>
           )}
 
           {/* Title */}
