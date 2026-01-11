@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Star, Zap } from "lucide-react";
+import { MapPin, Star, Zap, Clock } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
-import { format, isToday, isTomorrow, differenceInDays } from "date-fns";
+import { FoundersBadge } from "@/components/profile/FoundersBadge";
+import { format, isToday, isTomorrow, differenceInDays, formatDistanceToNow } from "date-fns";
 
 interface ServiceUser {
   id?: string;
@@ -28,6 +29,7 @@ interface ServiceData {
   images?: string[];
   isTimeSensitive?: boolean;
   neededByDate?: Date | null;
+  createdAt?: Date;
   user?: ServiceUser;
 }
 
@@ -111,19 +113,29 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
           )}
         </div>
         
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
           <span className="flex items-center gap-1">
             <MapPin className="h-3 w-3" />
             {service.location}
           </span>
           <span>·</span>
           <span>{categoryLabels[service.category]}</span>
+          {service.createdAt && (
+            <>
+              <span>·</span>
+              <span className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {formatDistanceToNow(service.createdAt, { addSuffix: false }).replace('about ', '')}
+              </span>
+            </>
+          )}
           {service.user && (
             <>
               <span>·</span>
               <span className="flex items-center gap-1">
                 {formatDisplayName(service.user.name).split(' ')[0]}
                 <VerifiedBadge status={service.user.verificationStatus} size="sm" />
+                {service.user.isFounder && <FoundersBadge size="sm" />}
                 {service.user.rating !== null && (
                   <span className="flex items-center gap-0.5 text-warning">
                     <Star className="h-2.5 w-2.5 fill-current" />
