@@ -1235,6 +1235,20 @@ export type Database = {
           phone: string
         }[]
       }
+      get_public_profile: {
+        Args: { _profile_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          completed_swaps_count: number
+          first_name: string
+          id: string
+          is_founder: boolean
+          location: string
+          registered_at: string
+          verification_status: string
+        }[]
+      }
       get_public_services: {
         Args: {
           _category?: string
