@@ -234,6 +234,13 @@ export function OnboardingQuestionnaire() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background py-8 px-4">
       <div className="max-w-2xl mx-auto">
+        {/* Clarifying note */}
+        <div className="bg-accent/50 border border-accent rounded-lg px-4 py-3 mb-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium text-foreground">📋 No posting here yet!</span> You're setting up your profile — this info helps us match you with the right people.
+          </p>
+        </div>
+
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center text-3xl mb-4">
             🤝
