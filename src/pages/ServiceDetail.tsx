@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
@@ -202,6 +202,26 @@ export default function ServiceDetail() {
     },
     enabled: !!service?.user_id,
   });
+
+  // Track service view for nudge emails (only for logged-in users viewing others' services)
+  useEffect(() => {
+    const trackServiceView = async () => {
+      if (!user || !service || !service.user_id || user.id === service.user_id) return;
+
+      try {
+        await supabase.rpc("record_service_view", {
+          _service_id: service.id,
+          _service_title: service.title,
+          _provider_name: service.provider_name || null,
+        });
+      } catch (error) {
+        // Silently fail - tracking shouldn't interrupt user experience
+        console.error("Failed to track service view:", error);
+      }
+    };
+
+    trackServiceView();
+  }, [user, service]);
 
   const handleContact = () => {
     if (!user) {
