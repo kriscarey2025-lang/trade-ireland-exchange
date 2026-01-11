@@ -297,38 +297,44 @@ export function ServiceCard({
 
           {/* User */}
           {service.user && <div className="flex items-center gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-border">
-              <Avatar className="h-10 w-10 sm:h-14 sm:w-14 ring-2 ring-background shadow-md shrink-0">
-                <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover object-top" />
-                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm sm:text-lg">
-                  {service.user.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-                  <span className="font-medium text-xs sm:text-sm truncate">
-                    {formatDisplayName(service.user.name)}
-                  </span>
-                  <VerifiedBadge status={service.user.verificationStatus} size="sm" />
-                  {service.user.isFounder && <FoundersBadge size="sm" />}
-                  {/* Social Media Icons - Hide on very small screens */}
-                  {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && <div className="hidden xs:flex items-center gap-1 ml-1">
-                      {service.user.linkedinUrl && <Linkedin className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#0A66C2] shrink-0" />}
-                      {service.user.facebookUrl && <Facebook className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#1877F2] shrink-0" />}
-                      {service.user.instagramUrl && <Instagram className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#E4405F] shrink-0" />}
-                    </div>}
+              <Link
+                to={`/profile/${service.user.id}`}
+                className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Avatar className="h-10 w-10 sm:h-14 sm:w-14 ring-2 ring-background shadow-md shrink-0">
+                  <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover object-top" />
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm sm:text-lg">
+                    {service.user.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+                    <span className="font-medium text-xs sm:text-sm truncate hover:underline">
+                      {formatDisplayName(service.user.name)}
+                    </span>
+                    <VerifiedBadge status={service.user.verificationStatus} size="sm" />
+                    {service.user.isFounder && <FoundersBadge size="sm" />}
+                    {/* Social Media Icons - Hide on very small screens */}
+                    {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && <div className="hidden xs:flex items-center gap-1 ml-1">
+                        {service.user.linkedinUrl && <Linkedin className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#0A66C2] shrink-0" />}
+                        {service.user.facebookUrl && <Facebook className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#1877F2] shrink-0" />}
+                        {service.user.instagramUrl && <Instagram className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#E4405F] shrink-0" />}
+                      </div>}
+                  </div>
+                  <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                    {service.user.rating !== null ? <>
+                        <Star className="h-3 w-3 fill-warning text-warning" />
+                        <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
+                        <span>·</span>
+                      </> : <span className="text-muted-foreground italic">No reviews</span>}
+                    {(service.completedSwapsCount ?? 0) > 0 && <>
+                        {service.user.rating !== null && <span>·</span>}
+                        <span className="font-medium text-primary">{service.completedSwapsCount} swaps ✓</span>
+                      </>}
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
-                  {service.user.rating !== null ? <>
-                      <Star className="h-3 w-3 fill-warning text-warning" />
-                      <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
-                      <span>·</span>
-                    </> : <span className="text-muted-foreground italic">No reviews</span>}
-                  {(service.completedSwapsCount ?? 0) > 0 && <>
-                      {service.user.rating !== null && <span>·</span>}
-                      <span className="font-medium text-primary">{service.completedSwapsCount} swaps ✓</span>
-                    </>}
-                </div>
-              </div>
+              </Link>
             </div>}
 
           {/* Quick Message Field - Only for logged in users who don't own this service */}

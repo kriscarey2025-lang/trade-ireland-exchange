@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -85,18 +85,28 @@ export default function Messages() {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={conversation.other_profile?.avatar_url || undefined} />
-                        <AvatarFallback className="bg-primary/10 text-primary">
-                          {getInitials(conversation.other_profile?.full_name)}
-                        </AvatarFallback>
-                      </Avatar>
+                      <Link
+                        to={`/profile/${conversation.other_profile?.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="shrink-0 hover:opacity-80 transition-opacity"
+                      >
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={conversation.other_profile?.avatar_url || undefined} />
+                          <AvatarFallback className="bg-primary/10 text-primary">
+                            {getInitials(conversation.other_profile?.full_name)}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Link>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
-                          <p className="font-semibold truncate">
+                          <Link
+                            to={`/profile/${conversation.other_profile?.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="font-semibold truncate hover:underline"
+                          >
                             {formatDisplayName(conversation.other_profile?.full_name)}
-                          </p>
+                          </Link>
                           <div className="flex items-center gap-2 shrink-0">
                             {conversation.unread_count && conversation.unread_count > 0 && (
                               <Badge variant="default" className="rounded-full">
