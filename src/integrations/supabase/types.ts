@@ -1241,9 +1241,12 @@ export type Database = {
           avatar_url: string
           bio: string
           completed_swaps_count: number
+          facebook_url: string
           first_name: string
           id: string
+          instagram_url: string
           is_founder: boolean
+          linkedin_url: string
           location: string
           registered_at: string
           verification_status: string
