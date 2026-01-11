@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useGetOrCreateConversation, useStartConversation } from "@/hooks/useMessaging";
 import { useState } from "react";
-import { format, isToday, isTomorrow, differenceInDays } from "date-fns";
+import { format, isToday, isTomorrow, differenceInDays, formatDistanceToNow } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,6 +48,7 @@ interface ServiceData {
   completedSwapsCount?: number;
   isTimeSensitive?: boolean;
   neededByDate?: Date | null;
+  createdAt?: Date;
   user?: ServiceUser;
 }
 
@@ -259,6 +260,12 @@ export function ServiceCard({
               <MapPin className="h-3 w-3" />
               {service.location}
             </div>
+            {service.createdAt && (
+              <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-secondary text-[11px] sm:text-xs font-medium text-secondary-foreground">
+                <Clock className="h-3 w-3" />
+                {formatDistanceToNow(service.createdAt, { addSuffix: false }).replace('about ', '')}
+              </div>
+            )}
             {service.estimatedHours && <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-secondary text-[11px] sm:text-xs font-medium text-secondary-foreground">
                 <Clock className="h-3 w-3" />
                 ~{service.estimatedHours}h
