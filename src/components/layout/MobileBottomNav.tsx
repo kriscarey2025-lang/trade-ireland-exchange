@@ -45,11 +45,16 @@ export function MobileBottomNav() {
               )}
             >
               {item.isAction ? (
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary rounded-full blur-md opacity-40 animate-pulse-soft" />
-                  <div className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground p-3 rounded-full shadow-lg">
-                    <Icon className="h-6 w-6" />
+                <div className="flex flex-col items-center gap-1">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-primary rounded-full blur-md opacity-40 animate-pulse-soft" />
+                    <div className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground p-2.5 rounded-full shadow-lg">
+                      <Icon className="h-5 w-5" />
+                    </div>
                   </div>
+                  <span className="text-[11px] font-semibold text-primary">
+                    {item.label}
+                  </span>
                 </div>
               ) : (
                 <>
