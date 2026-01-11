@@ -126,8 +126,8 @@ const Index = () => {
         <Header />
         <main className="flex-1 bg-secondary/20">
           <AdsLayout>
-            {/* Hero Tagline Section - Enhanced for mobile conversion */}
-            <section className="py-8 md:py-12 bg-gradient-to-b from-background to-secondary/30 relative overflow-hidden">
+            {/* Hero Section - COMPACT for mobile, service cards visible on first scroll */}
+            <section className="py-4 md:py-10 bg-gradient-to-b from-background to-secondary/30 relative overflow-hidden">
               {/* Subtle animated background */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl animate-pulse" />
@@ -137,100 +137,188 @@ const Index = () => {
               </div>
               
               <div className="container text-center relative">
-                {/* Urgency badge for mobile */}
-                {!user && <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold mb-4 animate-fade-up">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-                    </span>
-                    Join 25+ neighbours already swapping!
-                  </div>}
-                
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-3 md:mb-4">
-                  <span className="gradient-text">Swap skills.</span>{" "}
-                  <span className="gradient-text">Make friends.</span>{" "}
-                  <span className="text-foreground">Save money.</span>
-                </h1>
-                
-                <p className="text-sm md:text-lg font-medium text-muted-foreground mb-2">
-                  Trade your talents with neighbours — <span className="text-foreground font-semibold">100% free.</span>
-                </p>
-                <p className="text-xs md:text-sm font-medium tracking-wide mb-5">
-                  <span className="inline-block bg-gradient-to-r from-primary via-accent to-highlight bg-clip-text text-transparent">
-                    Ireland's first digital & free Barter System
-                  </span>
-                </p>
-                
-                {/* CTA for non-logged in users */}
-                {!user && (
-                  <div className="flex flex-col items-center gap-3 mt-4">
-                    {/* Primary CTA - Full width on mobile, very prominent */}
-                    <Button 
-                      size="lg" 
-                      className="group shadow-xl hover:shadow-2xl rounded-full px-8 w-full sm:w-auto text-base h-14 font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary animate-fade-up" 
-                      asChild
-                    >
-                      <Link to="/auth?mode=signup">
-                        <Heart className="mr-2 h-5 w-5 animate-pulse" />
-                        Get Started — It's Free!
-                        <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                      </Link>
-                    </Button>
-                    
-                    {/* Secondary options */}
-                    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                {/* Mobile-only compact hero */}
+                <div className="md:hidden">
+                  {/* Trust badge */}
+                  {!user && (
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-[11px] font-semibold mb-2">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
+                      </span>
+                      25+ neighbours already swapping
+                    </div>
+                  )}
+                  
+                  <h1 className="text-2xl font-bold tracking-tight mb-1.5">
+                    <span className="gradient-text">Swap skills.</span>{" "}
+                    <span className="text-foreground">Save money.</span>
+                  </h1>
+                  
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Trade talents with neighbours — <span className="font-semibold text-foreground">100% free</span>
+                  </p>
+                  
+                  {/* Compact social proof strip */}
+                  <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground mb-3">
+                    <span className="flex items-center gap-1">🇮🇪 Irish Made</span>
+                    <span className="text-border">•</span>
+                    <span className="flex items-center gap-1">🤝 Free Forever</span>
+                    <span className="text-border">•</span>
+                    <span className="flex items-center gap-1">✓ Verified Users</span>
+                  </div>
+                  
+                  {/* Mobile CTA - only for non-logged-in users */}
+                  {!user && (
+                    <div className="flex gap-2 mb-2">
                       <Button 
-                        variant="outline" 
-                        size="lg" 
-                        className="rounded-full px-6 w-full sm:w-auto" 
+                        size="sm" 
+                        className="flex-1 rounded-full h-9 text-xs font-semibold shadow-md" 
                         asChild
                       >
-                        <Link to="/">
-                          Browse {filteredServices.length}+ active offers
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                        <Link to="/auth?mode=signup">
+                          <Heart className="mr-1.5 h-3.5 w-3.5" />
+                          Join Free
                         </Link>
                       </Button>
-                      <button onClick={() => setBrainstormOpen(true)} className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1.5 py-2">
-                        <Lightbulb className="h-4 w-4" />
-                        Need ideas? Let's brainstorm
-                      </button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 rounded-full h-9 text-xs" 
+                        onClick={() => setBrainstormOpen(true)}
+                      >
+                        <Lightbulb className="mr-1.5 h-3.5 w-3.5" />
+                        Get Ideas
+                      </Button>
                     </div>
-                    
-                    {/* Trust signals for mobile */}
-                    <p className="text-xs text-muted-foreground mt-2">
-                      ✓ No payment required · ✓ No spam · ✓ Cancel anytime
-                    </p>
-                  </div>
-                )}
-                
-                {/* Social proof badges */}
-                <div className="mt-5 md:mt-6 flex items-center justify-center gap-4 md:gap-6 text-xs md:text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-lg md:text-xl">🇮🇪</span>
-                    <span>100% Irish</span>
-                  </div>
-                  <div className="w-px h-4 bg-border" />
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-lg md:text-xl">🤝</span>
-                    <span>100% Free</span>
-                  </div>
-                  <div className="w-px h-4 bg-border hidden sm:block" />
-                  <div className="hidden sm:flex items-center gap-1.5">
-                    <span className="text-lg md:text-xl">✨</span>
-                    <span>No Money Needed</span>
+                  )}
+                </div>
+
+                {/* Desktop hero - unchanged */}
+                <div className="hidden md:block">
+                  {!user && <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold mb-4 animate-fade-up">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                      </span>
+                      Join 25+ neighbours already swapping!
+                    </div>}
+                  
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-3 md:mb-4">
+                    <span className="gradient-text">Swap skills.</span>{" "}
+                    <span className="gradient-text">Make friends.</span>{" "}
+                    <span className="text-foreground">Save money.</span>
+                  </h1>
+                  
+                  <p className="text-lg font-medium text-muted-foreground mb-2">
+                    Trade your talents with neighbours — <span className="text-foreground font-semibold">100% free.</span>
+                  </p>
+                  <p className="text-sm font-medium tracking-wide mb-5">
+                    <span className="inline-block bg-gradient-to-r from-primary via-accent to-highlight bg-clip-text text-transparent">
+                      Ireland's first digital & free Barter System
+                    </span>
+                  </p>
+                  
+                  {/* CTA for non-logged in users */}
+                  {!user && (
+                    <div className="flex flex-col items-center gap-3 mt-4">
+                      <Button 
+                        size="lg" 
+                        className="group shadow-xl hover:shadow-2xl rounded-full px-8 w-full sm:w-auto text-base h-14 font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary animate-fade-up" 
+                        asChild
+                      >
+                        <Link to="/auth?mode=signup">
+                          <Heart className="mr-2 h-5 w-5 animate-pulse" />
+                          Get Started — It's Free!
+                          <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        </Link>
+                      </Button>
+                      
+                      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                        <Button 
+                          variant="outline" 
+                          size="lg" 
+                          className="rounded-full px-6 w-full sm:w-auto" 
+                          asChild
+                        >
+                          <Link to="/">
+                            Browse {filteredServices.length}+ active offers
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <button onClick={() => setBrainstormOpen(true)} className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1.5 py-2">
+                          <Lightbulb className="h-4 w-4" />
+                          Need ideas? Let's brainstorm
+                        </button>
+                      </div>
+                      
+                      <p className="text-xs text-muted-foreground mt-2">
+                        ✓ No payment required · ✓ No spam · ✓ Cancel anytime
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Social proof badges */}
+                  <div className="mt-5 md:mt-6 flex items-center justify-center gap-4 md:gap-6 text-xs md:text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg md:text-xl">🇮🇪</span>
+                      <span>100% Irish</span>
+                    </div>
+                    <div className="w-px h-4 bg-border" />
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg md:text-xl">🤝</span>
+                      <span>100% Free</span>
+                    </div>
+                    <div className="w-px h-4 bg-border" />
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg md:text-xl">✨</span>
+                      <span>No Money Needed</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </section>
 
-              <div className="container py-6 md:py-8">
-               {/* Search & Filters (mobile + tablet) */}
-               <div className="xl:hidden bg-card rounded-xl border border-border p-4 mb-6 shadow-soft">
+              <div className="container py-4 md:py-8">
+               {/* Mobile: Condensed search - just essential controls */}
+               <div className="md:hidden mb-4">
+                 <div className="flex gap-2 mb-3">
+                   <div className="flex-1 relative">
+                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                     <Input placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 h-9 text-sm" />
+                   </div>
+                   <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                     <SelectTrigger className="w-[100px] h-9 text-xs">
+                       <SelectValue placeholder="Location" />
+                     </SelectTrigger>
+                     <SelectContent>
+                       {locations.map(loc => <SelectItem key={loc} value={loc}>
+                           {loc}
+                         </SelectItem>)}
+                     </SelectContent>
+                   </Select>
+                 </div>
+                 
+                 {/* Mobile inline results + post button */}
+                 <div className="flex items-center justify-between mb-2">
+                   <p className="text-xs text-muted-foreground">
+                     {isLoading ? "Loading..." : `${filteredServices.length} available`}
+                   </p>
+                   {user && <Button size="sm" className="h-7 text-xs px-3" asChild>
+                       <Link to="/new-service">
+                         Post Service
+                       </Link>
+                     </Button>}
+                 </div>
+               </div>
+
+               {/* Tablet search */}
+               <div className="hidden md:block xl:hidden bg-card rounded-xl border border-border p-4 mb-6 shadow-soft">
                  {searchFiltersContent}
                </div>
 
-               {/* Auth Prompt Banner for Non-Logged-In Users */}
-               {!user && <div className="mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+               {/* Auth Prompt Banner for Non-Logged-In Users - Desktop only */}
+               {!user && <div className="hidden md:flex mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                    <div className="flex items-start sm:items-center gap-3">
                      <div className="p-2 bg-primary/10 rounded-lg shrink-0">
                        <UserCheck className="h-5 w-5 text-primary" />
@@ -253,32 +341,43 @@ const Index = () => {
                    </div>
                  </div>}
 
-               {/* Post Type Filters */}
-               <div className="flex flex-wrap gap-2 mb-6">
-                 <Button variant={selectedPostType === "all" ? "default" : "outline"} size="sm" onClick={() => setSelectedPostType("all")} className="gap-2">
-                   All Types
+               {/* Post Type Filters - horizontal scroll on mobile */}
+               <div className="flex gap-2 mb-4 md:mb-6 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+                 <Button variant={selectedPostType === "all" ? "default" : "outline"} size="sm" onClick={() => setSelectedPostType("all")} className="gap-1.5 shrink-0 text-xs md:text-sm h-8 md:h-9">
+                   All
                  </Button>
-                 <Button variant={selectedPostType === "free_offer" ? "default" : "outline"} size="sm" onClick={() => setSelectedPostType("free_offer")} className="gap-2">
-                   <Gift className="h-4 w-4" />
-                   {postCategoryLabels.free_offer}
+                 <Button variant={selectedPostType === "free_offer" ? "default" : "outline"} size="sm" onClick={() => setSelectedPostType("free_offer")} className="gap-1.5 shrink-0 text-xs md:text-sm h-8 md:h-9">
+                   <Gift className="h-3.5 w-3.5" />
+                   Free
                  </Button>
-                 <Button variant={selectedPostType === "help_request" ? "default" : "outline"} size="sm" onClick={() => setSelectedPostType("help_request")} className="gap-2">
-                   <HelpCircle className="h-4 w-4" />
-                   {postCategoryLabels.help_request}
+                 <Button variant={selectedPostType === "help_request" ? "default" : "outline"} size="sm" onClick={() => setSelectedPostType("help_request")} className="gap-1.5 shrink-0 text-xs md:text-sm h-8 md:h-9">
+                   <HelpCircle className="h-3.5 w-3.5" />
+                   Help
                  </Button>
-                 <Button variant={selectedPostType === "skill_swap" ? "default" : "outline"} size="sm" onClick={() => setSelectedPostType("skill_swap")} className="gap-2">
-                   <RefreshCw className="h-4 w-4" />
-                   {postCategoryLabels.skill_swap}
+                 <Button variant={selectedPostType === "skill_swap" ? "default" : "outline"} size="sm" onClick={() => setSelectedPostType("skill_swap")} className="gap-1.5 shrink-0 text-xs md:text-sm h-8 md:h-9">
+                   <RefreshCw className="h-3.5 w-3.5" />
+                   Swap
+                 </Button>
+                 <Button variant="ghost" size="sm" onClick={() => setShowFilters(!showFilters)} className="gap-1.5 shrink-0 text-xs md:text-sm h-8 md:h-9">
+                   <SlidersHorizontal className="h-3.5 w-3.5" />
+                   More
                  </Button>
                </div>
 
-               {/* Search & Filters (desktop) */}
-               <div className="hidden xl:block bg-card rounded-xl border border-border p-4 mb-6 shadow-soft sticky top-14 z-40">
-                 {searchFiltersContent}
-               </div>
+               {/* Category Filters - Expandable */}
+               {showFilters && <div className="mb-4 pt-3 border-t border-border">
+                   <div className="flex flex-wrap gap-1.5">
+                     <Badge variant={selectedCategory === "all" ? "default" : "outline"} className="cursor-pointer text-xs" onClick={() => setSelectedCategory("all")}>
+                       All
+                     </Badge>
+                     {allCategories.map(category => <Badge key={category} variant={selectedCategory === category ? "default" : "outline"} className="cursor-pointer text-xs" onClick={() => setSelectedCategory(category)}>
+                         {categoryIcons[category]} {categoryLabels[category]}
+                       </Badge>)}
+                   </div>
+                 </div>}
 
-              {/* Results count */}
-              <div className="mb-4 flex items-center justify-between">
+              {/* Results count - desktop only, mobile has it above */}
+              <div className="hidden md:flex mb-4 items-center justify-between">
                 <p className="text-sm text-muted-foreground">
                   {isLoading ? "Loading..." : `${filteredServices.length} service${filteredServices.length !== 1 ? "s" : ""} available`}
                 </p>
