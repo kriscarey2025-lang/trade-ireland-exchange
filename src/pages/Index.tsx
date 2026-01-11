@@ -241,7 +241,7 @@ const Index = () => {
                           className="rounded-full px-6 w-full sm:w-auto" 
                           asChild
                         >
-                          <Link to="/">
+                          <Link to="/browse">
                             Browse {filteredServices.length}+ active offers
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </Link>
