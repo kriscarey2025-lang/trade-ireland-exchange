@@ -279,7 +279,7 @@ const Index = () => {
               </div>
             </section>
 
-              <div className="container py-4 md:py-8">
+              <div id="services-section" className="container py-4 md:py-8">
                {/* Mobile: Condensed search - just essential controls */}
                <div className="md:hidden mb-4">
                  <div className="flex gap-2 mb-3">
