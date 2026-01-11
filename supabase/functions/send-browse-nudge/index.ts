@@ -27,7 +27,7 @@ async function sendEmail(to: string, subject: string, html: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "SwapSkills <hello@swaps-skills.com>",
+      from: "SwapSkills <hello@swap-skills.com>",
       to: [to],
       subject,
       html,
@@ -48,7 +48,7 @@ const generateNudgeEmail = (
   providerName: string,
   serviceId: string
 ) => {
-  const baseUrl = "https://swaps-skills.com";
+  const baseUrl = "https://swap-skills.com";
   const serviceUrl = `${baseUrl}/services/${serviceId}`;
   const messagesUrl = `${baseUrl}/messages`;
   
