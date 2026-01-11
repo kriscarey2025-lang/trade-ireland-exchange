@@ -319,6 +319,50 @@ export type Database = {
           },
         ]
       }
+      browse_nudges: {
+        Row: {
+          contacted_at: string | null
+          created_at: string
+          id: string
+          nudge_sent_at: string | null
+          provider_name: string | null
+          service_id: string
+          service_title: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          contacted_at?: string | null
+          created_at?: string
+          id?: string
+          nudge_sent_at?: string | null
+          provider_name?: string | null
+          service_id: string
+          service_title: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          contacted_at?: string | null
+          created_at?: string
+          id?: string
+          nudge_sent_at?: string | null
+          provider_name?: string | null
+          service_id?: string
+          service_title?: string
+          user_id?: string
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "browse_nudges_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_posts: {
         Row: {
           archived_at: string | null
@@ -1387,6 +1431,14 @@ export type Database = {
       is_user_banned: { Args: { _user_id: string }; Returns: boolean }
       log_user_ip: {
         Args: { _ip_address: string; _user_agent?: string; _user_id: string }
+        Returns: undefined
+      }
+      record_service_view: {
+        Args: {
+          _provider_name: string
+          _service_id: string
+          _service_title: string
+        }
         Returns: undefined
       }
       review_verification: {
