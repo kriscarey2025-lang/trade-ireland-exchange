@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { BackToTop } from "@/components/BackToTop";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
-import { MobileTopMenu } from "@/components/layout/MobileTopMenu";
 import { AuthProvider } from "@/hooks/useAuth";
 import { EngagementTracker } from "@/components/tracking/EngagementTracker";
 import FeedbackSidebar from "@/components/sidebar/FeedbackSidebar";
@@ -74,7 +73,6 @@ const App = () => (
           <BackToTop />
           <EngagementTracker />
           <FeedbackSidebar />
-          <MobileTopMenu />
           <MobileBottomNav />
           <Suspense fallback={<PageLoader />}>
             <Routes>
