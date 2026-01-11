@@ -124,13 +124,17 @@ export default function ServiceDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [contactOpen, setContactOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const getOrCreateConversation = useGetOrCreateConversation();
 
+  // Prevent a race where we fetch an "anonymous" view before auth is hydrated,
+  // then React Query caches it and keeps showing "Sign in" even though the user is logged in.
+  const authQueryKey = user?.id ?? "anon";
+
   const { data: service, isLoading, error } = useQuery({
-    queryKey: ["service", id],
+    queryKey: ["service", id, authQueryKey],
     queryFn: async () => {
       if (!id) throw new Error("Service ID is required");
 
@@ -144,7 +148,7 @@ export default function ServiceDetail() {
 
       return data[0] as SecureServiceDetail;
     },
-    enabled: !!id,
+    enabled: !!id && !authLoading,
   });
 
   // Fetch the latest review for this provider
@@ -301,7 +305,7 @@ export default function ServiceDetail() {
     return formatted;
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
         <Header />
