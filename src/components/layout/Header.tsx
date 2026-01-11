@@ -150,7 +150,7 @@ export function Header() {
     <header ref={headerRef} className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl">
       <div className="container flex h-14 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg group">
+        <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg group shrink-0">
           <img 
             src={swapSkillsLogo} 
             alt="SwapSkills Logo" 
@@ -162,6 +162,34 @@ export function Header() {
             Swap<span className="text-primary">Skills</span>
           </span>
         </Link>
+
+        {/* Mobile inline menu - Stories & How It Works */}
+        <nav className="flex md:hidden items-center gap-1">
+          <Link
+            to="/stories"
+            className={cn(
+              "flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              location.pathname === "/stories"
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground"
+            )}
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            <span className="hidden xs:inline">Stories</span>
+          </Link>
+          <Link
+            to="/how-it-works"
+            className={cn(
+              "flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              location.pathname === "/how-it-works"
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground"
+            )}
+          >
+            <Compass className="h-3.5 w-3.5" />
+            <span className="hidden xs:inline">How</span>
+          </Link>
+        </nav>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-0.5">
