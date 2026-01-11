@@ -471,29 +471,6 @@ export default function ServiceDetail() {
                 </CardContent>
               </Card>
 
-              {/* Pricing */}
-              <Card className="shadow-elevated border-border/50">
-                <CardContent className="p-6">
-                  <h2 className="text-lg font-semibold mb-4">Pricing</h2>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center">
-                      <Coins className="h-6 w-6 text-warning" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold">
-                        {formatPrice(service.price ? Number(service.price) : null, service.price_type)}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {service.price_type === "negotiable" || !service.price
-                          ? "Open to trades and negotiations"
-                          : service.price_type === "hourly"
-                          ? "Hourly rate"
-                          : "Fixed price"}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
 
               {/* Accepts in Return */}
               {service.accepted_categories && service.accepted_categories.length > 0 && (
