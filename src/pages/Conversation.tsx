@@ -204,12 +204,7 @@ export default function Conversation() {
     setNewMessage("");
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
+  // Removed auto-send on Enter - users must click Send button
 
   const getInitials = (name: string | null) => {
     if (!name) return "U";
@@ -538,7 +533,6 @@ export default function Conversation() {
                       placeholder="Type a message..."
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyDown={handleKeyDown}
                       rows={1}
                       maxLength={10000}
                       className="resize-none min-h-[44px]"
