@@ -552,17 +552,22 @@ export default function ServiceDetail() {
                   {service.provider_name ? (
                     <>
                       <div className="flex items-center gap-4 mb-4">
-                        <Avatar className="h-16 w-16 ring-2 ring-primary/20">
-                          <AvatarImage src={service.provider_avatar || undefined} />
-                          <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                            {getInitials(service.provider_name)}
-                          </AvatarFallback>
-                        </Avatar>
+                        <Link to={service.user_id ? `/profile/${service.user_id}` : '#'} className="shrink-0">
+                          <Avatar className="h-16 w-16 ring-2 ring-primary/20 cursor-pointer hover:ring-primary/40 transition-all">
+                            <AvatarImage src={service.provider_avatar || undefined} />
+                            <AvatarFallback className="bg-primary/10 text-primary text-lg">
+                              {getInitials(service.provider_name)}
+                            </AvatarFallback>
+                          </Avatar>
+                        </Link>
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-semibold text-lg">
+                            <Link 
+                              to={service.user_id ? `/profile/${service.user_id}` : '#'} 
+                              className="font-semibold text-lg hover:text-primary transition-colors"
+                            >
                               {formatDisplayName(service.provider_name)}
-                            </p>
+                            </Link>
                             <VerifiedBadge 
                               status={(service.provider_verification_status as "verified" | "pending" | "unverified" | "rejected") || "unverified"} 
                               size="md" 
