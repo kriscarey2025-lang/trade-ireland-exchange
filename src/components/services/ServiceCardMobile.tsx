@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MapPin, Star, MessageCircle, Send, Loader2, Zap, RefreshCw, X } from "lucide-react";
+import { MapPin, Star, Send, Loader2, Zap, RefreshCw } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -72,7 +72,6 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
   const navigate = useNavigate();
   const { user } = useAuth();
   const startConversation = useStartConversation();
-  const [showQuickMessage, setShowQuickMessage] = useState(false);
   const [quickMessage, setQuickMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   
@@ -82,26 +81,17 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
   const isOwnService = service.user?.id === user?.id;
   const isSkillSwap = service.type === "skill_swap";
 
-  const handleMessageClick = (e: React.MouseEvent) => {
+  const handleSendMessage = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
+    if (!quickMessage.trim() || !service.user?.id) return;
+
     if (!user) {
       toast.error("Please sign in to message");
       navigate("/auth");
       return;
     }
-    
-    if (isOwnService) {
-      toast.error("This is your own service");
-      return;
-    }
-    
-    setShowQuickMessage(true);
-  };
-
-  const handleSendMessage = async () => {
-    if (!quickMessage.trim() || !service.user?.id) return;
 
     setIsSending(true);
     try {
@@ -113,7 +103,6 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
       
       toast.success("Message sent!");
       setQuickMessage("");
-      setShowQuickMessage(false);
       navigate(`/messages/${conversationId}`);
     } catch (error) {
       toast.error("Failed to send message");
@@ -161,17 +150,6 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
           <div className="absolute top-1.5 right-1.5 bg-background/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] font-medium">
             {postType.emoji} {postType.label}
           </div>
-          
-          {/* Message Button Overlay - Larger touch target */}
-          {!isOwnService && (
-            <button
-              onClick={handleMessageClick}
-              className="absolute bottom-2 right-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full p-2.5 shadow-md active:scale-95 transition-transform min-h-[44px] min-w-[44px] flex items-center justify-center"
-              aria-label="Send message"
-            >
-              <MessageCircle className="h-5 w-5 text-primary" />
-            </button>
-          )}
         </div>
         
         {/* Content Below Image - More padding for touch */}
@@ -250,81 +228,30 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
         </div>
       </Link>
 
-      {/* Quick Message Overlay */}
-      {showQuickMessage && (
+      {/* Inline Quick Message Field - Only for logged in users who don't own this service */}
+      {user && service.user?.id && !isOwnService && (
         <div 
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50"
-          onClick={() => setShowQuickMessage(false)}
+          className="mt-2 flex items-center gap-1.5"
+          onClick={(e) => e.preventDefault()}
         >
-          <div 
-            className="w-full max-w-lg bg-card rounded-t-2xl p-4 animate-slide-up"
-            onClick={(e) => e.stopPropagation()}
+          <Input
+            placeholder="Say hi..."
+            value={quickMessage}
+            onChange={(e) => setQuickMessage(e.target.value)}
+            className="h-8 text-xs flex-1"
+          />
+          <Button
+            size="sm"
+            className="h-8 px-2.5 shrink-0"
+            disabled={!quickMessage.trim() || isSending}
+            onClick={handleSendMessage}
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                {service.user && (
-                  <>
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={service.user.avatar} alt={service.user.name} />
-                      <AvatarFallback>{service.user.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium text-sm">{formatDisplayName(service.user.name)}</p>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <VerifiedBadge status={service.user.verificationStatus} size="sm" />
-                        {service.user.rating !== null && (
-                          <span className="flex items-center gap-0.5">
-                            <Star className="h-3 w-3 fill-warning text-warning" />
-                            {service.user.rating.toFixed(1)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-              <button 
-                onClick={() => setShowQuickMessage(false)}
-                className="p-2 hover:bg-muted rounded-full"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-              Re: {service.title}
-            </p>
-            
-            <div className="flex gap-2">
-              <Input
-                placeholder="Say hi or ask a question..."
-                value={quickMessage}
-                onChange={(e) => setQuickMessage(e.target.value)}
-                className="flex-1"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && quickMessage.trim()) {
-                    handleSendMessage();
-                  }
-                }}
-              />
-              <Button 
-                onClick={handleSendMessage}
-                disabled={!quickMessage.trim() || isSending}
-                size="icon"
-              >
-                {isSending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-            
-            <p className="text-[11px] text-muted-foreground text-center mt-3">
-              💬 Most swaps start with a simple message
-            </p>
-          </div>
+            {isSending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Send className="h-3.5 w-3.5" />
+            )}
+          </Button>
         </div>
       )}
     </div>
