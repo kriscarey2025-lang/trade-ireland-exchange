@@ -322,12 +322,44 @@ export function ServiceCard({
                     </span>
                     <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                     {service.user.isFounder && <FoundersBadge size="sm" />}
-                    {/* Social Media Icons - Hide on very small screens */}
-                    {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && <div className="hidden xs:flex items-center gap-1 ml-1">
-                        {service.user.linkedinUrl && <Linkedin className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#0A66C2] shrink-0" />}
-                        {service.user.facebookUrl && <Facebook className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#1877F2] shrink-0" />}
-                        {service.user.instagramUrl && <Instagram className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#E4405F] shrink-0" />}
-                      </div>}
+                    {/* Social Media Icons - Clickable links */}
+                    {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
+                      <div className="hidden xs:flex items-center gap-1 ml-1">
+                        {service.user.linkedinUrl && (
+                          <a 
+                            href={service.user.linkedinUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="hover:opacity-70 transition-opacity"
+                          >
+                            <Linkedin className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#0A66C2] shrink-0" />
+                          </a>
+                        )}
+                        {service.user.facebookUrl && (
+                          <a 
+                            href={service.user.facebookUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="hover:opacity-70 transition-opacity"
+                          >
+                            <Facebook className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#1877F2] shrink-0" />
+                          </a>
+                        )}
+                        {service.user.instagramUrl && (
+                          <a 
+                            href={service.user.instagramUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="hover:opacity-70 transition-opacity"
+                          >
+                            <Instagram className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#E4405F] shrink-0" />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
                     {service.user.rating !== null ? <>

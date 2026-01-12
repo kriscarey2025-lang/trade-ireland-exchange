@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MapPin, Star, Send, Loader2, Zap, RefreshCw } from "lucide-react";
+import { MapPin, Star, Send, Loader2, Zap, RefreshCw, Linkedin, Facebook, Instagram } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -21,6 +21,9 @@ interface ServiceUser {
   rating: number | null;
   completedTrades: number;
   verificationStatus: "verified" | "pending" | "unverified";
+  linkedinUrl?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
   isFounder?: boolean;
 }
 
@@ -172,6 +175,44 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
               </span>
               <VerifiedBadge status={service.user.verificationStatus} size="sm" />
               {service.user.isFounder && <FoundersBadge size="sm" />}
+              {/* Social Media Icons */}
+              {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
+                <div className="flex items-center gap-0.5">
+                  {service.user.linkedinUrl && (
+                    <a 
+                      href={service.user.linkedinUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="hover:opacity-70 transition-opacity"
+                    >
+                      <Linkedin className="h-3 w-3 text-[#0A66C2]" />
+                    </a>
+                  )}
+                  {service.user.facebookUrl && (
+                    <a 
+                      href={service.user.facebookUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="hover:opacity-70 transition-opacity"
+                    >
+                      <Facebook className="h-3 w-3 text-[#1877F2]" />
+                    </a>
+                  )}
+                  {service.user.instagramUrl && (
+                    <a 
+                      href={service.user.instagramUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="hover:opacity-70 transition-opacity"
+                    >
+                      <Instagram className="h-3 w-3 text-[#E4405F]" />
+                    </a>
+                  )}
+                </div>
+              )}
               {service.user.rating !== null && (
                 <span className="flex items-center gap-0.5 text-[11px] text-warning ml-auto">
                   <Star className="h-3 w-3 fill-current" />
