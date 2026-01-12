@@ -20,6 +20,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { postCategoryLabels } from "@/lib/postCategories";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { InlineAd } from "@/components/ads/InlineAd";
+import { ActionRequiredBanner } from "@/components/home/ActionRequiredBanner";
 
 
 const locations = ["All Ireland", "Antrim", "Armagh", "Carlow", "Cavan", "Clare", "Cork", "Derry", "Donegal", "Down", "Dublin", "Fermanagh", "Galway", "Kerry", "Kildare", "Kilkenny", "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", "Waterford", "Westmeath", "Wexford", "Wicklow"];
@@ -124,6 +125,7 @@ const Index = () => {
       <WebsiteJsonLd />
       <div className="min-h-screen flex flex-col">
         <Header />
+        <ActionRequiredBanner />
         <main className="flex-1 bg-secondary/20">
           <AdsLayout>
             {/* Hero Section - COMPACT for mobile, service cards visible on first scroll */}
