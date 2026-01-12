@@ -324,7 +324,7 @@ export function ServiceCard({
                     {service.user.isFounder && <FoundersBadge size="sm" />}
                     {/* Social Media Icons - Clickable links */}
                     {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
-                      <div className="hidden xs:flex items-center gap-1 ml-1">
+                      <div className="flex items-center gap-1 ml-1">
                         {service.user.linkedinUrl && (
                           <a 
                             href={service.user.linkedinUrl} 
