@@ -39,8 +39,8 @@ export default function BusinessPlan() {
             <p className="text-sm text-gray-500 mt-2 italic">SwapSkills Platform Homepage</p>
           </div>
           
-          <div className="mt-auto text-gray-500 text-sm">
-            <p>swap-skills.ie</p>
+          <div className="mt-8 text-gray-500 text-sm">
+            <p className="font-medium">swap-skills.ie</p>
             <p>hello@swap-skills.ie</p>
           </div>
         </section>
@@ -58,9 +58,33 @@ export default function BusinessPlan() {
             trade hours for language lessons, or a massage therapist can exchange services for home repairs.
           </p>
 
+          {/* Two-Way Mission Statement */}
           <div className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg mb-6">
-            <p className="text-xl font-semibold text-primary mb-2">Mission</p>
-            <p className="text-lg">To reconnect Irish communities by making skills the new currency.</p>
+            <p className="text-xl font-semibold text-primary mb-4">Our Dual Mission</p>
+            <div className="space-y-4">
+              <div className="flex gap-3">
+                <span className="text-2xl font-bold text-primary">A.</span>
+                <div>
+                  <p className="font-semibold text-lg text-gray-800 mb-1">Empowering Communities</p>
+                  <p className="text-lg text-gray-700">
+                    To provide Irish communities with a free, accessible platform that facilitates meaningful 
+                    service and support exchanges—helping families and individuals save money while combating 
+                    social isolation and strengthening neighbourhood connections.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-2xl font-bold text-primary">B.</span>
+                <div>
+                  <p className="font-semibold text-lg text-gray-800 mb-1">Enabling Local Business Growth</p>
+                  <p className="text-lg text-gray-700">
+                    To offer small businesses across Ireland a high-traffic, hyper-local advertising platform 
+                    with affordable rates—connecting them directly with engaged community members actively 
+                    seeking local services.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <h3 className="text-xl font-bold mb-4">Traction to Date</h3>
