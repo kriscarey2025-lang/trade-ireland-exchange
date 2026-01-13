@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Lightbulb, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -7,9 +8,13 @@ import FeedbackDialog from "./FeedbackDialog";
 import LeprechaunWizard from "./LeprechaunWizard";
 
 const FeedbackSidebar = () => {
+  const location = useLocation();
   const [featureDialogOpen, setFeatureDialogOpen] = useState(false);
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(false);
+
+  // Hide on business plan page
+  if (location.pathname === "/business-plan") return null;
 
   return (
     <>
