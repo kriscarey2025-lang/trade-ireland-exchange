@@ -21,7 +21,7 @@ import { postCategoryLabels } from "@/lib/postCategories";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { InlineAd } from "@/components/ads/InlineAd";
 import { ActionRequiredBanner } from "@/components/home/ActionRequiredBanner";
-
+import { ReviewsBanner } from "@/components/home/ReviewsBanner";
 
 const locations = ["All Ireland", "Antrim", "Armagh", "Carlow", "Cavan", "Clare", "Cork", "Derry", "Donegal", "Down", "Dublin", "Fermanagh", "Galway", "Kerry", "Kildare", "Kilkenny", "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", "Waterford", "Westmeath", "Wexford", "Wicklow"];
 const Index = () => {
@@ -280,6 +280,10 @@ const Index = () => {
                 </div>
               </div>
             </section>
+
+            {/* Social Proof Reviews Banner */}
+            <ReviewsBanner />
+
 
               <div id="services-section" className="container py-4 md:py-8">
                {/* Mobile: Condensed search - just essential controls */}
