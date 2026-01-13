@@ -89,7 +89,7 @@ const PressKit = () => {
                       "Killeshin woman launches online service exchange platform SwapSkills"
                     </h3>
                     <p className="text-muted-foreground mb-4">
-                      Featured in the Carlow Nationalist, this article highlights Kristrina Carey's launch of SwapSkills, 
+                      Featured in the Carlow Nationalist, this article highlights Kris Carey's launch of SwapSkills, 
                       Ireland's first free digital barter platform connecting neighbours to exchange services.
                     </p>
                     <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
