@@ -39,6 +39,7 @@ const AdminReports = lazy(() => import("./pages/AdminReports"));
 const AdminAdvertisers = lazy(() => import("./pages/AdminAdvertisers"));
 const AdminModeration = lazy(() => import("./pages/AdminModeration"));
 const AdminFeedback = lazy(() => import("./pages/AdminFeedback"));
+const AdminPlatformHealth = lazy(() => import("./pages/AdminPlatformHealth"));
 const AdvertiserDashboard = lazy(() => import("./pages/AdvertiserDashboard"));
 const AIMatches = lazy(() => import("./pages/AIMatches"));
 const Advertise = lazy(() => import("./pages/Advertise"));
@@ -103,6 +104,7 @@ const App = () => (
               <Route path="/admin/advertisers" element={<AdminAdvertisers />} />
               <Route path="/admin/moderation" element={<AdminModeration />} />
               <Route path="/admin/feedback" element={<AdminFeedback />} />
+              <Route path="/admin/health" element={<AdminPlatformHealth />} />
               <Route path="/matches" element={<AIMatches />} />
               <Route path="/ai-matches" element={<AIMatches />} />
               <Route path="/advertiser" element={<AdvertiserDashboard />} />
