@@ -4,8 +4,9 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink } from "lucide-react";
+import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper } from "lucide-react";
 import swapskillsLogo from "@/assets/swapskills-logo-full.png";
+import carlowNationalistArticle from "@/assets/press/carlow-nationalist-jan-2026.jpg";
 
 const PressKit = () => {
   const stats = [
@@ -61,8 +62,50 @@ const PressKit = () => {
           </div>
         </section>
 
-        {/* About Section */}
+        {/* Press Coverage Section */}
         <section className="py-16 bg-background">
+          <div className="container px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-3 mb-8">
+                <Newspaper className="h-8 w-8 text-primary" />
+                <h2 className="text-3xl font-display font-bold text-foreground">Press Coverage</h2>
+              </div>
+              
+              <Card className="overflow-hidden">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="p-6">
+                    <img 
+                      src={carlowNationalistArticle} 
+                      alt="Carlow Nationalist article about SwapSkills - Killeshin woman launches online service exchange platform" 
+                      className="w-full rounded-lg shadow-md"
+                    />
+                  </div>
+                  <CardContent className="pt-6 flex flex-col justify-center">
+                    <Badge variant="secondary" className="w-fit mb-3">
+                      <Newspaper className="h-3 w-3 mr-1" />
+                      Featured Article
+                    </Badge>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">
+                      "Killeshin woman launches online service exchange platform SwapSkills"
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      Featured in the Carlow Nationalist, this article highlights Kristrina Carey's launch of SwapSkills, 
+                      Ireland's first free digital barter platform connecting neighbours to exchange services.
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                      <Badge variant="outline">Carlow Nationalist</Badge>
+                      <Badge variant="outline">13 January 2026</Badge>
+                      <Badge variant="outline">By Hosanna Boulter</Badge>
+                    </div>
+                  </CardContent>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section className="py-16 bg-secondary/30">
           <div className="container px-4">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-display font-bold text-foreground mb-6">About SwapSkills</h2>
@@ -95,7 +138,7 @@ const PressKit = () => {
         </section>
 
         {/* Key Statistics */}
-        <section className="py-16 bg-secondary/30">
+        <section className="py-16 bg-background">
           <div className="container px-4">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-display font-bold text-foreground mb-8 text-center">
