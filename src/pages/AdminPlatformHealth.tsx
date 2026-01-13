@@ -18,7 +18,8 @@ import {
   CheckCircle,
   Activity,
   Calendar,
-  BarChart3
+  BarChart3,
+  ArrowRightLeft
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -32,6 +33,7 @@ interface PlatformStats {
   newServicesToday: number;
   newServicesThisWeek: number;
   activeServices: number;
+  swapsInProgress: number;
   completedSwapsTotal: number;
   pendingVerifications: number;
   pendingReports: number;
@@ -194,8 +196,21 @@ export default function AdminPlatformHealth() {
               </Card>
             </div>
 
-            {/* Secondary Metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+              <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-400 flex items-center gap-2">
+                    <ArrowRightLeft className="h-4 w-4" />
+                    Swaps in Progress
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">
+                    {stats.swapsInProgress}
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-green-700 dark:text-green-400 flex items-center gap-2">

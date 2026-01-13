@@ -19,6 +19,7 @@ interface PlatformStats {
   newServicesToday: number;
   newServicesThisWeek: number;
   activeServices: number;
+  swapsInProgress: number;
   completedSwapsTotal: number;
   pendingVerifications: number;
   pendingReports: number;
@@ -130,11 +131,17 @@ serve(async (req: Request): Promise<Response> => {
       .eq("status", "active")
       .eq("moderation_status", "approved");
 
+    // Swaps in progress (accepted but not completed)
+    const { count: swapsInProgress } = await supabase
+      .from("conversations")
+      .select("*", { count: "exact", head: true })
+      .eq("swap_status", "accepted");
+
     // Completed swaps
     const { count: completedSwapsTotal } = await supabase
       .from("conversations")
       .select("*", { count: "exact", head: true })
-      .eq("swap_status", "completed");
+      .in("swap_status", ["completed", "closed"]);
 
     // Pending verifications
     const { count: pendingVerifications } = await supabase
@@ -210,6 +217,7 @@ serve(async (req: Request): Promise<Response> => {
       newServicesToday: newServicesToday || 0,
       newServicesThisWeek: newServicesThisWeek || 0,
       activeServices: activeServices || 0,
+      swapsInProgress: swapsInProgress || 0,
       completedSwapsTotal: completedSwapsTotal || 0,
       pendingVerifications: pendingVerifications || 0,
       pendingReports: pendingReports || 0,
