@@ -80,11 +80,12 @@ serve(async (req: Request): Promise<Response> => {
       .from("profiles")
       .select("*", { count: "exact", head: true });
 
-    // Daily active users (users with engagement today)
-    const { count: dailyActiveUsers } = await supabase
+    // Daily active users (unique users with engagement today)
+    const { data: dailyData } = await supabase
       .from("user_engagement")
-      .select("user_id", { count: "exact", head: true })
+      .select("user_id")
       .gte("created_at", today.toISOString());
+    const dailyActiveUsers = new Set(dailyData?.map(d => d.user_id) || []).size;
 
     // Weekly active users
     const { data: weeklyData } = await supabase
