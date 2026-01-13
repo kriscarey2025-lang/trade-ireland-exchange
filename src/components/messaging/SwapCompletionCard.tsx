@@ -44,26 +44,16 @@ export function SwapCompletionCard({
   const [showKeepRunningDialog, setShowKeepRunningDialog] = useState(false);
   const queryClient = useQueryClient();
 
-  // Only show to service owner after both have reviewed
-  if (!isServiceOwner || !bothReviewed || swapStatus === 'closed') {
+  // Only show to service owner after swap is auto-completed (both reviewed) and not yet closed
+  if (!isServiceOwner || swapStatus !== 'completed') {
     return null;
   }
 
   const handleKeepRunning = async () => {
     setIsLoading(true);
     try {
-      // Increment completed swaps count and mark conversation as completed
-      if (serviceId) {
-        await supabase.rpc('increment_completed_swaps', { _service_id: serviceId });
-      }
-
-      const { error } = await supabase
-        .from("conversations")
-        .update({ swap_status: 'completed' })
-        .eq("id", conversationId);
-
-      if (error) throw error;
-
+      // Swap count is already incremented by the auto_complete_swap_on_review trigger
+      // Just keep the service running (status stays as 'completed', not 'closed')
       await queryClient.invalidateQueries({ queryKey: ["conversation", conversationId] });
       await queryClient.invalidateQueries({ queryKey: ["services"] });
       
@@ -79,11 +69,7 @@ export function SwapCompletionCard({
   const handleCloseService = async () => {
     setIsLoading(true);
     try {
-      // Increment completed swaps count
-      if (serviceId) {
-        await supabase.rpc('increment_completed_swaps', { _service_id: serviceId });
-      }
-
+      // Swap count is already incremented by the auto_complete_swap_on_review trigger
       // Mark conversation as closed and service as completed
       const { error: convError } = await supabase
         .from("conversations")
