@@ -20,44 +20,19 @@ export const ReviewsBanner = () => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      // First get reviews
-      const { data: reviewsData, error: reviewsError } = await supabase
-        .from("reviews")
-        .select("review_text, user_rating, created_at, reviewer_id")
-        .not("review_text", "is", null)
-        .gte("user_rating", 4)
-        .order("created_at", { ascending: false })
-        .limit(5);
+      const { data, error } = await supabase.functions.invoke("public-reviews", {
+        body: { limit: 5 },
+      });
 
-      if (reviewsError || !reviewsData || reviewsData.length === 0) {
-        console.log("ReviewsBanner: No reviews found or error", reviewsError);
+      if (error) {
         setIsLoading(false);
         return;
       }
 
-      // Get reviewer profiles
-      const reviewerIds = reviewsData.map(r => r.reviewer_id);
-      const { data: profilesData } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", reviewerIds);
-
-      const profilesMap = new Map(
-        (profilesData || []).map(p => [p.id, p])
-      );
-
-      const formattedReviews = reviewsData.map((r) => {
-        const profile = profilesMap.get(r.reviewer_id);
-        return {
-          review_text: r.review_text!,
-          user_rating: r.user_rating,
-          created_at: r.created_at,
-          reviewer_name: profile?.full_name || "Anonymous",
-          reviewer_avatar: profile?.avatar_url || null,
-        };
-      });
-      
-      setReviews(formattedReviews);
+      const payload = (data as any)?.reviews as Review[] | undefined;
+      if (payload && payload.length > 0) {
+        setReviews(payload);
+      }
       setIsLoading(false);
     };
 
