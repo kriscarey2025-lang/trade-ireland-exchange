@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, Sparkles, ArrowRight, LayoutGrid, List, MapPin, ChevronDown } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, Sparkles, ArrowRight, LayoutGrid, List, MapPin, ChevronDown, Tag } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
@@ -69,12 +69,12 @@ export default function Browse() {
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">(
-    (searchParams.get("category") as ServiceCategory) || "all"
-  );
+  const [selectedCategories, setSelectedCategories] = useState<ServiceCategory[]>(() => {
+    const categoryParam = searchParams.get("category") as ServiceCategory;
+    return categoryParam ? [categoryParam] : [];
+  });
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedPostType, setSelectedPostType] = useState<PostCategory | "all">("all");
-  const [showFilters, setShowFilters] = useState(false);
   const [matchesDialogOpen, setMatchesDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
@@ -88,22 +88,42 @@ export default function Browse() {
   // Debounce search query to avoid too many API calls
   const debouncedSearch = useDebounce(searchQuery, 300);
 
-  // Fetch services from database (pass first selected location or undefined for API)
+  // Fetch services from database (pass first selected category/location or undefined for API)
   const { data: services = [], isLoading, error } = useServices({
-    category: selectedCategory,
+    category: selectedCategories.length === 1 ? selectedCategories[0] : "all",
     location: selectedLocations.length === 1 ? selectedLocations[0] : undefined,
     search: debouncedSearch || undefined,
   });
 
+  // Filter by multiple categories on client side when more than one is selected
+  const categoryFilteredServices = useMemo(() => {
+    if (selectedCategories.length === 0) return services;
+    return services.filter((service) => 
+      selectedCategories.includes(service.category as ServiceCategory)
+    );
+  }, [services, selectedCategories]);
+
   // Filter by multiple locations on client side when more than one is selected
   const locationFilteredServices = useMemo(() => {
-    if (selectedLocations.length === 0) return services;
-    return services.filter((service) => 
+    if (selectedLocations.length === 0) return categoryFilteredServices;
+    return categoryFilteredServices.filter((service) => 
       selectedLocations.some(loc => 
         service.location?.toLowerCase().includes(loc.toLowerCase())
       )
     );
-  }, [services, selectedLocations]);
+  }, [categoryFilteredServices, selectedLocations]);
+
+  const toggleCategory = (category: ServiceCategory) => {
+    setSelectedCategories(prev => 
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  const clearCategories = () => {
+    setSelectedCategories([]);
+  };
 
   const toggleLocation = (location: string) => {
     setSelectedLocations(prev => 
@@ -125,14 +145,14 @@ export default function Browse() {
 
   const clearFilters = () => {
     setSearchQuery("");
-    setSelectedCategory("all");
+    setSelectedCategories([]);
     setSelectedLocations([]);
     setSelectedPostType("all");
     setSearchParams({});
   };
 
   const hasActiveFilters =
-    searchQuery || selectedCategory !== "all" || selectedLocations.length > 0 || selectedPostType !== "all";
+    searchQuery || selectedCategories.length > 0 || selectedLocations.length > 0 || selectedPostType !== "all";
 
   return (
     <>
@@ -325,50 +345,67 @@ export default function Browse() {
                   </PopoverContent>
                 </Popover>
 
-                <div className="flex gap-2">
-                  <Button
-                    variant={showFilters ? "secondary" : "outline"}
-                    onClick={() => setShowFilters(!showFilters)}
-                    className="flex-1 sm:flex-none"
-                  >
-                    <SlidersHorizontal className="h-4 w-4 mr-2" />
-                    Categories
-                  </Button>
-
-                  {hasActiveFilters && (
-                    <Button variant="ghost" size="sm" onClick={clearFilters} className="shrink-0">
-                      <X className="h-4 w-4 mr-1" />
-                      Clear
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="flex-1 sm:flex-none justify-between">
+                      <div className="flex items-center gap-2 truncate">
+                        <Tag className="h-4 w-4 shrink-0" />
+                        <span className="truncate">
+                          {selectedCategories.length === 0
+                            ? "All Categories"
+                            : selectedCategories.length === 1
+                            ? categoryLabels[selectedCategories[0]]
+                            : `${selectedCategories.length} categories`}
+                        </span>
+                      </div>
+                      <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
                     </Button>
-                  )}
-                </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[260px] p-0 bg-popover z-50" align="start">
+                    <div className="p-2 border-b border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Select Categories</span>
+                        {selectedCategories.length > 0 && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 px-2 text-xs"
+                            onClick={clearCategories}
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    <ScrollArea className="h-[300px]">
+                      <div className="p-2 space-y-1">
+                        {allCategories.map((category) => (
+                          <label
+                            key={category}
+                            className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer"
+                          >
+                            <Checkbox
+                              checked={selectedCategories.includes(category)}
+                              onCheckedChange={() => toggleCategory(category)}
+                            />
+                            <span className="text-sm flex items-center gap-1.5">
+                              {categoryIcons[category]} {categoryLabels[category]}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </PopoverContent>
+                </Popover>
+
+                {hasActiveFilters && (
+                  <Button variant="ghost" size="sm" onClick={clearFilters} className="shrink-0">
+                    <X className="h-4 w-4 mr-1" />
+                    Clear
+                  </Button>
+                )}
               </div>
             </div>
-
-            {/* Category Filters */}
-            {showFilters && (
-              <div className="mt-4 pt-4 border-t border-border">
-                <div className="flex flex-wrap gap-2">
-                  <Badge
-                    variant={selectedCategory === "all" ? "default" : "outline"}
-                    className="cursor-pointer"
-                    onClick={() => setSelectedCategory("all")}
-                  >
-                    All Categories
-                  </Badge>
-                  {allCategories.map((category) => (
-                    <Badge
-                      key={category}
-                      variant={selectedCategory === category ? "default" : "outline"}
-                      className="cursor-pointer"
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {categoryIcons[category]} {categoryLabels[category]}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Results Header with View Toggle */}
