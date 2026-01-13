@@ -68,6 +68,7 @@ export default function Auth() {
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Signup form state
   const [signupName, setSignupName] = useState("");
@@ -143,7 +144,7 @@ export default function Auth() {
 
     setIsLoading(true);
 
-    const { error } = await signIn(loginEmail, loginPassword);
+    const { error } = await signIn(loginEmail, loginPassword, rememberMe);
     
     if (error) {
       if (error.message.includes('Invalid login credentials')) {
@@ -416,6 +417,20 @@ export default function Auth() {
                             )}
                           </Button>
                         </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="remember-me"
+                          checked={rememberMe}
+                          onCheckedChange={(checked) => setRememberMe(checked === true)}
+                          disabled={isLoading}
+                        />
+                        <Label 
+                          htmlFor="remember-me" 
+                          className="text-sm text-muted-foreground cursor-pointer select-none"
+                        >
+                          Remember me for 30 days
+                        </Label>
                       </div>
                       <Button
                         type="submit"
