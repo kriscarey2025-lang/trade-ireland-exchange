@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import swapskillsLogo from "@/assets/swapskills-logo-full.png";
+import homepageScreenshot from "@/assets/homepage-screenshot.png";
 
 export default function BusinessPlan() {
   useEffect(() => {
@@ -26,7 +27,17 @@ export default function BusinessPlan() {
           <img src={swapskillsLogo} alt="SwapSkills" className="h-24 mb-8" />
           <h1 className="text-5xl font-bold text-primary mb-4">Business Plan</h1>
           <p className="text-2xl text-gray-600 mb-2">Ireland's Community Skills Exchange Platform</p>
-          <p className="text-lg text-gray-500 mb-12">January 2026</p>
+          <p className="text-lg text-gray-500 mb-8">January 2026</p>
+          
+          {/* Homepage Screenshot */}
+          <div className="w-full max-w-2xl mb-8">
+            <img 
+              src={homepageScreenshot} 
+              alt="SwapSkills Homepage" 
+              className="w-full rounded-lg shadow-lg border border-gray-200"
+            />
+            <p className="text-sm text-gray-500 mt-2 italic">SwapSkills Platform Homepage</p>
+          </div>
           
           <div className="mt-auto text-gray-500 text-sm">
             <p>swap-skills.ie</p>
@@ -58,6 +69,120 @@ export default function BusinessPlan() {
             <li>Press coverage in Carlow Nationalist (January 2026)</li>
             <li>Built-in AI matching, messaging, reviews, and verification systems</li>
           </ul>
+        </section>
+
+        {/* Current State */}
+        <section className="py-12 print:break-after-page">
+          <h2 className="text-3xl font-bold text-primary border-b-4 border-primary pb-2 mb-6">
+            Current State
+          </h2>
+
+          <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+            <p className="text-xl font-semibold text-green-700 mb-2">🚀 Live Since: 16th December 2024</p>
+            <p className="text-lg text-gray-700">Platform operational and growing organically</p>
+          </div>
+
+          <h3 className="text-2xl font-bold mb-4">Live Platform Metrics</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-primary/10 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">46</p>
+              <p className="text-sm text-gray-600">Total Sign-ups</p>
+            </div>
+            <div className="bg-primary/10 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">16</p>
+              <p className="text-sm text-gray-600">Active Swaps Posted</p>
+            </div>
+            <div className="bg-primary/10 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">15</p>
+              <p className="text-sm text-gray-600">Conversations Started</p>
+            </div>
+            <div className="bg-primary/10 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">3,041</p>
+              <p className="text-sm text-gray-600">Page Impressions</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="bg-gray-50 rounded-lg p-4 text-center">
+              <p className="text-2xl font-bold text-gray-700">1</p>
+              <p className="text-sm text-gray-600">Completed Swaps</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4 text-center">
+              <p className="text-2xl font-bold text-gray-700">4</p>
+              <p className="text-sm text-gray-600">Onboarded Advertisers</p>
+            </div>
+          </div>
+
+          <h3 className="text-2xl font-bold mb-4">2026 Strategy: Seeded Rollout</h3>
+          <div className="space-y-4 mb-6">
+            <div className="border-l-4 border-primary pl-4">
+              <p className="font-semibold text-lg">Q1 2026: Foundation & App Launch</p>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li><strong>February 2026:</strong> Mobile App rollout (iOS & Android)</li>
+                <li>Establish strong community presence in Carlow & surrounding areas</li>
+                <li>Organic growth through word-of-mouth and local partnerships</li>
+              </ul>
+            </div>
+            <div className="border-l-4 border-primary/70 pl-4">
+              <p className="font-semibold text-lg">Q2-Q4 2026: Leinster Expansion</p>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li>Heavy targeted advertising campaign across Leinster</li>
+                <li>Deploy local representatives in key towns</li>
+                <li>Community centre partnerships and local press campaigns</li>
+                <li>Build advertiser pipeline with local businesses</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 className="text-2xl font-bold mb-4">2026 KPIs to Achieve</h3>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-primary text-white">
+                <th className="border border-gray-300 p-3 text-left">KPI</th>
+                <th className="border border-gray-300 p-3 text-right">Q1 Target</th>
+                <th className="border border-gray-300 p-3 text-right">Q2 Target</th>
+                <th className="border border-gray-300 p-3 text-right">End of 2026</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="bg-gray-50">
+                <td className="border border-gray-300 p-3">Registered Users</td>
+                <td className="border border-gray-300 p-3 text-right">200</td>
+                <td className="border border-gray-300 p-3 text-right">750</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">2,000</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-3">Monthly Active Users</td>
+                <td className="border border-gray-300 p-3 text-right">80</td>
+                <td className="border border-gray-300 p-3 text-right">300</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">800</td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td className="border border-gray-300 p-3">Completed Swaps</td>
+                <td className="border border-gray-300 p-3 text-right">25</td>
+                <td className="border border-gray-300 p-3 text-right">150</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">500</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-3">Onboarded Advertisers</td>
+                <td className="border border-gray-300 p-3 text-right">10</td>
+                <td className="border border-gray-300 p-3 text-right">25</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">50</td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td className="border border-gray-300 p-3">App Downloads</td>
+                <td className="border border-gray-300 p-3 text-right">100</td>
+                <td className="border border-gray-300 p-3 text-right">400</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">1,200</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-3">Ad Revenue</td>
+                <td className="border border-gray-300 p-3 text-right">€500</td>
+                <td className="border border-gray-300 p-3 text-right">€3,000</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">€15,000</td>
+              </tr>
+            </tbody>
+          </table>
         </section>
 
         {/* Market Analysis */}
@@ -551,12 +676,23 @@ export default function BusinessPlan() {
           </h2>
 
           <h3 className="text-2xl font-bold mb-4">Key Metrics to Track</h3>
-          <ul className="list-disc list-inside space-y-2 text-lg mb-8">
+          
+          <h4 className="text-xl font-semibold mb-3 mt-6">User & Engagement Metrics</h4>
+          <ul className="list-disc list-inside space-y-2 text-lg mb-6">
             <li>Monthly Active Users (MAU)</li>
             <li>Swap Completion Rate</li>
             <li>User Retention (30/60/90 day)</li>
             <li>Net Promoter Score (NPS)</li>
-            <li>Revenue per User</li>
+            <li>App Downloads & Active Mobile Users</li>
+          </ul>
+
+          <h4 className="text-xl font-semibold mb-3">Advertising & Revenue Metrics</h4>
+          <ul className="list-disc list-inside space-y-2 text-lg mb-8">
+            <li>Onboarded Businesses for Advertising</li>
+            <li>Average Ad Contract Length</li>
+            <li>Ad Revenue Generated (Monthly/Quarterly)</li>
+            <li>Revenue per User (RPU)</li>
+            <li>Advertiser Retention Rate</li>
           </ul>
 
           <div className="bg-gray-100 rounded-lg p-8 text-center">
