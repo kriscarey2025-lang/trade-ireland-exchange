@@ -110,11 +110,11 @@ export default function BusinessPlan() {
               <p className="text-sm text-blue-600 font-medium mb-2">📊 As of January 2026</p>
               <div className="grid grid-cols-4 gap-4 text-center">
                 <div>
-                  <p className="text-2xl font-bold text-blue-700">36</p>
+                  <p className="text-2xl font-bold text-blue-700">46</p>
                   <p className="text-sm text-gray-600">Active Users</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-blue-700">15</p>
+                  <p className="text-2xl font-bold text-blue-700">16</p>
                   <p className="text-sm text-gray-600">Live Swap Offers</p>
                 </div>
                 <div>
@@ -150,11 +150,11 @@ export default function BusinessPlan() {
           <h3 className="text-2xl font-bold mb-4">Live Platform Metrics</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-primary/10 rounded-lg p-4 text-center">
-              <p className="text-3xl font-bold text-primary">36</p>
+              <p className="text-3xl font-bold text-primary">46</p>
               <p className="text-sm text-gray-600">Active Users</p>
             </div>
             <div className="bg-primary/10 rounded-lg p-4 text-center">
-              <p className="text-3xl font-bold text-primary">15</p>
+              <p className="text-3xl font-bold text-primary">16</p>
               <p className="text-sm text-gray-600">Live Swap Offers</p>
             </div>
             <div className="bg-primary/10 rounded-lg p-4 text-center">
