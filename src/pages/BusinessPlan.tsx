@@ -88,7 +88,45 @@ export default function BusinessPlan() {
             </div>
           </div>
 
+          {/* Community Trust Commitment */}
+          <div className="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-lg mb-6">
+            <p className="text-lg font-semibold text-amber-800 mb-2">🤝 Community Trust Commitment</p>
+            <p className="text-gray-700 mb-3">
+              We understand that monetisation must never compromise community trust. Our advertising model is designed with clear boundaries:
+            </p>
+            <ul className="list-disc list-inside text-gray-700 space-y-1">
+              <li><strong>Local only:</strong> Ads are exclusively from Irish businesses serving our communities</li>
+              <li><strong>No data selling:</strong> User data is never sold or shared with third parties</li>
+              <li><strong>No pay-to-win:</strong> Individual swap rankings are never influenced by payment</li>
+              <li><strong>Always free:</strong> Core community features remain free forever</li>
+            </ul>
+          </div>
+
           <h3 className="text-xl font-bold mb-4">Traction to Date</h3>
+          
+          {/* Verified Snapshot Box */}
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
+            <p className="text-sm text-blue-600 font-medium mb-2">📊 As of January 2026</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div>
+                <p className="text-2xl font-bold text-blue-700">36</p>
+                <p className="text-sm text-gray-600">Active Users</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-blue-700">15</p>
+                <p className="text-sm text-gray-600">Live Swap Offers</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-blue-700">4</p>
+                <p className="text-sm text-gray-600">Completed Swaps</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-blue-700">3,041</p>
+                <p className="text-sm text-gray-600">Page Views</p>
+              </div>
+            </div>
+          </div>
+
           <ul className="list-disc list-inside space-y-2 text-lg">
             <li>Live platform with active users in Carlow and surrounding counties</li>
             <li>Press coverage in Carlow Nationalist (January 2026)</li>
@@ -311,7 +349,7 @@ export default function BusinessPlan() {
             </thead>
             <tbody>
               <tr className="bg-gray-50">
-                <td className="border border-gray-300 p-3">Local Business Ads</td>
+                <td className="border border-gray-300 p-3">Local Business Ads*</td>
                 <td className="border border-gray-300 p-3 text-right">€15,000</td>
                 <td className="border border-gray-300 p-3 text-right">€60,000</td>
                 <td className="border border-gray-300 p-3 text-right">€150,000</td>
@@ -358,6 +396,15 @@ export default function BusinessPlan() {
               <h4 className="font-bold text-lg mb-2">Business Ads</h4>
               <p className="text-gray-600">€50-200/month for local business promotion</p>
             </div>
+          </div>
+
+          {/* Advertising Approach Note */}
+          <div className="bg-gray-50 border-l-4 border-gray-400 p-4 rounded-r-lg mt-6">
+            <p className="text-sm text-gray-600">
+              <strong>*Year 1 Advertising Approach:</strong> Revenue targets are based on pilot partnerships with 
+              founding local sponsors through discounted early-adopter packages. We recognise that community platforms 
+              require trust-building before full commercial ad rates can be achieved.
+            </p>
           </div>
         </section>
 
@@ -544,6 +591,25 @@ export default function BusinessPlan() {
               </tr>
             </tbody>
           </table>
+
+          {/* Governance Section */}
+          <h3 className="text-2xl font-bold mb-4 mt-8">Governance (Planned)</h3>
+          <div className="bg-gray-50 border-l-4 border-primary p-6 rounded-r-lg">
+            <div className="space-y-4">
+              <div className="flex gap-3">
+                <span className="text-primary font-bold">Year 1:</span>
+                <p className="text-gray-700">Founder-led operations with direct oversight of all platform decisions</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-primary font-bold">Year 2:</span>
+                <p className="text-gray-700">Establish advisory board including community representatives, legal advisor, and safeguarding specialist</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-primary font-bold">Long-term:</span>
+                <p className="text-gray-700">Exploring CLG (Company Limited by Guarantee) or social enterprise structure to formalise community-first governance</p>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Financial Summary */}
@@ -658,6 +724,63 @@ export default function BusinessPlan() {
             <li>Credit Union community loans</li>
             <li>Angel investors (Irish diaspora)</li>
           </ul>
+        </section>
+
+        {/* Safeguarding & Trust */}
+        <section className="py-12 print:break-after-page">
+          <h2 className="text-3xl font-bold text-primary border-b-4 border-primary pb-2 mb-6">
+            Safeguarding & Trust
+          </h2>
+
+          <p className="text-lg mb-6">
+            Given the nature of skill swaps—which may involve home visits, childcare, or personal services—we take 
+            safeguarding extremely seriously. SwapSkills has implemented multiple layers of protection:
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+              <h4 className="font-bold text-green-800 mb-2">🔐 Verification System</h4>
+              <ul className="text-gray-700 space-y-1 text-sm">
+                <li>• Optional ID verification for enhanced trust</li>
+                <li>• Verified badge displayed on profiles</li>
+                <li>• Admin review of all verification documents</li>
+              </ul>
+            </div>
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+              <h4 className="font-bold text-blue-800 mb-2">⭐ Review & Rating System</h4>
+              <ul className="text-gray-700 space-y-1 text-sm">
+                <li>• Post-swap reviews from both parties</li>
+                <li>• Visible rating history on profiles</li>
+                <li>• Pattern detection for problematic users</li>
+              </ul>
+            </div>
+            <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg">
+              <h4 className="font-bold text-purple-800 mb-2">🤖 AI + Human Moderation</h4>
+              <ul className="text-gray-700 space-y-1 text-sm">
+                <li>• AI content moderation on all listings</li>
+                <li>• Human review fallback for flagged content</li>
+                <li>• Admin dashboard for oversight</li>
+              </ul>
+            </div>
+            <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+              <h4 className="font-bold text-amber-800 mb-2">🚨 Reporting & Response</h4>
+              <ul className="text-gray-700 space-y-1 text-sm">
+                <li>• Easy one-click reporting on all profiles/listings</li>
+                <li>• Clear escalation path to admin team</li>
+                <li>• Zero-tolerance policy for abuse</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-gray-100 border-2 border-gray-300 rounded-lg p-6">
+            <h4 className="font-bold text-gray-800 mb-3">📋 User Safety Guidelines (Built into Platform)</h4>
+            <ul className="text-gray-700 space-y-2">
+              <li>✓ <strong>Meet in public first</strong> – recommended for all initial meetings</li>
+              <li>✓ <strong>Share your plans</strong> – users encouraged to tell someone about swap arrangements</li>
+              <li>✓ <strong>Trust your instincts</strong> – easy cancellation with no penalties</li>
+              <li>✓ <strong>Report concerns</strong> – clear reporting buttons throughout the platform</li>
+            </ul>
+          </div>
         </section>
 
         {/* Risk Analysis */}
