@@ -78,7 +78,7 @@ export default function BusinessPlan() {
           </h2>
 
           <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
-            <p className="text-xl font-semibold text-green-700 mb-2">🚀 Live Since: 16th December 2024</p>
+            <p className="text-xl font-semibold text-green-700 mb-2">🚀 Live Since: 16th December 2025</p>
             <p className="text-lg text-gray-700">Platform operational and growing organically</p>
           </div>
 
@@ -104,7 +104,7 @@ export default function BusinessPlan() {
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-gray-50 rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-gray-700">1</p>
+              <p className="text-2xl font-bold text-gray-700">4</p>
               <p className="text-sm text-gray-600">Completed Swaps</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4 text-center">
