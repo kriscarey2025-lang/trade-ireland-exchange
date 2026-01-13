@@ -1,34 +1,69 @@
-import { 
-  Users, Heart, Coins, Wrench, BookOpen, Home, 
-  UtensilsCrossed, Shirt, Baby, Laptop, Dog, Car,
-  Scissors, Camera, Music, Dumbbell
-} from "lucide-react";
+import { Users, Heart, Coins, Wrench, BookOpen, Home, UtensilsCrossed, Shirt, Baby, Laptop, Dog, Car, Scissors, Camera, Music, Dumbbell } from "lucide-react";
 import qrCode from "@/assets/flyer-qr-code.jpg";
-
 const Flyer = () => {
-  const benefits = [
-    { icon: Coins, text: "Save Money", emoji: "💰" },
-    { icon: Users, text: "Make Friends", emoji: "🤝" },
-    { icon: Heart, text: "Help Neighbours", emoji: "❤️" },
-  ];
-
-  const skills = [
-    { icon: UtensilsCrossed, skill: "Cooking", emoji: "🍳" },
-    { icon: Shirt, skill: "Ironing", emoji: "👔" },
-    { icon: Baby, skill: "Childminding", emoji: "👶" },
-    { icon: Laptop, skill: "Tech Setup", emoji: "💻" },
-    { icon: Home, skill: "Gardening", emoji: "🌱" },
-    { icon: Wrench, skill: "DIY & Repairs", emoji: "🔧" },
-    { icon: Dog, skill: "Pet Sitting", emoji: "🐕" },
-    { icon: Car, skill: "Lifts & Errands", emoji: "🚗" },
-    { icon: BookOpen, skill: "Tutoring", emoji: "📚" },
-    { icon: Scissors, skill: "Hairdressing", emoji: "✂️" },
-    { icon: Camera, skill: "Photography", emoji: "📸" },
-    { icon: Music, skill: "Music Lessons", emoji: "🎵" },
-  ];
-
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 print:p-0 print:bg-white">
+  const benefits = [{
+    icon: Coins,
+    text: "Save Money",
+    emoji: "💰"
+  }, {
+    icon: Users,
+    text: "Make Friends",
+    emoji: "🤝"
+  }, {
+    icon: Heart,
+    text: "Help Neighbours",
+    emoji: "❤️"
+  }];
+  const skills = [{
+    icon: UtensilsCrossed,
+    skill: "Cooking",
+    emoji: "🍳"
+  }, {
+    icon: Shirt,
+    skill: "Ironing",
+    emoji: "👔"
+  }, {
+    icon: Baby,
+    skill: "Childminding",
+    emoji: "👶"
+  }, {
+    icon: Laptop,
+    skill: "Tech Setup",
+    emoji: "💻"
+  }, {
+    icon: Home,
+    skill: "Gardening",
+    emoji: "🌱"
+  }, {
+    icon: Wrench,
+    skill: "DIY & Repairs",
+    emoji: "🔧"
+  }, {
+    icon: Dog,
+    skill: "Pet Sitting",
+    emoji: "🐕"
+  }, {
+    icon: Car,
+    skill: "Lifts & Errands",
+    emoji: "🚗"
+  }, {
+    icon: BookOpen,
+    skill: "Tutoring",
+    emoji: "📚"
+  }, {
+    icon: Scissors,
+    skill: "Hairdressing",
+    emoji: "✂️"
+  }, {
+    icon: Camera,
+    skill: "Photography",
+    emoji: "📸"
+  }, {
+    icon: Music,
+    skill: "Music Lessons",
+    emoji: "🎵"
+  }];
+  return <div className="min-h-screen bg-background flex items-center justify-center p-4 print:p-0 print:bg-white">
       {/* A4 Flyer Container */}
       <div className="w-full max-w-[210mm] bg-white shadow-2xl print:shadow-none overflow-hidden rounded-lg print:rounded-none">
         {/* Header Banner - Brand Colors */}
@@ -52,9 +87,7 @@ const Flyer = () => {
             <h2 className="text-2xl md:text-3xl font-bold text-accent mb-2 font-display">
               🔄 Exchange Skills, Not Cash!
             </h2>
-            <p className="text-muted-foreground text-lg max-w-lg mx-auto">
-              Join your local community and trade skills with neighbours. 
-              <span className="font-semibold text-primary"> No money needed</span> – just your talents!
+            <p className="text-muted-foreground text-lg max-w-lg mx-auto">Join your local community and trade skills with neighbours. No money needed – just your talents and/or time!<span className="font-semibold text-primary"> No money needed</span> – just your talents!
             </p>
           </div>
 
@@ -68,16 +101,14 @@ const Flyer = () => {
                   ✨ Why Join?
                 </h3>
                 <div className="space-y-3">
-                  {benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-center gap-4 bg-white rounded-xl p-3 shadow-sm">
+                  {benefits.map((benefit, index) => <div key={index} className="flex items-center gap-4 bg-white rounded-xl p-3 shadow-sm">
                       <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-md">
                         <span className="text-2xl">{benefit.emoji}</span>
                       </div>
                       <span className="text-lg font-semibold text-foreground">
                         {benefit.text}
                       </span>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
               </div>
 
@@ -87,17 +118,12 @@ const Flyer = () => {
                   🎯 Swap Skills Like...
                 </h3>
                 <div className="grid grid-cols-3 gap-2">
-                  {skills.map((item, index) => (
-                    <div 
-                      key={index} 
-                      className="text-center bg-white rounded-xl p-2 shadow-sm hover:shadow-md transition-shadow"
-                    >
+                  {skills.map((item, index) => <div key={index} className="text-center bg-white rounded-xl p-2 shadow-sm hover:shadow-md transition-shadow">
                       <span className="text-2xl block mb-1">{item.emoji}</span>
                       <span className="text-xs font-medium text-foreground leading-tight block">
                         {item.skill}
                       </span>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
                 <p className="text-center text-sm text-muted-foreground mt-3 italic">
                   ...and so much more! 🌟
@@ -108,11 +134,7 @@ const Flyer = () => {
             {/* Right Column - QR Code & CTA */}
             <div className="flex flex-col items-center">
               <div className="bg-white p-3 rounded-2xl shadow-lg border-4 border-accent">
-                <img 
-                  src={qrCode} 
-                  alt="Scan to join Swap Skills" 
-                  className="w-56 h-auto md:w-64"
-                />
+                <img src={qrCode} alt="Scan to join Swap Skills" className="w-56 h-auto md:w-64" />
               </div>
               
               <div className="mt-4 text-center">
@@ -168,13 +190,11 @@ const Flyer = () => {
             </div>
             <div className="text-right">
               <p className="font-bold text-lg">swap-skills.ie</p>
-              <p className="text-sm opacity-90">Join 46+ members today!</p>
+              <p className="text-sm opacity-90">Join 50+ members today!</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Flyer;
