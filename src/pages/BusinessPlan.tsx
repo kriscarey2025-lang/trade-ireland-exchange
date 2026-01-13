@@ -40,8 +40,9 @@ export default function BusinessPlan() {
           </div>
           
           <div className="mt-8 text-gray-500 text-sm">
-            <p className="font-medium">swap-skills.ie</p>
-            <p>hello@swap-skills.ie</p>
+            <p className="font-medium">swap-skills.com</p>
+            <p>hello@swap-skills.com</p>
+            <p>085-8505597</p>
           </div>
         </section>
 
@@ -441,7 +442,7 @@ export default function BusinessPlan() {
             <tbody>
               <tr className="bg-gray-50">
                 <td className="border border-gray-300 p-3">Founder & CEO</td>
-                <td className="border border-gray-300 p-3 font-semibold">Kristina</td>
+                <td className="border border-gray-300 p-3 font-semibold">Kristina Carey</td>
                 <td className="border border-gray-300 p-3">Full-time</td>
               </tr>
               <tr>
@@ -722,9 +723,10 @@ export default function BusinessPlan() {
           <div className="bg-gray-100 rounded-lg p-8 text-center">
             <img src={swapskillsLogo} alt="SwapSkills" className="h-16 mx-auto mb-4" />
             <h3 className="text-2xl font-bold mb-2">Contact</h3>
-            <p className="text-lg"><strong>Kristina</strong> – Founder</p>
-            <p className="text-lg text-primary">swap-skills.ie</p>
-            <p className="text-lg">hello@swap-skills.ie</p>
+            <p className="text-lg"><strong>Kristina Carey</strong> – Founder</p>
+            <p className="text-lg">085-8505597</p>
+            <p className="text-lg text-primary">swap-skills.com</p>
+            <p className="text-lg">hello@swap-skills.com</p>
           </div>
         </section>
       </div>
