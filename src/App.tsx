@@ -49,6 +49,7 @@ const PressKit = lazy(() => import("./pages/PressKit"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const SeedImages = lazy(() => import("./pages/SeedImages"));
 const Welcome = lazy(() => import("./pages/Welcome"));
+const BusinessPlan = lazy(() => import("./pages/BusinessPlan"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -113,6 +114,7 @@ const App = () => (
               <Route path="/seed-images" element={<SeedImages />} />
               <Route path="/welcome" element={<Welcome />} />
               <Route path="/advertise" element={<Advertise />} />
+              <Route path="/business-plan" element={<BusinessPlan />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
