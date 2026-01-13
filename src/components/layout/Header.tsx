@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Clover, FileText } from "lucide-react";
+import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Clover, FileText, Activity } from "lucide-react";
 
 // TikTok icon component (not in lucide-react)
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -138,6 +138,7 @@ export function Header() {
   ];
 
   const adminLinks = [
+    { href: "/admin/health", label: "Platform Health", icon: Activity },
     { href: "/admin/advertisers", label: "Advertisers", icon: Megaphone },
     { href: "/admin/reports", label: "Reports", icon: Flag },
     { href: "/admin/verification", label: "Verification", icon: CheckCircle },
