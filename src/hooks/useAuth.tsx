@@ -9,7 +9,7 @@ interface AuthContextType {
   loading: boolean;
   isBanned: boolean;
   signUp: (email: string, password: string, fullName: string, location: string) => Promise<{ error: Error | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string, rememberMe?: boolean) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -101,6 +101,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
+    // Check if user opted out of "remember me" - if so, check if this is a new browser session
+    const rememberMe = localStorage.getItem('swapskills_remember_me') === 'true';
+    const hadSessionBefore = sessionStorage.getItem('swapskills_session_active') === 'true';
+    
+    // If not remembering and this is a new browser session, sign out
+    if (!rememberMe && !hadSessionBefore) {
+      // Mark that we've had a session in this browser tab
+      sessionStorage.setItem('swapskills_session_active', 'true');
+    }
+
     // Safety timeout - ensure loading is set to false after 10 seconds max
     const safetyTimeout = setTimeout(() => {
       setLoading(false);
@@ -117,6 +127,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsBanned(false);
           ipLoggedRef.current = false;
           setLoading(false);
+          sessionStorage.removeItem('swapskills_session_active');
+        }
+        
+        if (event === 'SIGNED_IN') {
+          // Mark that we have an active session
+          sessionStorage.setItem('swapskills_session_active', 'true');
         }
         
         // Log IP only on fresh sign-in or token refresh (not initial session)
@@ -131,6 +147,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Get initial session - skip IP logging for cached sessions
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      // Check if user opted out of "remember me" and this is a new browser session
+      const rememberMePref = localStorage.getItem('swapskills_remember_me') === 'true';
+      const hadSessionBefore = sessionStorage.getItem('swapskills_session_active') === 'true';
+      
+      // If not remembering and this is a new browser session (tab/window was closed), sign out
+      if (session?.user && !rememberMePref && !hadSessionBefore) {
+        await supabase.auth.signOut();
+        setSession(null);
+        setUser(null);
+        clearTimeout(safetyTimeout);
+        setLoading(false);
+        return;
+      }
+      
+      // Mark that we have an active session in this browser tab
+      if (session?.user) {
+        sessionStorage.setItem('swapskills_session_active', 'true');
+      }
+      
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -255,7 +290,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null };
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
+    // Store remember me preference for session management
+    if (rememberMe) {
+      localStorage.setItem('swapskills_remember_me', 'true');
+    } else {
+      localStorage.removeItem('swapskills_remember_me');
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
