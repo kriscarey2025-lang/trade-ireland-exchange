@@ -104,10 +104,10 @@ export default function BusinessPlan() {
 
           <h3 className="text-xl font-bold mb-4">Traction to Date</h3>
           
-          {/* Verified Snapshot Box */}
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
+          {/* Verified Snapshot Box - break-inside-avoid keeps it together when printing */}
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6 print:break-inside-avoid">
             <p className="text-sm text-blue-600 font-medium mb-2">📊 As of January 2026</p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="grid grid-cols-4 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-blue-700">36</p>
                 <p className="text-sm text-gray-600">Active Users</p>
