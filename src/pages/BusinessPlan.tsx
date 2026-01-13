@@ -134,6 +134,119 @@ export default function BusinessPlan() {
           </ul>
         </section>
 
+        {/* Current State */}
+        <section className="py-12 print:break-after-page">
+          <h2 className="text-3xl font-bold text-primary border-b-4 border-primary pb-2 mb-6">
+            Current State
+          </h2>
+
+          <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-6">
+            <p className="text-xl font-semibold text-green-700 mb-2">🚀 Live Since: 16th December 2025</p>
+            <p className="text-lg text-gray-700">Platform operational and growing organically</p>
+          </div>
+
+          <h3 className="text-2xl font-bold mb-4">Live Platform Metrics</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-primary/10 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">46</p>
+              <p className="text-sm text-gray-600">Total Sign-ups</p>
+            </div>
+            <div className="bg-primary/10 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">16</p>
+              <p className="text-sm text-gray-600">Active Swaps Posted</p>
+            </div>
+            <div className="bg-primary/10 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">15</p>
+              <p className="text-sm text-gray-600">Conversations Started</p>
+            </div>
+            <div className="bg-primary/10 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">3,041</p>
+              <p className="text-sm text-gray-600">Page Impressions</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="bg-gray-50 rounded-lg p-4 text-center">
+              <p className="text-2xl font-bold text-gray-700">4</p>
+              <p className="text-sm text-gray-600">Completed Swaps</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4 text-center">
+              <p className="text-2xl font-bold text-gray-700">4</p>
+              <p className="text-sm text-gray-600">Onboarded Advertisers</p>
+            </div>
+          </div>
+
+          <h3 className="text-2xl font-bold mb-4">2026 Strategy: Seeded Rollout</h3>
+          <div className="space-y-4 mb-6">
+            <div className="border-l-4 border-primary pl-4">
+              <p className="font-semibold text-lg">Q1 2026: Foundation & App Launch</p>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li><strong>February 2026:</strong> Mobile App rollout (iOS & Android)</li>
+                <li>Establish strong community presence in Carlow & surrounding areas</li>
+                <li>Organic growth through word-of-mouth and local partnerships</li>
+              </ul>
+            </div>
+            <div className="border-l-4 border-primary/70 pl-4">
+              <p className="font-semibold text-lg">Q2-Q4 2026: Leinster Expansion</p>
+              <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                <li>Heavy targeted advertising campaign across Leinster</li>
+                <li>Deploy local representatives in key towns</li>
+                <li>Community centre partnerships and local press campaigns</li>
+                <li>Build advertiser pipeline with local businesses</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 className="text-2xl font-bold mb-4">2026 KPIs to Achieve</h3>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-primary text-white">
+                <th className="border border-gray-300 p-3 text-left">KPI</th>
+                <th className="border border-gray-300 p-3 text-right">Q1 Target</th>
+                <th className="border border-gray-300 p-3 text-right">Q2 Target</th>
+                <th className="border border-gray-300 p-3 text-right">End of 2026</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="bg-gray-50">
+                <td className="border border-gray-300 p-3">Registered Users</td>
+                <td className="border border-gray-300 p-3 text-right">200</td>
+                <td className="border border-gray-300 p-3 text-right">750</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">2,000</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-3">Monthly Active Users</td>
+                <td className="border border-gray-300 p-3 text-right">80</td>
+                <td className="border border-gray-300 p-3 text-right">300</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">800</td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td className="border border-gray-300 p-3">Completed Swaps</td>
+                <td className="border border-gray-300 p-3 text-right">25</td>
+                <td className="border border-gray-300 p-3 text-right">150</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">500</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-3">Onboarded Advertisers</td>
+                <td className="border border-gray-300 p-3 text-right">10</td>
+                <td className="border border-gray-300 p-3 text-right">25</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">50</td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td className="border border-gray-300 p-3">App Downloads</td>
+                <td className="border border-gray-300 p-3 text-right">100</td>
+                <td className="border border-gray-300 p-3 text-right">400</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">1,200</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-3">Ad Revenue</td>
+                <td className="border border-gray-300 p-3 text-right">€500</td>
+                <td className="border border-gray-300 p-3 text-right">€3,000</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">€15,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
         {/* Market Analysis */}
         <section className="py-12 print:break-after-page">
