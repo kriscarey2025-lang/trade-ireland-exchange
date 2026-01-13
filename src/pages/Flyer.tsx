@@ -1,6 +1,11 @@
-import { Users, Heart, Coins, Wrench, BookOpen, Home, UtensilsCrossed, Shirt, Baby, Laptop, Dog, Car, Scissors, Camera, Music, Dumbbell } from "lucide-react";
+import { Users, Heart, Coins, Wrench, BookOpen, Home, UtensilsCrossed, Shirt, Baby, Laptop, Dog, Car, Scissors, Camera, Music, Printer } from "lucide-react";
 import qrCode from "@/assets/flyer-qr-code.jpg";
+import { Button } from "@/components/ui/button";
+
 const Flyer = () => {
+  const handlePrint = () => {
+    window.print();
+  };
   const benefits = [{
     icon: Coins,
     text: "Save Money",
@@ -63,7 +68,18 @@ const Flyer = () => {
     skill: "Music Lessons",
     emoji: "🎵"
   }];
-  return <div className="min-h-screen bg-background flex items-center justify-center p-4 print:p-0 print:bg-white">
+  return <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 print:p-0 print:bg-white">
+      {/* Print/Download Button - Hidden when printing */}
+      <div className="mb-4 print:hidden">
+        <Button onClick={handlePrint} size="lg" className="gap-2">
+          <Printer className="w-5 h-5" />
+          Download / Print Flyer
+        </Button>
+        <p className="text-sm text-muted-foreground text-center mt-2">
+          Tip: Choose "Save as PDF" in the print dialog to download
+        </p>
+      </div>
+
       {/* A4 Flyer Container */}
       <div className="w-full max-w-[210mm] bg-white shadow-2xl print:shadow-none overflow-hidden rounded-lg print:rounded-none">
         {/* Header Banner - Brand Colors */}
