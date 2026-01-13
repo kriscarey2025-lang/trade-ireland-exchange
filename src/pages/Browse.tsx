@@ -9,14 +9,14 @@ import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, Sparkles, ArrowRight, LayoutGrid, List } from "lucide-react";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, Sparkles, ArrowRight, LayoutGrid, List, MapPin, ChevronDown } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
@@ -72,7 +72,7 @@ export default function Browse() {
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">(
     (searchParams.get("category") as ServiceCategory) || "all"
   );
-  const [selectedLocation, setSelectedLocation] = useState("All Ireland");
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedPostType, setSelectedPostType] = useState<PostCategory | "all">("all");
   const [showFilters, setShowFilters] = useState(false);
   const [matchesDialogOpen, setMatchesDialogOpen] = useState(false);
@@ -88,29 +88,51 @@ export default function Browse() {
   // Debounce search query to avoid too many API calls
   const debouncedSearch = useDebounce(searchQuery, 300);
 
-  // Fetch services from database
+  // Fetch services from database (pass first selected location or undefined for API)
   const { data: services = [], isLoading, error } = useServices({
     category: selectedCategory,
-    location: selectedLocation,
+    location: selectedLocations.length === 1 ? selectedLocations[0] : undefined,
     search: debouncedSearch || undefined,
   });
 
+  // Filter by multiple locations on client side when more than one is selected
+  const locationFilteredServices = useMemo(() => {
+    if (selectedLocations.length === 0) return services;
+    return services.filter((service) => 
+      selectedLocations.some(loc => 
+        service.location?.toLowerCase().includes(loc.toLowerCase())
+      )
+    );
+  }, [services, selectedLocations]);
+
+  const toggleLocation = (location: string) => {
+    setSelectedLocations(prev => 
+      prev.includes(location)
+        ? prev.filter(l => l !== location)
+        : [...prev, location]
+    );
+  };
+
+  const clearLocations = () => {
+    setSelectedLocations([]);
+  };
+
   // Filter services by post type on the client side
   const filteredServices = useMemo(() => {
-    if (selectedPostType === "all") return services;
-    return services.filter((service) => service.type === selectedPostType);
-  }, [services, selectedPostType]);
+    if (selectedPostType === "all") return locationFilteredServices;
+    return locationFilteredServices.filter((service) => service.type === selectedPostType);
+  }, [locationFilteredServices, selectedPostType]);
 
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("all");
-    setSelectedLocation("All Ireland");
+    setSelectedLocations([]);
     setSelectedPostType("all");
     setSearchParams({});
   };
 
   const hasActiveFilters =
-    searchQuery || selectedCategory !== "all" || selectedLocation !== "All Ireland" || selectedPostType !== "all";
+    searchQuery || selectedCategory !== "all" || selectedLocations.length > 0 || selectedPostType !== "all";
 
   return (
     <>
@@ -252,21 +274,56 @@ export default function Browse() {
 
               {/* Quick Filters */}
               <div className="flex flex-col sm:flex-row gap-3">
-                <Select
-                  value={selectedLocation}
-                  onValueChange={setSelectedLocation}
-                >
-                  <SelectTrigger className="w-full sm:w-[160px]">
-                    <SelectValue placeholder="Location" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover z-50">
-                    {locations.map((loc) => (
-                      <SelectItem key={loc} value={loc}>
-                        {loc}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full sm:w-[200px] justify-between">
+                      <div className="flex items-center gap-2 truncate">
+                        <MapPin className="h-4 w-4 shrink-0" />
+                        <span className="truncate">
+                          {selectedLocations.length === 0
+                            ? "All Ireland"
+                            : selectedLocations.length === 1
+                            ? selectedLocations[0]
+                            : `${selectedLocations.length} counties`}
+                        </span>
+                      </div>
+                      <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[220px] p-0 bg-popover z-50" align="start">
+                    <div className="p-2 border-b border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Select Counties</span>
+                        {selectedLocations.length > 0 && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 px-2 text-xs"
+                            onClick={clearLocations}
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    <ScrollArea className="h-[300px]">
+                      <div className="p-2 space-y-1">
+                        {locations.slice(1).map((loc) => (
+                          <label
+                            key={loc}
+                            className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer"
+                          >
+                            <Checkbox
+                              checked={selectedLocations.includes(loc)}
+                              onCheckedChange={() => toggleLocation(loc)}
+                            />
+                            <span className="text-sm">{loc}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </PopoverContent>
+                </Popover>
 
                 <div className="flex gap-2">
                   <Button
