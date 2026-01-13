@@ -603,7 +603,7 @@ export default function BusinessPlan() {
 
           <div className="bg-primary/10 border-2 border-primary rounded-lg p-6 mb-8 text-center">
             <p className="text-lg mb-2">Seeking</p>
-            <p className="text-4xl font-bold text-primary">€50,000</p>
+            <p className="text-4xl font-bold text-primary">€25,000</p>
             <p className="text-lg">Seed Investment</p>
           </div>
 
@@ -619,32 +619,32 @@ export default function BusinessPlan() {
             <tbody>
               <tr className="bg-gray-50">
                 <td className="border border-gray-300 p-3">Marketing</td>
-                <td className="border border-gray-300 p-3 text-right font-semibold">€20,000</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">€10,000</td>
                 <td className="border border-gray-300 p-3">User acquisition campaigns</td>
               </tr>
               <tr>
                 <td className="border border-gray-300 p-3">Local Representatives</td>
-                <td className="border border-gray-300 p-3 text-right font-semibold">€10,000</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">€5,000</td>
                 <td className="border border-gray-300 p-3">Part-time community outreach</td>
               </tr>
               <tr className="bg-gray-50">
                 <td className="border border-gray-300 p-3">Sales & Marketing Manager</td>
-                <td className="border border-gray-300 p-3 text-right font-semibold">€10,000</td>
-                <td className="border border-gray-300 p-3">6-month initial salary (ads focus)</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">€5,000</td>
+                <td className="border border-gray-300 p-3">3-month initial salary (ads focus)</td>
               </tr>
               <tr>
                 <td className="border border-gray-300 p-3">Legal/Compliance</td>
-                <td className="border border-gray-300 p-3 text-right font-semibold">€5,000</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">€2,500</td>
                 <td className="border border-gray-300 p-3">Terms, GDPR, contracts</td>
               </tr>
               <tr className="bg-gray-50">
                 <td className="border border-gray-300 p-3">Platform Development</td>
-                <td className="border border-gray-300 p-3 text-right font-semibold">€2,500</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">€1,500</td>
                 <td className="border border-gray-300 p-3">Premium features</td>
               </tr>
               <tr>
                 <td className="border border-gray-300 p-3">Contingency</td>
-                <td className="border border-gray-300 p-3 text-right font-semibold">€2,500</td>
+                <td className="border border-gray-300 p-3 text-right font-semibold">€1,000</td>
                 <td className="border border-gray-300 p-3">Buffer</td>
               </tr>
             </tbody>
