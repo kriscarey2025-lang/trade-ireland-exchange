@@ -102,36 +102,38 @@ export default function BusinessPlan() {
             </ul>
           </div>
 
-          <h3 className="text-xl font-bold mb-4">Traction to Date</h3>
-          
-          {/* Verified Snapshot Box - break-inside-avoid keeps it together when printing */}
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6 print:break-inside-avoid">
-            <p className="text-sm text-blue-600 font-medium mb-2">📊 As of January 2026</p>
-            <div className="grid grid-cols-4 gap-4 text-center">
-              <div>
-                <p className="text-2xl font-bold text-blue-700">36</p>
-                <p className="text-sm text-gray-600">Active Users</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-blue-700">15</p>
-                <p className="text-sm text-gray-600">Live Swap Offers</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-blue-700">4</p>
-                <p className="text-sm text-gray-600">Completed Swaps</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-blue-700">3,041</p>
-                <p className="text-sm text-gray-600">Page Views</p>
+          <div className="print:break-inside-avoid">
+            <h3 className="text-xl font-bold mb-4">Traction to Date</h3>
+            
+            {/* Verified Snapshot Box */}
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
+              <p className="text-sm text-blue-600 font-medium mb-2">📊 As of January 2026</p>
+              <div className="grid grid-cols-4 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-blue-700">36</p>
+                  <p className="text-sm text-gray-600">Active Users</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-blue-700">15</p>
+                  <p className="text-sm text-gray-600">Live Swap Offers</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-blue-700">4</p>
+                  <p className="text-sm text-gray-600">Completed Swaps</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-blue-700">3,041</p>
+                  <p className="text-sm text-gray-600">Page Views</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <ul className="list-disc list-inside space-y-2 text-lg">
-            <li>Live platform with active users in Carlow and surrounding counties</li>
-            <li>Press coverage in Carlow Nationalist (January 2026)</li>
-            <li>Built-in AI matching, messaging, reviews, and verification systems</li>
-          </ul>
+            <ul className="list-disc list-inside space-y-2 text-lg">
+              <li>Live platform with active users in Carlow and surrounding counties</li>
+              <li>Press coverage in Carlow Nationalist (January 2026)</li>
+              <li>Built-in AI matching, messaging, reviews, and verification systems</li>
+            </ul>
+          </div>
         </section>
 
         {/* Current State */}
