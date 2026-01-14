@@ -8,7 +8,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   return (
     <footer ref={ref} className="border-t border-border bg-secondary/30 pb-20 md:pb-0">
       <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2 font-bold text-xl">
@@ -52,6 +52,18 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
               <li>
                 <Link to="/about" className="hover:text-primary transition-colors">
                   About Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* For Business */}
+          <div className="space-y-4">
+            <h4 className="font-semibold">For Business</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <Link to="/sponsorship" className="hover:text-primary transition-colors">
+                  Sponsorship Packages
                 </Link>
               </li>
               <li>
