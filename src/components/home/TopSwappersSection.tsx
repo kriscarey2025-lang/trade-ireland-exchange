@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Award, MapPin, ArrowRight, Repeat } from "lucide-react";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
@@ -24,9 +24,9 @@ interface TopSwapper {
 }
 
 const rankIcons = [
-  { icon: Trophy, color: "text-yellow-500", bg: "bg-yellow-500/10" },
-  { icon: Medal, color: "text-gray-400", bg: "bg-gray-400/10" },
-  { icon: Award, color: "text-amber-600", bg: "bg-amber-600/10" },
+  { icon: Trophy, color: "text-highlight", bg: "bg-highlight/10" },
+  { icon: Medal, color: "text-muted-foreground", bg: "bg-muted/50" },
+  { icon: Award, color: "text-accent", bg: "bg-accent/10" },
 ];
 
 export function TopSwappersSection() {
@@ -43,11 +43,7 @@ export function TopSwappersSection() {
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
-
-  // Don't render if no swappers with completed swaps
-  if (!isLoading && (!topSwappers || topSwappers.length === 0)) {
-    return null;
-  }
+  const hasSwappers = !!topSwappers && topSwappers.length > 0;
 
   const getInitials = (name: string | null) => {
     if (!name) return "?";
@@ -105,6 +101,26 @@ export function TopSwappersSection() {
               </Card>
             ))}
           </div>
+        ) : !hasSwappers ? (
+          <Card className="border-dashed">
+            <CardContent className="p-6 text-center">
+              <p className="font-semibold">No completed swaps yet</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Complete your first swap to appear on the leaderboard.
+              </p>
+              <div className="mt-4 flex justify-center">
+                {!user ? (
+                  <Button size="sm" asChild>
+                    <Link to="/auth?mode=signup">Join Free</Link>
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/new-service">Post a service</Link>
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
             {topSwappers?.map((swapper, index) => {
@@ -122,9 +138,7 @@ export function TopSwappersSection() {
                     <CardContent className="p-3 md:p-4">
                       <div className="flex flex-col items-center gap-2 text-center">
                         {/* Rank badge */}
-                        <div
-                          className={`absolute top-2 right-2 p-1 rounded-full ${rankBg}`}
-                        >
+                        <div className={`absolute top-2 right-2 p-1 rounded-full ${rankBg}`}>
                           <RankIcon className={`h-3 w-3 md:h-4 md:w-4 ${rankColor}`} />
                         </div>
 
@@ -139,9 +153,7 @@ export function TopSwappersSection() {
                               {getInitials(swapper.full_name)}
                             </AvatarFallback>
                           </Avatar>
-                          {index === 0 && (
-                            <div className="absolute -top-1 -right-1 text-lg">👑</div>
-                          )}
+                          {index === 0 && <div className="absolute -top-1 -right-1 text-lg">👑</div>}
                         </div>
 
                         {/* Name and badges */}
@@ -161,9 +173,7 @@ export function TopSwappersSection() {
                           {swapper.location && (
                             <div className="flex items-center gap-0.5 text-[10px] md:text-xs text-muted-foreground">
                               <MapPin className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                              <span className="truncate max-w-[80px]">
-                                {swapper.location}
-                              </span>
+                              <span className="truncate max-w-[80px]">{swapper.location}</span>
                             </div>
                           )}
                         </div>

@@ -27,6 +27,7 @@ import { postCategoryLabels } from "@/lib/postCategories";
 import { MatchesDialog } from "@/components/matching/MatchesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { HeroSection } from "@/components/home/HeroSection";
+import { TopSwappersSection } from "@/components/home/TopSwappersSection";
 
 const locations = [
   "All Ireland",
@@ -166,7 +167,8 @@ export default function Browse() {
         <Header />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
-        <div id="services-section" className="container py-8">
+          <TopSwappersSection />
+          <div id="services-section" className="container py-8">
 
           {/* Matches Dialog */}
           <MatchesDialog 
