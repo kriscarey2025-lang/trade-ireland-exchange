@@ -262,27 +262,6 @@ function generateCTAEmail(firstName: string): string {
                 </a>
               </div>
               
-              <!-- What's happening -->
-              <div style="background: #faf8f5; border-radius: 12px; padding: 24px; margin: 24px 0;">
-                <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #1f2937;">
-                  🔥 What people are swapping right now:
-                </h3>
-                <ul style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 1.8;">
-                  <li>Piano lessons ↔ Garden help</li>
-                  <li>Graphic design ↔ Irish language classes</li>
-                  <li>Website help ↔ Car servicing</li>
-                  <li>Baking lessons ↔ Dog walking</li>
-                </ul>
-              </div>
-              
-              <!-- Quote Section -->
-              <div style="background: #fffefa; border-radius: 12px; padding: 24px; margin: 32px 0; text-align: center; border: 1px solid #f0ebe3;">
-                <p style="margin: 0; font-size: 16px; color: #4b5563; font-style: italic; line-height: 1.6;">
-                  "I was nervous at first, but my first swap was brilliant. Got my garden sorted and made a new friend!"
-                </p>
-                <p style="margin: 12px 0 0 0; font-size: 14px; color: #f97316;">— Sarah, Carlow</p>
-              </div>
-              
               <p style="margin: 24px 0 0 0; font-size: 16px; line-height: 1.7; color: #4b5563; text-align: center;">
                 Go on — give it a go! 🧡
               </p>
