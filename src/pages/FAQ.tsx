@@ -34,6 +34,10 @@ const faqs = [
     answer: "While our platform is designed for skill swapping, we understand that sometimes a hybrid approach works best. You can indicate if you're open to other arrangements in your listing description.",
   },
   {
+    question: "What qualifications do I need to offer something on Swap-Skills?",
+    answer: "None. Honesty is one of our only requirements here – if you're a hobby DIY'er looking to deepen your skills and help neighbours, you are just as valued and welcome here, as long as you are honest about your skillset. This way expectations can be set and you will be sure to have a better experience yourself.",
+  },
+  {
     question: "What types of skills can I swap?",
     answer: "Almost anything! From gardening, DIY, and home repairs to tutoring, music lessons, cooking, pet care, and creative services. If you have a skill that could help someone, we'd love for you to share it.",
   },
