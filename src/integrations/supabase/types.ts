@@ -1358,6 +1358,18 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_top_swappers: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          completed_swaps: number
+          full_name: string
+          id: string
+          is_founder: boolean
+          location: string
+          verification_status: string
+        }[]
+      }
       get_user_engagement_summary: {
         Args: { _user_id: string }
         Returns: {
