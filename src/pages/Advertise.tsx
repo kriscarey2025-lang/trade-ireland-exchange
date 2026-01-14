@@ -249,6 +249,55 @@ Terms Accepted: Yes
             </div>
           </section>
 
+          {/* Ethical Sponsorship Alternative */}
+          <section className="py-12 bg-primary/5 border-y border-primary/10">
+            <div className="container">
+              <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-bold mb-3">
+                    Looking for Ethical Sponsorship Instead?
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Our sponsorship packages offer visibility without intrusive ads. 
+                    Support the community while building your reputation.
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  <Card className="text-center">
+                    <CardContent className="py-4">
+                      <h3 className="font-semibold text-sm">Community Supporter</h3>
+                      <p className="text-xs text-muted-foreground">Small businesses</p>
+                      <p className="font-bold text-primary mt-1">€25–€40/mo</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="text-center border-primary">
+                    <CardContent className="py-4">
+                      <h3 className="font-semibold text-sm">Local Partner</h3>
+                      <p className="text-xs text-muted-foreground">Established businesses</p>
+                      <p className="font-bold text-primary mt-1">€60–€90/mo</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="text-center">
+                    <CardContent className="py-4">
+                      <h3 className="font-semibold text-sm">Town Champion</h3>
+                      <p className="text-xs text-muted-foreground">Councils & anchor businesses</p>
+                      <p className="font-bold text-primary mt-1">€1,200–€2,000/yr</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="text-center">
+                  <Button asChild variant="outline">
+                    <Link to="/sponsorship">
+                      View Sponsorship Packages
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Benefits */}
           <section className="py-12 bg-secondary/20">
             <div className="container">

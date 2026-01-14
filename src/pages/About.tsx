@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Users, Leaf, Shield, ArrowRight, UserPlus, ListChecks, MessageCircle, HandshakeIcon, Star, Flag, MapPin, Clock, Sprout, Globe, HeartHandshake, Coins } from "lucide-react";
+import { Heart, Users, Leaf, Shield, ArrowRight, UserPlus, ListChecks, MessageCircle, HandshakeIcon, Star, Flag, MapPin, Clock, Sprout, Globe, HeartHandshake, Coins, Building2, Trophy } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { BreadcrumbJsonLd, OrganizationJsonLd, PersonJsonLd } from "@/components/seo/JsonLd";
 import founderImage from "@/assets/founder-kristina-new.png";
@@ -445,6 +445,67 @@ export default function About() {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Partner With Us */}
+          <section className="py-16 border-t">
+            <div className="container">
+              <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-10">
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4">
+                    <Building2 className="w-4 h-4" />
+                    For Local Businesses
+                  </span>
+                  <h2 className="text-3xl font-bold mb-4">Partner With Us</h2>
+                  <p className="text-muted-foreground max-w-2xl mx-auto">
+                    Support your community while growing your business. Our ethical sponsorship 
+                    packages give local businesses visibility without intrusive ads or pay-to-win mechanics.
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6 mb-8">
+                  <Card className="text-center">
+                    <CardContent className="pt-6">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-3">
+                        <Heart className="h-6 w-6 text-primary" />
+                      </div>
+                      <h3 className="font-semibold mb-1">Community Supporter</h3>
+                      <p className="text-sm text-muted-foreground mb-2">For small local businesses</p>
+                      <p className="text-lg font-bold text-primary">€25–€40/mo</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="text-center border-primary">
+                    <CardContent className="pt-6">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-3">
+                        <Building2 className="h-6 w-6 text-primary" />
+                      </div>
+                      <h3 className="font-semibold mb-1">Local Partner</h3>
+                      <p className="text-sm text-muted-foreground mb-2">For established businesses</p>
+                      <p className="text-lg font-bold text-primary">€60–€90/mo</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="text-center">
+                    <CardContent className="pt-6">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-3">
+                        <Trophy className="h-6 w-6 text-primary" />
+                      </div>
+                      <h3 className="font-semibold mb-1">Town Champion</h3>
+                      <p className="text-sm text-muted-foreground mb-2">For anchor businesses & councils</p>
+                      <p className="text-lg font-bold text-primary">€1,200–€2,000/yr</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="text-center">
+                  <Button asChild>
+                    <Link to="/sponsorship">
+                      View Sponsorship Packages
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </section>
