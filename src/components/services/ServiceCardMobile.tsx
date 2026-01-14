@@ -39,6 +39,7 @@ interface ServiceData {
   isTimeSensitive?: boolean;
   neededByDate?: Date | null;
   createdAt?: Date;
+  completedSwapsCount?: number;
   user?: ServiceUser;
 }
 
@@ -217,6 +218,11 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
                 <span className="flex items-center gap-0.5 text-[11px] text-warning ml-auto">
                   <Star className="h-3 w-3 fill-current" />
                   {service.user.rating.toFixed(1)}
+                </span>
+              )}
+              {(service.completedSwapsCount ?? 0) > 0 && (
+                <span className="flex items-center gap-0.5 text-[11px] text-primary ml-auto">
+                  {service.completedSwapsCount} swaps ✓
                 </span>
               )}
             </Link>
