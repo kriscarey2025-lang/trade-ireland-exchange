@@ -180,7 +180,7 @@ export function TopSwappersSection() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 max-w-5xl mx-auto">
             {topSwappers?.map((swapper, index) => {
               const RankIcon = rankIcons[index]?.icon || Award;
               const rankColor = rankIcons[index]?.color || "text-muted-foreground";
