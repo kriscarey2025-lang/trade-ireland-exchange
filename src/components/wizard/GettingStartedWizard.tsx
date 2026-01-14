@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { DiscoveryStep } from "./DiscoveryStep";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -44,7 +45,7 @@ import { trackServiceCreated } from "@/hooks/useEngagementTracking";
 import { postCategoryLabels, postCategoryIcons } from "@/lib/postCategories";
 import { ImageUpload } from "@/components/services/ImageUpload";
 
-type WizardStep = "choice" | "post-type" | "goal" | "details" | "generating" | "review" | "checklist" | "complete";
+type WizardStep = "discovery" | "choice" | "post-type" | "goal" | "details" | "generating" | "review" | "checklist" | "complete";
 
 interface GeneratedPost {
   title: string;
@@ -70,8 +71,9 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  const [currentStep, setCurrentStep] = useState<WizardStep>("choice");
+  const [currentStep, setCurrentStep] = useState<WizardStep>("discovery");
   const [isLoading, setIsLoading] = useState(false);
+  const [userLocation, setUserLocation] = useState<string>("");
   
   // Step 1: Goal - now maps to PostCategory
   const [goal, setGoal] = useState<"free_offer" | "help_request" | "skill_swap" | "">("");
@@ -95,14 +97,35 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
   const [wantsSocialLinks, setWantsSocialLinks] = useState(false);
   const [wantsWeeklyDigest, setWantsWeeklyDigest] = useState(false);
 
+  // Fetch user's location from profile
+  useEffect(() => {
+    const fetchUserLocation = async () => {
+      if (!user) return;
+      const { data } = await supabase
+        .from("profiles")
+        .select("location")
+        .eq("id", user.id)
+        .maybeSingle();
+      
+      if (data?.location) {
+        setUserLocation(data.location);
+      }
+    };
+    fetchUserLocation();
+  }, [user]);
+
   const getProgress = () => {
     // Only count progress from goal step onwards (the AI wizard flow)
     const wizardSteps: WizardStep[] = ["goal", "details", "generating", "review", "checklist", "complete"];
-    if (currentStep === "choice" || currentStep === "post-type") {
-      return 0; // Choice screens don't show progress
+    if (currentStep === "discovery" || currentStep === "choice" || currentStep === "post-type") {
+      return 0; // Discovery and choice screens don't show progress
     }
     const index = wizardSteps.indexOf(currentStep);
     return ((index + 1) / wizardSteps.length) * 100;
+  };
+
+  const handleDiscoveryComplete = () => {
+    setCurrentStep("choice");
   };
 
   const handleBrowseChoice = () => {
@@ -273,6 +296,14 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
 
   const renderStep = () => {
     switch (currentStep) {
+      case "discovery":
+        return (
+          <DiscoveryStep 
+            onComplete={handleDiscoveryComplete} 
+            userLocation={userLocation}
+          />
+        );
+
       case "choice":
         return (
           <div className="space-y-6">
@@ -280,9 +311,9 @@ export function GettingStartedWizard({ onComplete, embedded = false }: GettingSt
               <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center mb-4">
                 <PartyPopper className="h-8 w-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Welcome to SwapSkills! 🎉</h2>
+              <h2 className="text-2xl font-bold mb-2">Now, let's get you started! 🚀</h2>
               <p className="text-muted-foreground">
-                What would you like to do first?
+                What would you like to do next?
               </p>
             </div>
 
