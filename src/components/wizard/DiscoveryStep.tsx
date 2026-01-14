@@ -27,12 +27,16 @@ interface DiscoveryStepProps {
   userLocation?: string;
 }
 
+const ITEMS_PER_PAGE = 6;
+const MAX_PAGES = 2;
+
 export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) {
   const { user } = useAuth();
-  const [services, setServices] = useState<LocalService[]>([]);
+  const [allServices, setAllServices] = useState<LocalService[]>([]);
   const [loading, setLoading] = useState(true);
   const [likedServices, setLikedServices] = useState<Set<string>>(new Set());
   const [submitting, setSubmitting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchLocalServices();
@@ -49,18 +53,24 @@ export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) 
 
       if (error) throw error;
 
-      // Filter out user's own services and limit to 6
+      // Filter out user's own services and limit to 12 (2 pages of 6)
       const filteredServices = (data || [])
         .filter((s: LocalService) => s.user_id !== user?.id)
-        .slice(0, 6);
+        .slice(0, ITEMS_PER_PAGE * MAX_PAGES);
 
-      setServices(filteredServices);
+      setAllServices(filteredServices);
     } catch (error) {
       console.error("Error fetching services:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Get services for current page
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const services = allServices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(allServices.length / ITEMS_PER_PAGE);
+  const hasNextPage = currentPage < totalPages;
 
   const toggleLike = (serviceId: string) => {
     setLikedServices(prev => {
@@ -135,12 +145,19 @@ export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) 
         <p className="text-muted-foreground">
           Heart the listings that interest you — we'll let them know!
         </p>
-        {userLocation && (
-          <Badge variant="outline" className="mt-2">
-            <MapPin className="h-3 w-3 mr-1" />
-            Showing listings near {userLocation}
-          </Badge>
-        )}
+        <div className="flex items-center justify-center gap-2 mt-2 flex-wrap">
+          {userLocation && (
+            <Badge variant="outline">
+              <MapPin className="h-3 w-3 mr-1" />
+              Near {userLocation}
+            </Badge>
+          )}
+          {totalPages > 1 && (
+            <Badge variant="secondary">
+              Page {currentPage} of {totalPages}
+            </Badge>
+          )}
+        </div>
       </div>
 
       {/* Services Grid */}
@@ -150,7 +167,7 @@ export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) 
             <Skeleton key={i} className="h-32 rounded-xl" />
           ))}
         </div>
-      ) : services.length === 0 ? (
+      ) : allServices.length === 0 ? (
         <div className="text-center py-8 bg-muted/30 rounded-xl">
           <p className="text-muted-foreground">
             No listings in your area yet — be the first to post!
@@ -259,26 +276,47 @@ export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) 
 
       {/* Actions */}
       <div className="space-y-3 pt-4">
-        <Button
-          variant="hero"
-          className="w-full"
-          onClick={handleContinue}
-          disabled={submitting}
-        >
-          {submitting ? (
-            "Saving..."
-          ) : likedServices.size > 0 ? (
-            <>
-              Continue
+        {hasNextPage ? (
+          <>
+            <Button
+              variant="hero"
+              className="w-full"
+              onClick={() => setCurrentPage(prev => prev + 1)}
+            >
+              See More Listings
               <ArrowRight className="ml-2 h-4 w-4" />
-            </>
-          ) : (
-            <>
-              Skip & Continue
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </>
-          )}
-        </Button>
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full text-muted-foreground"
+              onClick={handleContinue}
+              disabled={submitting}
+            >
+              {submitting ? "Saving..." : likedServices.size > 0 ? "Skip to next step" : "Skip & Continue"}
+            </Button>
+          </>
+        ) : (
+          <Button
+            variant="hero"
+            className="w-full"
+            onClick={handleContinue}
+            disabled={submitting}
+          >
+            {submitting ? (
+              "Saving..."
+            ) : likedServices.size > 0 ? (
+              <>
+                Continue
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </>
+            ) : (
+              <>
+                Skip & Continue
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </>
+            )}
+          </Button>
+        )}
 
         {services.length > 0 && likedServices.size === 0 && (
           <p className="text-xs text-center text-muted-foreground">
