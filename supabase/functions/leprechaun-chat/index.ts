@@ -246,7 +246,7 @@ Q: How does skill swapping work?
 A: It's simple! Browse available services or post your own skills. When you find something you need, message the provider and arrange a swap. You might trade an hour of gardening for an hour of guitar lessons, or home repairs for homemade meals. The possibilities are endless!
 
 Q: Is Swap-Skills really free?
-A: Yes! For our first year, Swap-Skills is completely free to use. We want to build a strong community before considering any premium features. Our goal is to help Irish neighbours connect, not to profit from kindness.
+A: Yes! Swap-Skills is completely free to use. We want to build a strong community before considering any premium features. Our goal is to help Irish neighbours connect, not to profit from kindness. Swap-Skills will offer Ad Spaces to local businesses and will live from Communities Sponsorships.
 
 Q: How do I know if someone is trustworthy?
 A: We encourage users to complete their profiles, share a bit about themselves, and communicate openly through our messaging system. Start with smaller swaps to build trust. Remember, most people are good – we're here to help you find them!

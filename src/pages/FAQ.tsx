@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     question: "Is Swap-Skills really free?",
-    answer: "Yes! For our first year, Swap-Skills is completely free to use. We want to build a strong community before considering any premium features. Our goal is to help Irish neighbours connect, not to profit from kindness.",
+    answer: "Yes! Swap-Skills is completely free to use. We want to build a strong community before considering any premium features. Our goal is to help Irish neighbours connect, not to profit from kindness. Swap-Skills will offer Ad Spaces to local businesses and will live from Communities Sponsorships.",
   },
   {
     question: "How do I know if someone is trustworthy?",
