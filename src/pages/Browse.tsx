@@ -16,6 +16,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, Sparkles, ArrowRight, LayoutGrid, List, MapPin, ChevronDown, Tag } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -78,6 +85,7 @@ export default function Browse() {
   const [selectedPostType, setSelectedPostType] = useState<PostCategory | "all">("all");
   const [matchesDialogOpen, setMatchesDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Set default to grid view on mobile (Vinted-style 2 columns)
   useEffect(() => {
@@ -220,222 +228,415 @@ export default function Browse() {
 
 
           {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Browse All Services</h1>
-            <p className="text-muted-foreground">
+          <div className="mb-4 md:mb-8">
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">Browse All Services</h1>
+            <p className="text-sm md:text-base text-muted-foreground">
               Find services you need or see what others are looking for
             </p>
           </div>
 
-          {/* Post Type Filters */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            <Button
-              variant={selectedPostType === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedPostType("all")}
-              className="gap-2"
-            >
-              All Types
-            </Button>
-            <Button
-              variant={selectedPostType === "free_offer" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedPostType("free_offer")}
-              className="gap-2"
-            >
-              <Gift className="h-4 w-4" />
-              {postCategoryLabels.free_offer}
-            </Button>
-            <Button
-              variant={selectedPostType === "help_request" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedPostType("help_request")}
-              className="gap-2"
-            >
-              <HelpCircle className="h-4 w-4" />
-              {postCategoryLabels.help_request}
-            </Button>
-            <Button
-              variant={selectedPostType === "skill_swap" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedPostType("skill_swap")}
-              className="gap-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              {postCategoryLabels.skill_swap}
-            </Button>
-          </div>
-
-          {/* AI Matches CTA - Above search bar */}
-          {user && (
-            <div className="mb-4 flex justify-start">
-              <button 
-                onClick={() => setMatchesDialogOpen(true)}
-                className="group inline-flex items-center gap-2 bg-gradient-to-r from-success to-success/80 text-white px-5 py-2.5 rounded-full font-medium shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+          {/* Compact Mobile Filter Bar */}
+          <div className="md:hidden flex items-center justify-between gap-2 mb-4">
+            <div className="flex items-center gap-1">
+              <Button
+                variant={viewMode === "list" ? "secondary" : "ghost"}
+                size="sm"
+                className="h-9 px-3 gap-1.5"
+                onClick={() => setViewMode("list")}
               >
-                <Sparkles className="h-4 w-4 animate-pulse" />
-                <span>Find Your Matches</span>
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-              </button>
+                <List className="h-4 w-4" />
+                List
+              </Button>
+              <Button
+                variant={viewMode === "grid" ? "secondary" : "ghost"}
+                size="sm"
+                className="h-9 px-3 gap-1.5"
+                onClick={() => setViewMode("grid")}
+              >
+                <LayoutGrid className="h-4 w-4" />
+                Grid
+              </Button>
             </div>
-          )}
-
-          {/* Search & Filters */}
-          <div className="bg-card rounded-xl border border-border p-4 mb-8 shadow-soft">
-            <div className="flex flex-col gap-3">
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search services..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-
-              {/* Quick Filters */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full sm:w-[200px] justify-between">
-                      <div className="flex items-center gap-2 truncate">
-                        <MapPin className="h-4 w-4 shrink-0" />
-                        <span className="truncate">
-                          {selectedLocations.length === 0
-                            ? "All Ireland"
-                            : selectedLocations.length === 1
-                            ? selectedLocations[0]
-                            : `${selectedLocations.length} counties`}
-                        </span>
+            
+            <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm" className="h-9 gap-1.5">
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Refine
+                  {hasActiveFilters && (
+                    <Badge variant="secondary" className="h-5 w-5 p-0 justify-center text-xs ml-1">
+                      {(selectedCategories.length > 0 ? 1 : 0) + 
+                       (selectedLocations.length > 0 ? 1 : 0) + 
+                       (selectedPostType !== "all" ? 1 : 0) +
+                       (searchQuery ? 1 : 0)}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-[85vh] rounded-t-xl">
+                <SheetHeader className="pb-4">
+                  <SheetTitle className="flex items-center justify-between">
+                    <span>Filter Services</span>
+                    {hasActiveFilters && (
+                      <Button variant="ghost" size="sm" onClick={clearFilters}>
+                        <X className="h-4 w-4 mr-1" />
+                        Clear All
+                      </Button>
+                    )}
+                  </SheetTitle>
+                </SheetHeader>
+                
+                <ScrollArea className="h-[calc(85vh-120px)]">
+                  <div className="space-y-6 pr-2">
+                    {/* Search in Sheet */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Search</label>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Search services..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="pl-10"
+                        />
                       </div>
-                      <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[220px] p-0 bg-popover z-50" align="start">
-                    <div className="p-2 border-b border-border">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Select Counties</span>
+                    </div>
+
+                    {/* Post Type in Sheet */}
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Type</label>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant={selectedPostType === "all" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPostType("all")}
+                        >
+                          All Types
+                        </Button>
+                        <Button
+                          variant={selectedPostType === "free_offer" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPostType("free_offer")}
+                          className="gap-1.5"
+                        >
+                          <Gift className="h-3.5 w-3.5" />
+                          {postCategoryLabels.free_offer}
+                        </Button>
+                        <Button
+                          variant={selectedPostType === "help_request" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPostType("help_request")}
+                          className="gap-1.5"
+                        >
+                          <HelpCircle className="h-3.5 w-3.5" />
+                          {postCategoryLabels.help_request}
+                        </Button>
+                        <Button
+                          variant={selectedPostType === "skill_swap" ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedPostType("skill_swap")}
+                          className="gap-1.5"
+                        >
+                          <RefreshCw className="h-3.5 w-3.5" />
+                          {postCategoryLabels.skill_swap}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Location in Sheet */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-sm font-medium">County</label>
                         {selectedLocations.length > 0 && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-6 px-2 text-xs"
-                            onClick={clearLocations}
-                          >
+                          <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={clearLocations}>
                             Clear
                           </Button>
                         )}
                       </div>
-                    </div>
-                    <ScrollArea className="h-[300px]">
-                      <div className="p-2 space-y-1">
+                      <div className="grid grid-cols-2 gap-2 max-h-[200px] overflow-y-auto">
                         {locations.slice(1).map((loc) => (
                           <label
                             key={loc}
-                            className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer"
+                            className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer border border-border"
                           >
                             <Checkbox
                               checked={selectedLocations.includes(loc)}
                               onCheckedChange={() => toggleLocation(loc)}
                             />
-                            <span className="text-sm">{loc}</span>
+                            <span className="text-sm truncate">{loc}</span>
                           </label>
                         ))}
                       </div>
-                    </ScrollArea>
-                  </PopoverContent>
-                </Popover>
+                    </div>
 
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="flex-1 sm:flex-none justify-between">
-                      <div className="flex items-center gap-2 truncate">
-                        <Tag className="h-4 w-4 shrink-0" />
-                        <span className="truncate">
-                          {selectedCategories.length === 0
-                            ? "All Categories"
-                            : selectedCategories.length === 1
-                            ? categoryLabels[selectedCategories[0]]
-                            : `${selectedCategories.length} categories`}
-                        </span>
-                      </div>
-                      <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[260px] p-0 bg-popover z-50" align="start">
-                    <div className="p-2 border-b border-border">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Select Categories</span>
+                    {/* Categories in Sheet */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-sm font-medium">Category</label>
                         {selectedCategories.length > 0 && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-6 px-2 text-xs"
-                            onClick={clearCategories}
-                          >
+                          <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={clearCategories}>
                             Clear
                           </Button>
                         )}
                       </div>
-                    </div>
-                    <ScrollArea className="h-[300px]">
-                      <div className="p-2 space-y-1">
+                      <div className="grid grid-cols-2 gap-2 max-h-[200px] overflow-y-auto">
                         {allCategories.map((category) => (
                           <label
                             key={category}
-                            className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer"
+                            className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer border border-border"
                           >
                             <Checkbox
                               checked={selectedCategories.includes(category)}
                               onCheckedChange={() => toggleCategory(category)}
                             />
-                            <span className="text-sm flex items-center gap-1.5">
+                            <span className="text-sm flex items-center gap-1 truncate">
                               {categoryIcons[category]} {categoryLabels[category]}
                             </span>
                           </label>
                         ))}
                       </div>
-                    </ScrollArea>
-                  </PopoverContent>
-                </Popover>
+                    </div>
+                  </div>
+                </ScrollArea>
 
-                {hasActiveFilters && (
-                  <Button variant="ghost" size="sm" onClick={clearFilters} className="shrink-0">
-                    <X className="h-4 w-4 mr-1" />
-                    Clear
+                <div className="pt-4 border-t mt-4">
+                  <Button className="w-full" onClick={() => setFiltersOpen(false)}>
+                    Show {filteredServices.length} Results
                   </Button>
-                )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* Active Filters Pills - Mobile */}
+          {hasActiveFilters && (
+            <div className="md:hidden flex flex-wrap gap-1.5 mb-4">
+              {searchQuery && (
+                <Badge variant="secondary" className="gap-1 pr-1">
+                  "{searchQuery}"
+                  <button onClick={() => setSearchQuery("")} className="ml-1 hover:bg-muted rounded">
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+              {selectedPostType !== "all" && (
+                <Badge variant="secondary" className="gap-1 pr-1">
+                  {postCategoryLabels[selectedPostType]}
+                  <button onClick={() => setSelectedPostType("all")} className="ml-1 hover:bg-muted rounded">
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+              {selectedLocations.map(loc => (
+                <Badge key={loc} variant="secondary" className="gap-1 pr-1">
+                  {loc}
+                  <button onClick={() => toggleLocation(loc)} className="ml-1 hover:bg-muted rounded">
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+              {selectedCategories.map(cat => (
+                <Badge key={cat} variant="secondary" className="gap-1 pr-1">
+                  {categoryLabels[cat]}
+                  <button onClick={() => toggleCategory(cat)} className="ml-1 hover:bg-muted rounded">
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          )}
+
+          {/* Desktop Filters - Hidden on Mobile */}
+          <div className="hidden md:block">
+            {/* Post Type Filters */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              <Button
+                variant={selectedPostType === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedPostType("all")}
+                className="gap-2"
+              >
+                All Types
+              </Button>
+              <Button
+                variant={selectedPostType === "free_offer" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedPostType("free_offer")}
+                className="gap-2"
+              >
+                <Gift className="h-4 w-4" />
+                {postCategoryLabels.free_offer}
+              </Button>
+              <Button
+                variant={selectedPostType === "help_request" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedPostType("help_request")}
+                className="gap-2"
+              >
+                <HelpCircle className="h-4 w-4" />
+                {postCategoryLabels.help_request}
+              </Button>
+              <Button
+                variant={selectedPostType === "skill_swap" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedPostType("skill_swap")}
+                className="gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                {postCategoryLabels.skill_swap}
+              </Button>
+            </div>
+
+            {/* AI Matches CTA - Above search bar */}
+            {user && (
+              <div className="mb-4 flex justify-start">
+                <button 
+                  onClick={() => setMatchesDialogOpen(true)}
+                  className="group inline-flex items-center gap-2 bg-gradient-to-r from-success to-success/80 text-white px-5 py-2.5 rounded-full font-medium shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+                >
+                  <Sparkles className="h-4 w-4 animate-pulse" />
+                  <span>Find Your Matches</span>
+                  <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </div>
+            )}
+
+            {/* Search & Filters */}
+            <div className="bg-card rounded-xl border border-border p-4 mb-8 shadow-soft">
+              <div className="flex flex-col gap-3">
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search services..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                {/* Quick Filters */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full sm:w-[200px] justify-between">
+                        <div className="flex items-center gap-2 truncate">
+                          <MapPin className="h-4 w-4 shrink-0" />
+                          <span className="truncate">
+                            {selectedLocations.length === 0
+                              ? "All Ireland"
+                              : selectedLocations.length === 1
+                              ? selectedLocations[0]
+                              : `${selectedLocations.length} counties`}
+                          </span>
+                        </div>
+                        <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[220px] p-0 bg-popover z-50" align="start">
+                      <div className="p-2 border-b border-border">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Select Counties</span>
+                          {selectedLocations.length > 0 && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-6 px-2 text-xs"
+                              onClick={clearLocations}
+                            >
+                              Clear
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      <ScrollArea className="h-[300px]">
+                        <div className="p-2 space-y-1">
+                          {locations.slice(1).map((loc) => (
+                            <label
+                              key={loc}
+                              className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer"
+                            >
+                              <Checkbox
+                                checked={selectedLocations.includes(loc)}
+                                onCheckedChange={() => toggleLocation(loc)}
+                              />
+                              <span className="text-sm">{loc}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    </PopoverContent>
+                  </Popover>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="flex-1 sm:flex-none justify-between">
+                        <div className="flex items-center gap-2 truncate">
+                          <Tag className="h-4 w-4 shrink-0" />
+                          <span className="truncate">
+                            {selectedCategories.length === 0
+                              ? "All Categories"
+                              : selectedCategories.length === 1
+                              ? categoryLabels[selectedCategories[0]]
+                              : `${selectedCategories.length} categories`}
+                          </span>
+                        </div>
+                        <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[260px] p-0 bg-popover z-50" align="start">
+                      <div className="p-2 border-b border-border">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Select Categories</span>
+                          {selectedCategories.length > 0 && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-6 px-2 text-xs"
+                              onClick={clearCategories}
+                            >
+                              Clear
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      <ScrollArea className="h-[300px]">
+                        <div className="p-2 space-y-1">
+                          {allCategories.map((category) => (
+                            <label
+                              key={category}
+                              className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer"
+                            >
+                              <Checkbox
+                                checked={selectedCategories.includes(category)}
+                                onCheckedChange={() => toggleCategory(category)}
+                              />
+                              <span className="text-sm flex items-center gap-1.5">
+                                {categoryIcons[category]} {categoryLabels[category]}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    </PopoverContent>
+                  </Popover>
+
+                  {hasActiveFilters && (
+                    <Button variant="ghost" size="sm" onClick={clearFilters} className="shrink-0">
+                      <X className="h-4 w-4 mr-1" />
+                      Clear
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Results Header with View Toggle */}
+          {/* Results Header */}
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-muted-foreground">
               {isLoading ? "Loading..." : `${filteredServices.length} service${filteredServices.length !== 1 ? "s" : ""} found`}
             </p>
-            {/* View toggle - show on mobile */}
-            <div className="flex items-center gap-1 md:hidden">
-              <Button
-                variant={viewMode === "grid" ? "secondary" : "ghost"}
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={() => setViewMode("grid")}
-                aria-label="Grid view"
-              >
-                <LayoutGrid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "secondary" : "ghost"}
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={() => setViewMode("list")}
-                aria-label="List view"
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
 
           {isLoading ? (
