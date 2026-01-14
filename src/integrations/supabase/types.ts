@@ -1358,6 +1358,14 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_swap_stats: {
+        Args: never
+        Returns: {
+          completed_count: number
+          in_progress_count: number
+          pending_count: number
+        }[]
+      }
       get_top_swappers: {
         Args: { _limit?: number }
         Returns: {

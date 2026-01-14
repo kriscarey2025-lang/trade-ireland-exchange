@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Medal, Award, MapPin, ArrowRight, Repeat } from "lucide-react";
+import { Trophy, Medal, Award, MapPin, ArrowRight, Repeat, Clock, Hourglass, CheckCircle2 } from "lucide-react";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -43,6 +43,23 @@ export function TopSwappersSection() {
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
+
+  // Fetch swap statistics using RPC function (bypasses RLS)
+  const { data: swapStats } = useQuery({
+    queryKey: ["swap-stats"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_swap_stats");
+      if (error) throw error;
+      const stats = data?.[0];
+      return {
+        inProgress: stats?.in_progress_count || 0,
+        pending: stats?.pending_count || 0,
+        completed: stats?.completed_count || 0,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
   const hasSwappers = !!topSwappers && topSwappers.length > 0;
 
   const getInitials = (name: string | null) => {
@@ -65,6 +82,31 @@ export function TopSwappersSection() {
   return (
     <section className="py-6 md:py-10 bg-gradient-to-b from-secondary/30 to-background">
       <div className="container">
+        {/* Stats strip */}
+        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 mb-6 md:mb-8">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-accent/10 border border-accent/20">
+            <CheckCircle2 className="h-4 w-4 text-accent" />
+            <span className="text-sm font-medium">
+              <span className="font-bold text-accent">{swapStats?.completed || 0}</span>{" "}
+              <span className="text-muted-foreground">Completed</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-primary/10 border border-primary/20">
+            <Clock className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium">
+              <span className="font-bold text-primary">{swapStats?.inProgress || 0}</span>{" "}
+              <span className="text-muted-foreground">In Progress</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-highlight/10 border border-highlight/20">
+            <Hourglass className="h-4 w-4 text-highlight" />
+            <span className="text-sm font-medium">
+              <span className="font-bold text-highlight">{swapStats?.pending || 0}</span>{" "}
+              <span className="text-muted-foreground">Pending</span>
+            </span>
+          </div>
+        </div>
+
         <div className="flex items-center justify-between mb-4 md:mb-6">
           <div className="flex items-center gap-2">
             <div className="p-1.5 md:p-2 rounded-lg bg-primary/10">
