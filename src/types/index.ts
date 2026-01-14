@@ -50,6 +50,7 @@ export type ServiceCategory =
   | 'tech_support'
   | 'fitness'
   | 'beauty'
+  | 'barbering'
   | 'crafts'
   | 'music'
   | 'photography'
