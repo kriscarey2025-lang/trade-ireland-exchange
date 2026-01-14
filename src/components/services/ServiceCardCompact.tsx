@@ -136,7 +136,7 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
           {service.user && (
             <>
               <span>·</span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 flex-wrap">
                 {formatDisplayName(service.user.name).split(' ')[0]}
                 <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                 {service.user.isFounder && <FoundersBadge size="sm" />}
@@ -184,9 +184,12 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
                     {service.user.rating.toFixed(1)}
                   </span>
                 )}
+                {(service.user.rating !== null && (service.completedSwapsCount ?? 0) > 0) && (
+                  <span className="text-muted-foreground">·</span>
+                )}
                 {(service.completedSwapsCount ?? 0) > 0 && (
                   <span className="text-primary font-medium">
-                    {service.completedSwapsCount} ✓
+                    {service.completedSwapsCount} swaps ✓
                   </span>
                 )}
               </span>
