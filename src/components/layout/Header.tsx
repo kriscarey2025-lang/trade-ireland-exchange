@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Clover, FileText, Activity } from "lucide-react";
+import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Clipboard, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Clover, FileText, Activity, HelpCircle } from "lucide-react";
 
 // TikTok icon component (not in lucide-react)
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -165,7 +165,7 @@ export function Header() {
           </span>
         </Link>
 
-        {/* Mobile inline menu - Stories & How It Works */}
+        {/* Mobile inline menu - Stories, How It Works & FAQ */}
         <nav className="flex md:hidden items-center gap-1">
           <Link
             to="/stories"
@@ -190,6 +190,17 @@ export function Header() {
           >
             <Compass className="h-3.5 w-3.5" />
             How It Works
+          </Link>
+          <Link
+            to="/faq"
+            className={cn(
+              "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              location.pathname === "/faq"
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground"
+            )}
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
           </Link>
         </nav>
 
