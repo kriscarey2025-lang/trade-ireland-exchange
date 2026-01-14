@@ -33,6 +33,7 @@ interface ServiceData {
   isTimeSensitive?: boolean;
   neededByDate?: Date | null;
   createdAt?: Date;
+  completedSwapsCount?: number;
   user?: ServiceUser;
 }
 
@@ -181,6 +182,11 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
                   <span className="flex items-center gap-0.5 text-warning">
                     <Star className="h-2.5 w-2.5 fill-current" />
                     {service.user.rating.toFixed(1)}
+                  </span>
+                )}
+                {(service.completedSwapsCount ?? 0) > 0 && (
+                  <span className="text-primary font-medium">
+                    {service.completedSwapsCount} ✓
                   </span>
                 )}
               </span>
