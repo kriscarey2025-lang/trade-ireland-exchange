@@ -51,7 +51,6 @@ const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const SeedImages = lazy(() => import("./pages/SeedImages"));
 const Welcome = lazy(() => import("./pages/Welcome"));
 const Flyer = lazy(() => import("./pages/Flyer"));
-const Sponsorship = lazy(() => import("./pages/Sponsorship"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -118,7 +117,6 @@ const App = () => (
               <Route path="/welcome" element={<Welcome />} />
               <Route path="/advertise" element={<Advertise />} />
               <Route path="/flyer" element={<Flyer />} />
-              <Route path="/sponsorship" element={<Sponsorship />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
