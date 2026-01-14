@@ -118,7 +118,7 @@ export function TopSwappersSection() {
                   to={`/profile/${swapper.id}`}
                   className="group"
                 >
-                  <Card className="overflow-hidden hover:border-primary/50 transition-all duration-200 hover:shadow-md h-full">
+                  <Card className="relative overflow-hidden hover:border-primary/50 transition-all duration-200 hover:shadow-md h-full">
                     <CardContent className="p-3 md:p-4">
                       <div className="flex flex-col items-center gap-2 text-center">
                         {/* Rank badge */}
