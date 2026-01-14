@@ -361,16 +361,21 @@ export function ServiceCard({
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
-                    {service.user.rating !== null ? <>
+                  <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[10px] sm:text-xs text-muted-foreground">
+                    {service.user.rating !== null ? (
+                      <>
                         <Star className="h-3 w-3 fill-warning text-warning" />
                         <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
-                        <span>·</span>
-                      </> : <span className="text-muted-foreground italic">No reviews</span>}
-                    {(service.completedSwapsCount ?? 0) > 0 && <>
-                        {service.user.rating !== null && <span>·</span>}
-                        <span className="font-medium text-primary">{service.completedSwapsCount} swaps ✓</span>
-                      </>}
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground italic">No reviews</span>
+                    )}
+                    {(service.user.rating !== null && (service.completedSwapsCount ?? 0) > 0) && (
+                      <span className="text-muted-foreground">·</span>
+                    )}
+                    {(service.completedSwapsCount ?? 0) > 0 && (
+                      <span className="font-medium text-primary">{service.completedSwapsCount} swaps ✓</span>
+                    )}
                   </div>
                 </div>
               </Link>
