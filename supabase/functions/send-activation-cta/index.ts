@@ -70,10 +70,16 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Get all registered users
+    // Get today's date at midnight for excluding new signups
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayISO = today.toISOString();
+
+    // Get all registered users (excluding those who registered today)
     const { data: allProfiles, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, email, full_name");
+      .select("id, email, full_name, created_at")
+      .lt("created_at", todayISO);
 
     if (profilesError) throw profilesError;
 
