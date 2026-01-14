@@ -229,51 +229,50 @@ function generateCTAEmail(firstName: string): string {
               </h2>
               
               <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                We noticed you signed up for SwapSkills but haven't shared your first skill yet. <strong>That's a missed opportunity!</strong>
+                We noticed you joined SwapSkills but haven't taken the leap yet. <strong>Now's the perfect time!</strong>
               </p>
               
-              <!-- What's happening -->
+              <!-- Two paths -->
               <div style="background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%); border-radius: 12px; padding: 24px; margin: 24px 0; border-left: 4px solid #f97316;">
-                <h3 style="margin: 0 0 12px 0; font-size: 18px; font-weight: 600; color: #c2410c;">
-                  🔥 What's happening right now:
+                <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #c2410c;">
+                  🎯 Two ways to get started:
                 </h3>
-                <ul style="margin: 0; padding-left: 20px; color: #78350f; line-height: 1.8;">
-                  <li>People are swapping <strong>piano lessons</strong> for <strong>garden help</strong></li>
-                  <li>A graphic designer just traded work for <strong>Irish language classes</strong></li>
-                  <li>Someone's getting their <strong>car serviced</strong> in exchange for <strong>website help</strong></li>
-                </ul>
+                <p style="margin: 0 0 12px 0; font-size: 16px; line-height: 1.7; color: #78350f;">
+                  <strong>1. See something you'd love?</strong><br>
+                  Browse what your neighbours are offering and reach out to someone — it's as simple as sending a quick message!
+                </p>
+                <p style="margin: 0; font-size: 16px; line-height: 1.7; color: #78350f;">
+                  <strong>2. Got a skill to share?</strong><br>
+                  Post your first offer and let the magic begin. You'd be surprised who's looking for exactly what you can do!
+                </p>
               </div>
               
-              <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                Every one of us has something valuable to offer. What's yours?
+              <p style="margin: 0 0 24px 0; font-size: 18px; line-height: 1.7; color: #1f2937; text-align: center; font-weight: 600;">
+                ✨ Nothing to lose, lots to gain ✨
               </p>
               
               <!-- Two CTAs -->
               <div style="text-align: center; margin: 32px 0;">
-                <a href="https://swap-skills.com/services/new" style="display: inline-block; background: #f97316; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); margin-bottom: 12px;">
-                  ✨ Share My First Skill
+                <a href="https://swap-skills.com/browse" style="display: inline-block; background: #f97316; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); margin-bottom: 12px;">
+                  🔍 Browse Skills Near You
                 </a>
                 <br>
-                <a href="https://swap-skills.com/browse" style="display: inline-block; color: #f97316; text-decoration: none; padding: 12px 24px; font-size: 14px; font-weight: 500; margin-top: 8px;">
-                  or browse what's on offer →
+                <a href="https://swap-skills.com/services/new" style="display: inline-block; background: #ffffff; color: #f97316; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 600; border: 2px solid #f97316; margin-top: 12px;">
+                  ✨ Share My First Skill
                 </a>
               </div>
               
-              <!-- Ideas Section -->
+              <!-- What's happening -->
               <div style="background: #faf8f5; border-radius: 12px; padding: 24px; margin: 24px 0;">
-                <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #1f2937;">
-                  💡 Not sure what to offer? Here are ideas:
+                <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #1f2937;">
+                  🔥 What people are swapping right now:
                 </h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                  <span style="background: #ecfccb; color: #4d7c0f; padding: 6px 12px; border-radius: 20px; font-size: 13px;">Dog walking</span>
-                  <span style="background: #ecfccb; color: #4d7c0f; padding: 6px 12px; border-radius: 20px; font-size: 13px;">DIY help</span>
-                  <span style="background: #ecfccb; color: #4d7c0f; padding: 6px 12px; border-radius: 20px; font-size: 13px;">Cooking lessons</span>
-                  <span style="background: #ecfccb; color: #4d7c0f; padding: 6px 12px; border-radius: 20px; font-size: 13px;">Tech support</span>
-                  <span style="background: #ecfccb; color: #4d7c0f; padding: 6px 12px; border-radius: 20px; font-size: 13px;">Music lessons</span>
-                  <span style="background: #ecfccb; color: #4d7c0f; padding: 6px 12px; border-radius: 20px; font-size: 13px;">Childcare</span>
-                  <span style="background: #ecfccb; color: #4d7c0f; padding: 6px 12px; border-radius: 20px; font-size: 13px;">Language practice</span>
-                  <span style="background: #ecfccb; color: #4d7c0f; padding: 6px 12px; border-radius: 20px; font-size: 13px;">CV writing</span>
-                </div>
+                <ul style="margin: 0; padding-left: 20px; color: #4b5563; line-height: 1.8;">
+                  <li>Piano lessons ↔ Garden help</li>
+                  <li>Graphic design ↔ Irish language classes</li>
+                  <li>Website help ↔ Car servicing</li>
+                  <li>Baking lessons ↔ Dog walking</li>
+                </ul>
               </div>
               
               <!-- Quote Section -->
@@ -284,8 +283,8 @@ function generateCTAEmail(firstName: string): string {
                 <p style="margin: 12px 0 0 0; font-size: 14px; color: #f97316;">— Sarah, Carlow</p>
               </div>
               
-              <p style="margin: 24px 0 0 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                Go on — give it a go! It takes 2 minutes to post your first skill, and you might be surprised who reaches out. 🧡
+              <p style="margin: 24px 0 0 0; font-size: 16px; line-height: 1.7; color: #4b5563; text-align: center;">
+                Go on — give it a go! 🧡
               </p>
               
             </td>
