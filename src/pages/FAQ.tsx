@@ -42,6 +42,10 @@ const faqs = [
     answer: "Almost anything! From gardening, DIY, and home repairs to tutoring, music lessons, cooking, pet care, and creative services. If you have a skill that could help someone, we'd love for you to share it.",
   },
   {
+    question: "What does 'Open to all Offers' mean?",
+    answer: "This is a feature that people can select when they do not want to narrow down on a specific skill-exchange but are open to general offers. It gives users a broader reach but in return they might more often be subjected to offers that are not interesting to them.",
+  },
+  {
     question: "How do I get started?",
     answer: "Simply create a free account, set up your profile telling us a bit about yourself, and either browse available services or post your own skills. It's that easy to join our community!",
   },
