@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Medal, Award, MapPin, ArrowRight, Repeat, Clock, Hourglass, CheckCircle2 } from "lucide-react";
+import { Trophy, Medal, Award, MapPin, ArrowRight, Repeat, Clock, Hourglass, CheckCircle2, Activity } from "lucide-react";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -62,6 +62,13 @@ export function TopSwappersSection() {
 
   const hasSwappers = !!topSwappers && topSwappers.length > 0;
 
+  // Format today's date
+  const formattedDate = new Date().toLocaleDateString("en-IE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   const getInitials = (name: string | null) => {
     if (!name) return "?";
     return name
@@ -82,28 +89,39 @@ export function TopSwappersSection() {
   return (
     <section className="py-6 md:py-10 bg-gradient-to-b from-secondary/30 to-background">
       <div className="container">
-        {/* Stats strip */}
-        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 mb-6 md:mb-8">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-accent/10 border border-accent/20">
-            <CheckCircle2 className="h-4 w-4 text-accent" />
-            <span className="text-sm font-medium">
-              <span className="font-bold text-accent">{swapStats?.completed || 0}</span>{" "}
-              <span className="text-muted-foreground">Completed</span>
-            </span>
+        {/* Stats section with header */}
+        <div className="flex flex-col items-center mb-8 md:mb-10">
+          {/* Header */}
+          <div className="flex items-center gap-2 mb-4">
+            <Activity className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+            <h3 className="text-sm md:text-base font-semibold text-foreground">
+              What's happening as of {formattedDate}
+            </h3>
           </div>
-          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-primary/10 border border-primary/20">
-            <Clock className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">
-              <span className="font-bold text-primary">{swapStats?.inProgress || 0}</span>{" "}
-              <span className="text-muted-foreground">In Progress</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-highlight/10 border border-highlight/20">
-            <Hourglass className="h-4 w-4 text-highlight" />
-            <span className="text-sm font-medium">
-              <span className="font-bold text-highlight">{swapStats?.pending || 0}</span>{" "}
-              <span className="text-muted-foreground">Pending</span>
-            </span>
+          
+          {/* Stats pills - stacked on mobile, row on desktop */}
+          <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4">
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/20 min-w-[140px] justify-center">
+              <CheckCircle2 className="h-4 w-4 text-accent" />
+              <span className="text-sm font-medium">
+                <span className="font-bold text-accent">{swapStats?.completed || 0}</span>{" "}
+                <span className="text-muted-foreground">Completed</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary/10 border border-primary/20 min-w-[140px] justify-center">
+              <Clock className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">
+                <span className="font-bold text-primary">{swapStats?.inProgress || 0}</span>{" "}
+                <span className="text-muted-foreground">In Progress</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-highlight/10 border border-highlight/20 min-w-[140px] justify-center">
+              <Hourglass className="h-4 w-4 text-highlight" />
+              <span className="text-sm font-medium">
+                <span className="font-bold text-highlight">{swapStats?.pending || 0}</span>{" "}
+                <span className="text-muted-foreground">Pending</span>
+              </span>
+            </div>
           </div>
         </div>
 
