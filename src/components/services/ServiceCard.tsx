@@ -420,22 +420,25 @@ export function ServiceCard({
           <div className="flex justify-between items-center pt-3 border-t border-border mt-auto">
             <div className="flex items-center gap-1.5">
               <Button
+                variant="outline"
                 size="sm"
-                className="h-7 px-2.5 bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
+                className="h-7 px-2 text-[10px] sm:text-[11px] sm:px-2.5"
               >
-                <span className="text-[11px] font-medium">Read more</span>
-                <ArrowUpRight className="h-3 w-3" />
+                Read more
               </Button>
               {service.user?.id !== user?.id && (
                 <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-7 px-2.5 gap-1 border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                  size="icon"
+                  className="h-7 w-7 bg-accent hover:bg-accent/90 text-accent-foreground"
                   onClick={handleInitiateSkillTrade}
                   disabled={getOrCreateConversation.isPending}
+                  title={user ? "Initiate Trade" : "Sign in to trade"}
                 >
-                  <Handshake className="h-3 w-3" />
-                  <span className="text-[11px] font-medium hidden sm:inline">Initiate Trade</span>
+                  {getOrCreateConversation.isPending ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Handshake className="h-3.5 w-3.5" />
+                  )}
                 </Button>
               )}
             </div>
