@@ -36,6 +36,7 @@ interface Message {
   content: string;
   read: boolean;
   created_at: string;
+  edited_at: string | null;
 }
 
 export function useConversations() {
@@ -181,6 +182,43 @@ export function useSendMessage() {
     },
     onError: () => {
       toast.error("Failed to send message");
+    },
+  });
+}
+
+export function useEditMessage() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ messageId, conversationId, content }: { 
+      messageId: string; 
+      conversationId: string;
+      content: string;
+    }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const { data, error } = await supabase
+        .from("messages")
+        .update({
+          content,
+          edited_at: new Date().toISOString(),
+        })
+        .eq("id", messageId)
+        .eq("sender_id", user.id) // Only allow editing own messages
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["messages", variables.conversationId] });
+      queryClient.invalidateQueries({ queryKey: ["conversations", user?.id] });
+      toast.success("Message updated");
+    },
+    onError: () => {
+      toast.error("Failed to edit message");
     },
   });
 }
