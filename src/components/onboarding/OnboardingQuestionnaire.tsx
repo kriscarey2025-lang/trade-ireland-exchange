@@ -13,8 +13,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { categoryLabels, categoryIcons, allCategories } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
+import { DiscoveryStep } from "@/components/wizard/DiscoveryStep";
 
-type Step = "terms" | "profile" | "preferences";
+type Step = "terms" | "profile" | "preferences" | "discovery";
 
 export function OnboardingQuestionnaire() {
   const navigate = useNavigate();
@@ -180,7 +181,6 @@ export function OnboardingQuestionnaire() {
         skills_offered_custom: customOffered,
         skills_wanted: skillsWanted,
         skills_wanted_custom: customWanted,
-        onboarding_completed: true,
       })
       .eq("user_id", user.id);
 
@@ -191,6 +191,20 @@ export function OnboardingQuestionnaire() {
       return;
     }
 
+    setIsLoading(false);
+    // Move to discovery step
+    setCurrentStep("discovery");
+  };
+
+  const handleDiscoveryComplete = async () => {
+    if (!user) return;
+    
+    // Mark onboarding as completed
+    await supabase
+      .from("user_preferences")
+      .update({ onboarding_completed: true })
+      .eq("user_id", user.id);
+    
     toast.success("You're all set! Let's create your first post.");
     navigate("/getting-started");
   };
@@ -219,6 +233,7 @@ export function OnboardingQuestionnaire() {
       case "terms": return 0;
       case "profile": return 1;
       case "preferences": return 2;
+      case "discovery": return 3;
       default: return 0;
     }
   };
@@ -234,33 +249,38 @@ export function OnboardingQuestionnaire() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background py-8 px-4">
       <div className="max-w-2xl mx-auto">
-        {/* Clarifying note */}
-        <div className="bg-accent/50 border border-accent rounded-lg px-4 py-3 mb-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">📋 No posting here yet!</span> You're setting up your profile — this info helps us match you with the right people.
-          </p>
-        </div>
+        {/* Clarifying note - hide on discovery step */}
+        {currentStep !== "discovery" && (
+          <div className="bg-accent/50 border border-accent rounded-lg px-4 py-3 mb-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">📋 No posting here yet!</span> You're setting up your profile — this info helps us match you with the right people.
+            </p>
+          </div>
+        )}
 
-        <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center text-3xl mb-4">
-            🤝
+        {currentStep !== "discovery" && (
+          <div className="text-center mb-8">
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center text-3xl mb-4">
+              🤝
+            </div>
+            <h1 className="text-3xl font-bold mb-2">Welcome to SwapSkills!</h1>
+            <p className="text-muted-foreground">
+              {currentStep === "terms" 
+                ? "Please review and accept our community guidelines."
+                : currentStep === "profile" 
+                ? "Let's set up your profile first."
+                : "Tell us about your skills so we can help you find great matches."}
+            </p>
+            
+            {/* Step indicator */}
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 0 ? "bg-primary" : "bg-primary/30"}`} />
+              <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 1 ? "bg-primary" : "bg-primary/30"}`} />
+              <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 2 ? "bg-primary" : "bg-primary/30"}`} />
+              <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 3 ? "bg-primary" : "bg-primary/30"}`} />
+            </div>
           </div>
-          <h1 className="text-3xl font-bold mb-2">Welcome to SwapSkills!</h1>
-          <p className="text-muted-foreground">
-            {currentStep === "terms" 
-              ? "Please review and accept our community guidelines."
-              : currentStep === "profile" 
-              ? "Let's set up your profile first."
-              : "Tell us about your skills so we can help you find great matches."}
-          </p>
-          
-          {/* Step indicator */}
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 0 ? "bg-primary" : "bg-primary/30"}`} />
-            <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 1 ? "bg-primary" : "bg-primary/30"}`} />
-            <div className={`w-3 h-3 rounded-full ${getStepIndex() >= 2 ? "bg-primary" : "bg-primary/30"}`} />
-          </div>
-        </div>
+        )}
 
         {currentStep === "terms" ? (
           <div className="space-y-6">
@@ -608,14 +628,19 @@ export function OnboardingQuestionnaire() {
                   </>
                 ) : (
                   <>
-                    Get Started
+                    Continue
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </>
                 )}
               </Button>
             </div>
           </div>
-        )}
+        ) : currentStep === "discovery" ? (
+          <DiscoveryStep 
+            onComplete={handleDiscoveryComplete} 
+            userLocation={location}
+          />
+        ) : null}
       </div>
     </div>
   );
