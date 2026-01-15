@@ -187,7 +187,7 @@ const Flyer = () => {
               </div>
               <div className="text-right">
                 <p className="font-bold text-xl">swap-skills.ie</p>
-                <p className="text-base opacity-90">Join 50+ members today!</p>
+                <p className="text-base opacity-90">Join today!</p>
               </div>
             </div>
           </div>
@@ -296,7 +296,7 @@ const Flyer = () => {
 
           {/* Compact Footer */}
           <div className="bg-accent text-white py-3 px-5 text-center mt-auto">
-            <p className="text-sm font-semibold">🇮🇪 swap-skills.ie • Join 50+ members!</p>
+            <p className="text-sm font-semibold">🇮🇪 swap-skills.ie • Join today!</p>
           </div>
         </div>
       )}
