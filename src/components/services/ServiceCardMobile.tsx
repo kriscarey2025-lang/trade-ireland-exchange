@@ -143,15 +143,15 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
   };
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative bg-card rounded-xl border border-border overflow-hidden", className)}>
       <Link 
         to={`/services/${service.id}`} 
         className="block active:scale-[0.98] transition-transform"
       >
         {/* Image Container - Square aspect ratio like Vinted */}
         <div className={cn(
-          "relative aspect-square rounded-xl overflow-hidden bg-muted",
-          service.isTimeSensitive && "ring-2 ring-orange-400"
+          "relative aspect-square overflow-hidden bg-muted",
+          service.isTimeSensitive && "ring-2 ring-orange-400 ring-inset"
         )}>
           {hasImage ? (
             <img 
@@ -184,7 +184,7 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
         </div>
         
         {/* Content Below Image - Cleaner layout */}
-        <div className="mt-2.5 space-y-2 pb-1">
+        <div className="p-2.5 space-y-2">
           {/* Title */}
           <h3 className="font-semibold text-sm line-clamp-2 leading-tight">
             {service.title}
@@ -308,9 +308,9 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
         </div>
       </Link>
 
-      {/* Quick Message & Action Buttons - below the card for logged in users */}
+      {/* Quick Message & Action Buttons - inside card padding */}
       {user && service.user?.id && !isOwnService && (
-        <div className="mt-2 space-y-2" onClick={(e) => e.preventDefault()}>
+        <div className="px-2.5 pb-2.5 space-y-2" onClick={(e) => e.preventDefault()}>
           {/* Quick Message */}
           <div className="flex items-center gap-1.5">
             <Input
@@ -371,7 +371,7 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
 
       {/* For non-logged-in users, show simple action buttons */}
       {!user && (
-        <div className="mt-2 flex items-center gap-2" onClick={(e) => e.preventDefault()}>
+        <div className="px-2.5 pb-2.5 flex items-center gap-2" onClick={(e) => e.preventDefault()}>
           <Button
             variant="outline"
             size="sm"
