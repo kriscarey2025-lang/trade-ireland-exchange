@@ -1,10 +1,11 @@
+import { useRef } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper, Radio } from "lucide-react";
+import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper, Radio, Play, Pause } from "lucide-react";
 import swapskillsLogo from "@/assets/swapskills-logo-full.png";
 import carlowNationalistArticle from "@/assets/press/carlow-nationalist-jan-2026.jpg";
 import kclrDailyLogo from "@/assets/press/kclr-daily-logo.png";
@@ -129,19 +130,37 @@ const PressKit = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="w-full">
-                      <iframe 
-                        src="https://player.autopod.xyz/1161656?t=9660" 
-                        width="100%" 
-                        height="250" 
-                        frameBorder="0" 
-                        allow="autoplay; encrypted-media" 
-                        allowFullScreen
-                        className="rounded-lg"
-                        title="SwapSkills Radio Interview with Kris Carey"
-                      />
-                      <p className="text-xs text-muted-foreground mt-2 text-center">
-                        Player starts at the interview segment (2:41:00)
+                    <div className="w-full bg-muted/50 rounded-lg p-4">
+                      <div className="flex items-center gap-4">
+                        <Button
+                          size="lg"
+                          className="h-14 w-14 rounded-full shrink-0"
+                          onClick={() => {
+                            const audio = document.getElementById('kclr-interview') as HTMLAudioElement;
+                            if (audio) {
+                              audio.currentTime = 9660; // 2:41:00
+                              audio.play();
+                            }
+                          }}
+                        >
+                          <Play className="h-6 w-6 ml-1" />
+                        </Button>
+                        <div className="flex-grow">
+                          <p className="font-semibold text-foreground">The KCLR Daily</p>
+                          <p className="text-sm text-muted-foreground">Interview starts at 2:41:00</p>
+                          <audio 
+                            id="kclr-interview"
+                            controls 
+                            className="w-full mt-2"
+                            preload="metadata"
+                          >
+                            <source src="https://s3.eu-central-1.wasabisys.com/autopod-public/episodes/11768482186112.mp3" type="audio/mpeg" />
+                            Your browser does not support the audio element.
+                          </audio>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-3 text-center">
+                        Click play to start at the SwapSkills interview segment (2:41:00 - 2:47:30)
                       </p>
                     </div>
                   </div>
