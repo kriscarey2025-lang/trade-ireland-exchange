@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle, MoreVertical, Lock, Lightbulb, X } from "lucide-react";
+import { Loader2, ArrowLeft, Send, ExternalLink, Info, CheckCircle2, Star, AlertTriangle, MoreVertical, Lock, Lightbulb, X, Pencil, Check } from "lucide-react";
 import { ReportUserDialog } from "@/components/reports/ReportUserDialog";
 import {
   DropdownMenu,
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useMessages, useSendMessage, useMarkAsRead } from "@/hooks/useMessaging";
+import { useMessages, useSendMessage, useMarkAsRead, useEditMessage } from "@/hooks/useMessaging";
 import { format, isToday, isYesterday, isBefore, startOfToday } from "date-fns";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ContactSharingCard } from "@/components/messaging/ContactSharingCard";
@@ -57,6 +57,8 @@ export default function Conversation() {
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [isMarkingComplete, setIsMarkingComplete] = useState(false);
   const [showNewTradeBanner, setShowNewTradeBanner] = useState(searchParams.get('newTrade') === 'true');
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: conversation, isLoading: convLoading } = useQuery({
@@ -181,7 +183,30 @@ export default function Conversation() {
 
   const sendMessage = useSendMessage();
   const markAsRead = useMarkAsRead();
+  const editMessage = useEditMessage();
 
+  const handleStartEdit = (messageId: string, content: string) => {
+    setEditingMessageId(messageId);
+    setEditingContent(content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+    setEditingContent("");
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingMessageId || !editingContent.trim() || !id) return;
+    
+    await editMessage.mutateAsync({
+      messageId: editingMessageId,
+      conversationId: id,
+      content: editingContent,
+    });
+    
+    setEditingMessageId(null);
+    setEditingContent("");
+  };
   // Mark messages as read when viewing
   useEffect(() => {
     if (id && user) {
@@ -470,33 +495,100 @@ export default function Conversation() {
               ) : messages && messages.length > 0 ? (
                 messages.map((message) => {
                   const isOwn = message.sender_id === user.id;
+                  const isEditing = editingMessageId === message.id;
+                  
                   return (
                     <div
                       key={message.id}
                       className={cn(
-                        "flex",
+                        "flex group",
                         isOwn ? "justify-end" : "justify-start"
                       )}
                     >
                       <div
                         className={cn(
-                          "max-w-[75%] rounded-2xl px-4 py-2",
+                          "max-w-[75%] rounded-2xl px-4 py-2 relative",
                           isOwn
                             ? "bg-primary text-primary-foreground rounded-br-md"
                             : "bg-muted rounded-bl-md"
                         )}
                       >
-                        <p className="whitespace-pre-wrap break-words">
-                          {message.content}
-                        </p>
-                        <p
-                          className={cn(
-                            "text-xs mt-1",
-                            isOwn ? "text-primary-foreground/70" : "text-muted-foreground"
-                          )}
-                        >
-                          {formatMessageTime(message.created_at)}
-                        </p>
+                        {isEditing ? (
+                          <div className="space-y-2">
+                            <Textarea
+                              value={editingContent}
+                              onChange={(e) => setEditingContent(e.target.value)}
+                              className="min-h-[60px] bg-background text-foreground"
+                              autoFocus
+                            />
+                            <div className="flex gap-1 justify-end">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={handleCancelEdit}
+                                className="h-7 px-2"
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={handleSaveEdit}
+                                disabled={!editingContent.trim() || editMessage.isPending}
+                                className="h-7 px-2"
+                              >
+                                {editMessage.isPending ? (
+                                  <Loader2 className="h-3 w-3 animate-spin" />
+                                ) : (
+                                  <Check className="h-3 w-3" />
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="whitespace-pre-wrap break-words">
+                              {message.content}
+                            </p>
+                            <div className={cn(
+                              "flex items-center gap-2 mt-1",
+                              isOwn ? "justify-end" : "justify-start"
+                            )}>
+                              <p
+                                className={cn(
+                                  "text-xs",
+                                  isOwn ? "text-primary-foreground/70" : "text-muted-foreground"
+                                )}
+                              >
+                                {formatMessageTime(message.created_at)}
+                              </p>
+                              {message.edited_at && (
+                                <span
+                                  className={cn(
+                                    "text-xs italic",
+                                    isOwn ? "text-primary-foreground/60" : "text-muted-foreground/80"
+                                  )}
+                                >
+                                  (edited)
+                                </span>
+                              )}
+                            </div>
+                            {/* Edit button - only for own messages */}
+                            {isOwn && !isSwapClosed && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className={cn(
+                                  "absolute -left-8 top-1/2 -translate-y-1/2 h-6 w-6",
+                                  "opacity-0 group-hover:opacity-100 transition-opacity",
+                                  "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                )}
+                                onClick={() => handleStartEdit(message.id, message.content)}
+                              >
+                                <Pencil className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   );

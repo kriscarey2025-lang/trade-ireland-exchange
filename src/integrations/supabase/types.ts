@@ -603,6 +603,7 @@ export type Database = {
           content: string
           conversation_id: string
           created_at: string
+          edited_at: string | null
           id: string
           read: boolean
           sender_id: string
@@ -611,6 +612,7 @@ export type Database = {
           content: string
           conversation_id: string
           created_at?: string
+          edited_at?: string | null
           id?: string
           read?: boolean
           sender_id: string
@@ -619,6 +621,7 @@ export type Database = {
           content?: string
           conversation_id?: string
           created_at?: string
+          edited_at?: string | null
           id?: string
           read?: boolean
           sender_id?: string
