@@ -162,7 +162,7 @@ const Flyer = () => {
           </div>
 
           {/* Right Column - QR Code & Skills - framed with accent green */}
-          <div className="w-[120mm] bg-primary/5 flex flex-col border-l-2 border-y-2 border-accent">
+          <div className="w-[120mm] bg-primary/5 flex flex-col border-2 border-accent">
             {/* QR Code Section */}
             <div className="flex flex-col items-center py-6 px-6 bg-white">
               <div className="bg-white p-3 rounded-2xl shadow-lg border-4 border-accent">
