@@ -124,10 +124,15 @@ const PressKit = () => {
                         <h3 className="text-xl font-semibold text-foreground mb-2">
                           Radio Interview with Kris Carey
                         </h3>
-                        <p className="text-muted-foreground">
+                        <p className="text-muted-foreground mb-3">
                           Listen to founder Kris Carey discuss SwapSkills and the vision for building 
                           stronger communities through skill sharing. The interview runs from 2:41:00 to 2:47:30.
                         </p>
+                        <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                          <Badge variant="outline">KCLR Radio</Badge>
+                          <Badge variant="outline">15 January 2026</Badge>
+                          <Badge variant="outline">The KCLR Daily with Brian Redmond</Badge>
+                        </div>
                       </div>
                     </div>
                     <div className="w-full bg-muted/50 rounded-lg p-4">
