@@ -8,6 +8,7 @@ import { Heart, ExternalLink, Users, MessageCircle, Loader2 } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { formatDisplayName } from "@/lib/utils";
 
 interface InterestedUser {
   id: string;
@@ -225,7 +226,7 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-medium truncate">
-                      {interest.user_name || "Anonymous User"}
+                      {formatDisplayName(interest.user_name)}
                     </p>
                     <span className="text-xs text-muted-foreground whitespace-nowrap">
                       {formatDate(interest.created_at)}

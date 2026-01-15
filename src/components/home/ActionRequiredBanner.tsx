@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { formatDisplayName } from "@/lib/utils";
 
 interface PendingItem {
   id: string;
@@ -93,7 +94,7 @@ export function ActionRequiredBanner() {
                   id: `review-${conv.id}`,
                   type: 'pending_review',
                   title: 'Leave a Review',
-                  subtitle: `Rate your swap with ${otherProfile?.[0]?.full_name || 'your swap partner'}`,
+                  subtitle: `Rate your swap with ${formatDisplayName(otherProfile?.[0]?.full_name) || 'your swap partner'}`,
                   link: `/messages/${conv.id}`,
                   urgent: false
                 });

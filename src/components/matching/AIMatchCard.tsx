@@ -11,6 +11,7 @@ import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { useStartConversation } from "@/hooks/useMessaging";
 import { toast } from "sonner";
 import { fireConfetti } from "@/hooks/useConfetti";
+import { formatDisplayName } from "@/lib/utils";
 
 interface AIMatchCardProps {
   match: {
@@ -58,14 +59,6 @@ export function AIMatchCard({ match, isNewMatch }: AIMatchCardProps) {
     return "bg-orange-500/20 text-orange-700 border-orange-500/30";
   };
 
-  const formatDisplayName = (fullName: string | null | undefined): string => {
-    if (!fullName) return 'Anonymous';
-    const parts = fullName.trim().split(/\s+/);
-    if (parts.length === 1) return parts[0];
-    const firstName = parts[0];
-    const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
-    return `${firstName} ${lastInitial}.`;
-  };
 
   const getPlaceholder = () => {
     const index = Math.floor(Math.random() * PLACEHOLDER_MESSAGES.length);
