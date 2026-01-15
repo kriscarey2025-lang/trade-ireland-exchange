@@ -64,25 +64,37 @@ const Flyer = () => {
             maxWidth: '100%'
           }}
         >
-          {/* Header Banner */}
-          <div className="bg-gradient-to-r from-accent to-accent/80 text-white py-8 px-10 text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-24 h-24 bg-primary/20 rounded-full -translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 right-0 w-36 h-36 bg-primary/20 rounded-full translate-x-1/2 translate-y-1/2" />
-            <h1 className="text-5xl font-bold tracking-tight relative z-10 font-display">
+          {/* Header Banner - Branded */}
+          <div className="bg-accent text-white py-8 px-10 text-center relative overflow-hidden">
+            {/* Decorative blobs matching brand */}
+            <div className="absolute top-0 left-0 w-28 h-28 bg-[hsl(85_35%_45%)] rounded-full -translate-x-1/2 -translate-y-1/2 opacity-60" />
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-highlight/40 rounded-full translate-x-1/3 translate-y-1/3" />
+            <div className="absolute top-1/2 left-8 w-16 h-16 bg-[hsl(85_35%_45%)] rounded-full -translate-y-1/2 opacity-40" />
+            <h1 className="text-5xl font-bold tracking-tight relative z-10 font-display uppercase">
               SWAP SKILLS
             </h1>
-            <p className="text-xl mt-2 opacity-95 font-medium relative z-10">
+            <p className="text-xl mt-2 opacity-95 font-medium relative z-10 font-friendly">
               Ireland's Free Skill Exchange Platform
             </p>
           </div>
 
           {/* Main Content - Flex grow to fill space */}
           <div className="px-10 py-8 flex-1 flex flex-col">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-accent mb-3 font-display">
-                🔄 Exchange Skills, Not Cash!
+            {/* Branded tagline - multi-color */}
+            <div className="text-center mb-6">
+              <h2 className="text-4xl font-bold font-display italic">
+                <span className="text-primary">Swap skills.</span>{" "}
+                <span className="text-highlight">Make friends.</span>
+                <br />
+                <span className="text-accent">Save money.</span>
               </h2>
-              <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+            </div>
+            
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-accent mb-2 font-display">
+                🔄 Exchange Skills, Not Cash!
+              </h3>
+              <p className="text-muted-foreground text-lg max-w-xl mx-auto font-friendly">
                 Join your local community and trade skills with neighbours.
                 <span className="font-semibold text-primary"> No money needed</span> – just your talents!
               </p>
@@ -192,14 +204,14 @@ const Flyer = () => {
             maxWidth: '100%'
           }}
         >
-          {/* Compact Header */}
-          <div className="bg-gradient-to-r from-accent to-accent/80 text-white py-4 px-6 text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-14 h-14 bg-primary/20 rounded-full -translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 right-0 w-20 h-20 bg-primary/20 rounded-full translate-x-1/2 translate-y-1/2" />
-            <h1 className="text-3xl font-bold tracking-tight relative z-10 font-display">
+          {/* Compact Header - Branded */}
+          <div className="bg-accent text-white py-4 px-6 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-14 h-14 bg-[hsl(85_35%_45%)] rounded-full -translate-x-1/2 -translate-y-1/2 opacity-60" />
+            <div className="absolute bottom-0 right-0 w-20 h-20 bg-highlight/40 rounded-full translate-x-1/2 translate-y-1/2" />
+            <h1 className="text-3xl font-bold tracking-tight relative z-10 font-display uppercase">
               SWAP SKILLS
             </h1>
-            <p className="text-base mt-1 opacity-95 font-medium relative z-10">
+            <p className="text-base mt-1 opacity-95 font-medium relative z-10 font-friendly">
               Ireland's Free Skill Exchange Platform
             </p>
           </div>
