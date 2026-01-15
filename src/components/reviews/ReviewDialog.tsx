@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { formatDisplayName } from "@/lib/utils";
 
 interface ReviewDialogProps {
   open: boolean;
@@ -119,7 +120,7 @@ export function ReviewDialog({
         await supabase.functions.invoke("send-review-notification", {
           body: {
             reviewed_user_id: reviewedUserId,
-            reviewer_name: reviewerProfile?.full_name || "Someone",
+            reviewer_name: formatDisplayName(reviewerProfile?.full_name),
             review_text: reviewText.trim() || null,
             user_rating: userRating,
             conversation_id: conversationId,

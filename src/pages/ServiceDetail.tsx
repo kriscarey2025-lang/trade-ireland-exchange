@@ -643,7 +643,7 @@ export default function ServiceDetail() {
                       {latestReview?.review_text && (
                         <FeaturedReview 
                           text={latestReview.review_text} 
-                          reviewerName={(latestReview.reviewer as any)?.full_name || "Anonymous"} 
+                          reviewerName={formatDisplayName((latestReview.reviewer as any)?.full_name)} 
                         />
                       )}
                     </>

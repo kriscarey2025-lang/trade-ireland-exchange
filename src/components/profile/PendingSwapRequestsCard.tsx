@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { categoryIcons } from "@/lib/categories";
 import { ServiceCategory } from "@/types";
+import { formatDisplayName } from "@/lib/utils";
 
 interface SwapConversation {
   id: string;
@@ -271,7 +272,7 @@ function SwapRequestItem({
         <div className="flex-1 min-w-0 space-y-1.5">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-medium text-sm truncate">
-              {swap.other_user.full_name || "Unknown User"}
+              {formatDisplayName(swap.other_user.full_name)}
             </span>
             {type === 'active' && (
               <Badge variant="outline" className="text-xs border-green-300 text-green-600 dark:border-green-700 dark:text-green-400">

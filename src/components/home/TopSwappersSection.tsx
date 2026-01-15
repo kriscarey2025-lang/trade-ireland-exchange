@@ -10,6 +10,7 @@ import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { formatDisplayName } from "@/lib/utils";
 
 type VerificationStatus = "unverified" | "pending" | "verified" | "rejected";
 
@@ -79,12 +80,6 @@ export function TopSwappersSection() {
       .slice(0, 2);
   };
 
-  const formatName = (name: string | null) => {
-    if (!name) return "Anonymous";
-    const parts = name.trim().split(" ");
-    if (parts.length === 1) return parts[0];
-    return `${parts[0]} ${parts[parts.length - 1][0]}.`;
-  };
 
   return (
     <section className="py-6 md:py-10 bg-gradient-to-b from-secondary/30 to-background">
@@ -218,7 +213,7 @@ export function TopSwappersSection() {
                         <div className="flex flex-col items-center gap-0.5">
                           <div className="flex items-center gap-1">
                             <span className="font-semibold text-xs md:text-sm truncate max-w-[100px] md:max-w-[120px] group-hover:text-primary transition-colors">
-                              {formatName(swapper.full_name)}
+                              {formatDisplayName(swapper.full_name)}
                             </span>
                             <VerifiedBadge
                               status={swapper.verification_status as VerificationStatus}

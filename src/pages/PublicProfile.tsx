@@ -59,10 +59,7 @@ interface Service {
   provider_is_founder: boolean | null;
 }
 
-// Display name is now returned as first_name only from the database function
-function formatDisplayName(firstName: string | null): string {
-  return firstName || "SwapSkills Member";
-}
+// Note: first_name is already formatted by the database function, just provide fallback
 
 // Get skill label from category key
 function getSkillLabel(skillKey: string): string {
@@ -258,7 +255,7 @@ export default function PublicProfile() {
     );
   }
 
-  const displayName = formatDisplayName(profile.first_name);
+  const displayName = profile.first_name || "SwapSkills Member";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
