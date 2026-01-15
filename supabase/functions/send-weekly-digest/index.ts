@@ -11,6 +11,7 @@ const corsHeaders = {
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const baseUrl = "https://trade-ireland-exchange.lovable.app";
 
 interface UserPreference {
   user_id: string;
@@ -300,7 +301,7 @@ function generateDigestEmail(
   const servicesList = services.map(service => `
     <tr>
       <td style="padding: 16px 0; border-bottom: 1px solid #f0ebe3;">
-        <a href="https://swap-skills.com/services/${service.id}" style="text-decoration: none;">
+        <a href="${baseUrl}/services/${service.id}" style="text-decoration: none;">
           <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1f2937;">${service.title}</h4>
         </a>
         <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
@@ -318,7 +319,7 @@ function generateDigestEmail(
   const communityPostsList = communityPosts.map(post => `
     <tr>
       <td style="padding: 16px 0; border-bottom: 1px solid #f0ebe3;">
-        <a href="https://swap-skills.com/community" style="text-decoration: none;">
+        <a href="${baseUrl}/community" style="text-decoration: none;">
           <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1f2937;">${post.title}</h4>
         </a>
         <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
@@ -387,7 +388,7 @@ function generateDigestEmail(
                 </table>
                 
                 <div style="text-align: center; margin-top: 24px;">
-                  <a href="https://swap-skills.com/browse" style="display: inline-block; background: #f97316; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
+                  <a href="${baseUrl}/browse" style="display: inline-block; background: #f97316; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
                     See what's on offer →
                   </a>
                 </div>
@@ -406,7 +407,7 @@ function generateDigestEmail(
                 </table>
                 
                 <div style="text-align: center; margin-top: 24px;">
-                  <a href="https://swap-skills.com/community" style="display: inline-block; background: transparent; color: #f97316; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 2px solid #f97316;">
+                  <a href="${baseUrl}/community" style="display: inline-block; background: transparent; color: #f97316; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 2px solid #f97316;">
                     View Community Board →
                   </a>
                 </div>
@@ -433,15 +434,15 @@ function generateDigestEmail(
               </p>
               
               <p style="margin: 0 0 16px 0;">
-                <a href="https://swap-skills.com/profile" style="color: #f97316; text-decoration: none; font-weight: 500; font-size: 14px;">Manage Preferences</a>
+                <a href="${baseUrl}/profile" style="color: #f97316; text-decoration: none; font-weight: 500; font-size: 14px;">Manage Preferences</a>
                 &nbsp;·&nbsp;
-                <a href="https://swap-skills.com/unsubscribe?token=${unsubscribeToken}" style="color: #6b7280; text-decoration: none; font-size: 14px;">Unsubscribe</a>
+                <a href="${baseUrl}/unsubscribe?token=${unsubscribeToken}" style="color: #6b7280; text-decoration: none; font-size: 14px;">Unsubscribe</a>
               </p>
               
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
                 © ${new Date().getFullYear()} SwapSkills Ireland. All rights reserved.<br>
-                <a href="https://swap-skills.com/privacy" style="color: #9ca3af;">Privacy Policy</a> · 
-                <a href="https://swap-skills.com/terms" style="color: #9ca3af;">Terms of Service</a>
+                <a href="${baseUrl}/privacy" style="color: #9ca3af;">Privacy Policy</a> · 
+                <a href="${baseUrl}/terms" style="color: #9ca3af;">Terms of Service</a>
               </p>
             </td>
           </tr>
