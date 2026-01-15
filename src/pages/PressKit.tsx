@@ -104,28 +104,42 @@ const PressKit = () => {
               {/* Radio Interview */}
               <Card className="mt-6">
                 <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Radio className="h-6 w-6 text-primary" />
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Radio className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex-grow">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <Badge variant="secondary">
+                            <Radio className="h-3 w-3 mr-1" />
+                            Radio Interview
+                          </Badge>
+                          <Badge variant="outline">January 2026</Badge>
+                        </div>
+                        <h3 className="text-xl font-semibold text-foreground mb-2">
+                          Radio Interview with Kris Carey
+                        </h3>
+                        <p className="text-muted-foreground">
+                          Listen to founder Kris Carey discuss SwapSkills and the vision for building 
+                          stronger communities through skill sharing. The interview runs from 2:41:00 to 2:47:30.
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-grow">
-                      <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <Badge variant="secondary">
-                          <Radio className="h-3 w-3 mr-1" />
-                          Radio Interview
-                        </Badge>
-                        <Badge variant="outline">Coming Soon</Badge>
-                      </div>
-                      <h3 className="text-xl font-semibold text-foreground mb-2">
-                        Radio Interview with Kris Carey
-                      </h3>
-                      <p className="text-muted-foreground mb-4">
-                        Listen to founder Kris Carey discuss SwapSkills and the vision for building 
-                        stronger communities through skill sharing.
+                    <div className="w-full">
+                      <iframe 
+                        src="https://player.autopod.xyz/1161656?t=9660" 
+                        width="100%" 
+                        height="180" 
+                        frameBorder="0" 
+                        allow="autoplay; encrypted-media" 
+                        allowFullScreen
+                        className="rounded-lg"
+                        title="SwapSkills Radio Interview with Kris Carey"
+                      />
+                      <p className="text-xs text-muted-foreground mt-2 text-center">
+                        Player starts at the interview segment (2:41:00)
                       </p>
-                      <div className="bg-muted/50 rounded-lg p-4 text-center text-sm text-muted-foreground">
-                        Audio will be available soon. Check back shortly!
-                      </div>
                     </div>
                   </div>
                 </CardContent>
