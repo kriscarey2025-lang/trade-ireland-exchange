@@ -425,7 +425,7 @@ export function OnboardingQuestionnaire() {
               </Button>
             </div>
           </div>
-        ) : (
+        ) : currentStep === "preferences" ? (
           <div className="space-y-6">
             {/* Radius */}
             <Card>
