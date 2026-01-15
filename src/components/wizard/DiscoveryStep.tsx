@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn, formatDisplayName } from "@/lib/utils";
 
 interface LocalService {
   id: string;
@@ -261,7 +261,7 @@ export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) 
                       </div>
                     )}
                     <span className="text-xs text-muted-foreground truncate">
-                      {service.provider_name || "Anonymous"}
+                      {formatDisplayName(service.provider_name)}
                     </span>
                   </div>
                 </CardContent>
