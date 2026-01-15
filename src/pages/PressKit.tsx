@@ -133,7 +133,7 @@ const PressKit = () => {
                       <iframe 
                         src="https://player.autopod.xyz/1161656?t=9660" 
                         width="100%" 
-                        height="180" 
+                        height="250" 
                         frameBorder="0" 
                         allow="autoplay; encrypted-media" 
                         allowFullScreen
