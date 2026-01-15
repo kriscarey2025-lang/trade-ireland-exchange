@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper, Radio } from "lucide-react";
 import swapskillsLogo from "@/assets/swapskills-logo-full.png";
 import carlowNationalistArticle from "@/assets/press/carlow-nationalist-jan-2026.jpg";
+import kclrDailyLogo from "@/assets/press/kclr-daily-logo.png";
 
 const PressKit = () => {
   const stats = [
@@ -106,9 +107,11 @@ const PressKit = () => {
                 <CardContent className="pt-6">
                   <div className="flex flex-col gap-4">
                     <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <Radio className="h-6 w-6 text-primary" />
-                      </div>
+                      <img 
+                        src={kclrDailyLogo} 
+                        alt="The KCLR Daily with Brian Redmond" 
+                        className="h-16 w-16 rounded-lg object-cover shrink-0"
+                      />
                       <div className="flex-grow">
                         <div className="flex flex-wrap items-center gap-2 mb-2">
                           <Badge variant="secondary">
