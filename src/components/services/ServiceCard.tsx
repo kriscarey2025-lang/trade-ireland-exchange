@@ -370,11 +370,11 @@ export function ServiceCard({
                     ) : (
                       <span className="text-muted-foreground italic">No reviews</span>
                     )}
-                    {(service.user.rating !== null && (service.completedSwapsCount ?? 0) > 0) && (
+                    {(service.user.rating !== null && (service.user.completedTrades ?? 0) > 0) && (
                       <span className="text-muted-foreground">·</span>
                     )}
-                    {(service.completedSwapsCount ?? 0) > 0 && (
-                      <span className="font-medium text-primary">{service.completedSwapsCount} swaps ✓</span>
+                    {(service.user.completedTrades ?? 0) > 0 && (
+                      <span className="font-medium text-primary">{service.user.completedTrades} swaps ✓</span>
                     )}
                   </div>
                 </div>
