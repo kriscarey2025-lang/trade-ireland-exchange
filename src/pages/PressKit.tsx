@@ -5,7 +5,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper, Radio, Play, Pause } from "lucide-react";
+import { Download, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper, Radio, Play } from "lucide-react";
 import swapskillsLogo from "@/assets/swapskills-logo-full.png";
 import carlowNationalistArticle from "@/assets/press/carlow-nationalist-jan-2026.jpg";
 import kclrDailyLogo from "@/assets/press/kclr-daily-logo.png";
@@ -16,14 +16,6 @@ const PressKit = () => {
     { label: "Skills Offered", value: "15+", icon: Handshake, description: "Available services to swap" },
     { label: "Categories", value: "7+", icon: FileText, description: "From gardening to language tutoring" },
     { label: "Location", value: "Carlow, Ireland", icon: MapPin, description: "Built with love in Killeshin" },
-  ];
-
-  const brandColors = [
-    { name: "Primary (Terracotta)", hsl: "18 70% 50%", hex: "#D95F2C", usage: "Main brand color, CTAs, headers" },
-    { name: "Accent (Sage Green)", hsl: "145 35% 42%", hex: "#4A9A6F", usage: "Secondary actions, success states" },
-    { name: "Highlight (Honey Gold)", hsl: "38 75% 55%", hex: "#E3A832", usage: "Highlights, badges, accents" },
-    { name: "Background (Cream)", hsl: "40 30% 98%", hex: "#FDFBF8", usage: "Page backgrounds" },
-    { name: "Foreground (Warm Brown)", hsl: "25 25% 15%", hex: "#302822", usage: "Body text, headings" },
   ];
 
   const handleDownloadLogo = () => {
@@ -314,98 +306,6 @@ const PressKit = () => {
           </div>
         </section>
 
-        {/* Brand Colors */}
-        <section className="py-16 bg-secondary/30">
-          <div className="container px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="flex items-center gap-3 mb-8">
-                <Palette className="h-8 w-8 text-primary" />
-                <h2 className="text-3xl font-display font-bold text-foreground">Brand Colors</h2>
-              </div>
-              
-              <div className="grid gap-4">
-                {brandColors.map((color) => (
-                  <Card key={color.name} className="overflow-hidden">
-                    <div className="flex flex-col sm:flex-row">
-                      <div 
-                        className="w-full sm:w-32 h-20 sm:h-auto shrink-0"
-                        style={{ backgroundColor: color.hex }}
-                      />
-                      <CardContent className="p-4 flex-grow">
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div>
-                            <h3 className="font-semibold text-foreground">{color.name}</h3>
-                            <p className="text-sm text-muted-foreground">{color.usage}</p>
-                          </div>
-                          <div className="text-right text-sm">
-                            <p className="font-mono text-foreground">{color.hex}</p>
-                            <p className="font-mono text-muted-foreground">HSL: {color.hsl}</p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Typography */}
-        <section className="py-16 bg-background">
-          <div className="container px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="flex items-center gap-3 mb-8">
-                <Type className="h-8 w-8 text-primary" />
-                <h2 className="text-3xl font-display font-bold text-foreground">Typography</h2>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="font-display text-2xl">Fraunces</CardTitle>
-                    <CardDescription>Display & Headlines</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="font-display text-4xl text-foreground mb-4">Aa Bb Cc</p>
-                    <p className="font-display text-lg text-muted-foreground">
-                      Used for headings, hero text, and brand statements. 
-                      A warm, friendly serif that conveys trust and community.
-                    </p>
-                    <Button variant="outline" size="sm" className="mt-4" asChild>
-                      <a href="https://fonts.google.com/specimen/Fraunces" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-3 w-3 mr-2" />
-                        Google Fonts
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-2xl">Nunito</CardTitle>
-                    <CardDescription>Body & UI Text</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-4xl text-foreground mb-4">Aa Bb Cc</p>
-                    <p className="text-lg text-muted-foreground">
-                      Used for body text, buttons, and UI elements. 
-                      A rounded, friendly sans-serif that's highly readable.
-                    </p>
-                    <Button variant="outline" size="sm" className="mt-4" asChild>
-                      <a href="https://fonts.google.com/specimen/Nunito" target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-3 w-3 mr-2" />
-                        Google Fonts
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Brand Voice */}
         <section className="py-16 bg-secondary/30">
           <div className="container px-4">
             <div className="max-w-4xl mx-auto">
