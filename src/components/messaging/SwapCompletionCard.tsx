@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { 
   CheckCircle2, 
   Loader2,
@@ -101,47 +100,45 @@ export function SwapCompletionCard({
 
   return (
     <>
-      <Card className="border-green-500/30 bg-green-50 dark:bg-green-950/20">
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-green-600" />
-            <span className="font-medium text-sm text-green-700 dark:text-green-400">
-              Swap Complete!
-            </span>
+      {/* Slim orange banner for mobile-friendly display */}
+      <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg shadow-sm">
+        <div className="px-3 py-2 sm:px-4 sm:py-3">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <span className="font-medium text-xs sm:text-sm">
+                Swap Complete! Keep {serviceTitle ? `"${serviceTitle}"` : 'service'} open?
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowKeepRunningDialog(true)}
+                disabled={isLoading}
+                className="h-7 px-2 text-xs gap-1 bg-white/20 hover:bg-white/30 text-white border-0"
+              >
+                <RefreshCw className="h-3 w-3" />
+                <span className="hidden sm:inline">Keep</span> Open
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleCloseService}
+                disabled={isLoading}
+                className="h-7 px-2 text-xs gap-1 bg-white/20 hover:bg-white/30 text-white border-0"
+              >
+                {isLoading ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <XCircle className="h-3 w-3" />
+                )}
+                Close
+              </Button>
+            </div>
           </div>
-
-          <p className="text-sm text-muted-foreground">
-            Both reviews are in. Would you like to keep {serviceTitle ? `"${serviceTitle}"` : 'your service'} open for more swaps, or close it?
-          </p>
-
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowKeepRunningDialog(true)}
-              disabled={isLoading}
-              className="flex-1 gap-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Keep Running
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCloseService}
-              disabled={isLoading}
-              className="flex-1 gap-2 text-destructive hover:text-destructive"
-            >
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <XCircle className="h-4 w-4" />
-              )}
-              Close Service
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <AlertDialog open={showKeepRunningDialog} onOpenChange={setShowKeepRunningDialog}>
         <AlertDialogContent>
