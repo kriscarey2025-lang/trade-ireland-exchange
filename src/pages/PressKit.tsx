@@ -4,7 +4,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper } from "lucide-react";
+import { Download, Palette, Type, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper, Radio } from "lucide-react";
 import swapskillsLogo from "@/assets/swapskills-logo-full.png";
 import carlowNationalistArticle from "@/assets/press/carlow-nationalist-jan-2026.jpg";
 
@@ -99,6 +99,36 @@ const PressKit = () => {
                     </div>
                   </CardContent>
                 </div>
+              </Card>
+
+              {/* Radio Interview */}
+              <Card className="mt-6">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Radio className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-grow">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <Badge variant="secondary">
+                          <Radio className="h-3 w-3 mr-1" />
+                          Radio Interview
+                        </Badge>
+                        <Badge variant="outline">Coming Soon</Badge>
+                      </div>
+                      <h3 className="text-xl font-semibold text-foreground mb-2">
+                        Radio Interview with Kris Carey
+                      </h3>
+                      <p className="text-muted-foreground mb-4">
+                        Listen to founder Kris Carey discuss SwapSkills and the vision for building 
+                        stronger communities through skill sharing.
+                      </p>
+                      <div className="bg-muted/50 rounded-lg p-4 text-center text-sm text-muted-foreground">
+                        Audio will be available soon. Check back shortly!
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
               </Card>
             </div>
           </div>
