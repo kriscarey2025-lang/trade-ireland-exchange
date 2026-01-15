@@ -371,24 +371,25 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
 
       {/* For non-logged-in users, show simple action buttons */}
       {!user && (
-        <div className="px-2.5 pb-2.5 flex items-center gap-2" onClick={(e) => e.preventDefault()}>
+        <div className="px-2.5 pb-2.5 flex items-center gap-1.5" onClick={(e) => e.preventDefault()}>
           <Button
             variant="outline"
             size="sm"
-            className="h-7 text-[11px] flex-1"
+            className="h-7 px-2 text-[10px]"
             asChild
           >
             <Link to={`/services/${service.id}`}>
-              Read more <ArrowUpRight className="h-3 w-3 ml-1" />
+              Read more
             </Link>
           </Button>
           <Button
             variant="default"
-            size="sm"
-            className="h-7 text-[11px] flex-1"
+            size="icon"
+            className="h-7 w-7"
             onClick={() => navigate("/auth")}
+            title="Sign in to trade"
           >
-            Sign in to trade
+            <Handshake className="h-3.5 w-3.5" />
           </Button>
         </div>
       )}
