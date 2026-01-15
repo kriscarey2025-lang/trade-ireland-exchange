@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, MapPin, ArrowRight, Sparkles, User } from "lucide-react";
+import { Heart, MapPin, ArrowRight, ArrowLeft, Sparkles, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
@@ -296,26 +296,38 @@ export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) 
             </Button>
           </>
         ) : (
-          <Button
-            variant="hero"
-            className="w-full"
-            onClick={handleContinue}
-            disabled={submitting}
-          >
-            {submitting ? (
-              "Saving..."
-            ) : likedServices.size > 0 ? (
-              <>
-                Continue
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </>
-            ) : (
-              <>
-                Skip & Continue
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </>
+          <>
+            <Button
+              variant="hero"
+              className="w-full"
+              onClick={handleContinue}
+              disabled={submitting}
+            >
+              {submitting ? (
+                "Saving..."
+              ) : likedServices.size > 0 ? (
+                <>
+                  Continue
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Skip & Continue
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+            {currentPage > 1 && (
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setCurrentPage(prev => prev - 1)}
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Page {currentPage - 1}
+              </Button>
             )}
-          </Button>
+          </>
         )}
 
         {services.length > 0 && likedServices.size === 0 && (
