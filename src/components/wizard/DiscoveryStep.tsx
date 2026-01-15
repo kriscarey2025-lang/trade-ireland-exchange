@@ -145,6 +145,13 @@ export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) 
         <p className="text-muted-foreground">
           Heart the listings that interest you — we'll let them know!
         </p>
+        
+        {/* Guidance banner */}
+        <div className="mt-4 mx-auto max-w-md bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-4 py-3">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
+            💛 <span className="font-medium">No commitment!</span> Hearting just lets them know you're interested in swapping — you can chat first before deciding.
+          </p>
+        </div>
         <div className="flex items-center justify-center gap-2 mt-2 flex-wrap">
           {userLocation && (
             <Badge variant="outline">
