@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MapPin, Star, Send, Loader2, Zap, RefreshCw, Linkedin, Facebook, Instagram } from "lucide-react";
+import { MapPin, Star, Send, Loader2, Zap, RefreshCw, Linkedin, Facebook, Instagram, ArrowUpRight, Handshake } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -11,7 +11,7 @@ import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { format, isToday, isTomorrow, differenceInDays, formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
-import { useStartConversation } from "@/hooks/useMessaging";
+import { useStartConversation, useGetOrCreateConversation } from "@/hooks/useMessaging";
 import { toast } from "sonner";
 
 interface ServiceUser {
@@ -76,6 +76,7 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
   const navigate = useNavigate();
   const { user } = useAuth();
   const startConversation = useStartConversation();
+  const getOrCreateConversation = useGetOrCreateConversation();
   const [quickMessage, setQuickMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   
@@ -112,6 +113,32 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
       toast.error("Failed to send message");
     } finally {
       setIsSending(false);
+    }
+  };
+
+  const handleInitiateTrade = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      toast.error("Please sign in to initiate a trade");
+      navigate("/auth");
+      return;
+    }
+
+    if (!service.user?.id) {
+      toast.error("Unable to contact this user");
+      return;
+    }
+
+    try {
+      const conversationId = await getOrCreateConversation.mutateAsync({
+        providerId: service.user.id,
+        serviceId: service.id,
+      });
+      navigate(`/messages/${conversationId}?newTrade=true`);
+    } catch (error) {
+      toast.error("Failed to open conversation");
     }
   };
 
@@ -156,83 +183,8 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
           </div>
         </div>
         
-        {/* Content Below Image - More padding for touch */}
-        <div className="mt-2.5 space-y-1.5 pb-1">
-          {/* User Info with Trust Signals - MOVED TO TOP */}
-          {service.user && (
-            <Link
-              to={`/profile/${service.user.id}`}
-              className="flex items-center gap-1.5 mb-1 hover:opacity-80 transition-opacity"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Avatar className="h-5 w-5 ring-1 ring-border">
-                <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover" />
-                <AvatarFallback className="text-[8px] bg-primary/10 text-primary">
-                  {service.user.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-[11px] font-medium truncate max-w-[60px] hover:underline">
-                {formatDisplayName(service.user.name).split(' ')[0]}
-              </span>
-              <VerifiedBadge status={service.user.verificationStatus} size="sm" />
-              {service.user.isFounder && <FoundersBadge size="sm" />}
-              {/* Social Media Icons */}
-              {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
-                <div className="flex items-center gap-0.5">
-                  {service.user.linkedinUrl && (
-                    <a 
-                      href={service.user.linkedinUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="hover:opacity-70 transition-opacity"
-                    >
-                      <Linkedin className="h-3 w-3 text-[#0A66C2]" />
-                    </a>
-                  )}
-                  {service.user.facebookUrl && (
-                    <a 
-                      href={service.user.facebookUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="hover:opacity-70 transition-opacity"
-                    >
-                      <Facebook className="h-3 w-3 text-[#1877F2]" />
-                    </a>
-                  )}
-                  {service.user.instagramUrl && (
-                    <a 
-                      href={service.user.instagramUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="hover:opacity-70 transition-opacity"
-                    >
-                      <Instagram className="h-3 w-3 text-[#E4405F]" />
-                    </a>
-                  )}
-                </div>
-              )}
-              <span className="ml-auto flex items-center gap-1">
-                {service.user.rating !== null && (
-                  <span className="flex items-center gap-0.5 text-[11px] text-warning">
-                    <Star className="h-3 w-3 fill-current" />
-                    {service.user.rating.toFixed(1)}
-                  </span>
-                )}
-                {(service.user.rating !== null && (service.completedSwapsCount ?? 0) > 0) && (
-                  <span className="text-muted-foreground">·</span>
-                )}
-                {(service.completedSwapsCount ?? 0) > 0 && (
-                  <span className="text-[11px] text-primary font-medium">
-                    {service.completedSwapsCount} swaps ✓
-                  </span>
-                )}
-              </span>
-            </Link>
-          )}
-
+        {/* Content Below Image - Cleaner layout */}
+        <div className="mt-2.5 space-y-2 pb-1">
           {/* Title */}
           <h3 className="font-semibold text-sm line-clamp-2 leading-tight">
             {service.title}
@@ -243,7 +195,7 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
             <span>{categoryLabels[service.category]}</span>
             <span>·</span>
             <MapPin className="h-2.5 w-2.5" />
-            <span className="truncate">{service.location}</span>
+            <span className="truncate max-w-[60px]">{service.location}</span>
             {service.createdAt && (
               <>
                 <span>·</span>
@@ -276,33 +228,167 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
               </div>
             </div>
           )}
-          
+
+          {/* User Info - Clean single row with essential info only */}
+          {service.user && (
+            <Link
+              to={`/profile/${service.user.id}`}
+              className="flex items-center gap-2 pt-2 border-t border-border hover:opacity-80 transition-opacity"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Avatar className="h-7 w-7 ring-1 ring-border shrink-0">
+                <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover" />
+                <AvatarFallback className="text-[9px] bg-primary/10 text-primary">
+                  {service.user.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-medium truncate max-w-[70px] hover:underline">
+                    {formatDisplayName(service.user.name).split(' ')[0]}
+                  </span>
+                  <VerifiedBadge status={service.user.verificationStatus} size="sm" />
+                  {service.user.isFounder && <FoundersBadge size="sm" />}
+                </div>
+                {/* Rating & Swaps on second line */}
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  {service.user.rating !== null && (
+                    <span className="flex items-center gap-0.5 text-warning">
+                      <Star className="h-2.5 w-2.5 fill-current" />
+                      {service.user.rating.toFixed(1)}
+                    </span>
+                  )}
+                  {(service.user.completedTrades ?? 0) > 0 && (
+                    <>
+                      {service.user.rating !== null && <span>·</span>}
+                      <span className="text-primary font-medium">
+                        {service.user.completedTrades} swaps
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+              {/* Social icons - compact on the right */}
+              {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
+                <div className="flex items-center gap-1 shrink-0">
+                  {service.user.linkedinUrl && (
+                    <a 
+                      href={service.user.linkedinUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Linkedin className="h-3.5 w-3.5 text-[#0A66C2]" />
+                    </a>
+                  )}
+                  {service.user.facebookUrl && (
+                    <a 
+                      href={service.user.facebookUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Facebook className="h-3.5 w-3.5 text-[#1877F2]" />
+                    </a>
+                  )}
+                  {service.user.instagramUrl && (
+                    <a 
+                      href={service.user.instagramUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Instagram className="h-3.5 w-3.5 text-[#E4405F]" />
+                    </a>
+                  )}
+                </div>
+              )}
+            </Link>
+          )}
         </div>
       </Link>
 
-      {/* Inline Quick Message Field - Only for logged in users who don't own this service */}
+      {/* Quick Message & Action Buttons - below the card for logged in users */}
       {user && service.user?.id && !isOwnService && (
-        <div 
-          className="mt-2 flex items-center gap-1.5"
-          onClick={(e) => e.preventDefault()}
-        >
-          <Input
-            placeholder="Say hi..."
-            value={quickMessage}
-            onChange={(e) => setQuickMessage(e.target.value)}
-            className="h-8 text-xs flex-1"
-          />
+        <div className="mt-2 space-y-2" onClick={(e) => e.preventDefault()}>
+          {/* Quick Message */}
+          <div className="flex items-center gap-1.5">
+            <Input
+              placeholder="Say hi or ask..."
+              value={quickMessage}
+              onChange={(e) => setQuickMessage(e.target.value)}
+              className="h-8 text-xs flex-1"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && quickMessage.trim()) {
+                  e.preventDefault();
+                  handleSendMessage(e as unknown as React.MouseEvent);
+                }
+              }}
+            />
+            <Button
+              size="sm"
+              className="h-8 px-2.5 shrink-0"
+              disabled={!quickMessage.trim() || isSending}
+              onClick={handleSendMessage}
+            >
+              {isSending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Send className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 text-[11px] flex-1"
+              asChild
+            >
+              <Link to={`/services/${service.id}`}>
+                Read more <ArrowUpRight className="h-3 w-3 ml-1" />
+              </Link>
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              className="h-7 text-[11px] flex-1 gap-1"
+              onClick={handleInitiateTrade}
+              disabled={getOrCreateConversation.isPending}
+            >
+              {getOrCreateConversation.isPending ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <Handshake className="h-3 w-3" />
+              )}
+              Initiate Trade
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* For non-logged-in users, show simple action buttons */}
+      {!user && (
+        <div className="mt-2 flex items-center gap-2" onClick={(e) => e.preventDefault()}>
           <Button
+            variant="outline"
             size="sm"
-            className="h-8 px-2.5 shrink-0"
-            disabled={!quickMessage.trim() || isSending}
-            onClick={handleSendMessage}
+            className="h-7 text-[11px] flex-1"
+            asChild
           >
-            {isSending ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Send className="h-3.5 w-3.5" />
-            )}
+            <Link to={`/services/${service.id}`}>
+              Read more <ArrowUpRight className="h-3 w-3 ml-1" />
+            </Link>
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            className="h-7 text-[11px] flex-1"
+            onClick={() => navigate("/auth")}
+          >
+            Sign in to trade
           </Button>
         </div>
       )}
