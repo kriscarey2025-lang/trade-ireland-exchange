@@ -164,11 +164,7 @@ const PressKit = () => {
                   Founded in Killeshin, County Carlow, we believe in the power of community and the value of 
                   helping each other.
                 </p>
-                <p>
-                  Whether it's swapping German lessons for gardening help, or trading tech support for 
-                  home-cooked meals, SwapSkills makes it easy for neighbours to share what they know 
-                  and get help with what they need.
-                </p>
+                <p>Purposely we have decided not to implement a credits, hour trading or skill valuation system - to allow our users to decide what is valuable and fair to them. We believe in honest and open communication, clear expectation setting and are actively monitoring the site by implementing reporting systems, review systems and providing safety guidelines. Ultimately our platform however solely aims to connect people through service exchanges. </p>
                 <div className="bg-secondary/50 rounded-xl p-6 mt-6">
                   <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
                     <Heart className="h-5 w-5 text-primary" />
