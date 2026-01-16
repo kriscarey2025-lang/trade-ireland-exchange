@@ -37,9 +37,10 @@ const PressKit = () => {
       
       const uniqueCategories = new Set(categoryData?.map(s => s.category) || []);
       
-      setMemberCount(members || 0);
-      setServicesCount(services || 0);
-      setCategoriesCount(uniqueCategories.size);
+      // Use real count or minimum of 71 for members
+      setMemberCount(Math.max(members || 0, 71));
+      setServicesCount(Math.max(services || 0, 15));
+      setCategoriesCount(Math.max(uniqueCategories.size, 7));
     };
 
     fetchStats();
