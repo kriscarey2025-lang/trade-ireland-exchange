@@ -52,9 +52,7 @@ const PressKit = () => {
                 <FileText className="h-3 w-3 mr-1" />
                 Press & Media
               </Badge>
-              <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-6">
-                Press Kit
-              </h1>
+              <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-6">Press Coverage</h1>
               
             </div>
           </div>
@@ -66,7 +64,7 @@ const PressKit = () => {
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center gap-3 mb-8">
                 <Newspaper className="h-8 w-8 text-primary" />
-                <h2 className="text-3xl font-display font-bold text-foreground">Press Coverage</h2>
+                
               </div>
               
               <Card className="overflow-hidden">
