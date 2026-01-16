@@ -42,6 +42,7 @@ interface RequestBody {
   test_email?: string;
   dry_run?: boolean; // If true, logs what would be sent but doesn't actually send
   only_emails?: string[]; // If provided, only send to these specific email addresses
+  exclude_emails?: string[]; // If provided, exclude these email addresses
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -55,11 +56,13 @@ const handler = async (req: Request): Promise<Response> => {
     let testEmail: string | null = null;
     let dryRun = false;
     let onlyEmails: string[] | null = null;
+    let excludeEmails: string[] | null = null;
     try {
       const body: RequestBody = await req.json();
       testEmail = body.test_email || null;
       dryRun = body.dry_run || false;
       onlyEmails = body.only_emails || null;
+      excludeEmails = body.exclude_emails || null;
     } catch {
       // No body or invalid JSON
     }
@@ -70,6 +73,10 @@ const handler = async (req: Request): Promise<Response> => {
     
     if (onlyEmails && onlyEmails.length > 0) {
       console.log(`📧 TARGETED MODE - Only sending to: ${onlyEmails.join(", ")}`);
+    }
+    
+    if (excludeEmails && excludeEmails.length > 0) {
+      console.log(`🚫 EXCLUSION MODE - Excluding: ${excludeEmails.join(", ")}`);
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -198,6 +205,12 @@ const handler = async (req: Request): Promise<Response> => {
 
       // If only_emails is specified, skip users not in that list
       if (onlyEmails && onlyEmails.length > 0 && !onlyEmails.includes(profile.email)) {
+        continue;
+      }
+
+      // If exclude_emails is specified, skip users in that list
+      if (excludeEmails && excludeEmails.length > 0 && excludeEmails.includes(profile.email.toLowerCase())) {
+        console.log(`Skipping ${profile.email} - in exclusion list`);
         continue;
       }
 
