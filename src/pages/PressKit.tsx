@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SEO } from "@/components/SEO";
@@ -6,23 +6,58 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Download, Users, Handshake, Heart, MapPin, FileText, ExternalLink, Newspaper, Radio, Play } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import swapskillsLogo from "@/assets/swapskills-logo-full.png";
 import carlowNationalistArticle from "@/assets/press/carlow-nationalist-jan-2026.jpg";
 import kclrDailyLogo from "@/assets/press/kclr-daily-logo.png";
+
 const PressKit = () => {
+  const [memberCount, setMemberCount] = useState<number | null>(null);
+  const [servicesCount, setServicesCount] = useState<number | null>(null);
+  const [categoriesCount, setCategoriesCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      // Fetch member count
+      const { count: members } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+      
+      // Fetch active services count
+      const { count: services } = await supabase
+        .from('services')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'active');
+      
+      // Fetch unique categories count
+      const { data: categoryData } = await supabase
+        .from('services')
+        .select('category')
+        .eq('status', 'active');
+      
+      const uniqueCategories = new Set(categoryData?.map(s => s.category) || []);
+      
+      setMemberCount(members || 0);
+      setServicesCount(services || 0);
+      setCategoriesCount(uniqueCategories.size);
+    };
+
+    fetchStats();
+  }, []);
+
   const stats = [{
     label: "Community Members",
-    value: "36+",
+    value: memberCount !== null ? `${memberCount}+` : "...",
     icon: Users,
     description: "Active neighbours swapping skills"
   }, {
     label: "Skills Offered",
-    value: "15+",
+    value: servicesCount !== null ? `${servicesCount}+` : "...",
     icon: Handshake,
     description: "Available services to swap"
   }, {
     label: "Categories",
-    value: "7+",
+    value: categoriesCount !== null ? `${categoriesCount}+` : "...",
     icon: FileText,
     description: "From gardening to language tutoring"
   }, {
