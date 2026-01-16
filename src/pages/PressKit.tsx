@@ -9,15 +9,28 @@ import { Download, Users, Handshake, Heart, MapPin, FileText, ExternalLink, News
 import swapskillsLogo from "@/assets/swapskills-logo-full.png";
 import carlowNationalistArticle from "@/assets/press/carlow-nationalist-jan-2026.jpg";
 import kclrDailyLogo from "@/assets/press/kclr-daily-logo.png";
-
 const PressKit = () => {
-  const stats = [
-    { label: "Community Members", value: "36+", icon: Users, description: "Active neighbours swapping skills" },
-    { label: "Skills Offered", value: "15+", icon: Handshake, description: "Available services to swap" },
-    { label: "Categories", value: "7+", icon: FileText, description: "From gardening to language tutoring" },
-    { label: "Location", value: "Carlow, Ireland", icon: MapPin, description: "Built with love in Killeshin" },
-  ];
-
+  const stats = [{
+    label: "Community Members",
+    value: "36+",
+    icon: Users,
+    description: "Active neighbours swapping skills"
+  }, {
+    label: "Skills Offered",
+    value: "15+",
+    icon: Handshake,
+    description: "Available services to swap"
+  }, {
+    label: "Categories",
+    value: "7+",
+    icon: FileText,
+    description: "From gardening to language tutoring"
+  }, {
+    label: "Location",
+    value: "Carlow, Ireland",
+    icon: MapPin,
+    description: "Built with love in Killeshin"
+  }];
   const handleDownloadLogo = () => {
     const link = document.createElement('a');
     link.href = swapskillsLogo;
@@ -26,13 +39,8 @@ const PressKit = () => {
     link.click();
     document.body.removeChild(link);
   };
-
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <SEO 
-        title="Press Kit - SwapSkills | Brand Assets & Media Resources"
-        description="Download SwapSkills logos, brand guidelines, and media resources. Learn about Ireland's first free digital barter system for skill swapping."
-      />
+  return <div className="min-h-screen flex flex-col bg-background">
+      <SEO title="Press Kit - SwapSkills | Brand Assets & Media Resources" description="Download SwapSkills logos, brand guidelines, and media resources. Learn about Ireland's first free digital barter system for skill swapping." />
       <Header />
       
       <main className="flex-grow">
@@ -47,11 +55,7 @@ const PressKit = () => {
               <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-6">
                 Press Kit
               </h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                Everything you need to tell the SwapSkills story. Download our brand assets, 
-                learn about our mission, and access key statistics about Ireland's first free 
-                digital barter system.
-              </p>
+              
             </div>
           </div>
         </section>
@@ -68,11 +72,7 @@ const PressKit = () => {
               <Card className="overflow-hidden">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="p-6">
-                    <img 
-                      src={carlowNationalistArticle} 
-                      alt="Carlow Nationalist article about SwapSkills - Killeshin woman launches online service exchange platform" 
-                      className="w-full rounded-lg shadow-md"
-                    />
+                    <img src={carlowNationalistArticle} alt="Carlow Nationalist article about SwapSkills - Killeshin woman launches online service exchange platform" className="w-full rounded-lg shadow-md" />
                   </div>
                   <CardContent className="pt-6 flex flex-col justify-center">
                     <Badge variant="secondary" className="w-fit mb-3">
@@ -100,11 +100,7 @@ const PressKit = () => {
                 <CardContent className="pt-6">
                   <div className="flex flex-col gap-4">
                     <div className="flex items-start gap-4">
-                      <img 
-                        src={kclrDailyLogo} 
-                        alt="The KCLR Daily with Brian Redmond" 
-                        className="h-16 w-16 rounded-lg object-cover shrink-0"
-                      />
+                      <img src={kclrDailyLogo} alt="The KCLR Daily with Brian Redmond" className="h-16 w-16 rounded-lg object-cover shrink-0" />
                       <div className="flex-grow">
                         <div className="flex flex-wrap items-center gap-2 mb-2">
                           <Badge variant="secondary">
@@ -129,28 +125,19 @@ const PressKit = () => {
                     </div>
                     <div className="w-full bg-muted/50 rounded-lg p-4">
                       <div className="flex items-center gap-4">
-                        <Button
-                          size="lg"
-                          className="h-14 w-14 rounded-full shrink-0"
-                          onClick={() => {
-                            const audio = document.getElementById('kclr-interview') as HTMLAudioElement;
-                            if (audio) {
-                              audio.currentTime = 9660; // 2:41:00
-                              audio.play();
-                            }
-                          }}
-                        >
+                        <Button size="lg" className="h-14 w-14 rounded-full shrink-0" onClick={() => {
+                        const audio = document.getElementById('kclr-interview') as HTMLAudioElement;
+                        if (audio) {
+                          audio.currentTime = 9660; // 2:41:00
+                          audio.play();
+                        }
+                      }}>
                           <Play className="h-6 w-6 ml-1" />
                         </Button>
                         <div className="flex-grow">
                           <p className="font-semibold text-foreground">The KCLR Daily</p>
                           <p className="text-sm text-muted-foreground">Interview starts at 2:41:00</p>
-                          <audio 
-                            id="kclr-interview"
-                            controls 
-                            className="w-full mt-2"
-                            preload="metadata"
-                          >
+                          <audio id="kclr-interview" controls className="w-full mt-2" preload="metadata">
                             <source src="https://s3.eu-central-1.wasabisys.com/autopod-public/episodes/11768482186112.mp3" type="audio/mpeg" />
                             Your browser does not support the audio element.
                           </audio>
@@ -208,16 +195,14 @@ const PressKit = () => {
                 Key Statistics
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                {stats.map((stat) => (
-                  <Card key={stat.label} className="text-center">
+                {stats.map(stat => <Card key={stat.label} className="text-center">
                     <CardContent className="pt-6">
                       <stat.icon className="h-8 w-8 mx-auto mb-3 text-primary" />
                       <p className="text-3xl md:text-4xl font-bold text-foreground mb-1">{stat.value}</p>
                       <p className="text-sm font-medium text-foreground">{stat.label}</p>
                       <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
                     </CardContent>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
             </div>
           </div>
@@ -238,11 +223,7 @@ const PressKit = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="bg-background border rounded-xl p-8 flex items-center justify-center mb-4">
-                      <img 
-                        src={swapskillsLogo} 
-                        alt="SwapSkills Logo" 
-                        className="h-24 w-auto"
-                      />
+                      <img src={swapskillsLogo} alt="SwapSkills Logo" className="h-24 w-auto" />
                     </div>
                     <Button onClick={handleDownloadLogo} className="w-full">
                       <Download className="h-4 w-4 mr-2" />
@@ -259,11 +240,7 @@ const PressKit = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="bg-foreground rounded-xl p-8 flex items-center justify-center mb-4">
-                      <img 
-                        src={swapskillsLogo} 
-                        alt="SwapSkills Logo on dark background" 
-                        className="h-24 w-auto"
-                      />
+                      <img src={swapskillsLogo} alt="SwapSkills Logo on dark background" className="h-24 w-auto" />
                     </div>
                     <Button onClick={handleDownloadLogo} variant="outline" className="w-full">
                       <Download className="h-4 w-4 mr-2" />
@@ -368,8 +345,6 @@ const PressKit = () => {
       </main>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default PressKit;
