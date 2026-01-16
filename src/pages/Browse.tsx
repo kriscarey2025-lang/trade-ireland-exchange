@@ -175,25 +175,25 @@ export default function Browse() {
         <Header />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
-          <SwapStatsSection />
-          
-          {/* Inspirational Call-to-Action Banner */}
-          <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 border-y border-primary/10">
-            <div className="container py-6 md:py-8">
-              <div className="flex flex-col items-center text-center max-w-2xl mx-auto">
-                <p className="text-lg md:text-xl font-medium text-foreground mb-2">
-                  ✨ Everything you need is already here
-                </p>
-                <p className="text-sm md:text-base text-muted-foreground italic">
-                  "The only thing standing between you and your goal is the story you keep telling yourself."
-                </p>
-                <p className="text-xs md:text-sm text-primary mt-2 font-medium">
-                  Take the first step — reach out to a neighbour today 💚
-                </p>
-              </div>
+          {/* Moving Inspirational Text Banner */}
+          <div className="bg-primary/5 border-y border-primary/10 overflow-hidden py-3">
+            <div className="animate-marquee whitespace-nowrap flex items-center">
+              <span className="text-sm md:text-base font-medium text-foreground mx-8">
+                ✨ Everything you need is already here — Take the first step, reach out to a neighbour today 💚
+              </span>
+              <span className="text-sm md:text-base font-medium text-foreground mx-8">
+                ✨ Everything you need is already here — Take the first step, reach out to a neighbour today 💚
+              </span>
+              <span className="text-sm md:text-base font-medium text-foreground mx-8">
+                ✨ Everything you need is already here — Take the first step, reach out to a neighbour today 💚
+              </span>
+              <span className="text-sm md:text-base font-medium text-foreground mx-8">
+                ✨ Everything you need is already here — Take the first step, reach out to a neighbour today 💚
+              </span>
             </div>
           </div>
           
+          <SwapStatsSection />
           <div id="services-section" className="container py-8">
 
           {/* Matches Dialog */}
