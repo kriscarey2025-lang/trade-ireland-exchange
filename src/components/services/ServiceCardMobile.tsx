@@ -339,31 +339,30 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
             </Button>
           </div>
           
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          {/* Action Buttons - Compact icons */}
+          <div className="flex items-center gap-1.5">
             <Button
               variant="outline"
               size="sm"
-              className="h-7 text-[11px] flex-1"
+              className="h-7 px-2 text-[10px]"
               asChild
             >
               <Link to={`/services/${service.id}`}>
-                Read more <ArrowUpRight className="h-3 w-3 ml-1" />
+                Read more
               </Link>
             </Button>
             <Button
-              variant="default"
-              size="sm"
-              className="h-7 text-[11px] flex-1 gap-1"
+              size="icon"
+              className="h-7 w-7"
               onClick={handleInitiateTrade}
               disabled={getOrCreateConversation.isPending}
+              title="Initiate Trade"
             >
               {getOrCreateConversation.isPending ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
-                <Handshake className="h-3 w-3" />
+                <Handshake className="h-3.5 w-3.5" />
               )}
-              Initiate Trade
             </Button>
           </div>
         </div>
