@@ -179,16 +179,16 @@ export default function Browse() {
           <div className="bg-primary/5 border-y border-primary/10 overflow-hidden py-3">
             <div className="animate-marquee whitespace-nowrap flex items-center">
               <span className="text-sm md:text-base font-medium text-foreground mx-8">
-                ✨ Everything you need is already here — Take the first step, reach out to a neighbour today 💚
+                🌱 "The worst that can happen is a 'no'. The best? A win-win swap and a new connection."
               </span>
               <span className="text-sm md:text-base font-medium text-foreground mx-8">
-                ✨ Everything you need is already here — Take the first step, reach out to a neighbour today 💚
+                🌱 "The worst that can happen is a 'no'. The best? A win-win swap and a new connection."
               </span>
               <span className="text-sm md:text-base font-medium text-foreground mx-8">
-                ✨ Everything you need is already here — Take the first step, reach out to a neighbour today 💚
+                🌱 "The worst that can happen is a 'no'. The best? A win-win swap and a new connection."
               </span>
               <span className="text-sm md:text-base font-medium text-foreground mx-8">
-                ✨ Everything you need is already here — Take the first step, reach out to a neighbour today 💚
+                🌱 "The worst that can happen is a 'no'. The best? A win-win swap and a new connection."
               </span>
             </div>
           </div>
