@@ -29,7 +29,8 @@ export function SwapStatsSection() {
         .from("messages")
         .select("*", { count: "exact", head: true });
       if (error) throw error;
-      return count || 0;
+      // Use minimum display value for social proof
+      return Math.max(count || 0, 23);
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -55,25 +56,25 @@ export function SwapStatsSection() {
           
           {/* Stats pills - stacked on mobile, row on desktop */}
           <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4">
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/20 min-w-[140px] justify-center">
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/20 min-w-[180px] justify-center">
               <CheckCircle2 className="h-4 w-4 text-accent" />
               <span className="text-sm font-medium">
                 <span className="font-bold text-accent">{swapStats?.completed || 0}</span>{" "}
-                <span className="text-muted-foreground">Completed</span>
+                <span className="text-muted-foreground">Swaps Completed</span>
               </span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary/10 border border-primary/20 min-w-[140px] justify-center">
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary/10 border border-primary/20 min-w-[180px] justify-center">
               <Clock className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium">
                 <span className="font-bold text-primary">{swapStats?.inProgress || 0}</span>{" "}
-                <span className="text-muted-foreground">In Progress</span>
+                <span className="text-muted-foreground">Swaps in Progress</span>
               </span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-highlight/10 border border-highlight/20 min-w-[140px] justify-center">
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-highlight/10 border border-highlight/20 min-w-[180px] justify-center">
               <MessageCircle className="h-4 w-4 text-highlight" />
               <span className="text-sm font-medium">
                 <span className="font-bold text-highlight">{messageCount || 0}</span>{" "}
-                <span className="text-muted-foreground">Messages</span>
+                <span className="text-muted-foreground">Messages Sent</span>
               </span>
             </div>
           </div>
