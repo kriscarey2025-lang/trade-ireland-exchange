@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Clock, Hourglass, CheckCircle2, Activity } from "lucide-react";
+import { Clock, MessageCircle, CheckCircle2, Activity } from "lucide-react";
 
 export function SwapStatsSection() {
   // Fetch swap statistics using RPC function (bypasses RLS)
@@ -15,9 +15,21 @@ export function SwapStatsSection() {
       const realInProgress = stats?.in_progress_count || 0;
       return {
         inProgress: Math.max(realInProgress, 4),
-        pending: stats?.pending_count || 0,
         completed: Math.max(realCompleted, 3),
       };
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Fetch message count
+  const { data: messageCount } = useQuery({
+    queryKey: ["message-count"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("messages")
+        .select("*", { count: "exact", head: true });
+      if (error) throw error;
+      return count || 0;
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -58,10 +70,10 @@ export function SwapStatsSection() {
               </span>
             </div>
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-highlight/10 border border-highlight/20 min-w-[140px] justify-center">
-              <Hourglass className="h-4 w-4 text-highlight" />
+              <MessageCircle className="h-4 w-4 text-highlight" />
               <span className="text-sm font-medium">
-                <span className="font-bold text-highlight">{swapStats?.pending || 0}</span>{" "}
-                <span className="text-muted-foreground">Pending</span>
+                <span className="font-bold text-highlight">{messageCount || 0}</span>{" "}
+                <span className="text-muted-foreground">Messages</span>
               </span>
             </div>
           </div>
