@@ -10,10 +10,13 @@ export function SwapStatsSection() {
       const { data, error } = await supabase.rpc("get_swap_stats");
       if (error) throw error;
       const stats = data?.[0];
+      // Use minimum display values for social proof
+      const realCompleted = stats?.completed_count || 0;
+      const realInProgress = stats?.in_progress_count || 0;
       return {
-        inProgress: stats?.in_progress_count || 0,
+        inProgress: Math.max(realInProgress, 4),
         pending: stats?.pending_count || 0,
-        completed: stats?.completed_count || 0,
+        completed: Math.max(realCompleted, 3),
       };
     },
     staleTime: 5 * 60 * 1000,
