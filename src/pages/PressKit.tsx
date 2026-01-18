@@ -129,7 +129,49 @@ const PressKit = () => {
                 </div>
               </Card>
 
-              {/* Online Article */}
+              {/* Laois Nationalist Online Article */}
+              <Card className="mt-6">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="h-16 w-16 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <Newspaper className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="flex-grow">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <Badge variant="secondary">
+                          <ExternalLink className="h-3 w-3 mr-1" />
+                          Online Article
+                        </Badge>
+                        <Badge variant="outline">January 2026</Badge>
+                      </div>
+                      <h3 className="text-xl font-semibold text-foreground mb-2">
+                        "Killeshin woman launches online platform SwapSkills to help people save money"
+                      </h3>
+                      <p className="text-muted-foreground mb-4">
+                        The Laois Nationalist covers SwapSkills, featuring founder Kristina Carey's vision for 
+                        building community connections through skill exchanges without money changing hands.
+                      </p>
+                      <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mb-4">
+                        <Badge variant="outline">Laois Nationalist</Badge>
+                        <Badge variant="outline">17 January 2026</Badge>
+                        <Badge variant="outline">By Hosanna Boulter</Badge>
+                      </div>
+                      <Button variant="outline" size="sm" asChild>
+                        <a 
+                          href="https://www.laois-nationalist.ie/news/killeshin-woman-launches-online-platform-swapskills-to-help-people-save-money_arid-84343.html" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Read Full Article
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Carlow Nationalist Online Article */}
               <Card className="mt-6">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
