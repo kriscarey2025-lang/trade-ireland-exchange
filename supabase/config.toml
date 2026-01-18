@@ -83,3 +83,6 @@ verify_jwt = false
 
 [functions.send-browse-nudge]
 verify_jwt = false
+
+[functions.send-listing-enhancement-email]
+verify_jwt = false
