@@ -1253,6 +1253,7 @@ export type Database = {
           location: string
         }[]
       }
+      get_message_count: { Args: never; Returns: number }
       get_pending_verifications: {
         Args: never
         Returns: {

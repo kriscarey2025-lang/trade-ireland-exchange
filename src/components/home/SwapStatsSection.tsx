@@ -21,16 +21,14 @@ export function SwapStatsSection() {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Fetch message count
+  // Fetch message count using RPC function (bypasses RLS)
   const { data: messageCount } = useQuery({
     queryKey: ["message-count"],
     queryFn: async () => {
-      const { count, error } = await supabase
-        .from("messages")
-        .select("*", { count: "exact", head: true });
+      const { data, error } = await supabase.rpc("get_message_count");
       if (error) throw error;
       // Use minimum display value for social proof
-      return Math.max(count || 0, 23);
+      return Math.max(data || 0, 23);
     },
     staleTime: 5 * 60 * 1000,
   });
