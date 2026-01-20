@@ -201,12 +201,25 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log(`Found ${pendingNudges.length} pending nudges to process`);
+    // Group nudges by user - only send ONE email per user (pick the most recent service viewed)
+    const userNudgeMap = new Map<string, typeof pendingNudges[0]>();
+    for (const nudge of pendingNudges) {
+      const existing = userNudgeMap.get(nudge.user_id);
+      if (!existing || new Date(nudge.viewed_at) > new Date(existing.viewed_at)) {
+        userNudgeMap.set(nudge.user_id, nudge);
+      }
+    }
+    
+    const uniqueUserNudges = Array.from(userNudgeMap.values());
+    console.log(`Found ${pendingNudges.length} pending nudges, ${uniqueUserNudges.length} unique users to process`);
 
     let sentCount = 0;
     const errors: string[] = [];
+    
+    // Helper to add delay between emails (Resend allows 2/second, we do 1/second to be safe)
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    for (const nudge of pendingNudges) {
+    for (const nudge of uniqueUserNudges) {
       try {
         // Get user's email and name
         const { data: profile } = await supabaseAdmin
@@ -229,11 +242,12 @@ const handler = async (req: Request): Promise<Response> => {
 
         if (prefs?.interest_emails_enabled === false) {
           console.log(`User ${nudge.user_id} has opted out of interest emails, skipping`);
-          // Mark as sent so we don't keep trying
+          // Mark ALL nudges for this user as sent so we don't keep trying
           await supabaseAdmin
             .from("browse_nudges")
             .update({ nudge_sent_at: new Date().toISOString() })
-            .eq("id", nudge.id);
+            .eq("user_id", nudge.user_id)
+            .is("nudge_sent_at", null);
           continue;
         }
 
@@ -250,13 +264,17 @@ const handler = async (req: Request): Promise<Response> => {
         const emailResponse = await sendEmail(profile.email, subject, html);
         console.log(`Nudge email sent to ${profile.email}:`, emailResponse);
 
-        // Mark as sent
+        // Mark ALL nudges for this user as sent
         await supabaseAdmin
           .from("browse_nudges")
           .update({ nudge_sent_at: new Date().toISOString() })
-          .eq("id", nudge.id);
+          .eq("user_id", nudge.user_id)
+          .is("nudge_sent_at", null);
 
         sentCount++;
+        
+        // Rate limit: wait 600ms between emails to stay under Resend's 2/second limit
+        await delay(600);
       } catch (emailError: any) {
         console.error(`Failed to send nudge ${nudge.id}:`, emailError);
         errors.push(`${nudge.id}: ${emailError.message}`);
