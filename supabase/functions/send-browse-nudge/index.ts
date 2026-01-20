@@ -181,6 +181,15 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Find users who viewed a service 24+ hours ago but haven't contacted or been nudged
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    
+    // First, get users who have received a nudge in the last 7 days (to exclude them)
+    const { data: recentlyNudgedUsers } = await supabaseAdmin
+      .from("browse_nudges")
+      .select("user_id")
+      .gte("nudge_sent_at", sevenDaysAgo);
+    
+    const excludedUserIds = new Set((recentlyNudgedUsers || []).map(n => n.user_id));
     
     const { data: pendingNudges, error: fetchError } = await supabaseAdmin
       .from("browse_nudges")
@@ -188,13 +197,16 @@ const handler = async (req: Request): Promise<Response> => {
       .is("nudge_sent_at", null)
       .is("contacted_at", null)
       .lt("viewed_at", twentyFourHoursAgo)
-      .limit(50);
+      .limit(100);
 
     if (fetchError) {
       throw new Error(`Failed to fetch pending nudges: ${fetchError.message}`);
     }
 
-    if (!pendingNudges || pendingNudges.length === 0) {
+    // Filter out users who received a nudge in the last 7 days
+    const filteredNudges = (pendingNudges || []).filter(n => !excludedUserIds.has(n.user_id));
+
+    if (filteredNudges.length === 0) {
       return new Response(
         JSON.stringify({ message: "No pending nudges to send", count: 0 }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
@@ -202,8 +214,8 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Group nudges by user - only send ONE email per user (pick the most recent service viewed)
-    const userNudgeMap = new Map<string, typeof pendingNudges[0]>();
-    for (const nudge of pendingNudges) {
+    const userNudgeMap = new Map<string, typeof filteredNudges[0]>();
+    for (const nudge of filteredNudges) {
       const existing = userNudgeMap.get(nudge.user_id);
       if (!existing || new Date(nudge.viewed_at) > new Date(existing.viewed_at)) {
         userNudgeMap.set(nudge.user_id, nudge);
@@ -211,7 +223,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
     
     const uniqueUserNudges = Array.from(userNudgeMap.values());
-    console.log(`Found ${pendingNudges.length} pending nudges, ${uniqueUserNudges.length} unique users to process`);
+    console.log(`Found ${filteredNudges.length} pending nudges, ${uniqueUserNudges.length} unique users to process`);
 
     let sentCount = 0;
     const errors: string[] = [];
