@@ -11,6 +11,7 @@ export interface Notification {
   message: string;
   read: boolean;
   related_service_id: string | null;
+  related_conversation_id: string | null;
   created_at: string;
 }
 
