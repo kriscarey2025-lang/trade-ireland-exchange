@@ -677,6 +677,7 @@ export type Database = {
           id: string
           message: string
           read: boolean
+          related_conversation_id: string | null
           related_service_id: string | null
           title: string
           type: string
@@ -687,6 +688,7 @@ export type Database = {
           id?: string
           message: string
           read?: boolean
+          related_conversation_id?: string | null
           related_service_id?: string | null
           title: string
           type?: string
@@ -697,12 +699,20 @@ export type Database = {
           id?: string
           message?: string
           read?: boolean
+          related_conversation_id?: string | null
           related_service_id?: string | null
           title?: string
           type?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_related_conversation_id_fkey"
+            columns: ["related_conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notifications_related_service_id_fkey"
             columns: ["related_service_id"]

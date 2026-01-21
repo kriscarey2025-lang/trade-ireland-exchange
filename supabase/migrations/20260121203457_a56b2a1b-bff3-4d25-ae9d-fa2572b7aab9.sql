@@ -1,0 +1,81 @@
+-- Add related_conversation_id column to notifications table
+ALTER TABLE public.notifications 
+ADD COLUMN related_conversation_id UUID REFERENCES public.conversations(id);
+
+-- Create index for faster lookups
+CREATE INDEX idx_notifications_conversation_id ON public.notifications(related_conversation_id);
+
+-- Update the create_message_notification function to store conversation_id
+CREATE OR REPLACE FUNCTION public.create_message_notification()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+DECLARE
+  _recipient_id UUID;
+  _sender_name TEXT;
+  _display_name TEXT;
+  _conversation RECORD;
+  _name_parts TEXT[];
+BEGIN
+  -- Get conversation details
+  SELECT * INTO _conversation
+  FROM conversations
+  WHERE id = NEW.conversation_id;
+  
+  -- Determine recipient (the other participant)
+  IF _conversation.participant_1 = NEW.sender_id THEN
+    _recipient_id := _conversation.participant_2;
+  ELSE
+    _recipient_id := _conversation.participant_1;
+  END IF;
+  
+  -- Get sender name
+  SELECT COALESCE(full_name, 'Someone') INTO _sender_name
+  FROM profiles
+  WHERE id = NEW.sender_id;
+  
+  -- Format display name as "FirstName L."
+  IF _sender_name IS NOT NULL AND _sender_name != 'Someone' THEN
+    _name_parts := string_to_array(trim(_sender_name), ' ');
+    IF array_length(_name_parts, 1) >= 2 THEN
+      _display_name := _name_parts[1] || ' ' || left(_name_parts[array_length(_name_parts, 1)], 1) || '.';
+    ELSE
+      _display_name := _sender_name;
+    END IF;
+  ELSE
+    _display_name := 'Someone';
+  END IF;
+  
+  -- Create in-app notification for recipient WITH conversation_id
+  INSERT INTO notifications (user_id, type, title, message, related_conversation_id)
+  VALUES (
+    _recipient_id,
+    'message',
+    'New message from ' || _display_name,
+    CASE 
+      WHEN LENGTH(NEW.content) > 100 THEN LEFT(NEW.content, 100) || '...'
+      ELSE NEW.content
+    END,
+    NEW.conversation_id
+  );
+  
+  -- Send email notification via edge function
+  PERFORM net.http_post(
+    url := 'https://lporltdxjhouspwmmrjd.supabase.co/functions/v1/send-message-notification',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxwb3JsdGR4amhvdXNwd21tcmpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1NTU2NzUsImV4cCI6MjA4MTEzMTY3NX0.AitiS6e2TQQJS0VgIV9OrbtZ8YJ1_HekbT5BgnYeI-s'
+    ),
+    body := jsonb_build_object(
+      'recipient_id', _recipient_id,
+      'sender_name', _display_name,
+      'message_preview', NEW.content,
+      'conversation_id', NEW.conversation_id
+    )
+  );
+  
+  RETURN NEW;
+END;
+$function$;

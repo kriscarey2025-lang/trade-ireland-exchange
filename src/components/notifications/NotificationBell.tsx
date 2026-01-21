@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Bell, Check, Trash2, MessageCircle, Sparkles, Heart, X, Handshake, CalendarCheck, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,11 +12,13 @@ import {
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
   useDeleteNotification,
+  Notification,
 } from "@/hooks/useNotifications";
 
 export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const { data: notifications, isLoading } = useNotifications();
   const unreadCount = useUnreadNotificationCount();
   const markRead = useMarkNotificationRead();
@@ -53,9 +55,40 @@ export function NotificationBell() {
     }
   };
 
-  const handleNotificationClick = (notification: { id: string; read: boolean; related_service_id: string | null }) => {
+  const getNotificationLink = (notification: Notification): string | null => {
+    // Message notifications go to the conversation
+    if (notification.type === "message" && notification.related_conversation_id) {
+      return `/messages/${notification.related_conversation_id}`;
+    }
+    // Skill trade notifications go to the conversation
+    if (
+      (notification.type === "skill_trade_request" || 
+       notification.type === "skill_trade_accepted" || 
+       notification.type === "skill_trade_counter") && 
+      notification.related_conversation_id
+    ) {
+      return `/messages/${notification.related_conversation_id}`;
+    }
+    // Interest notifications go to the service
+    if (notification.type === "interest" && notification.related_service_id) {
+      return `/services/${notification.related_service_id}`;
+    }
+    // Fallback to service if available
+    if (notification.related_service_id) {
+      return `/services/${notification.related_service_id}`;
+    }
+    return null;
+  };
+
+  const handleNotificationClick = (notification: Notification) => {
     if (!notification.read) {
       markRead.mutate(notification.id);
+    }
+    
+    const link = getNotificationLink(notification);
+    if (link) {
+      setIsOpen(false);
+      navigate(link);
     }
   };
 
@@ -151,17 +184,15 @@ export function NotificationBell() {
                       <p className="text-xs text-muted-foreground mt-1">
                         {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                       </p>
-                      {notification.related_service_id && (
-                        <Link
-                          to={`/services/${notification.related_service_id}`}
-                          className="text-xs text-primary hover:underline mt-1 inline-block"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsOpen(false);
-                          }}
-                        >
-                          View service →
-                        </Link>
+                      {getNotificationLink(notification) && (
+                        <p className="text-xs text-primary mt-1">
+                          {notification.type === "message" || 
+                           notification.type === "skill_trade_request" || 
+                           notification.type === "skill_trade_accepted" ||
+                           notification.type === "skill_trade_counter" 
+                            ? "View conversation →" 
+                            : "View service →"}
+                        </p>
                       )}
                     </div>
                     {!notification.read && (
