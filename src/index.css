@@ -524,13 +524,46 @@
     contain: layout style;
   }
   
+  /* CSS containment for service cards */
+  .service-card-mobile {
+    contain: layout style paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 0 350px;
+  }
+  
   /* Disable heavy animations on mobile for better scrolling */
   * {
     scroll-behavior: auto !important;
   }
   
+  /* Disable blob animations on mobile */
+  .animate-blob {
+    animation: none !important;
+  }
+  
+  /* Reduce animation complexity */
+  .animate-marquee {
+    animation-duration: 30s !important; /* Slower = less CPU */
+  }
+  
   /* GPU acceleration for smooth scrolling */
   main {
     -webkit-overflow-scrolling: touch;
+    will-change: scroll-position;
   }
+  
+  /* Optimize images */
+  img {
+    content-visibility: auto;
+  }
+}
+
+/* Layout containment helper class */
+.contain-layout {
+  contain: layout;
+}
+
+/* Paint containment for isolated components */
+.contain-paint {
+  contain: paint;
 }

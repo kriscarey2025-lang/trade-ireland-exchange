@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, memo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MapPin, Star, Send, Loader2, Zap, RefreshCw, Linkedin, Facebook, Instagram, ArrowUpRight, Handshake } from "lucide-react";
+import { MapPin, Star, Send, Loader2, Zap, RefreshCw, Linkedin, Facebook, Instagram, Handshake } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -72,13 +72,14 @@ const getNeededByLabel = (date: Date | null | undefined, isTimeSensitive: boolea
   return format(date, "MMM d");
 };
 
-export function ServiceCardMobile({ service, className }: ServiceCardMobileProps) {
+function ServiceCardMobileComponent({ service, className }: ServiceCardMobileProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const startConversation = useStartConversation();
   const getOrCreateConversation = useGetOrCreateConversation();
   const [quickMessage, setQuickMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   
   const neededByLabel = getNeededByLabel(service.neededByDate, service.isTimeSensitive);
   const hasImage = service.images && service.images.length > 0 && service.images[0];
@@ -86,7 +87,7 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
   const isOwnService = service.user?.id === user?.id;
   const isSkillSwap = service.type === "skill_swap";
 
-  const handleSendMessage = async (e: React.MouseEvent) => {
+  const handleSendMessage = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -114,9 +115,9 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
     } finally {
       setIsSending(false);
     }
-  };
+  }, [quickMessage, service.user?.id, service.id, user, navigate, startConversation]);
 
-  const handleInitiateTrade = async (e: React.MouseEvent) => {
+  const handleInitiateTrade = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -140,10 +141,10 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
     } catch (error) {
       toast.error("Failed to open conversation");
     }
-  };
+  }, [user, service.user?.id, service.id, navigate, getOrCreateConversation]);
 
   return (
-    <div className={cn("relative bg-card rounded-xl border border-border overflow-hidden", className)}>
+    <div className={cn("relative bg-card rounded-xl border border-border overflow-hidden service-card-mobile", className)}>
       <Link 
         to={`/services/${service.id}`} 
         className="block active:scale-[0.98] transition-transform"
@@ -151,15 +152,25 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
         {/* Image Container - Square aspect ratio like Vinted */}
         <div className={cn(
           "relative aspect-square overflow-hidden bg-muted",
-          service.isTimeSensitive && "ring-2 ring-orange-400 ring-inset"
+          service.isTimeSensitive && "ring-2 ring-warning ring-inset"
         )}>
           {hasImage ? (
-            <img 
-              src={service.images![0]} 
-              alt={service.title}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
+            <>
+              {!imageLoaded && (
+                <div className="absolute inset-0 bg-muted animate-pulse" />
+              )}
+              <img 
+                src={service.images![0]} 
+                alt={service.title}
+                className={cn(
+                  "w-full h-full object-cover transition-opacity duration-200",
+                  imageLoaded ? "opacity-100" : "opacity-0"
+                )}
+                loading="lazy"
+                decoding="async"
+                onLoad={() => setImageLoaded(true)}
+              />
+            </>
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center p-3 bg-gradient-to-br from-primary/5 to-primary/10">
               <span className="text-3xl mb-2">{categoryIcons[service.category]}</span>
@@ -171,7 +182,7 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
           
           {/* Time Sensitive Badge */}
           {service.isTimeSensitive && (
-            <div className="absolute top-1.5 left-1.5 bg-orange-500 text-white px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5">
+            <div className="absolute top-1.5 left-1.5 bg-warning text-warning-foreground px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5">
               <Zap className="h-2.5 w-2.5" />
               {neededByLabel}
             </div>
@@ -395,3 +406,6 @@ export function ServiceCardMobile({ service, className }: ServiceCardMobileProps
     </div>
   );
 }
+
+// Memoize the component to prevent unnecessary re-renders in lists
+export const ServiceCardMobile = memo(ServiceCardMobileComponent);

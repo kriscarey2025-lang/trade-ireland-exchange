@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Clock, MessageCircle, CheckCircle2, Activity } from "lucide-react";
 
-export function SwapStatsSection() {
+function SwapStatsSectionComponent() {
   // Fetch swap statistics using RPC function (bypasses RLS)
   const { data: swapStats } = useQuery({
     queryKey: ["swap-stats"],
@@ -81,3 +82,5 @@ export function SwapStatsSection() {
     </section>
   );
 }
+
+export const SwapStatsSection = memo(SwapStatsSectionComponent);

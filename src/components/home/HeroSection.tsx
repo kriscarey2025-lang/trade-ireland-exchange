@@ -1,25 +1,34 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Coffee, Sparkles, Lightbulb } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-export function HeroSection() {
+function HeroSectionComponent() {
   const { user } = useAuth();
   const [brainstormOpen, setBrainstormOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const isMobile = useIsMobile();
+  
+  // Reduce animations on mobile for better performance
+  const shouldAnimate = !prefersReducedMotion && !isMobile;
   
   return (
-    <section className="relative overflow-hidden min-h-[50vh] md:min-h-[80vh] flex items-center pt-2 md:pt-0">
-      {/* Warm animated background blobs - reduced size on mobile */}
+    <section className="relative overflow-hidden min-h-[50vh] md:min-h-[80vh] flex items-center pt-2 md:pt-0 contain-layout">
+      {/* Warm animated background blobs - only animate on desktop */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -right-20 md:-top-40 md:-right-40 w-48 h-48 md:w-96 md:h-96 bg-primary/15 rounded-full blur-3xl animate-blob" />
-        <div className="absolute top-1/2 -left-20 md:-left-40 w-40 h-40 md:w-80 md:h-80 bg-accent/15 rounded-full blur-3xl animate-blob" style={{
-          animationDelay: "3s"
-        }} />
-        <div className="absolute -bottom-10 right-1/4 w-36 h-36 md:w-72 md:h-72 bg-highlight/15 rounded-full blur-3xl animate-blob" style={{
-          animationDelay: "6s"
-        }} />
+        <div className={`absolute -top-20 -right-20 md:-top-40 md:-right-40 w-48 h-48 md:w-96 md:h-96 bg-primary/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`} />
+        <div 
+          className={`absolute top-1/2 -left-20 md:-left-40 w-40 h-40 md:w-80 md:h-80 bg-accent/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`} 
+          style={shouldAnimate ? { animationDelay: "3s" } : undefined} 
+        />
+        <div 
+          className={`absolute -bottom-10 right-1/4 w-36 h-36 md:w-72 md:h-72 bg-highlight/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`} 
+          style={shouldAnimate ? { animationDelay: "6s" } : undefined} 
+        />
       </div>
 
       {/* Subtle pattern overlay */}
@@ -121,3 +130,5 @@ export function HeroSection() {
     </section>
   );
 }
+
+export const HeroSection = memo(HeroSectionComponent);
