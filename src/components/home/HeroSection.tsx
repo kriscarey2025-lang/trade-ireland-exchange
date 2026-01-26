@@ -18,7 +18,7 @@ function HeroSectionComponent() {
   const shouldAnimate = !prefersReducedMotion && !isMobile;
   
   return (
-    <section className="relative overflow-hidden min-h-[50vh] md:min-h-[80vh] flex items-center pt-2 md:pt-0 contain-layout">
+    <section className="relative overflow-hidden min-h-[40vh] md:min-h-[80vh] flex items-center pt-1 md:pt-0 contain-layout">
       {/* Warm animated background blobs - only animate on desktop */}
       <div className="absolute inset-0 overflow-hidden">
         <div className={`absolute -top-20 -right-20 md:-top-40 md:-right-40 w-48 h-48 md:w-96 md:h-96 bg-primary/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`} />
@@ -36,64 +36,64 @@ function HeroSectionComponent() {
       <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_1px_1px,hsl(var(--border))_1px,transparent_0)] bg-[size:32px_32px]" />
       
       <div className="container relative px-4 md:px-6">
-        <div className="py-4 md:py-12 max-w-5xl mx-auto">
+        <div className="py-2 md:py-12 max-w-5xl mx-auto">
           {/* Two column layout on desktop */}
-          <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
+          <div className="grid md:grid-cols-2 gap-4 md:gap-10 items-center">
             {/* Left column - Headlines and CTAs */}
             <div className="text-center md:text-left">
-              {/* Friendly welcome badge - smaller on mobile */}
-              <div className="inline-flex items-center gap-1 md:gap-2 px-2.5 md:px-5 py-1 md:py-2.5 rounded-full bg-accent/10 text-accent text-[10px] md:text-sm font-semibold mb-2 md:mb-6 animate-fade-up border border-accent/20">
+              {/* Friendly welcome badge - hidden on mobile */}
+              <div className="hidden md:inline-flex items-center gap-1 md:gap-2 px-2.5 md:px-5 py-1 md:py-2.5 rounded-full bg-accent/10 text-accent text-[10px] md:text-sm font-semibold mb-2 md:mb-6 animate-fade-up border border-accent/20">
                 <Heart className="h-2.5 w-2.5 md:h-4 md:w-4" />
                 Welcome to our wee corner of the internet 🍀
               </div>
 
               {/* Warm, inviting headline - more compact on mobile */}
-              <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-1.5 md:mb-4">
+              <h1 className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-1 md:mb-4">
                 <span className="gradient-text inline-block opacity-0 animate-typeIn" style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}>Swap skills.</span>{" "}
                 <span className="gradient-text inline-block opacity-0 animate-typeIn" style={{ animationDelay: "0.5s", animationFillMode: "forwards" }}>Make friends.</span>{" "}
                 <span className="text-foreground inline-block opacity-0 animate-slideFromRight" style={{ animationDelay: "0.9s", animationFillMode: "forwards" }}>Save money.</span>
               </h1>
 
-              {/* Tagline - tighter spacing on mobile */}
-              <p className="text-xs md:text-lg font-medium text-foreground mb-0.5 md:mb-3 animate-fade-up" style={{
+              {/* Tagline - hidden on mobile */}
+              <p className="hidden md:block text-xs md:text-lg font-medium text-foreground mb-0.5 md:mb-3 animate-fade-up" style={{
                 animationDelay: "0.15s"
               }}>
                 A free, local platform for exchanging skills — no money involved.
               </p>
 
-              {/* Ireland tagline - reduced margin */}
-              <p className="text-[10px] md:text-sm font-medium tracking-wide mb-3 md:mb-6 animate-fade-up" style={{
+              {/* Ireland tagline */}
+              <p className="text-[9px] md:text-sm font-medium tracking-wide mb-2 md:mb-6 animate-fade-up" style={{
                 animationDelay: "0.22s"
               }}>
                 <span className="inline-block bg-gradient-to-r from-primary via-accent to-highlight bg-clip-text text-transparent">Ireland's first digital & free Barter System</span>
               </p>
               
-              {/* CTA Buttons - Updated with "Post in 60 seconds" */}
-              <div className="flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-2 md:gap-3 mb-4 md:mb-6 animate-fade-up" style={{
+              {/* CTA Buttons - compact on mobile */}
+              <div className="flex flex-row items-center justify-center md:justify-start gap-2 mb-2 md:mb-6 animate-fade-up" style={{
                 animationDelay: "0.25s"
               }}>
-                <Button size="lg" className="group shadow-lg hover:shadow-xl rounded-full px-5 md:px-8 w-full sm:w-auto text-xs md:text-base h-10 md:h-12" asChild>
+                <Button size="default" className="group shadow-lg hover:shadow-xl rounded-full px-4 md:px-8 text-[11px] md:text-base h-9 md:h-12" asChild>
                   <Link to={user ? "/new-service" : "/auth?mode=signup"}>
-                    <Zap className="mr-1.5 h-3.5 w-3.5 md:h-4 md:w-4" />
-                    {user ? "Post in 60 Seconds" : "Join Free — Post in 60s"}
-                    <ArrowRight className="ml-1.5 md:ml-2 h-3.5 w-3.5 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
+                    <Zap className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+                    {user ? "Post Now" : "Join Free"}
+                    <ArrowRight className="ml-1 h-3 w-3 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
                 <Button 
                   variant="outline" 
-                  size="lg" 
-                  className="rounded-full px-5 md:px-8 w-full sm:w-auto text-xs md:text-base h-10 md:h-12"
+                  size="default" 
+                  className="rounded-full px-4 md:px-8 text-[11px] md:text-base h-9 md:h-12"
                   onClick={() => {
                     document.getElementById('services-section')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  See what's on offer
-                  <Coffee className="ml-1.5 md:ml-2 h-3.5 w-3.5 md:h-4 md:w-4" />
+                  Browse
+                  <Coffee className="ml-1 h-3 w-3 md:h-4 md:w-4" />
                 </Button>
               </div>
 
-              {/* Speed promise badge */}
-              <div className="flex items-center justify-center md:justify-start gap-2 text-xs text-muted-foreground animate-fade-up" style={{ animationDelay: "0.3s" }}>
+              {/* Speed promise badge - hidden on mobile */}
+              <div className="hidden md:flex items-center justify-center md:justify-start gap-2 text-xs text-muted-foreground animate-fade-up" style={{ animationDelay: "0.3s" }}>
                 <Clock className="h-3.5 w-3.5 text-primary" />
                 <span>No forms. No fees. Just share what you can do.</span>
               </div>
@@ -120,10 +120,10 @@ function HeroSectionComponent() {
             </div>
 
             {/* Right column - Supply & Demand Dashboard */}
-            <div className="animate-fade-up" style={{ animationDelay: "0.4s" }}>
+            <div className="animate-fade-up" style={{ animationDelay: "0.2s" }}>
               <SupplyDemandDashboard />
               
-              {/* Quick social proof - below dashboard on desktop */}
+              {/* Quick social proof - hidden on mobile */}
               <div className="hidden md:flex mt-4 items-center justify-center gap-4 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <span className="text-base">🇮🇪</span>
