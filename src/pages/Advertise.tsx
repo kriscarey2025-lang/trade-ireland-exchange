@@ -16,13 +16,13 @@ import {
   MapPin, 
   CheckCircle2, 
   BarChart3, 
-  Shield, 
-  Users, 
   Heart, 
-  Trophy, 
-  XCircle, 
-  Sparkles,
-  Star
+  Users,
+  Star,
+  Monitor,
+  Smartphone,
+  CreditCard,
+  List
 } from "lucide-react";
 import { z } from "zod";
 import { Link } from "react-router-dom";
@@ -43,135 +43,18 @@ const advertiserSchema = z.object({
 
 type AdvertiserFormData = z.infer<typeof advertiserSchema>;
 
-const benefits = [
-  {
-    icon: Users,
-    title: "Reach Local Customers",
-    description: "Connect directly with community members who value supporting local businesses.",
-  },
-  {
-    icon: MapPin,
-    title: "Hyper-Local Targeting",
-    description: "Your ads are shown to users in your area who are actively seeking local services.",
-  },
-  {
-    icon: BarChart3,
-    title: "Track Performance",
-    description: "Access a dedicated dashboard to monitor impressions, clicks, and engagement.",
-  },
-  {
-    icon: Shield,
-    title: "Brand Safe Environment",
-    description: "Your ads appear alongside community-focused content in a trusted platform.",
-  },
-];
+const organisationSchema = z.object({
+  organisationName: z.string().trim().min(2, "Organisation name must be at least 2 characters").max(100, "Organisation name must be less than 100 characters"),
+  contactName: z.string().trim().min(2, "Contact name must be at least 2 characters").max(100, "Contact name must be less than 100 characters"),
+  email: z.string().trim().email("Please enter a valid email address").max(255, "Email must be less than 255 characters"),
+  phone: z.string().trim().optional(),
+  message: z.string().trim().min(10, "Please tell us a bit more about your organisation").max(1000, "Message must be less than 1000 characters"),
+  termsAccepted: z.literal(true, {
+    errorMap: () => ({ message: "You must accept the Terms of Use to proceed" }),
+  }),
+});
 
-interface PackageFeature {
-  text: string;
-  included: boolean;
-}
-
-interface SponsorPackage {
-  name: string;
-  icon: React.ElementType;
-  bestFor: string;
-  examples: string;
-  price: {
-    monthly?: string;
-    yearly: string;
-  };
-  features: PackageFeature[];
-  ethicalFraming: string;
-  highlight?: boolean;
-  badge?: string;
-}
-
-const packages: SponsorPackage[] = [
-  {
-    name: "Community Supporter",
-    icon: Heart,
-    bestFor: "Small local businesses, sole traders, clinics, cafés",
-    examples: "Local cafés, therapists, tutors, craftspeople",
-    price: {
-      monthly: "€25–€40",
-      yearly: "€250",
-    },
-    features: [
-      { text: "Logo + short description on Local Supporters page", included: true },
-      { text: '"Proud Supporter of Swap-Skills" badge', included: true },
-      { text: "Mention in 1 community social post per month", included: true },
-      { text: 'Listed under "Local Businesses Supporting Community Exchange"', included: true },
-      { text: "Does NOT affect search results", included: false },
-      { text: "Does NOT push ads into user feeds", included: false },
-      { text: "Does NOT influence trades", included: false },
-    ],
-    ethicalFraming: "Your support helps keep Swap-Skills free for the community.",
-  },
-  {
-    name: "Local Partner",
-    icon: Building2,
-    bestFor: "Established businesses wanting visibility and goodwill",
-    examples: "Gyms, vets, salons, accountants, cafés, trades",
-    price: {
-      monthly: "€60–€90",
-      yearly: "€600–€900",
-    },
-    features: [
-      { text: "Everything in Community Supporter, plus:", included: true },
-      { text: "Featured business profile page", included: true },
-      { text: "Tagged mention in 2 community posts per month", included: true },
-      { text: "Highlighted on town landing page (below user listings)", included: true },
-      { text: '"Community Partner" label on profile', included: true },
-      { text: "Clearly marked as sponsored", included: true },
-      { text: "Never appears inside trade listings", included: false },
-      { text: "No prioritisation of user offers", included: false },
-    ],
-    ethicalFraming: "Local Partners help fund moderation, safety, and platform improvements.",
-    highlight: true,
-    badge: "Most Popular",
-  },
-  {
-    name: "Town Champion",
-    icon: Trophy,
-    bestFor: "Anchor businesses, councils, chambers, regional sponsors",
-    examples: "Car dealerships, shopping centres, councils, regional brands",
-    price: {
-      yearly: "€1,200–€2,000",
-    },
-    features: [
-      { text: "Everything above, plus:", included: true },
-      { text: '"Supported by [Your Business]" on Town Hub page', included: true },
-      { text: "Quarterly community spotlight post", included: true },
-      { text: 'Optional co-branded community initiative (e.g. "Free Skills Week")', included: true },
-      { text: "First option to renew before new sponsors", included: true },
-      { text: "Feels civic, not commercial", included: true },
-    ],
-    ethicalFraming: "Town Champions help keep Swap-Skills independent, local, and accessible.",
-  },
-];
-
-const ethicalPrinciples = [
-  {
-    icon: Shield,
-    title: "No Pay-to-Win",
-    description: "Sponsors never get priority in search results or trade listings.",
-  },
-  {
-    icon: Users,
-    title: "Community First",
-    description: "All sponsorship revenue goes directly to platform improvements and safety.",
-  },
-  {
-    icon: MapPin,
-    title: "Locally Focused",
-    description: "We only work with genuine local businesses that serve the community.",
-  },
-  {
-    icon: Sparkles,
-    title: "Transparent",
-    description: "All sponsored content is clearly marked so users always know what's what.",
-  },
-];
+type OrganisationFormData = z.infer<typeof organisationSchema>;
 
 export default function Advertise() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -188,6 +71,19 @@ export default function Advertise() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Organisation form state
+  const [isOrgSubmitting, setIsOrgSubmitting] = useState(false);
+  const [isOrgSubmitted, setIsOrgSubmitted] = useState(false);
+  const [orgFormData, setOrgFormData] = useState({
+    organisationName: "",
+    contactName: "",
+    email: "",
+    phone: "",
+    message: "",
+    termsAccepted: false,
+  });
+  const [orgErrors, setOrgErrors] = useState<Record<string, string>>({});
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -200,6 +96,21 @@ export default function Advertise() {
     setFormData((prev) => ({ ...prev, termsAccepted: checked }));
     if (errors.termsAccepted) {
       setErrors((prev) => ({ ...prev, termsAccepted: "" }));
+    }
+  };
+
+  const handleOrgChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setOrgFormData((prev) => ({ ...prev, [name]: value }));
+    if (orgErrors[name]) {
+      setOrgErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleOrgCheckboxChange = (checked: boolean) => {
+    setOrgFormData((prev) => ({ ...prev, termsAccepted: checked }));
+    if (orgErrors.termsAccepted) {
+      setOrgErrors((prev) => ({ ...prev, termsAccepted: "" }));
     }
   };
 
@@ -314,11 +225,78 @@ Terms Accepted: Yes
     }
   };
 
+  const handleOrgSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOrgErrors({});
+
+    const result = organisationSchema.safeParse(orgFormData);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((error) => {
+        if (error.path[0]) {
+          fieldErrors[error.path[0] as string] = error.message;
+        }
+      });
+      setOrgErrors(fieldErrors);
+      return;
+    }
+
+    setIsOrgSubmitting(true);
+
+    try {
+      // Send email notification
+      await supabase.functions.invoke("send-contact-email", {
+        body: {
+          name: result.data.contactName,
+          email: result.data.email,
+          subject: `Organisation Sponsorship Enquiry: ${result.data.organisationName}`,
+          message: `
+Organisation Name: ${result.data.organisationName}
+Contact Name: ${result.data.contactName}
+Email: ${result.data.email}
+Phone: ${result.data.phone || "Not provided"}
+
+Message:
+${result.data.message}
+
+Terms Accepted: Yes
+          `.trim(),
+        },
+      });
+
+      // Submit to HubSpot
+      const { firstname, lastname } = parseFullName(result.data.contactName);
+      submitToHubSpot({
+        email: result.data.email,
+        firstname,
+        lastname,
+        phone: result.data.phone || undefined,
+        company: result.data.organisationName,
+        form_source: 'Organisation Sponsorship Enquiry',
+        message: result.data.message,
+      });
+
+      setIsOrgSubmitted(true);
+      toast({
+        title: "Enquiry Submitted",
+        description: "Thank you! We'll be in touch to discuss sponsorship options.",
+      });
+    } catch (error) {
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your enquiry. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsOrgSubmitting(false);
+    }
+  };
+
   return (
     <>
       <SEO
         title="For Business | Sponsorship & Advertising"
-        description="Support Swap-Skills and get visibility for your local Irish business. Ethical sponsorship packages and advertising options for community-focused businesses."
+        description="Support Swap-Skills and get visibility for your local Irish business. Advertise to local users or become a sponsor to support the community."
         keywords="swap skills sponsorship, local business Ireland, community supporter, ethical advertising, advertise swap skills"
         url="https://swap-skills.com/advertise"
       />
@@ -339,270 +317,175 @@ Terms Accepted: Yes
                   <span className="text-primary">Grow Your Business</span>
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Our sponsorship packages are designed to give local businesses visibility 
-                  while keeping Swap-Skills free, fair, and community-focused. No intrusive ads. 
-                  No pay-to-win. Just genuine support.
+                  Choose from advertising to reach local customers or sponsorship to support 
+                  Swap-Skills and get listed in our Sponsors Directory.
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Ethical Principles */}
-          <section className="py-12 border-b">
-            <div className="container">
-              <h2 className="text-2xl font-bold text-center mb-8">Our Ethical Commitment</h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-                {ethicalPrinciples.map((principle, index) => (
-                  <div key={index} className="text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-3">
-                      <principle.icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <h3 className="font-semibold mb-1">{principle.title}</h3>
-                    <p className="text-sm text-muted-foreground">{principle.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Sponsorship Packages */}
+          {/* Two Options Overview */}
           <section id="sponsorship" className="py-16">
             <div className="container">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-4">Sponsorship Packages</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Choose the package that fits your business. All packages support the community 
-                  and help keep Swap-Skills running for everyone.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                {packages.map((pkg, index) => (
-                  <Card 
-                    key={index} 
-                    className={`relative flex flex-col ${
-                      pkg.highlight 
-                        ? "border-primary shadow-lg ring-2 ring-primary/20" 
-                        : ""
-                    }`}
-                  >
-                    {pkg.badge && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-primary text-primary-foreground">
-                          {pkg.badge}
-                        </Badge>
-                      </div>
-                    )}
-                    <CardHeader className="text-center pb-4">
-                      <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mx-auto mb-4">
-                        <pkg.icon className="h-7 w-7 text-primary" />
-                      </div>
-                      <CardTitle className="text-xl">{pkg.name}</CardTitle>
-                      <CardDescription className="text-sm">
-                        {pkg.bestFor}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-1 flex flex-col">
-                      {/* Pricing */}
-                      <div className="text-center mb-6 pb-6 border-b">
-                        {pkg.price.monthly ? (
-                          <>
-                            <div className="text-3xl font-bold text-primary">
-                              {pkg.price.monthly}
-                            </div>
-                            <div className="text-sm text-muted-foreground">per month</div>
-                            <div className="text-sm text-muted-foreground mt-1">
-                              or <span className="font-medium">{pkg.price.yearly}</span> per year
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="text-3xl font-bold text-primary">
-                              {pkg.price.yearly}
-                            </div>
-                            <div className="text-sm text-muted-foreground">per year</div>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              (No monthly option - intentionally meaningful)
-                            </div>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Examples */}
-                      <div className="mb-4">
-                        <p className="text-xs text-muted-foreground">
-                          <span className="font-medium">Examples:</span> {pkg.examples}
-                        </p>
-                      </div>
-
-                      {/* Features */}
-                      <ul className="space-y-3 flex-1">
-                        {pkg.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-start gap-2">
-                            {feature.included ? (
-                              <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                            ) : (
-                              <XCircle className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-                            )}
-                            <span className={`text-sm ${!feature.included ? "text-muted-foreground" : ""}`}>
-                              {feature.text}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      {/* Ethical Framing */}
-                      <div className="mt-6 pt-4 border-t">
-                        <p className="text-sm text-center italic text-muted-foreground">
-                          "{pkg.ethicalFraming}"
-                        </p>
-                      </div>
-
-                      {/* CTA */}
-                      <div className="mt-6">
-                        <Button 
-                          asChild 
-                          className="w-full" 
-                          variant={pkg.highlight ? "default" : "outline"}
-                        >
-                          <a href="#contact-form">
-                            Get Started
-                          </a>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Why This Works */}
-          <section className="py-16 bg-secondary/20">
-            <div className="container">
-              <div className="max-w-3xl mx-auto">
-                <h2 className="text-2xl font-bold text-center mb-8">Why This Works</h2>
-                <div className="grid sm:grid-cols-3 gap-6">
-                  <Card>
-                    <CardContent className="pt-6 text-center">
-                      <h3 className="font-semibold mb-2">Low Barrier</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Affordable entry points mean any local business can participate and support their community.
-                      </p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-6 text-center">
-                      <h3 className="font-semibold mb-2">Reputation Boost</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Being associated with community support builds trust and goodwill with local customers.
-                      </p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-6 text-center">
-                      <h3 className="font-semibold mb-2">Feels Like Patronage</h3>
-                      <p className="text-sm text-muted-foreground">
-                        It's about supporting the community, not aggressive advertising. Users appreciate the difference.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Local Business Focus */}
-          <section className="py-12">
-            <div className="container">
-              <div className="max-w-3xl mx-auto">
-                <Card className="border-primary/20 bg-primary/5">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <MapPin className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-                      <div>
-                        <h2 className="text-xl font-semibold mb-2">
-                          For Local Businesses Only
-                        </h2>
-                        <p className="text-muted-foreground">
-                          Swap-Skills is built around community and local connections. We exclusively 
-                          offer advertising space to local Irish businesses that align with our 
-                          community values. This ensures our members see relevant, trustworthy 
-                          businesses that serve their area.
-                        </p>
-                      </div>
+              <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                
+                {/* Package A: Advertise with us */}
+                <Card className="relative border-primary shadow-lg ring-2 ring-primary/20">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-primary text-primary-foreground">
+                      For Businesses
+                    </Badge>
+                  </div>
+                  <CardHeader className="text-center pb-4">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mx-auto mb-4">
+                      <Building2 className="h-7 w-7 text-primary" />
                     </div>
+                    <CardTitle className="text-2xl">Advertise with Us</CardTitle>
+                    <CardDescription>
+                      Get your business in front of local customers
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Price */}
+                    <div className="text-center pb-4 border-b">
+                      <div className="text-4xl font-bold text-primary">€30</div>
+                      <div className="text-muted-foreground">per month</div>
+                      <div className="text-sm text-muted-foreground mt-1">Cancel anytime</div>
+                    </div>
+
+                    {/* Features */}
+                    <ul className="space-y-4">
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <Monitor className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">Website & Mobile App Placement</span>
+                          <p className="text-sm text-muted-foreground">
+                            Your ad displayed to users browsing our website and mobile app
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <MapPin className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">Shown to Local Users</span>
+                          <p className="text-sm text-muted-foreground">
+                            Reach people in your area who are actively seeking local services
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <BarChart3 className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">Your Own Dashboard</span>
+                          <p className="text-sm text-muted-foreground">
+                            Manage your ad and track clicks, impressions, and traffic to your page
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <CreditCard className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">Simple Fixed Price</span>
+                          <p className="text-sm text-muted-foreground">
+                            No hidden fees, no bidding - just €30/month flat rate
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
+
+                    {/* CTA */}
+                    <Button asChild className="w-full" size="lg">
+                      <a href="#contact-form">Get Started</a>
+                    </Button>
                   </CardContent>
                 </Card>
-              </div>
-            </div>
-          </section>
 
-          {/* Benefits */}
-          <section className="py-12 bg-secondary/20">
-            <div className="container">
-              <h2 className="text-2xl font-bold text-center mb-8">
-                Why Partner With Us?
-              </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-                {benefits.map((benefit, index) => (
-                  <Card key={index} className="text-center">
-                    <CardContent className="pt-6">
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-4">
-                        <benefit.icon className="h-6 w-6 text-primary" />
-                      </div>
-                      <h3 className="font-semibold mb-2">{benefit.title}</h3>
-                      <p className="text-sm text-muted-foreground">{benefit.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </section>
+                {/* Package B: Sponsorship */}
+                <Card className="relative">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <Badge variant="secondary">
+                      For Supporters
+                    </Badge>
+                  </div>
+                  <CardHeader className="text-center pb-4">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mx-auto mb-4">
+                      <Heart className="h-7 w-7 text-primary" />
+                    </div>
+                    <CardTitle className="text-2xl">Sponsorship</CardTitle>
+                    <CardDescription>
+                      Support the community without advertising
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Price */}
+                    <div className="text-center pb-4 border-b">
+                      <div className="text-4xl font-bold text-primary">You Choose</div>
+                      <div className="text-muted-foreground">your monthly amount</div>
+                      <div className="text-sm text-muted-foreground mt-1">Cancel anytime</div>
+                    </div>
 
-          {/* How It Works */}
-          <section className="py-12">
-            <div className="container">
-              <div className="max-w-3xl mx-auto">
-                <h2 className="text-2xl font-bold text-center mb-8">How It Works</h2>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-semibold text-sm flex-shrink-0">
-                      1
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Submit Your Interest</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Complete the form below with your business details. All fields marked 
-                        with an asterisk are required.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-semibold text-sm flex-shrink-0">
-                      2
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Internal Review</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Our team reviews each request to ensure alignment with our community 
-                        values and local focus. We'll be in touch within a few business days.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-semibold text-sm flex-shrink-0">
-                      3
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Get Started</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Approved businesses will be onboarded with their chosen sponsorship package
-                        and can start building their community presence.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                    {/* Features */}
+                    <ul className="space-y-4">
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <Heart className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">Support Swap-Skills</span>
+                          <p className="text-sm text-muted-foreground">
+                            Help keep the platform free and accessible for everyone in the community
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <List className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">Listed in Sponsors Directory</span>
+                          <p className="text-sm text-muted-foreground">
+                            Your name or business featured on our Sponsors page with appreciation
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <Users className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">No Advertising</span>
+                          <p className="text-sm text-muted-foreground">
+                            Pure community support - no ads, no tracking, just goodwill
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <CheckCircle2 className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">Flexible Contributions</span>
+                          <p className="text-sm text-muted-foreground">
+                            Give what you can - every contribution helps the community
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
+
+                    {/* CTA */}
+                    <Button asChild variant="outline" className="w-full" size="lg">
+                      <a href="#contact-form">Become a Sponsor</a>
+                    </Button>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </section>
@@ -615,7 +498,7 @@ Terms Accepted: Yes
                   <CardHeader>
                     <CardTitle className="text-center">Express Your Interest</CardTitle>
                     <CardDescription className="text-center">
-                      Whether you're interested in sponsorship or advertising, fill out the form below 
+                      Whether you're interested in advertising or sponsorship, fill out the form below 
                       and we'll get back to you within a few business days.
                     </CardDescription>
                   </CardHeader>
@@ -725,14 +608,14 @@ Terms Accepted: Yes
 
                         <div className="space-y-2">
                           <Label htmlFor="message">
-                            Tell us about your business and which package interests you
+                            Tell us which option interests you (Advertising or Sponsorship)
                           </Label>
                           <Textarea
                             id="message"
                             name="message"
                             value={formData.message}
                             onChange={handleChange}
-                            placeholder="What does your business offer? Which sponsorship package are you interested in?"
+                            placeholder="Are you interested in advertising (€30/month) or sponsorship? Tell us a bit about your business..."
                             rows={4}
                           />
                         </div>
@@ -773,6 +656,159 @@ Terms Accepted: Yes
                     )}
                   </CardContent>
                 </Card>
+              </div>
+            </div>
+          </section>
+
+          {/* Organisation Enquiry Section */}
+          <section id="organisations" className="py-12">
+            <div className="container">
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-bold mb-2">Communities & Organisations</h2>
+                  <p className="text-muted-foreground">
+                    Are you a community group, council, or larger organisation interested in sponsoring Swap-Skills? 
+                    Get in touch to discuss tailored sponsorship options.
+                  </p>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-center">Sponsorship Enquiry</CardTitle>
+                    <CardDescription className="text-center">
+                      Tell us about your organisation and we'll explore partnership opportunities together.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {isOrgSubmitted ? (
+                      <div className="text-center py-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+                          <CheckCircle2 className="h-8 w-8 text-primary" />
+                        </div>
+                        <h3 className="text-xl font-semibold mb-2">Thank You!</h3>
+                        <p className="text-muted-foreground mb-4">
+                          We've received your enquiry and will be in touch soon to discuss sponsorship options.
+                        </p>
+                        <Button variant="outline" onClick={() => setIsOrgSubmitted(false)}>
+                          Submit Another Enquiry
+                        </Button>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleOrgSubmit} className="space-y-6">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="organisationName">Organisation Name *</Label>
+                            <Input
+                              id="organisationName"
+                              name="organisationName"
+                              value={orgFormData.organisationName}
+                              onChange={handleOrgChange}
+                              placeholder="Your Organisation"
+                              className={orgErrors.organisationName ? "border-destructive" : ""}
+                            />
+                            {orgErrors.organisationName && (
+                              <p className="text-sm text-destructive">{orgErrors.organisationName}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="orgContactName">Contact Name *</Label>
+                            <Input
+                              id="orgContactName"
+                              name="contactName"
+                              value={orgFormData.contactName}
+                              onChange={handleOrgChange}
+                              placeholder="Your Full Name"
+                              className={orgErrors.contactName ? "border-destructive" : ""}
+                            />
+                            {orgErrors.contactName && (
+                              <p className="text-sm text-destructive">{orgErrors.contactName}</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="orgEmail">Email Address *</Label>
+                            <Input
+                              id="orgEmail"
+                              name="email"
+                              type="email"
+                              value={orgFormData.email}
+                              onChange={handleOrgChange}
+                              placeholder="you@organisation.ie"
+                              className={orgErrors.email ? "border-destructive" : ""}
+                            />
+                            {orgErrors.email && (
+                              <p className="text-sm text-destructive">{orgErrors.email}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="orgPhone">Phone Number</Label>
+                            <Input
+                              id="orgPhone"
+                              name="phone"
+                              type="tel"
+                              value={orgFormData.phone}
+                              onChange={handleOrgChange}
+                              placeholder="085 123 4567"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="orgMessage">
+                            Tell us about your organisation and sponsorship goals *
+                          </Label>
+                          <Textarea
+                            id="orgMessage"
+                            name="message"
+                            value={orgFormData.message}
+                            onChange={handleOrgChange}
+                            placeholder="What type of organisation are you? What are you hoping to achieve through sponsorship? Are there specific communities or areas you'd like to support?"
+                            rows={5}
+                            className={orgErrors.message ? "border-destructive" : ""}
+                          />
+                          {orgErrors.message && (
+                            <p className="text-sm text-destructive">{orgErrors.message}</p>
+                          )}
+                        </div>
+
+                        <div className="flex items-start space-x-2">
+                          <Checkbox
+                            id="orgTermsAccepted"
+                            checked={orgFormData.termsAccepted}
+                            onCheckedChange={handleOrgCheckboxChange}
+                          />
+                          <div className="grid gap-1.5 leading-none">
+                            <Label
+                              htmlFor="orgTermsAccepted"
+                              className={`text-sm font-normal ${
+                                orgErrors.termsAccepted ? "text-destructive" : ""
+                              }`}
+                            >
+                              I agree to the{" "}
+                              <Link to="/terms" className="text-primary hover:underline">
+                                Terms of Use
+                              </Link>{" "}
+                              and{" "}
+                              <Link to="/privacy" className="text-primary hover:underline">
+                                Privacy Policy
+                              </Link>
+                              *
+                            </Label>
+                            {orgErrors.termsAccepted && (
+                              <p className="text-sm text-destructive">{orgErrors.termsAccepted}</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <Button type="submit" className="w-full" disabled={isOrgSubmitting}>
+                          {isOrgSubmitting ? "Submitting..." : "Submit Enquiry"}
+                        </Button>
+                      </form>
+                    )}
+                  </CardContent>
+                </Card>
 
                 {/* Contact Info */}
                 <div className="mt-8 text-center">
@@ -783,12 +819,6 @@ Terms Accepted: Yes
                     <strong>Email:</strong>{" "}
                     <a href="mailto:hello@swap-skills.com" className="text-primary hover:underline">
                       hello@swap-skills.com
-                    </a>
-                  </p>
-                  <p className="text-sm mt-1">
-                    <strong>Phone:</strong>{" "}
-                    <a href="tel:+353851234567" className="text-primary hover:underline">
-                      +353 85 123 4567
                     </a>
                   </p>
                 </div>
