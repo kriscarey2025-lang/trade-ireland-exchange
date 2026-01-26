@@ -34,8 +34,8 @@ function SupplyDemandDashboardComponent() {
       const seekingMap: Record<string, number> = {};
       
       data?.forEach((service) => {
-        // Count offerings by category (only offers, not help requests)
-        if (service.type === "offer") {
+        // Count offerings by category (skill_swap and free_offer are offerings)
+        if (service.type === "skill_swap" || service.type === "free_offer" || service.type === "offer") {
           offeringMap[service.category] = (offeringMap[service.category] || 0) + 1;
         }
         
