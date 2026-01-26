@@ -75,7 +75,7 @@ function HeroSectionComponent() {
                 <Button size="default" className="group shadow-lg hover:shadow-xl rounded-full px-4 md:px-8 text-[11px] md:text-base h-9 md:h-12" asChild>
                   <Link to={user ? "/new-service" : "/auth?mode=signup"}>
                     <Zap className="mr-1 h-3 w-3 md:h-4 md:w-4" />
-                    {user ? "Post Now" : "Join Free"}
+                    {user ? "Post in 60 sec" : "Join Free"}
                     <ArrowRight className="ml-1 h-3 w-3 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
