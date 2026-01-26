@@ -78,14 +78,32 @@ function SupplyDemandDashboardComponent() {
   return (
     <div className="bg-card/80 backdrop-blur-sm rounded-2xl border border-border/50 p-4 md:p-6 animate-fade-up shadow-sm">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-primary/10">
             <TrendingUp className="h-4 w-4 text-primary" />
           </div>
           <h3 className="font-semibold text-sm md:text-base text-foreground">Supply & Demand</h3>
         </div>
-        <p className="text-xs text-muted-foreground">What's being offered vs. requested</p>
+      </div>
+
+      {/* Legend - Clear explanation */}
+      <div className="flex items-center gap-4 mb-4 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/15">
+            <HandHeart className="h-3 w-3 text-primary" />
+          </div>
+          <span className="text-xs font-medium text-foreground">Offering</span>
+          <span className="text-[10px] text-muted-foreground">(people can help)</span>
+        </div>
+        <div className="w-px h-4 bg-border" />
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center justify-center w-5 h-5 rounded-full bg-accent/15">
+            <Users className="h-3 w-3 text-accent" />
+          </div>
+          <span className="text-xs font-medium text-foreground">Seeking</span>
+          <span className="text-[10px] text-muted-foreground">(people need help)</span>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -105,22 +123,22 @@ function SupplyDemandDashboardComponent() {
                 <span className="text-lg">{icon}</span>
                 {hasGap && (
                   <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-warning/20 text-warning font-medium">
-                    Needed!
+                    Help needed!
                   </span>
                 )}
               </div>
-              <p className="font-medium text-xs text-foreground truncate mb-1 group-hover:text-primary transition-colors">
+              <p className="font-medium text-xs text-foreground truncate mb-2 group-hover:text-primary transition-colors">
                 {label}
               </p>
-              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                <span className="flex items-center gap-0.5">
+              <div className="flex items-center gap-3 text-[11px]">
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10">
                   <HandHeart className="h-3 w-3 text-primary" />
-                  {item.offering}
-                </span>
-                <span className="flex items-center gap-0.5">
+                  <span className="font-semibold text-primary">{item.offering}</span>
+                </div>
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-accent/10">
                   <Users className="h-3 w-3 text-accent" />
-                  {item.seeking}
-                </span>
+                  <span className="font-semibold text-accent">{item.seeking}</span>
+                </div>
               </div>
             </Link>
           );
@@ -128,12 +146,12 @@ function SupplyDemandDashboardComponent() {
       </div>
 
       {/* Opportunity callout */}
-      {inDemand.length > 0 && (
+      {opportunities.length > 0 && (
         <div className="flex items-center gap-2 p-3 rounded-xl bg-gradient-to-r from-accent/10 to-highlight/10 border border-accent/20">
           <TrendingDown className="h-4 w-4 text-accent flex-shrink-0" />
           <p className="text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">People are looking for:</span>{" "}
-            {inDemand.map(d => categoryLabels[d.category as ServiceCategory]).join(", ")}
+            <span className="font-semibold text-foreground">Opportunity:</span>{" "}
+            {opportunities.map(d => categoryLabels[d.category as ServiceCategory]).join(", ")} — more people seeking than offering!
           </p>
         </div>
       )}
