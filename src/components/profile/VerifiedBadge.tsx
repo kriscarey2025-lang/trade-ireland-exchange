@@ -74,7 +74,7 @@ export const VerifiedBadge = forwardRef<HTMLDivElement, VerifiedBadgeProps>(
     const config = statusConfig[status];
     const sizes = sizeConfig[size];
 
-    if (status === "unverified" || !config.icon) {
+    if (status === "unverified" || status === "rejected" || !config.icon) {
       return null;
     }
 
