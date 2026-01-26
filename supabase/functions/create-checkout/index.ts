@@ -71,7 +71,8 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: successUrl || `${origin}/advertise?success=true`,
+      // Redirect to sponsor success page with session_id for preference collection
+      success_url: `${origin}/sponsor-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${origin}/advertise?canceled=true`,
       allow_promotion_codes: true,
       billing_address_collection: "required",
