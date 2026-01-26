@@ -282,10 +282,10 @@ const Index = () => {
               </div>
             </section>
 
-            {/* Mobile: Sponsorship CTA Banner */}
-            <div className="md:hidden bg-amber-100 dark:bg-amber-950/40 border-y border-amber-200 dark:border-amber-800 py-3 px-4">
-              <Link to="/advertise" className="flex items-center justify-center gap-2 text-center">
-                <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
+            {/* Sponsorship CTA Banner */}
+            <div className="bg-amber-100 dark:bg-amber-950/40 border-y border-amber-200 dark:border-amber-800 py-3 px-4">
+              <Link to="/advertise" className="flex items-center justify-center gap-2 text-center hover:opacity-80 transition-opacity">
+                <span className="text-sm md:text-base font-medium text-amber-800 dark:text-amber-200">
                   💼 Support SwapSkills through Sponsorship & Business Advertisement
                 </span>
                 <ArrowRight className="h-4 w-4 text-amber-700 dark:text-amber-300 shrink-0" />
