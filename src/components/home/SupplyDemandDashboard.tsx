@@ -23,32 +23,37 @@ function SupplyDemandDashboardComponent() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("services")
-        .select("category, type")
+        .select("category, type, accepted_categories")
         .eq("status", "active")
         .eq("moderation_status", "approved");
 
       if (error) throw error;
 
-      // Aggregate by category
-      const categoryMap: Record<string, { offering: number; seeking: number }> = {};
+      // Aggregate: offering = what people offer, seeking = what people want in return
+      const offeringMap: Record<string, number> = {};
+      const seekingMap: Record<string, number> = {};
       
       data?.forEach((service) => {
-        if (!categoryMap[service.category]) {
-          categoryMap[service.category] = { offering: 0, seeking: 0 };
+        // Count offerings by category (only offers, not help requests)
+        if (service.type === "offer") {
+          offeringMap[service.category] = (offeringMap[service.category] || 0) + 1;
         }
-        if (service.type === "help_request") {
-          categoryMap[service.category].seeking++;
-        } else {
-          categoryMap[service.category].offering++;
+        
+        // Count what people are seeking (from accepted_categories)
+        if (service.accepted_categories && Array.isArray(service.accepted_categories)) {
+          service.accepted_categories.forEach((cat: string) => {
+            seekingMap[cat] = (seekingMap[cat] || 0) + 1;
+          });
         }
       });
 
-      // Convert to array
-      return Object.entries(categoryMap)
-        .map(([category, counts]) => ({
-          category,
-          ...counts,
-        }));
+      // Merge into unified stats
+      const allCategories = new Set([...Object.keys(offeringMap), ...Object.keys(seekingMap)]);
+      return Array.from(allCategories).map(category => ({
+        category,
+        offering: offeringMap[category] || 0,
+        seeking: seekingMap[category] || 0,
+      }));
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -108,7 +113,7 @@ function SupplyDemandDashboardComponent() {
           }`}
         >
           <HandHeart className="h-3.5 w-3.5" />
-          <span className="text-xs font-medium">People Offering</span>
+          <span className="text-xs font-medium">Skills Offered</span>
           <span className="text-[10px] opacity-70">({stats.reduce((sum, s) => sum + s.offering, 0)})</span>
         </button>
         <button
@@ -120,7 +125,7 @@ function SupplyDemandDashboardComponent() {
           }`}
         >
           <Users className="h-3.5 w-3.5" />
-          <span className="text-xs font-medium">People Seeking</span>
+          <span className="text-xs font-medium">Wanted in Return</span>
           <span className="text-[10px] opacity-70">({stats.reduce((sum, s) => sum + s.seeking, 0)})</span>
         </button>
       </div>
@@ -132,19 +137,19 @@ function SupplyDemandDashboardComponent() {
             const icon = categoryIcons[item.category as ServiceCategory] || "✨";
             const label = categoryLabels[item.category as ServiceCategory] || item.category;
             const count = viewMode === "offering" ? item.offering : item.seeking;
-            const hasOpportunity = viewMode === "offering" && item.seeking > item.offering;
+            const hasOpportunity = viewMode === "seeking" && item.seeking > item.offering;
             
             return (
               <Link
                 key={item.category}
-                to={`/browse?category=${item.category}${viewMode === "seeking" ? "&type=help_request" : ""}`}
+                to={`/browse?category=${item.category}`}
                 className="group relative overflow-hidden rounded-xl bg-muted/50 hover:bg-muted/80 p-3 transition-all hover:scale-[1.02] hover:shadow-md"
               >
                 <div className="flex items-start justify-between mb-1.5">
                   <span className="text-lg">{icon}</span>
-                  {hasOpportunity && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-warning/20 text-warning font-medium">
-                      In demand!
+                {hasOpportunity && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
+                      You could help!
                     </span>
                   )}
                 </div>
@@ -161,7 +166,7 @@ function SupplyDemandDashboardComponent() {
                   ) : (
                     <Users className="h-3 w-3" />
                   )}
-                  {count} {count === 1 ? "person" : "people"}
+                  {count} {viewMode === "offering" ? (count === 1 ? "offer" : "offers") : (count === 1 ? "request" : "requests")}
                 </div>
               </Link>
             );
@@ -173,13 +178,13 @@ function SupplyDemandDashboardComponent() {
         </div>
       )}
 
-      {/* Opportunity callout - only show in offering view */}
-      {viewMode === "offering" && opportunities.length > 0 && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-gradient-to-r from-accent/10 to-highlight/10 border border-accent/20">
-          <Sparkles className="h-4 w-4 text-accent flex-shrink-0" />
+      {/* Opportunity callout - show when viewing "Wanted" to encourage posting */}
+      {viewMode === "seeking" && opportunities.length > 0 && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
+          <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
           <p className="text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">Opportunity:</span>{" "}
-            {opportunities.slice(0, 3).map(d => categoryLabels[d.category as ServiceCategory]).join(", ")} — more seekers than helpers!
+            <span className="font-semibold text-foreground">You could help!</span>{" "}
+            {opportunities.slice(0, 3).map(d => categoryLabels[d.category as ServiceCategory]).join(", ")} are in high demand
           </p>
         </div>
       )}
