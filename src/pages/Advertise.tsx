@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SEO } from "@/components/SEO";
@@ -20,28 +21,21 @@ import {
   Users,
   Star,
   Monitor,
-  Smartphone,
   CreditCard,
-  List
+  List,
+  Loader2
 } from "lucide-react";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { submitToHubSpot, parseFullName } from "@/hooks/useHubSpot";
 
-const advertiserSchema = z.object({
-  businessName: z.string().trim().min(2, "Business name must be at least 2 characters").max(100, "Business name must be less than 100 characters"),
-  contactName: z.string().trim().min(2, "Contact name must be at least 2 characters").max(100, "Contact name must be less than 100 characters"),
-  email: z.string().trim().email("Please enter a valid email address").max(255, "Email must be less than 255 characters"),
-  phone: z.string().trim().optional(),
-  location: z.string().trim().min(2, "Location must be at least 2 characters").max(100, "Location must be less than 100 characters"),
-  website: z.string().trim().max(255, "Website must be less than 255 characters").optional().or(z.literal("")),
-  message: z.string().trim().max(1000, "Message must be less than 1000 characters").optional(),
-  termsAccepted: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the Terms of Use to proceed" }),
-  }),
-});
-
-type AdvertiserFormData = z.infer<typeof advertiserSchema>;
+// Stripe price IDs
+const STRIPE_PRICES = {
+  advertising: "price_1SturrRnrCLBBVkPwQdZ06uw", // €30/month
+  sponsorBronze: "price_1Stus6RnrCLBBVkPnJZR4PD2", // €10/month
+  sponsorSilver: "price_1StusJRnrCLBBVkPyi7fKg0p", // €25/month
+  sponsorGold: "price_1StusWRnrCLBBVkPL44EKf0d", // €50/month
+};
 
 const organisationSchema = z.object({
   organisationName: z.string().trim().min(2, "Organisation name must be at least 2 characters").max(100, "Organisation name must be less than 100 characters"),
@@ -57,19 +51,8 @@ const organisationSchema = z.object({
 type OrganisationFormData = z.infer<typeof organisationSchema>;
 
 export default function Advertise() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    businessName: "",
-    contactName: "",
-    email: "",
-    phone: "",
-    location: "",
-    website: "",
-    message: "",
-    termsAccepted: false,
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [searchParams] = useSearchParams();
+  const [isCheckingOut, setIsCheckingOut] = useState<string | null>(null);
 
   // Organisation form state
   const [isOrgSubmitting, setIsOrgSubmitting] = useState(false);
@@ -84,18 +67,51 @@ export default function Advertise() {
   });
   const [orgErrors, setOrgErrors] = useState<Record<string, string>>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+  // Check for success/cancel URL params
+  useEffect(() => {
+    if (searchParams.get("success") === "true") {
+      toast({
+        title: "Payment Successful!",
+        description: "Thank you for your support. We'll be in touch shortly to set up your account.",
+      });
+    } else if (searchParams.get("canceled") === "true") {
+      toast({
+        title: "Payment Canceled",
+        description: "Your payment was canceled. Feel free to try again when you're ready.",
+        variant: "destructive",
+      });
     }
-  };
+  }, [searchParams]);
 
-  const handleCheckboxChange = (checked: boolean) => {
-    setFormData((prev) => ({ ...prev, termsAccepted: checked }));
-    if (errors.termsAccepted) {
-      setErrors((prev) => ({ ...prev, termsAccepted: "" }));
+  const handleCheckout = async (priceId: string, planName: string) => {
+    setIsCheckingOut(priceId);
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { 
+          priceId,
+          successUrl: `${window.location.origin}/advertise?success=true`,
+          cancelUrl: `${window.location.origin}/advertise?canceled=true`,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast({
+        title: "Checkout Error",
+        description: "There was an error starting checkout. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCheckingOut(null);
     }
   };
 
@@ -111,117 +127,6 @@ export default function Advertise() {
     setOrgFormData((prev) => ({ ...prev, termsAccepted: checked }));
     if (orgErrors.termsAccepted) {
       setOrgErrors((prev) => ({ ...prev, termsAccepted: "" }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrors({});
-
-    const result = advertiserSchema.safeParse(formData);
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
-      result.error.errors.forEach((error) => {
-        if (error.path[0]) {
-          fieldErrors[error.path[0] as string] = error.message;
-        }
-      });
-      setErrors(fieldErrors);
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Submit via rate-limited edge function
-      const { data, error: submitError } = await supabase.functions.invoke("submit-advertiser-interest", {
-        body: {
-          businessName: result.data.businessName,
-          contactName: result.data.contactName,
-          email: result.data.email,
-          phone: result.data.phone || undefined,
-          location: result.data.location,
-          website: result.data.website || undefined,
-          message: result.data.message || undefined,
-        },
-      });
-
-      if (submitError) throw submitError;
-      
-      // Check for rate limiting response
-      if (data?.rateLimited) {
-        toast({
-          title: "Too Many Submissions",
-          description: "You've submitted too many requests. Please try again in an hour.",
-          variant: "destructive",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-      
-      if (data?.error) throw new Error(data.error);
-
-      // Notify admins about new advertiser interest
-      supabase.functions.invoke("notify-admins-advertiser", {
-        body: {
-          businessName: result.data.businessName,
-          contactName: result.data.contactName,
-          email: result.data.email,
-          location: result.data.location,
-          website: result.data.website || undefined,
-          message: result.data.message || undefined,
-        },
-      }).catch((err) => console.error("Failed to notify admins:", err));
-
-      // Also send email notification (existing)
-      await supabase.functions.invoke("send-contact-email", {
-        body: {
-          name: result.data.contactName,
-          email: result.data.email,
-          subject: `Advertiser Interest: ${result.data.businessName}`,
-          message: `
-Business Name: ${result.data.businessName}
-Contact Name: ${result.data.contactName}
-Email: ${result.data.email}
-Phone: ${result.data.phone || "Not provided"}
-Location: ${result.data.location}
-Website: ${result.data.website || "Not provided"}
-
-Additional Message:
-${result.data.message || "No additional message provided"}
-
-Terms Accepted: Yes
-          `.trim(),
-        },
-      });
-
-      // Submit to HubSpot
-      const { firstname, lastname } = parseFullName(result.data.contactName);
-      submitToHubSpot({
-        email: result.data.email,
-        firstname,
-        lastname,
-        phone: result.data.phone || undefined,
-        company: result.data.businessName,
-        city: result.data.location,
-        website: result.data.website || undefined,
-        form_source: 'Advertiser Interest Form',
-        message: result.data.message || undefined,
-      });
-
-      setIsSubmitted(true);
-      toast({
-        title: "Interest Submitted",
-        description: "Thank you! We'll review your request and get back to you soon.",
-      });
-    } catch (error) {
-      toast({
-        title: "Submission Failed",
-        description: "There was an error submitting your request. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -402,8 +307,20 @@ Terms Accepted: Yes
                     </ul>
 
                     {/* CTA */}
-                    <Button asChild className="w-full" size="lg">
-                      <a href="#contact-form">Get Started</a>
+                    <Button 
+                      className="w-full" 
+                      size="lg"
+                      onClick={() => handleCheckout(STRIPE_PRICES.advertising, "Advertising")}
+                      disabled={isCheckingOut !== null}
+                    >
+                      {isCheckingOut === STRIPE_PRICES.advertising ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        "Subscribe Now - €30/month"
+                      )}
                     </Button>
                   </CardContent>
                 </Card>
@@ -427,8 +344,8 @@ Terms Accepted: Yes
                   <CardContent className="space-y-6">
                     {/* Price */}
                     <div className="text-center pb-4 border-b">
-                      <div className="text-4xl font-bold text-primary">You Choose</div>
-                      <div className="text-muted-foreground">your monthly amount</div>
+                      <div className="text-4xl font-bold text-primary">Choose Your Level</div>
+                      <div className="text-muted-foreground">monthly contribution</div>
                       <div className="text-sm text-muted-foreground mt-1">Cancel anytime</div>
                     </div>
 
@@ -474,186 +391,60 @@ Terms Accepted: Yes
                         <div>
                           <span className="font-medium">Flexible Contributions</span>
                           <p className="text-sm text-muted-foreground">
-                            Give what you can - every contribution helps the community
+                            Choose the level that works for you
                           </p>
                         </div>
                       </li>
                     </ul>
 
-                    {/* CTA */}
-                    <Button asChild variant="outline" className="w-full" size="lg">
-                      <a href="#contact-form">Become a Sponsor</a>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </section>
-
-          {/* Interest Form */}
-          <section id="contact-form" className="py-12 bg-secondary/20">
-            <div className="container">
-              <div className="max-w-2xl mx-auto">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-center">Express Your Interest</CardTitle>
-                    <CardDescription className="text-center">
-                      Whether you're interested in advertising or sponsorship, fill out the form below 
-                      and we'll get back to you within a few business days.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {isSubmitted ? (
-                      <div className="text-center py-8">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                          <CheckCircle2 className="h-8 w-8 text-primary" />
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">Thank You!</h3>
-                        <p className="text-muted-foreground mb-4">
-                          We've received your interest and will review your request. 
-                          You'll hear from us within a few business days.
-                        </p>
-                        <Button variant="outline" onClick={() => setIsSubmitted(false)}>
-                          Submit Another Request
-                        </Button>
-                      </div>
-                    ) : (
-                      <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="businessName">Business Name *</Label>
-                            <Input
-                              id="businessName"
-                              name="businessName"
-                              value={formData.businessName}
-                              onChange={handleChange}
-                              placeholder="Your Business Name"
-                              className={errors.businessName ? "border-destructive" : ""}
-                            />
-                            {errors.businessName && (
-                              <p className="text-sm text-destructive">{errors.businessName}</p>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="contactName">Contact Name *</Label>
-                            <Input
-                              id="contactName"
-                              name="contactName"
-                              value={formData.contactName}
-                              onChange={handleChange}
-                              placeholder="Your Full Name"
-                              className={errors.contactName ? "border-destructive" : ""}
-                            />
-                            {errors.contactName && (
-                              <p className="text-sm text-destructive">{errors.contactName}</p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="email">Email Address *</Label>
-                            <Input
-                              id="email"
-                              name="email"
-                              type="email"
-                              value={formData.email}
-                              onChange={handleChange}
-                              placeholder="you@business.ie"
-                              className={errors.email ? "border-destructive" : ""}
-                            />
-                            {errors.email && (
-                              <p className="text-sm text-destructive">{errors.email}</p>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="phone">Phone Number</Label>
-                            <Input
-                              id="phone"
-                              name="phone"
-                              type="tel"
-                              value={formData.phone}
-                              onChange={handleChange}
-                              placeholder="085 123 4567"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="location">Location *</Label>
-                            <Input
-                              id="location"
-                              name="location"
-                              value={formData.location}
-                              onChange={handleChange}
-                              placeholder="e.g. Dublin, Cork, Galway"
-                              className={errors.location ? "border-destructive" : ""}
-                            />
-                            {errors.location && (
-                              <p className="text-sm text-destructive">{errors.location}</p>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="website">Website</Label>
-                            <Input
-                              id="website"
-                              name="website"
-                              value={formData.website}
-                              onChange={handleChange}
-                              placeholder="https://yourbusiness.ie"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="message">
-                            Tell us which option interests you (Advertising or Sponsorship)
-                          </Label>
-                          <Textarea
-                            id="message"
-                            name="message"
-                            value={formData.message}
-                            onChange={handleChange}
-                            placeholder="Are you interested in advertising (€30/month) or sponsorship? Tell us a bit about your business..."
-                            rows={4}
-                          />
-                        </div>
-
-                        <div className="flex items-start space-x-2">
-                          <Checkbox
-                            id="termsAccepted"
-                            checked={formData.termsAccepted}
-                            onCheckedChange={handleCheckboxChange}
-                          />
-                          <div className="grid gap-1.5 leading-none">
-                            <Label
-                              htmlFor="termsAccepted"
-                              className={`text-sm font-normal ${
-                                errors.termsAccepted ? "text-destructive" : ""
-                              }`}
-                            >
-                              I agree to the{" "}
-                              <Link to="/terms" className="text-primary hover:underline">
-                                Terms of Use
-                              </Link>{" "}
-                              and{" "}
-                              <Link to="/privacy" className="text-primary hover:underline">
-                                Privacy Policy
-                              </Link>
-                              *
-                            </Label>
-                            {errors.termsAccepted && (
-                              <p className="text-sm text-destructive">{errors.termsAccepted}</p>
-                            )}
-                          </div>
-                        </div>
-
-                        <Button type="submit" className="w-full" disabled={isSubmitting}>
-                          {isSubmitting ? "Submitting..." : "Submit Interest"}
-                        </Button>
-                      </form>
-                    )}
+                    {/* Sponsorship Tiers */}
+                    <div className="space-y-3">
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between"
+                        onClick={() => handleCheckout(STRIPE_PRICES.sponsorBronze, "Bronze Sponsor")}
+                        disabled={isCheckingOut !== null}
+                      >
+                        <span>🥉 Bronze Sponsor</span>
+                        <span className="font-semibold">
+                          {isCheckingOut === STRIPE_PRICES.sponsorBronze ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "€10/month"
+                          )}
+                        </span>
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between"
+                        onClick={() => handleCheckout(STRIPE_PRICES.sponsorSilver, "Silver Sponsor")}
+                        disabled={isCheckingOut !== null}
+                      >
+                        <span>🥈 Silver Sponsor</span>
+                        <span className="font-semibold">
+                          {isCheckingOut === STRIPE_PRICES.sponsorSilver ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "€25/month"
+                          )}
+                        </span>
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between"
+                        onClick={() => handleCheckout(STRIPE_PRICES.sponsorGold, "Gold Sponsor")}
+                        disabled={isCheckingOut !== null}
+                      >
+                        <span>🥇 Gold Sponsor</span>
+                        <span className="font-semibold">
+                          {isCheckingOut === STRIPE_PRICES.sponsorGold ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "€50/month"
+                          )}
+                        </span>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -661,7 +452,7 @@ Terms Accepted: Yes
           </section>
 
           {/* Organisation Enquiry Section */}
-          <section id="organisations" className="py-12">
+          <section id="organisations" className="py-12 bg-secondary/20">
             <div className="container">
               <div className="max-w-2xl mx-auto">
                 <div className="text-center mb-8">
