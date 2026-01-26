@@ -23,7 +23,8 @@ import {
   Monitor,
   CreditCard,
   List,
-  Loader2
+  Loader2,
+  Settings
 } from "lucide-react";
 import { z } from "zod";
 import { Link } from "react-router-dom";
@@ -53,6 +54,7 @@ type OrganisationFormData = z.infer<typeof organisationSchema>;
 export default function Advertise() {
   const [searchParams] = useSearchParams();
   const [isCheckingOut, setIsCheckingOut] = useState<string | null>(null);
+  const [isOpeningPortal, setIsOpeningPortal] = useState(false);
 
   // Organisation form state
   const [isOrgSubmitting, setIsOrgSubmitting] = useState(false);
@@ -112,6 +114,42 @@ export default function Advertise() {
       });
     } finally {
       setIsCheckingOut(null);
+    }
+  };
+
+  const handleOpenPortal = async () => {
+    setIsOpeningPortal(true);
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Login Required",
+          description: "Please log in to manage your subscription.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Portal error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unable to open subscription portal.";
+      toast({
+        title: "Portal Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsOpeningPortal(false);
     }
   };
 
@@ -443,6 +481,44 @@ Terms Accepted: Yes
                             "€50/month"
                           )}
                         </span>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </section>
+
+          {/* Existing Subscriber - Manage Subscription */}
+          <section className="py-8 border-b">
+            <div className="container">
+              <div className="max-w-2xl mx-auto">
+                <Card className="bg-muted/30">
+                  <CardContent className="pt-6">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <div className="text-center sm:text-left">
+                        <h3 className="font-semibold flex items-center gap-2 justify-center sm:justify-start">
+                          <Settings className="h-4 w-4" />
+                          Already a subscriber?
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          Manage your subscription, update payment methods, or cancel anytime.
+                        </p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        onClick={handleOpenPortal}
+                        disabled={isOpeningPortal}
+                        className="whitespace-nowrap"
+                      >
+                        {isOpeningPortal ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Opening...
+                          </>
+                        ) : (
+                          "Manage Subscription"
+                        )}
                       </Button>
                     </div>
                   </CardContent>
