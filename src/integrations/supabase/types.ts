@@ -972,6 +972,51 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsors: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string
+          id: string
+          is_public: boolean
+          message: string | null
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string | null
+          tier: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email: string
+          id?: string
+          is_public?: boolean
+          message?: string | null
+          status?: string
+          stripe_customer_id: string
+          stripe_subscription_id?: string | null
+          tier: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string
+          id?: string
+          is_public?: boolean
+          message?: string | null
+          status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       user_engagement: {
         Row: {
           created_at: string
