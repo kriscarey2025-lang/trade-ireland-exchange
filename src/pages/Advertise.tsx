@@ -101,8 +101,36 @@ export default function Advertise() {
       if (data?.error) throw new Error(data.error);
 
       if (data?.url) {
-        // Use window.location.href for reliable navigation (avoids popup blockers)
-        window.location.href = data.url;
+        // Try multiple navigation methods for mobile compatibility
+        // Some in-app browsers (Facebook, Instagram, LinkedIn) have issues with location.href
+        try {
+          // Method 1: Try location.replace (works better in some mobile browsers)
+          window.location.replace(data.url);
+        } catch {
+          // Method 2: Fallback to assign
+          window.location.assign(data.url);
+        }
+        
+        // Method 3: If still on page after 2 seconds, show manual link
+        setTimeout(() => {
+          if (document.visibilityState === 'visible') {
+            toast({
+              title: "Opening Stripe Checkout...",
+              description: "If the page didn't open, tap here to continue.",
+              action: (
+                <a 
+                  href={data.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="underline font-medium"
+                >
+                  Open Checkout
+                </a>
+              ),
+              duration: 10000,
+            });
+          }
+        }, 2000);
       }
     } catch (error) {
       console.error("Checkout error:", error);
