@@ -175,19 +175,29 @@ export default function Browse() {
         <Header />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
-          {/* Moving Inspirational Text Banner */}
-          <div className="bg-primary/5 border-y border-primary/10 overflow-hidden py-3">
+          {/* Mobile: Sponsorship CTA Banner */}
+          <div className="md:hidden bg-amber-100 dark:bg-amber-950/40 border-y border-amber-200 dark:border-amber-800 py-3 px-4">
+            <Link to="/advertise" className="flex items-center justify-center gap-2 text-center">
+              <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                💼 Support SwapSkills through Sponsorship & Business Advertisement
+              </span>
+              <ArrowRight className="h-4 w-4 text-amber-700 dark:text-amber-300 shrink-0" />
+            </Link>
+          </div>
+          
+          {/* Desktop: Moving Inspirational Text Banner */}
+          <div className="hidden md:block bg-primary/5 border-y border-primary/10 overflow-hidden py-3">
             <div className="animate-marquee whitespace-nowrap flex items-center">
-              <span className="text-sm md:text-base font-medium text-foreground mx-8">
+              <span className="text-base font-medium text-foreground mx-8">
                 🌱 "The worst that can happen is a 'no'. The best? A win-win swap and a new connection."
               </span>
-              <span className="text-sm md:text-base font-medium text-foreground mx-8">
+              <span className="text-base font-medium text-foreground mx-8">
                 🌱 "The worst that can happen is a 'no'. The best? A win-win swap and a new connection."
               </span>
-              <span className="text-sm md:text-base font-medium text-foreground mx-8">
+              <span className="text-base font-medium text-foreground mx-8">
                 🌱 "The worst that can happen is a 'no'. The best? A win-win swap and a new connection."
               </span>
-              <span className="text-sm md:text-base font-medium text-foreground mx-8">
+              <span className="text-base font-medium text-foreground mx-8">
                 🌱 "The worst that can happen is a 'no'. The best? A win-win swap and a new connection."
               </span>
             </div>
