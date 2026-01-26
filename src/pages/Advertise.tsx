@@ -89,12 +89,10 @@ export default function Advertise() {
     setIsCheckingOut(priceId);
     
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: { 
           priceId,
-          successUrl: `${window.location.origin}/advertise?success=true`,
+          successUrl: `${window.location.origin}/sponsor-success`,
           cancelUrl: `${window.location.origin}/advertise?canceled=true`,
         },
       });
@@ -103,7 +101,8 @@ export default function Advertise() {
       if (data?.error) throw new Error(data.error);
 
       if (data?.url) {
-        window.open(data.url, "_blank");
+        // Use window.location.href for reliable navigation (avoids popup blockers)
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error("Checkout error:", error);
