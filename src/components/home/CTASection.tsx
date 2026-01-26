@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, PenLine, Sparkles, Users } from "lucide-react";
+import { ArrowRight, Heart, Zap, Sparkles, Users, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
@@ -24,7 +24,7 @@ export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
         </div>
         
         <h2 className="text-2xl md:text-5xl font-bold mb-4 md:mb-6 animate-fade-up text-white font-display">
-          {user ? "Share your next skill!" : "Ready to give it a go?"}
+          {user ? "Share your next skill!" : "Post in 60 seconds — seriously!"}
         </h2>
         <p className="text-base md:text-lg text-white/90 max-w-xl mx-auto mb-8 md:mb-10 animate-fade-up" style={{ animationDelay: "0.1s" }}>
           {user 
@@ -40,8 +40,8 @@ export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
             asChild
           >
             <Link to={user ? "/new-service" : "/auth?mode=signup"}>
-              {user ? <PenLine className="mr-2 h-5 w-5" /> : <Heart className="mr-2 h-5 w-5" />}
-              {user ? "Start a Post" : "Sign Up — It's Free!"}
+              {user ? <Zap className="mr-2 h-5 w-5" /> : <Heart className="mr-2 h-5 w-5" />}
+              {user ? "Post in 60 Seconds" : "Sign Up — It's Free!"}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
@@ -55,9 +55,17 @@ export const CTASection = forwardRef<HTMLElement>(function CTASection(_, ref) {
           </Button>
         </div>
         
+        {/* Speed promise for non-logged users */}
+        {!user && (
+          <div className="flex items-center justify-center gap-2 mt-6 text-white/80 text-sm animate-fade-up" style={{ animationDelay: "0.25s" }}>
+            <Clock className="h-4 w-4" />
+            <span>No forms. No fees. Just share what you can do.</span>
+          </div>
+        )}
+        
         {/* Trust signals for non-logged users */}
         {!user && (
-          <p className="text-sm text-white/70 mt-8 animate-fade-up" style={{ animationDelay: "0.3s" }}>
+          <p className="text-sm text-white/70 mt-6 animate-fade-up" style={{ animationDelay: "0.3s" }}>
             ✓ No payment info needed · ✓ Unsubscribe anytime · ✓ Your data stays private
           </p>
         )}
