@@ -73,7 +73,7 @@ const locations = [
 ];
 
 export default function Browse() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
@@ -214,7 +214,7 @@ export default function Browse() {
           />
 
           {/* Auth Prompt Banner for Non-Logged-In Users */}
-          {!user && (
+          {!user && !loading && (
             <>
               {/* Mobile: Floating text banner */}
               <div className="md:hidden mb-4">

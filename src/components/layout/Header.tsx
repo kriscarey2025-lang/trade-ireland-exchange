@@ -44,9 +44,9 @@ export function Header() {
   const browseMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   
-  const isLoggedIn = !!user;
+  const isLoggedIn = !loading && !!user;
 
   // Check if user is admin
   const { data: isAdmin } = useQuery({
@@ -347,81 +347,95 @@ export function Header() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Follow us on Facebook">
-                <a href="https://www.facebook.com/people/Swap-Skills/61584889451637/?sk=followers" target="_blank" rel="noopener noreferrer">
-                  <Facebook className="h-5 w-5" aria-hidden="true" />
-                  <span className="sr-only">Follow us on Facebook</span>
-                </a>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Follow us on Facebook</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Follow us on TikTok">
-                <a href="https://www.tiktok.com/@swapskills" target="_blank" rel="noopener noreferrer">
-                  <TikTokIcon className="h-5 w-5" aria-hidden="true" />
-                  <span className="sr-only">Follow us on TikTok</span>
-                </a>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Follow us on TikTok</TooltipContent>
-          </Tooltip>
-          <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Search services">
-            <Link to="/browse">
-              <Search className="h-5 w-5" aria-hidden="true" />
-              <span className="sr-only">Search services</span>
-            </Link>
-          </Button>
-          
-          {isLoggedIn ? (
-            <>
-              <Button 
-                variant="accent" 
-                size="sm" 
-                className="rounded-xl"
-                asChild
-              >
-                <Link to="/new-service">
-                  <PenLine className="h-4 w-4 mr-1" />
-                  Start a Post
-                </Link>
-              </Button>
-              <NotificationBell />
-              <Button variant="ghost" size="icon" className="rounded-xl" asChild>
-                <Link to="/messages">
-                  <MessageCircle className="h-5 w-5" />
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-xl" asChild>
-                <Link to="/profile">
-                  <User className="h-5 w-5" />
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-xl" onClick={handleSignOut}>
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </>
+          {loading ? (
+            <div className="flex items-center gap-2" aria-hidden="true">
+              <div className="h-10 w-10 rounded-xl bg-muted/40 animate-pulse" />
+              <div className="h-10 w-24 rounded-xl bg-muted/40 animate-pulse" />
+              <div className="h-10 w-24 rounded-xl bg-muted/40 animate-pulse" />
+            </div>
           ) : (
             <>
-              <Button variant="ghost" className="rounded-xl" asChild>
-                <Link to="/auth">Sign In</Link>
-              </Button>
-              <Button variant="hero" className="rounded-xl shadow-md hover:shadow-lg" asChild>
-                <Link to="/auth?mode=signup">
-                  <Sparkles className="h-4 w-4 mr-1.5" />
-                  Join Free
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Follow us on Facebook">
+                    <a href="https://www.facebook.com/people/Swap-Skills/61584889451637/?sk=followers" target="_blank" rel="noopener noreferrer">
+                      <Facebook className="h-5 w-5" aria-hidden="true" />
+                      <span className="sr-only">Follow us on Facebook</span>
+                    </a>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Follow us on Facebook</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Follow us on TikTok">
+                    <a href="https://www.tiktok.com/@swapskills" target="_blank" rel="noopener noreferrer">
+                      <TikTokIcon className="h-5 w-5" aria-hidden="true" />
+                      <span className="sr-only">Follow us on TikTok</span>
+                    </a>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Follow us on TikTok</TooltipContent>
+              </Tooltip>
+              <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Search services">
+                <Link to="/browse">
+                  <Search className="h-5 w-5" aria-hidden="true" />
+                  <span className="sr-only">Search services</span>
                 </Link>
               </Button>
+
+              {isLoggedIn ? (
+                <>
+                  <Button 
+                    variant="accent" 
+                    size="sm" 
+                    className="rounded-xl"
+                    asChild
+                  >
+                    <Link to="/new-service">
+                      <PenLine className="h-4 w-4 mr-1" />
+                      Start a Post
+                    </Link>
+                  </Button>
+                  <NotificationBell />
+                  <Button variant="ghost" size="icon" className="rounded-xl" asChild>
+                    <Link to="/messages">
+                      <MessageCircle className="h-5 w-5" />
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" size="icon" className="rounded-xl" asChild>
+                    <Link to="/profile">
+                      <User className="h-5 w-5" />
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" size="icon" className="rounded-xl" onClick={handleSignOut}>
+                    <LogOut className="h-5 w-5" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" className="rounded-xl" asChild>
+                    <Link to="/auth">Sign In</Link>
+                  </Button>
+                  <Button variant="hero" className="rounded-xl shadow-md hover:shadow-lg" asChild>
+                    <Link to="/auth?mode=signup">
+                      <Sparkles className="h-4 w-4 mr-1.5" />
+                      Join Free
+                    </Link>
+                  </Button>
+                </>
+              )}
             </>
           )}
         </div>
 
         {/* Mobile Actions - simplified since MobileBottomNav handles main nav */}
         <div className="flex md:hidden items-center gap-1">
-          {isLoggedIn && <NotificationBell />}
+          {loading ? (
+            <div className="h-11 w-11 rounded-xl bg-muted/40 animate-pulse" aria-hidden="true" />
+          ) : isLoggedIn ? (
+            <NotificationBell />
+          ) : null}
           <Button
             variant="ghost"
             size="icon"
