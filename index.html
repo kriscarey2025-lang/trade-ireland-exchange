@@ -62,8 +62,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="SwapSkills" />
 
-    <!-- HubSpot Tracking Code - deferred for better LCP -->
-    <script type="text/javascript" id="hs-script-loader" defer src="//js.hs-scripts.com/20561907.js"></script>
+    <!-- Tracking is loaded after consent in-app to protect mobile performance (LCP/CLS) -->
     
     <!-- Inline critical CSS for above-the-fold content to reduce FCP/LCP -->
     <style>
@@ -75,8 +74,8 @@
       img,video{max-width:100%;height:auto}
       /* Reserve space for header to prevent CLS */
       header{min-height:56px}
-      /* Reserve space for mobile bottom nav */
-      @media(max-width:767px){body{padding-bottom:72px}}
+       /* Reserve space for mobile bottom nav */
+       @media(max-width:767px){body{padding-bottom:72px}}
     </style>
   </head>
 
