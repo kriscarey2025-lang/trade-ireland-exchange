@@ -13,8 +13,8 @@ interface SEOProps {
 const defaultMeta = {
   title: "Swap Skills | Trade Skills, Not Money",
   description: "Ireland's community for trading skills and services without money. Exchange tiling, tutoring, gardening, childcare and more with verified neighbours.",
-  image: "https://swapskills.ie/og-image-social.png?v=3",
-  url: "https://swapskills.ie",
+  image: "https://swap-skills.ie/og-image-social.png?v=3",
+  url: "https://swap-skills.ie",
 };
 
 export function SEO({
