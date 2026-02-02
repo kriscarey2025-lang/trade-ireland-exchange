@@ -26,7 +26,7 @@ import { FirstPostCTA } from "@/components/home/FirstPostCTA";
 import { SwapStatsSection } from "@/components/home/SwapStatsSection";
 const locations = ["All Ireland", "Antrim", "Armagh", "Carlow", "Cavan", "Clare", "Cork", "Derry", "Donegal", "Down", "Dublin", "Fermanagh", "Galway", "Kerry", "Kildare", "Kilkenny", "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", "Waterford", "Westmeath", "Wexford", "Wicklow"];
 const Index = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">(searchParams.get("category") as ServiceCategory || "all");
@@ -146,7 +146,7 @@ const Index = () => {
                 {/* Mobile-only compact hero - reserve minimum height */}
                 <div className="md:hidden" style={{ minHeight: '140px' }}>
                   {/* Trust badge */}
-                  {!user && (
+                   {!user && !loading && (
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-[11px] font-semibold mb-2">
                       <span className="relative flex h-1.5 w-1.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
@@ -175,7 +175,7 @@ const Index = () => {
                   </div>
                   
                   {/* Mobile CTA - only for non-logged-in users */}
-                  {!user && (
+                   {!user && !loading && (
                     <div className="flex gap-2 mb-2">
                       <Button 
                         size="sm" 
@@ -202,7 +202,7 @@ const Index = () => {
 
                 {/* Desktop hero - unchanged */}
                 <div className="hidden md:block">
-                  {!user && <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold mb-4 animate-fade-up">
+                   {!user && !loading && <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold mb-4 animate-fade-up">
                       <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
@@ -226,7 +226,7 @@ const Index = () => {
                   </p>
                   
                   {/* CTA for non-logged in users */}
-                  {!user && (
+                   {!user && !loading && (
                     <div className="flex flex-col items-center gap-3 mt-4">
                       <Button 
                         size="lg" 
@@ -344,7 +344,7 @@ const Index = () => {
                </div>
 
                {/* Auth Prompt Banner for Non-Logged-In Users - Desktop only */}
-               {!user && <div className="hidden md:flex mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+               {!user && !loading && <div className="hidden md:flex mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                    <div className="flex items-start sm:items-center gap-3">
                      <div className="p-2 bg-primary/10 rounded-lg shrink-0">
                        <UserCheck className="h-5 w-5 text-primary" />
@@ -460,7 +460,7 @@ const Index = () => {
               <InlineAd className="mt-8" />
 
               {/* Brainstorm CTA at bottom */}
-              {!user && filteredServices.length > 0 && <div className="mt-12 text-center">
+               {!user && !loading && filteredServices.length > 0 && <div className="mt-12 text-center">
                   <button onClick={() => setBrainstormOpen(true)} className="group inline-block">
                     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-highlight/10 p-[2px] hover:from-primary/20 hover:via-accent/20 hover:to-highlight/20 transition-all duration-300">
                       <div className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card/95 backdrop-blur-sm group-hover:bg-card/90 transition-colors">
@@ -484,7 +484,7 @@ const Index = () => {
         <Footer />
         
         {/* Sticky Mobile CTA - Shows for non-logged users */}
-        {!user && <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-t border-border p-3 shadow-2xl safe-bottom">
+         {!user && !loading && <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-t border-border p-3 shadow-2xl safe-bottom">
             <div className="flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">Ready to swap skills?</p>
