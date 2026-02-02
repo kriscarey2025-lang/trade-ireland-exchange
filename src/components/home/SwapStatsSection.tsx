@@ -42,12 +42,15 @@ function SwapStatsSectionComponent() {
   });
 
   return (
-    <section className="py-6 md:py-10 bg-gradient-to-b from-secondary/30 to-background">
+    <section 
+      className="py-6 md:py-10 bg-gradient-to-b from-secondary/30 to-background"
+      style={{ minHeight: '120px' }}
+    >
       <div className="container">
         <div className="flex flex-col items-center">
           {/* Header */}
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+            <Activity className="h-4 w-4 md:h-5 md:w-5 text-primary" aria-hidden="true" />
             <h3 className="text-sm md:text-base font-semibold text-foreground">
               What's happening as of {formattedDate}
             </h3>
@@ -56,21 +59,21 @@ function SwapStatsSectionComponent() {
           {/* Stats pills - stacked on mobile, row on desktop */}
           <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4">
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-accent/10 border border-accent/20 min-w-[180px] justify-center">
-              <CheckCircle2 className="h-4 w-4 text-accent" />
+              <CheckCircle2 className="h-4 w-4 text-accent" aria-hidden="true" />
               <span className="text-sm font-medium">
                 <span className="font-bold text-accent">{swapStats?.completed || 0}</span>{" "}
                 <span className="text-muted-foreground">Swaps Completed</span>
               </span>
             </div>
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary/10 border border-primary/20 min-w-[180px] justify-center">
-              <Clock className="h-4 w-4 text-primary" />
+              <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
               <span className="text-sm font-medium">
                 <span className="font-bold text-primary">{swapStats?.inProgress || 0}</span>{" "}
                 <span className="text-muted-foreground">Swaps in Progress</span>
               </span>
             </div>
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-highlight/10 border border-highlight/20 min-w-[180px] justify-center">
-              <MessageCircle className="h-4 w-4 text-highlight" />
+              <MessageCircle className="h-4 w-4 text-highlight" aria-hidden="true" />
               <span className="text-sm font-medium">
                 <span className="font-bold text-highlight">{messageCount || 0}</span>{" "}
                 <span className="text-muted-foreground">Messages Sent</span>

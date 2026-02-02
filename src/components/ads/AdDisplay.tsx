@@ -78,16 +78,25 @@ export const AdDisplay = forwardRef<HTMLDivElement, AdDisplayProps>(
           `}
         >
           {ad.image_url ? (
-            <div className="w-32 sm:w-40 flex-shrink-0 bg-muted/20 flex items-center justify-center">
+            <div 
+              className="w-32 sm:w-40 flex-shrink-0 bg-muted/20 flex items-center justify-center"
+              style={{ minHeight: '80px' }}
+            >
               <img
                 src={ad.image_url}
                 alt={ad.title}
+                width={160}
+                height={80}
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
           ) : (
-            <div className="w-32 sm:w-40 flex-shrink-0 bg-muted/50 flex items-center justify-center">
-              <Megaphone className="w-8 h-8 text-muted-foreground/30" />
+            <div 
+              className="w-32 sm:w-40 flex-shrink-0 bg-muted/50 flex items-center justify-center"
+              style={{ minHeight: '80px' }}
+            >
+              <Megaphone className="w-8 h-8 text-muted-foreground/30" aria-hidden="true" />
             </div>
           )}
 
@@ -127,16 +136,25 @@ export const AdDisplay = forwardRef<HTMLDivElement, AdDisplayProps>(
         `}
       >
         {ad.image_url ? (
-          <div className="relative overflow-hidden flex items-center justify-center h-20">
+          <div 
+            className="relative overflow-hidden flex items-center justify-center"
+            style={{ height: '80px' }}
+          >
             <img
               src={ad.image_url}
               alt={ad.title}
+              width={200}
+              height={80}
               className="max-w-full max-h-full object-contain bg-muted/20"
+              loading="lazy"
             />
           </div>
         ) : (
-          <div className="h-14 bg-muted/50 flex items-center justify-center">
-            <Megaphone className="w-5 h-5 text-muted-foreground/30" />
+          <div 
+            className="bg-muted/50 flex items-center justify-center"
+            style={{ height: '56px' }}
+          >
+            <Megaphone className="w-5 h-5 text-muted-foreground/30" aria-hidden="true" />
           </div>
         )}
 

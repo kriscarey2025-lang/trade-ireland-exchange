@@ -58,7 +58,10 @@ export function InlineAd({ className = "" }: InlineAdProps) {
   }, [ads, userLocation, isLoggedIn]);
 
   return (
-    <div className={`xl:hidden px-4 py-6 flex justify-center ${className}`}>
+    <div 
+      className={`xl:hidden px-4 py-6 flex justify-center ${className}`}
+      style={{ minHeight: '100px' }}
+    >
       <div className="w-full max-w-md">
         <AdDisplay ad={selectedAd} variant="inline" />
       </div>
