@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Base URL for the site
-    const baseUrl = 'https://swap-skills.ie';
+    const baseUrl = 'https://swapskills.ie';
 
     // Fetch all active, approved services
     const { data: services, error } = await supabase

@@ -1,5 +1,5 @@
 # Robots.txt for Swap Skills
-# https://swap-skills.com
+# https://swapskills.ie
 
 User-agent: Googlebot
 Allow: /
@@ -17,7 +17,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://swap-skills.com/sitemap.xml
+Sitemap: https://swapskills.ie/sitemap.xml
 
 # Disallow admin and private pages
 Disallow: /admin*
@@ -41,4 +41,6 @@ Allow: /terms
 Allow: /privacy
 Allow: /cookies
 Allow: /auth
-Allow: /services/*
+Allow: /service/*
+Allow: /stories
+Allow: /community
