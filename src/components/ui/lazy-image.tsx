@@ -6,6 +6,12 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   alt: string;
   fallback?: React.ReactNode;
   wrapperClassName?: string;
+  /** Explicit width to prevent CLS */
+  width?: number | string;
+  /** Explicit height to prevent CLS */
+  height?: number | string;
+  /** Aspect ratio for container (e.g., "16/9", "1/1") - prevents CLS */
+  aspectRatio?: string;
 }
 
 export function LazyImage({
@@ -14,6 +20,9 @@ export function LazyImage({
   className,
   fallback,
   wrapperClassName,
+  width,
+  height,
+  aspectRatio,
   ...props
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -46,17 +55,29 @@ export function LazyImage({
     return <>{fallback}</>;
   }
 
+  // Build aspect ratio style to prevent CLS
+  const containerStyle: React.CSSProperties = {};
+  if (aspectRatio) {
+    containerStyle.aspectRatio = aspectRatio;
+  }
+
   return (
-    <div ref={imgRef} className={cn("relative", wrapperClassName)}>
+    <div 
+      ref={imgRef} 
+      className={cn("relative overflow-hidden", wrapperClassName)}
+      style={containerStyle}
+    >
       {!isLoaded && !hasError && (
-        <div className="absolute inset-0 bg-muted animate-pulse" />
+        <div className="absolute inset-0 bg-muted animate-pulse" aria-hidden="true" />
       )}
       {isInView && (
         <img
           src={src}
           alt={alt}
+          width={width}
+          height={height}
           className={cn(
-            "transition-opacity duration-300",
+            "transition-opacity duration-200",
             isLoaded ? "opacity-100" : "opacity-0",
             className
           )}

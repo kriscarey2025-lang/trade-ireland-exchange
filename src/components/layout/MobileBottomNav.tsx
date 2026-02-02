@@ -23,7 +23,11 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background/95 backdrop-blur-xl border-t border-border safe-area-bottom">
+    <nav 
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background/95 backdrop-blur-xl border-t border-border safe-area-bottom"
+      role="navigation"
+      aria-label="Main mobile navigation"
+    >
       <div className="flex items-center justify-between h-[72px] px-1">
         {navItems.map((item) => {
           const isActive =
@@ -38,6 +42,7 @@ export function MobileBottomNav() {
               key={item.label}
               to={item.href}
               aria-label={item.label}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
                 "flex flex-1 flex-col items-center justify-center gap-1 min-w-[48px] min-h-[48px] px-3 py-3 rounded-2xl transition-all duration-200 active:scale-95",
                 item.isAction && "relative flex-[1.15]",
@@ -47,9 +52,9 @@ export function MobileBottomNav() {
               {item.isAction ? (
                 <div className="flex flex-col items-center gap-1">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-primary rounded-full blur-md opacity-40 animate-pulse-soft" />
+                    <div className="absolute inset-0 bg-primary rounded-full blur-md opacity-40 animate-pulse-soft" aria-hidden="true" />
                     <div className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground p-2.5 rounded-full shadow-lg">
-                      <Icon className="h-5 w-5" />
+                      <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                   </div>
                   <span className="text-[11px] font-semibold text-primary">
@@ -69,6 +74,7 @@ export function MobileBottomNav() {
                         "h-6 w-6 transition-transform duration-200",
                         isActive && "scale-110"
                       )}
+                      aria-hidden="true"
                     />
                   </div>
                   <span

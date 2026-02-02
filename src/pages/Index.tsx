@@ -129,10 +129,13 @@ const Index = () => {
         <ActionRequiredBanner />
         <main className="flex-1 bg-secondary/20">
           <AdsLayout>
-            {/* Hero Section - COMPACT for mobile, service cards visible on first scroll */}
-            <section className="py-4 md:py-10 bg-gradient-to-b from-background to-secondary/30 relative overflow-hidden">
-              {/* Subtle animated background */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Hero Section - COMPACT for mobile, optimized for CLS */}
+            <section 
+              className="py-4 md:py-10 bg-gradient-to-b from-background to-secondary/30 relative overflow-hidden"
+              style={{ minHeight: '180px', contentVisibility: 'auto', containIntrinsicSize: '0 200px' }}
+            >
+              {/* Subtle animated background - aria-hidden to prevent a11y issues */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl animate-pulse" />
                 <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-accent/10 rounded-full blur-2xl animate-pulse" style={{
                 animationDelay: "1s"
@@ -140,8 +143,8 @@ const Index = () => {
               </div>
               
               <div className="container text-center relative">
-                {/* Mobile-only compact hero */}
-                <div className="md:hidden">
+                {/* Mobile-only compact hero - reserve minimum height */}
+                <div className="md:hidden" style={{ minHeight: '140px' }}>
                   {/* Trust badge */}
                   {!user && (
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-[11px] font-semibold mb-2">

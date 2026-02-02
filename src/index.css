@@ -518,17 +518,38 @@
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
 
+/* Safe area for bottom nav */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS - CLS & LCP
+   ============================================ */
+
+/* Reserve space for common image aspect ratios to prevent CLS */
+.aspect-square { aspect-ratio: 1 / 1; }
+.aspect-video { aspect-ratio: 16 / 9; }
+.aspect-card { aspect-ratio: 16 / 10; }
+
+/* Force GPU compositing for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
 /* Mobile scroll performance */
 @media (max-width: 768px) {
   .grid {
     contain: layout style;
   }
   
-  /* CSS containment for service cards */
+  /* CSS containment for service cards - reduces layout recalc */
   .service-card-mobile {
     contain: layout style paint;
     content-visibility: auto;
-    contain-intrinsic-size: 0 350px;
+    contain-intrinsic-size: 0 400px;
   }
   
   /* Disable heavy animations on mobile for better scrolling */
@@ -549,12 +570,27 @@
   /* GPU acceleration for smooth scrolling */
   main {
     -webkit-overflow-scrolling: touch;
-    will-change: scroll-position;
   }
   
-  /* Optimize images */
+  /* Optimize images - visibility culling */
   img {
     content-visibility: auto;
+  }
+  
+  /* Reserve header space to prevent CLS */
+  header {
+    min-height: 56px;
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
@@ -566,4 +602,51 @@
 /* Paint containment for isolated components */
 .contain-paint {
   contain: paint;
+}
+
+/* Style containment */
+.contain-style {
+  contain: style;
+}
+
+/* Full containment for complex components */
+.contain-strict {
+  contain: strict;
+}
+
+/* Improved focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 0.5rem 1rem;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 2px solid hsl(var(--primary));
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+/* Screen reader only - improved accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
