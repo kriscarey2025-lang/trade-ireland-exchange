@@ -11,6 +11,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { EngagementTracker } from "@/components/tracking/EngagementTracker";
 import FeedbackSidebar from "@/components/sidebar/FeedbackSidebar";
 import { PageLoader } from "@/components/ui/page-loader";
+import { CookieConsent } from "@/components/privacy/CookieConsent";
 
 // Eagerly load Browse for fastest initial paint (main landing page)
 import Browse from "./pages/Browse";
@@ -77,6 +78,7 @@ const App = () => (
           <BackToTop />
           <EngagementTracker />
           <FeedbackSidebar />
+              <CookieConsent />
           <MobileBottomNav />
           <Suspense fallback={<PageLoader />}>
             <Routes>
