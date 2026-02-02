@@ -69,9 +69,14 @@ function SupplyDemandDashboardComponent() {
   // Find opportunities for the callout
   const opportunities = stats?.filter(s => s.seeking > s.offering && s.seeking > 0) || [];
 
+  // Fixed height skeleton to prevent CLS
   if (isLoading) {
     return (
-      <div className="bg-card/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-border/50 p-3 md:p-6 animate-fade-up">
+      <div 
+        className="bg-card/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-border/50 p-3 md:p-6"
+        style={{ minHeight: '140px' }}
+        aria-hidden="true"
+      >
         <div className="flex items-center gap-2 mb-3">
           <Skeleton className="h-4 w-4 rounded" />
           <Skeleton className="h-4 w-32" />
@@ -85,15 +90,26 @@ function SupplyDemandDashboardComponent() {
     );
   }
 
+  // If no stats, still render container with min height to prevent CLS
   if (!stats || stats.length === 0) {
-    return null;
+    return (
+      <div 
+        className="bg-card/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-border/50 p-3 md:p-6 text-center"
+        style={{ minHeight: '140px' }}
+      >
+        <p className="text-muted-foreground text-sm py-8">No skills posted yet. Be the first!</p>
+      </div>
+    );
   }
 
   // Limit display on mobile vs desktop
   const displayStats = filteredStats.slice(0, 6);
 
   return (
-    <div className="bg-card/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-border/50 p-3 md:p-6 animate-fade-up shadow-sm">
+    <div 
+      className="bg-card/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-border/50 p-3 md:p-6 shadow-sm"
+      style={{ minHeight: '140px' }}
+    >
       {/* Header + Toggle combined for mobile */}
       <div className="flex items-center justify-between gap-2 mb-2 md:mb-3">
         <div className="hidden md:flex items-center gap-2">

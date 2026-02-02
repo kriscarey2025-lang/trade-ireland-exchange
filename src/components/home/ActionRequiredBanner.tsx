@@ -113,8 +113,9 @@ export function ActionRequiredBanner() {
     fetchPendingActions();
   }, [user]);
 
+  // Return empty but don't cause layout shift - reserve no space when not needed
   if (!user || loading || pendingItems.length === 0 || dismissed) {
-    return null;
+    return null; // This is fine since it's user-specific and not visible on initial load
   }
 
   const urgentItems = pendingItems.filter(item => item.urgent);

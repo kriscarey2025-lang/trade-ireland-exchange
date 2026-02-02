@@ -26,6 +26,7 @@ export const FirstPostCTA = () => {
   });
 
   // Don't show if not logged in, still loading, or user already has posts
+  // This won't cause CLS since it's only shown for logged-in users after auth check
   if (!user || isLoading || serviceCount > 0) {
     return null;
   }
