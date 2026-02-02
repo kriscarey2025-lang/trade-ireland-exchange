@@ -149,19 +149,24 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
         to={`/services/${service.id}`} 
         className="block active:scale-[0.98] transition-transform"
       >
-        {/* Image Container - Square aspect ratio like Vinted */}
-        <div className={cn(
-          "relative aspect-square overflow-hidden bg-muted",
-          service.isTimeSensitive && "ring-2 ring-warning ring-inset"
-        )}>
+        {/* Image Container - Square aspect ratio with fixed dimensions to prevent CLS */}
+        <div 
+          className={cn(
+            "relative aspect-square overflow-hidden bg-muted",
+            service.isTimeSensitive && "ring-2 ring-warning ring-inset"
+          )}
+          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 150px' }}
+        >
           {hasImage ? (
             <>
               {!imageLoaded && (
-                <div className="absolute inset-0 bg-muted animate-pulse" />
+                <div className="absolute inset-0 bg-muted animate-pulse" aria-hidden="true" />
               )}
               <img 
                 src={service.images![0]} 
-                alt={service.title}
+                alt={`${service.title} - ${categoryLabels[service.category]} service in ${service.location}`}
+                width={300}
+                height={300}
                 className={cn(
                   "w-full h-full object-cover transition-opacity duration-200",
                   imageLoaded ? "opacity-100" : "opacity-0"
@@ -173,7 +178,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
             </>
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center p-3 bg-gradient-to-br from-primary/5 to-primary/10">
-              <span className="text-3xl mb-2">{categoryIcons[service.category]}</span>
+              <span className="text-3xl mb-2" aria-hidden="true">{categoryIcons[service.category]}</span>
               <p className="text-xs text-center text-muted-foreground line-clamp-3 px-1">
                 {service.description || service.title}
               </p>

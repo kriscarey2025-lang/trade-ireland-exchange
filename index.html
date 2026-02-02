@@ -4,14 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Preconnect to critical origins for faster resource loading -->
+    <!-- DNS Prefetch & Preconnect to critical origins for faster resource loading -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://lporltdxjhouspwmmrjd.supabase.co" />
     
-    <!-- Preload critical fonts to reduce LCP -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap" as="style" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap" />
+    <!-- Preload critical fonts to reduce LCP - with font-display swap -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap" as="style" fetchpriority="high" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700&display=swap" /></noscript>
     
     <title>Swap Skills | Trade Skills, Not Money - Ireland's Skill Exchange Community</title>
     <meta name="description" content="Join Ireland's trusted community for trading skills and services without money. Exchange tiling, tutoring, gardening, childcare and more with verified neighbours in Dublin, Cork, Galway and beyond." />
@@ -25,10 +28,10 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://swap-skills.com/" />
+    <meta property="og:url" content="https://swap-skills.ie/" />
     <meta property="og:title" content="Swap Skills | Trade Skills, Not Money" />
     <meta property="og:description" content="Ireland's community for trading skills and services without money. Connect with verified neighbours to exchange services." />
-    <meta property="og:image" content="https://swap-skills.com/og-image-social.png?v=3" />
+    <meta property="og:image" content="https://swap-skills.ie/og-image-social.png?v=3" />
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="720" />
     <meta property="og:locale" content="en_IE" />
@@ -36,14 +39,14 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://swap-skills.com/" />
+    <meta name="twitter:url" content="https://swap-skills.ie/" />
     <meta name="twitter:title" content="Swap Skills | Trade Skills, Not Money" />
     <meta name="twitter:description" content="Ireland's community for trading skills and services without money." />
-    <meta name="twitter:image" content="https://swap-skills.com/og-image-social.png?v=3" />
+    <meta name="twitter:image" content="https://swap-skills.ie/og-image-social.png?v=3" />
     <meta name="twitter:site" content="@SwapSkillsIE" />
     
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://swap-skills.com/" />
+    <!-- Canonical URL - primary .ie domain -->
+    <link rel="canonical" href="https://swap-skills.ie/" />
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -62,12 +65,18 @@
     <!-- HubSpot Tracking Code - deferred for better LCP -->
     <script type="text/javascript" id="hs-script-loader" defer src="//js.hs-scripts.com/20561907.js"></script>
     
-    <!-- Inline critical CSS for above-the-fold content -->
+    <!-- Inline critical CSS for above-the-fold content to reduce FCP/LCP -->
     <style>
-      /* Critical CSS for initial paint */
-      body { margin: 0; font-family: 'Nunito', system-ui, sans-serif; }
-      #root { min-height: 100vh; }
-      h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 600; }
+      /* Critical CSS for initial paint - prevents layout shift */
+      *,*::before,*::after{box-sizing:border-box}
+      body{margin:0;font-family:'Nunito',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+      #root{min-height:100vh;min-height:100dvh}
+      h1,h2,h3,h4,h5,h6{font-family:'Fraunces',Georgia,serif;font-weight:600;margin:0}
+      img,video{max-width:100%;height:auto}
+      /* Reserve space for header to prevent CLS */
+      header{min-height:56px}
+      /* Reserve space for mobile bottom nav */
+      @media(max-width:767px){body{padding-bottom:72px}}
     </style>
   </head>
 

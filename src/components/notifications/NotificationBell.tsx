@@ -99,11 +99,15 @@ export function NotificationBell() {
         size="icon"
         className="rounded-xl relative"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : "Notifications"}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-5 w-5" aria-hidden="true" />
         {unreadCount > 0 && (
           <Badge 
             className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-destructive text-destructive-foreground border-2 border-background"
+            aria-hidden="true"
           >
             {unreadCount > 9 ? "9+" : unreadCount}
           </Badge>

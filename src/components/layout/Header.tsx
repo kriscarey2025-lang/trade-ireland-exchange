@@ -151,14 +151,15 @@ export function Header() {
   return (
     <header ref={headerRef} className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl">
       <div className="container flex h-14 items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg group shrink-0">
+        {/* Logo - explicit dimensions prevent CLS */}
+        <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg group shrink-0" aria-label="SwapSkills Home">
           <img 
             src={swapSkillsLogo} 
             alt="SwapSkills Logo" 
             width={32}
             height={32}
             className="w-8 h-8 rounded-xl shadow-sm group-hover:shadow-md transition-shadow"
+            style={{ aspectRatio: '1/1' }}
           />
           <span className="hidden sm:inline text-foreground">
             Swap<span className="text-primary">Skills</span>
@@ -348,9 +349,10 @@ export function Header() {
         <div className="hidden md:flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-xl" asChild>
+              <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Follow us on Facebook">
                 <a href="https://www.facebook.com/people/Swap-Skills/61584889451637/?sk=followers" target="_blank" rel="noopener noreferrer">
-                  <Facebook className="h-5 w-5" />
+                  <Facebook className="h-5 w-5" aria-hidden="true" />
+                  <span className="sr-only">Follow us on Facebook</span>
                 </a>
               </Button>
             </TooltipTrigger>
@@ -358,17 +360,19 @@ export function Header() {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-xl" asChild>
+              <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Follow us on TikTok">
                 <a href="https://www.tiktok.com/@swapskills" target="_blank" rel="noopener noreferrer">
-                  <TikTokIcon className="h-5 w-5" />
+                  <TikTokIcon className="h-5 w-5" aria-hidden="true" />
+                  <span className="sr-only">Follow us on TikTok</span>
                 </a>
               </Button>
             </TooltipTrigger>
             <TooltipContent>Follow us on TikTok</TooltipContent>
           </Tooltip>
-          <Button variant="ghost" size="icon" className="rounded-xl" asChild>
+          <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Search services">
             <Link to="/browse">
-              <Search className="h-5 w-5" />
+              <Search className="h-5 w-5" aria-hidden="true" />
+              <span className="sr-only">Search services</span>
             </Link>
           </Button>
           
@@ -423,8 +427,10 @@ export function Header() {
             size="icon"
             className="rounded-xl"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
           </Button>
         </div>
       </div>

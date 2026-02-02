@@ -218,18 +218,26 @@ export function ServiceCard({
             </span>
           </div>
         )}
-        {/* Service Image */}
-        {hasImage && (
-          <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted">
+        {/* Service Image - fixed aspect ratio prevents CLS */}
+        <div 
+          className={cn(
+            "relative w-full overflow-hidden bg-muted",
+            hasImage ? "aspect-[16/10] sm:aspect-[16/9]" : "hidden"
+          )}
+          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 200px' }}
+        >
+          {hasImage && (
             <img 
               src={service.images![0]} 
-              alt={service.title}
+              alt={`${service.title} - ${categoryLabels[service.category]} service in ${service.location}`}
+              width={400}
+              height={225}
               className="w-full h-full object-cover object-center"
               loading="lazy"
               decoding="async"
             />
-          </div>
-        )}
+          )}
+        </div>
         <CardContent className={cn("p-4 sm:p-5 flex-1 flex flex-col", hasImage && "pt-3 sm:pt-4")}>
           {/* Header */}
           <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
