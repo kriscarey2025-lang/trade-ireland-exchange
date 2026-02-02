@@ -4,7 +4,7 @@ import * as path from 'path';
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://lporltdxjhouspwmmrjd.supabase.co';
 const SUPABASE_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxwb3JsdGR4amhvdXNwd21tcmpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1NTU2NzUsImV4cCI6MjA4MTEzMTY3NX0.AitiS6e2TQQJS0VgIV9OrbtZ8YJ1_HekbT5BgnYeI-s';
-const BASE_URL = 'https://swap-skills.com';
+const BASE_URL = 'https://swapskills.ie';
 
 interface Service {
   id: string;

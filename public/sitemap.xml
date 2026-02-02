@@ -2,104 +2,104 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Main Pages -->
   <url>
-    <loc>https://swap-skills.ie/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/browse</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/browse</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/community</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/community</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/how-it-works</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/how-it-works</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/about</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/about</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/stories</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/stories</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/press</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/press</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <!-- Support Pages -->
   <url>
-    <loc>https://swap-skills.ie/faq</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/faq</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/safety</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/safety</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/contact</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/contact</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/getting-started</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/getting-started</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/advertise</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/advertise</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <!-- Legal Pages -->
   <url>
-    <loc>https://swap-skills.ie/terms</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/terms</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/privacy</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/privacy</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/cookies</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/cookies</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   
   <!-- Auth Pages -->
   <url>
-    <loc>https://swap-skills.ie/auth</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://swapskills.ie/auth</loc>
+    <lastmod>2026-02-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
