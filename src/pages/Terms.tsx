@@ -21,7 +21,7 @@ export default function Terms() {
                 Terms of Service
               </h1>
               <p className="text-muted-foreground mb-8">
-                Last updated: December 2025
+                Last updated: February 2026
               </p>
 
               <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
@@ -85,11 +85,15 @@ export default function Terms() {
                     Any arrangements you make with other users are solely between you and them. 
                     Swap-Skills does not verify users, supervise exchanges, or guarantee outcomes.
                   </p>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground mb-3">
                     You understand and agree that you are solely responsible for your interactions, 
                     exchanges, and any outcomes resulting from your use of the platform. We are not 
                     responsible for the quality, safety, legality, or suitability of any services 
                     exchanged between users.
+                  </p>
+                  <p className="text-muted-foreground font-medium">
+                    Swap-Skills Ltd. is not a financial or legal identity provider. Verification is 
+                    used solely to increase community trust and safety.
                   </p>
                 </section>
 
