@@ -83,6 +83,7 @@ interface SecureServiceDetail {
   provider_linkedin: string | null;
   provider_facebook: string | null;
   provider_instagram: string | null;
+  provider_website: string | null;
   provider_verification_status: string | null;
   provider_is_founder: boolean | null;
 }
@@ -603,11 +604,11 @@ export default function ServiceDetail() {
                       )}
 
                       {/* Social Links & Website - Labeled Buttons */}
-                      {(service.provider_linkedin || service.provider_facebook || service.provider_instagram || (service as any).provider_website) && (
+                      {(service.provider_linkedin || service.provider_facebook || service.provider_instagram || service.provider_website) && (
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {(service as any).provider_website && (
+                          {service.provider_website && (
                             <a 
-                              href={(service as any).provider_website.startsWith('http') ? (service as any).provider_website : `https://${(service as any).provider_website}`} 
+                              href={service.provider_website.startsWith('http') ? service.provider_website : `https://${service.provider_website}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
