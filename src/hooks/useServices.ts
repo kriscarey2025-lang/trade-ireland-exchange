@@ -189,14 +189,7 @@ export function useServices(options: UseServicesOptions = {}) {
           .select("reviewed_user_id, user_rating")
           .in("reviewed_user_id", userIds);
         
-        // Fetch user's total completed swaps (across all conversations, not just per-service)
-        const { data: conversationsData } = await supabase
-          .from("conversations")
-          .select("participant_1, participant_2")
-          .eq("swap_status", "completed");
-        
         const ratingsMap = new Map<string, { sum: number; count: number }>();
-        const userSwapsMap = new Map<string, number>();
         
         if (reviewsData) {
           reviewsData.forEach(review => {
@@ -208,27 +201,13 @@ export function useServices(options: UseServicesOptions = {}) {
           });
         }
         
-        // Count completed swaps per user
-        if (conversationsData) {
-          conversationsData.forEach(conv => {
-            if (userIds.includes(conv.participant_1)) {
-              userSwapsMap.set(conv.participant_1, (userSwapsMap.get(conv.participant_1) || 0) + 1);
-            }
-            if (userIds.includes(conv.participant_2)) {
-              userSwapsMap.set(conv.participant_2, (userSwapsMap.get(conv.participant_2) || 0) + 1);
-            }
-          });
-        }
-        
-        // Update services with calculated average ratings and user's total swaps
+        // Update services with calculated average ratings (completedTrades already set from DB)
         services.forEach(service => {
           if (service.user && service.userId) {
             if (ratingsMap.has(service.userId)) {
               const rating = ratingsMap.get(service.userId)!;
               service.user.rating = rating.sum / rating.count;
             }
-            // Use user's total completed swaps instead of per-service count
-            service.user.completedTrades = userSwapsMap.get(service.userId) || 0;
           }
         });
       }
