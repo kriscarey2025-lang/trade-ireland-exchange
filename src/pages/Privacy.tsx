@@ -21,7 +21,7 @@ export default function Privacy() {
                 Privacy Policy
               </h1>
               <p className="text-muted-foreground mb-8">
-                Last updated: December 2025
+                Last updated: February 2026
               </p>
 
               <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
@@ -140,6 +140,80 @@ export default function Privacy() {
                   <h2 className="text-2xl font-semibold mb-4">International Data Transfers</h2>
                   <p className="text-muted-foreground">
                     Some of our service providers may process personal data outside the European Economic Area (EEA). Where this occurs, we ensure appropriate safeguards are in place in accordance with GDPR requirements.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-semibold mb-4">Identity Verification & Personal Data Processing</h2>
+                  <p className="text-muted-foreground mb-3">
+                    To promote trust, safety, and authenticity within the Swap-Skills community, we may 
+                    request identity documents (such as a passport or driver's licence) for the sole 
+                    purpose of verifying a user's identity.
+                  </p>
+                  <p className="text-muted-foreground mb-3 font-medium">
+                    Swap-Skills Ltd. is not a financial or legal identity provider. Verification is 
+                    used solely to increase community trust and safety.
+                  </p>
+                  
+                  <h3 className="text-xl font-medium mb-3 mt-6">Purpose of Collection</h3>
+                  <p className="text-muted-foreground mb-3">
+                    Identity documents are collected exclusively to:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
+                    <li>Confirm the authenticity of user accounts</li>
+                    <li>Reduce fraud, impersonation, and misuse of the platform</li>
+                    <li>Maintain a trusted community environment</li>
+                  </ul>
+                  <p className="text-muted-foreground">
+                    We do not use identity documents for marketing, profiling, or any other purpose.
+                  </p>
+                  
+                  <h3 className="text-xl font-medium mb-3 mt-6">Data Retention for Identity Documents</h3>
+                  <p className="text-muted-foreground mb-3">
+                    Identity documents are:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
+                    <li>Securely reviewed for verification purposes only</li>
+                    <li>Permanently deleted once the user's verification status has been completed and recorded</li>
+                  </ul>
+                  <p className="text-muted-foreground mb-3">
+                    Swap-Skills retains only:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
+                    <li>A verification status (e.g., "Verified User")</li>
+                    <li>The date of verification</li>
+                  </ul>
+                  <p className="text-muted-foreground">
+                    No copies of identity documents are stored beyond the verification process unless legally required.
+                  </p>
+                  
+                  <h3 className="text-xl font-medium mb-3 mt-6">Legal Basis for Verification Processing</h3>
+                  <p className="text-muted-foreground mb-3">
+                    Identity verification is processed under:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                    <li>Legitimate interests in maintaining platform safety and trust (Article 6(1)(f) GDPR)</li>
+                    <li>User consent where applicable</li>
+                  </ul>
+                  
+                  <h3 className="text-xl font-medium mb-3 mt-6">Verification Data Security</h3>
+                  <p className="text-muted-foreground">
+                    All identity data submitted during verification is handled securely and access is 
+                    strictly limited to authorised personnel involved in the verification process.
+                  </p>
+                  
+                  <h3 className="text-xl font-medium mb-3 mt-6">Your Verification Rights</h3>
+                  <p className="text-muted-foreground mb-3">
+                    Users have the right to:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
+                    <li>Request confirmation of verification status</li>
+                    <li>Request deletion of personal data (where applicable)</li>
+                    <li>Access further information about how their data is processed</li>
+                  </ul>
+                  <p className="text-muted-foreground">
+                    Requests can be made by contacting us at{' '}
+                    <a href="mailto:privacy@swap-skills.com" className="text-primary hover:underline">privacy@swap-skills.com</a>.
                   </p>
                 </section>
 
