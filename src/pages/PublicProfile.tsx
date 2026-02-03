@@ -324,12 +324,12 @@ export default function PublicProfile() {
             </CardHeader>
           </Card>
 
-          {/* Stats Grid */}
+          {/* Stats Grid - Enhanced with better visual hierarchy */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="shadow-sm border-border/50">
+            <Card className="shadow-sm border-border/50 bg-gradient-to-br from-yellow-50 to-background dark:from-yellow-950/20">
               <CardContent className="p-4 text-center">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500/10 mx-auto mb-2">
-                  <Star className="h-5 w-5 text-yellow-600" />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500/20 mx-auto mb-2">
+                  <Star className="h-6 w-6 text-yellow-600" />
                 </div>
                 <p className="text-2xl font-bold flex items-center justify-center gap-1">
                   {stats?.avgRating ? (
@@ -338,37 +338,39 @@ export default function PublicProfile() {
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     </>
                   ) : (
-                    <span className="text-muted-foreground text-base">No ratings</span>
+                    <span className="text-muted-foreground text-base">-</span>
                   )}
                 </p>
-                <p className="text-xs text-muted-foreground">{stats?.reviewCount || 0} Reviews</p>
+                <p className="text-xs text-muted-foreground font-medium">
+                  {stats?.reviewCount || 0} {(stats?.reviewCount || 0) === 1 ? 'Review' : 'Reviews'}
+                </p>
               </CardContent>
             </Card>
-            <Card className="shadow-sm border-border/50">
+            <Card className="shadow-sm border-accent/30 bg-gradient-to-br from-accent/10 to-background">
               <CardContent className="p-4 text-center">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 mx-auto mb-2">
-                  <RefreshCw className="h-5 w-5 text-primary" />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-accent/20 mx-auto mb-2">
+                  <RefreshCw className="h-6 w-6 text-accent" />
                 </div>
-                <p className="text-2xl font-bold">{profile.completed_swaps_count || 0}</p>
-                <p className="text-xs text-muted-foreground">Swaps Completed</p>
+                <p className="text-2xl font-bold text-accent">{profile.completed_swaps_count || 0}</p>
+                <p className="text-xs text-muted-foreground font-medium">Swaps Done</p>
               </CardContent>
             </Card>
-            <Card className="shadow-sm border-border/50">
+            <Card className="shadow-sm border-green-500/30 bg-gradient-to-br from-green-50 to-background dark:from-green-950/20">
               <CardContent className="p-4 text-center">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500/10 mx-auto mb-2">
-                  <FileText className="h-5 w-5 text-green-600" />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-500/20 mx-auto mb-2">
+                  <FileText className="h-6 w-6 text-green-600" />
                 </div>
-                <p className="text-2xl font-bold">{stats?.activePosts || 0}</p>
-                <p className="text-xs text-muted-foreground">Active Posts</p>
+                <p className="text-2xl font-bold text-green-600">{stats?.activePosts || 0}</p>
+                <p className="text-xs text-muted-foreground font-medium">Active Posts</p>
               </CardContent>
             </Card>
             <Card className="shadow-sm border-border/50">
               <CardContent className="p-4 text-center">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-muted mx-auto mb-2">
-                  <FileText className="h-5 w-5 text-muted-foreground" />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-muted mx-auto mb-2">
+                  <FileText className="h-6 w-6 text-muted-foreground" />
                 </div>
                 <p className="text-2xl font-bold">{stats?.closedPosts || 0}</p>
-                <p className="text-xs text-muted-foreground">Closed Posts</p>
+                <p className="text-xs text-muted-foreground font-medium">Closed Posts</p>
               </CardContent>
             </Card>
           </div>
