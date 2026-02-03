@@ -369,20 +369,23 @@ export function ServiceCard({
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[10px] sm:text-xs text-muted-foreground">
-                    {service.user.rating !== null ? (
-                      <>
-                        <Star className="h-3 w-3 fill-warning text-warning" />
-                        <span className="font-medium text-warning">{service.user.rating.toFixed(1)}</span>
-                      </>
-                    ) : (
-                      <span className="text-muted-foreground italic">No reviews</span>
-                    )}
-                    {(service.user.rating !== null && (service.user.completedTrades ?? 0) > 0) && (
-                      <span className="text-muted-foreground">·</span>
-                    )}
+                  {/* Trust Indicators Row */}
+                  <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+                    {/* Swap Count Badge */}
                     {(service.user.completedTrades ?? 0) > 0 && (
-                      <span className="font-medium text-primary">{service.user.completedTrades} swaps ✓</span>
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] sm:text-xs font-medium border border-accent/20">
+                        <Handshake className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                        {service.user.completedTrades}
+                      </span>
+                    )}
+                    {/* Rating Badge */}
+                    {service.user.rating !== null ? (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-warning/10 text-warning text-[10px] sm:text-xs font-medium border border-warning/20">
+                        <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
+                        {service.user.rating.toFixed(1)}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] sm:text-xs text-muted-foreground italic">New</span>
                     )}
                   </div>
                 </div>

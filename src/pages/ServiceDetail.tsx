@@ -575,14 +575,15 @@ export default function ServiceDetail() {
                             {service.provider_is_founder && <FoundersBadge size="sm" />}
                           </div>
                           {service.user_id && (
-                            <div className="flex items-center gap-3 flex-wrap">
-                              <UserRatingBadge userId={service.user_id} size="sm" />
+                            <div className="flex items-center gap-2 flex-wrap mt-1">
+                              {/* Swap Count Badge */}
                               {completedSwapsCount > 0 && (
-                                <span className="text-xs font-medium text-primary flex items-center gap-1">
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium border border-accent/20">
                                   <Handshake className="h-3 w-3" />
-                                  {completedSwapsCount} swap{completedSwapsCount !== 1 ? "s" : ""} completed
+                                  {completedSwapsCount} {completedSwapsCount === 1 ? 'swap' : 'swaps'}
                                 </span>
                               )}
+                              <UserRatingBadge userId={service.user_id} size="sm" />
                             </div>
                           )}
                           {service.provider_location && (
@@ -600,18 +601,18 @@ export default function ServiceDetail() {
                         </p>
                       )}
 
-                      {/* Social Links */}
+                      {/* Social Links - Labeled Buttons */}
                       {(service.provider_linkedin || service.provider_facebook || service.provider_instagram) && (
-                        <div className="flex items-center gap-2 mb-4">
+                        <div className="flex flex-wrap gap-2 mb-4">
                           {service.provider_linkedin && (
                             <a 
                               href={service.provider_linkedin} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
-                              title="LinkedIn"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0A66C2]/10 text-[#0A66C2] hover:bg-[#0A66C2]/20 transition-colors text-sm font-medium"
                             >
-                              <Linkedin className="h-4 w-4 text-muted-foreground" />
+                              <Linkedin className="h-4 w-4" />
+                              LinkedIn
                             </a>
                           )}
                           {service.provider_facebook && (
@@ -619,10 +620,10 @@ export default function ServiceDetail() {
                               href={service.provider_facebook} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
-                              title="Facebook"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20 transition-colors text-sm font-medium"
                             >
-                              <Facebook className="h-4 w-4 text-muted-foreground" />
+                              <Facebook className="h-4 w-4" />
+                              Facebook
                             </a>
                           )}
                           {service.provider_instagram && (
@@ -630,10 +631,10 @@ export default function ServiceDetail() {
                               href={service.provider_instagram} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
-                              title="Instagram"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#E4405F]/10 text-[#E4405F] hover:bg-[#E4405F]/20 transition-colors text-sm font-medium"
                             >
-                              <Instagram className="h-4 w-4 text-muted-foreground" />
+                              <Instagram className="h-4 w-4" />
+                              Instagram
                             </a>
                           )}
                         </div>
