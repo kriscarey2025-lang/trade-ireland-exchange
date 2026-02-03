@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Linkedin, Facebook, Instagram, Save, AlertTriangle, Share2 } from "lucide-react";
+import { Loader2, Linkedin, Facebook, Instagram, Globe, Save, AlertTriangle, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
@@ -12,6 +12,7 @@ const socialLinksSchema = z.object({
   linkedin_url: z.string().trim().url("Please enter a valid LinkedIn URL").optional().or(z.literal("")),
   facebook_url: z.string().trim().url("Please enter a valid Facebook URL").optional().or(z.literal("")),
   instagram_url: z.string().trim().url("Please enter a valid Instagram URL").optional().or(z.literal("")),
+  website_url: z.string().trim().url("Please enter a valid website URL").optional().or(z.literal("")),
 });
 
 interface SocialLinksCardProps {
@@ -19,7 +20,8 @@ interface SocialLinksCardProps {
   linkedinUrl: string | null;
   facebookUrl: string | null;
   instagramUrl: string | null;
-  onUpdate: (linkedin: string | null, facebook: string | null, instagram: string | null) => void;
+  websiteUrl?: string | null;
+  onUpdate: (linkedin: string | null, facebook: string | null, instagram: string | null, website?: string | null) => void;
 }
 
 export function SocialLinksCard({ 
@@ -27,23 +29,27 @@ export function SocialLinksCard({
   linkedinUrl, 
   facebookUrl, 
   instagramUrl,
+  websiteUrl,
   onUpdate 
 }: SocialLinksCardProps) {
   const [saving, setSaving] = useState(false);
   const [linkedin, setLinkedin] = useState(linkedinUrl || "");
   const [facebook, setFacebook] = useState(facebookUrl || "");
   const [instagram, setInstagram] = useState(instagramUrl || "");
+  const [website, setWebsite] = useState(websiteUrl || "");
 
-  const hasLinks = linkedinUrl || facebookUrl || instagramUrl;
+  const hasLinks = linkedinUrl || facebookUrl || instagramUrl || websiteUrl;
   const hasChanges = linkedin !== (linkedinUrl || "") || 
                      facebook !== (facebookUrl || "") || 
-                     instagram !== (instagramUrl || "");
+                     instagram !== (instagramUrl || "") ||
+                     website !== (websiteUrl || "");
 
   const handleSave = async () => {
     const result = socialLinksSchema.safeParse({
       linkedin_url: linkedin || undefined,
       facebook_url: facebook || undefined,
       instagram_url: instagram || undefined,
+      website_url: website || undefined,
     });
 
     if (!result.success) {
@@ -59,6 +65,7 @@ export function SocialLinksCard({
         linkedin_url: linkedin.trim() || null,
         facebook_url: facebook.trim() || null,
         instagram_url: instagram.trim() || null,
+        website_url: website.trim() || null,
       })
       .eq('id', userId);
 
@@ -71,7 +78,8 @@ export function SocialLinksCard({
     onUpdate(
       linkedin.trim() || null,
       facebook.trim() || null,
-      instagram.trim() || null
+      instagram.trim() || null,
+      website.trim() || null
     );
 
     toast.success("Social links updated!");
@@ -83,10 +91,10 @@ export function SocialLinksCard({
       <CardHeader>
         <div className="flex items-center gap-2">
           <Share2 className="h-5 w-5 text-primary" />
-          <CardTitle className="text-lg">Social Media Links</CardTitle>
+          <CardTitle className="text-lg">Social Media & Website</CardTitle>
         </div>
         <CardDescription>
-          Connect your social profiles to build trust with other members
+          Connect your social profiles and website to build trust with other members
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -98,6 +106,20 @@ export function SocialLinksCard({
         </div>
 
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="website" className="flex items-center gap-2">
+              <Globe className="h-4 w-4 text-primary" />
+              Company/Personal Website
+            </Label>
+            <Input
+              id="website"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="https://yourwebsite.com"
+              disabled={saving}
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="linkedin" className="flex items-center gap-2">
               <Linkedin className="h-4 w-4 text-[#0A66C2]" />
@@ -155,7 +177,7 @@ export function SocialLinksCard({
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Save Social Links
+                Save Links
               </>
             )}
           </Button>
@@ -163,6 +185,17 @@ export function SocialLinksCard({
 
         {hasLinks && !hasChanges && (
           <div className="pt-2 flex flex-wrap gap-3">
+            {websiteUrl && (
+              <a 
+                href={websiteUrl.startsWith('http') ? websiteUrl : `https://${websiteUrl}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Globe className="h-4 w-4" />
+                View Website
+              </a>
+            )}
             {linkedinUrl && (
               <a 
                 href={linkedinUrl} 

@@ -739,6 +739,7 @@ export type Database = {
           phone: string | null
           updated_at: string
           verification_status: string | null
+          website_url: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -756,6 +757,7 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           verification_status?: string | null
+          website_url?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -773,6 +775,7 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           verification_status?: string | null
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -1353,6 +1356,7 @@ export type Database = {
           location: string
           registered_at: string
           verification_status: string
+          website_url: string
         }[]
       }
       get_public_services: {
@@ -1382,6 +1386,7 @@ export type Database = {
           provider_linkedin: string
           provider_name: string
           provider_verification_status: string
+          provider_website: string
           status: string
           title: string
           type: string

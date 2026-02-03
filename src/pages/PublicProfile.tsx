@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, MapPin, ArrowLeft, User, Calendar, RefreshCw, FileText, Star, Sparkles, MessageCircle, ExternalLink } from "lucide-react";
+import { Loader2, MapPin, ArrowLeft, User, Calendar, RefreshCw, FileText, Star, Sparkles, MessageCircle, ExternalLink, Globe } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
@@ -32,6 +32,7 @@ interface PublicProfile {
   linkedin_url: string | null;
   facebook_url: string | null;
   instagram_url: string | null;
+  website_url: string | null;
 }
 
 interface UserStats {
@@ -415,13 +416,25 @@ export default function PublicProfile() {
           )}
 
           {/* Social Links Card */}
-          {(profile.linkedin_url || profile.facebook_url || profile.instagram_url) && (
+          {(profile.linkedin_url || profile.facebook_url || profile.instagram_url || profile.website_url) && (
             <Card className="shadow-elevated border-border/50">
               <CardHeader>
                 <CardTitle className="text-lg">Connect</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-3">
+                  {profile.website_url && (
+                    <a
+                      href={profile.website_url.startsWith('http') ? profile.website_url : `https://${profile.website_url}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+                    >
+                      <Globe className="h-4 w-4" />
+                      Website
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
                   {profile.linkedin_url && (
                     <a
                       href={profile.linkedin_url}

@@ -41,6 +41,7 @@ import {
   Linkedin,
   Facebook,
   Instagram,
+  Globe,
   Handshake,
   Quote
 } from "lucide-react";
@@ -601,9 +602,20 @@ export default function ServiceDetail() {
                         </p>
                       )}
 
-                      {/* Social Links - Labeled Buttons */}
-                      {(service.provider_linkedin || service.provider_facebook || service.provider_instagram) && (
+                      {/* Social Links & Website - Labeled Buttons */}
+                      {(service.provider_linkedin || service.provider_facebook || service.provider_instagram || (service as any).provider_website) && (
                         <div className="flex flex-wrap gap-2 mb-4">
+                          {(service as any).provider_website && (
+                            <a 
+                              href={(service as any).provider_website.startsWith('http') ? (service as any).provider_website : `https://${(service as any).provider_website}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+                            >
+                              <Globe className="h-4 w-4" />
+                              Website
+                            </a>
+                          )}
                           {service.provider_linkedin && (
                             <a 
                               href={service.provider_linkedin} 
