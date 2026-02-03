@@ -12,15 +12,6 @@ import jenniferDeliaImage from "@/assets/jennifer-delia-carlow-edited.png";
 // Story index for navigation
 const stories = [
   {
-    id: "founder-story",
-    title: "From Home Exchange to Skill Exchange",
-    subtitle: "Why I Built Swap-Skills",
-    author: "Kris",
-    badge: "Founder's Story",
-    badgeColor: "bg-amber-600",
-    preview: "A home exchange experience that sparked the idea for Swap-Skills..."
-  },
-  {
     id: "jenny-3-swaps",
     title: "3 Skill Exchanges in 1 Month",
     subtitle: "Jenny's Reiki Business Success",
@@ -28,6 +19,15 @@ const stories = [
     badge: "Success Story",
     badgeColor: "bg-success",
     preview: "How Jenny used her Reiki skills to get a website, hair treatment, and facial..."
+  },
+  {
+    id: "founder-story",
+    title: "From Home Exchange to Skill Exchange",
+    subtitle: "Why I Built Swap-Skills",
+    author: "Kris",
+    badge: "Founder's Story",
+    badgeColor: "bg-amber-600",
+    preview: "A home exchange experience that sparked the idea for Swap-Skills..."
   },
   {
     id: "jennifer-delia",
@@ -136,8 +136,161 @@ export default function Stories() {
           </div>
         </section>
 
+        {/* Jenny's 3 Swaps Success Story */}
+        <section id="jenny-3-swaps" className="py-10 md:py-12 scroll-mt-20">
+          <div className="container max-w-4xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Badge variant="default" className="bg-success text-white">
+                Success Story
+              </Badge>
+              <span className="text-sm text-muted-foreground">Real results from skill trading</span>
+            </div>
+            
+            <Card className="overflow-hidden border-border">
+              <CardContent className="p-0">
+                {/* Hero Banner */}
+                <div className="relative bg-gradient-to-br from-success/20 via-primary/10 to-accent/20 p-6 md:p-8">
+                  <div className="text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/20 text-success mb-4">
+                      <Sparkles className="h-4 w-4" />
+                      <span className="text-sm font-bold">3 Exchanges • 1 Month • €0 Spent</span>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-display font-bold">
+                      3 Skill Exchanges in 1 Month
+                    </h2>
+                  </div>
+                </div>
+
+                {/* Story Content */}
+                <div className="p-6 md:p-8">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge variant="secondary">Reiki & Wellness</Badge>
+                    <span className="text-xs text-muted-foreground">January 2026 • Carlow</span>
+                  </div>
+                  
+                  <h3 className="text-lg text-primary font-medium mb-6">
+                    How Jenny Used Her Reiki Business to Transform Her Life
+                  </h3>
+                  
+                  <div className="space-y-4 text-muted-foreground">
+                    <p className="font-medium text-foreground">
+                      Jenny runs a successful Reiki healing practice in Carlow. In just one month, she completed three skill exchanges that would have cost her hundreds of euros — and gained so much more than money could buy.
+                    </p>
+
+                    {/* The 3 Exchanges */}
+                    <div className="grid gap-4 mt-6">
+                      {/* Exchange 1: Website */}
+                      <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                            <span className="text-primary font-bold text-sm">1</span>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-foreground mb-1">🌐 A Brand New Website</h4>
+                            <p className="text-sm">Jenny exchanged Reiki sessions with a local web developer who was looking for stress relief and energy healing. In return, she received a professionally designed website for her business — something that typically costs <strong className="text-foreground">€500-€1,500</strong>.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Exchange 2: Hair Treatment */}
+                      <div className="p-4 bg-accent/10 rounded-lg border border-accent/20">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-accent/30 flex items-center justify-center shrink-0">
+                            <span className="text-accent-foreground font-bold text-sm">2</span>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-foreground mb-1">💇‍♀️ Balayage for Her Daughter</h4>
+                            <p className="text-sm">A local hairstylist was curious about Reiki and wanted to experience its benefits. Jenny provided healing sessions, and in exchange, her daughter received a beautiful balayage hair colouring treatment — normally priced at <strong className="text-foreground">€120-€200</strong>.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Exchange 3: Facial */}
+                      <div className="p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800/50">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 rounded-full bg-amber-200 dark:bg-amber-800 flex items-center justify-center shrink-0">
+                            <span className="text-amber-700 dark:text-amber-200 font-bold text-sm">3</span>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-foreground mb-1">✨ Professional Facial Treatment</h4>
+                            <p className="text-sm">A beauty therapist from a local Carlow business wanted to try Reiki for her own wellbeing. Jenny provided sessions and received a luxurious professional facial in return — valued at around <strong className="text-foreground">€80-€150</strong>.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Value Breakdown */}
+                    <div className="mt-6 p-4 bg-success/10 rounded-lg border border-success/20">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Heart className="h-5 w-5 text-success" />
+                        <h4 className="font-bold text-foreground">The Real Value</h4>
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="font-medium text-foreground mb-2">💰 Monetary Savings:</p>
+                          <ul className="space-y-1 text-muted-foreground">
+                            <li>• Website: €500-€1,500</li>
+                            <li>• Balayage: €120-€200</li>
+                            <li>• Facial: €80-€150</li>
+                            <li className="font-bold text-success pt-1">Total Saved: €700-€1,850</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground mb-2">🤝 Beyond Money:</p>
+                          <ul className="space-y-1 text-muted-foreground">
+                            <li>• 3 new local connections</li>
+                            <li>• Potential paying customers</li>
+                            <li>• Word-of-mouth referrals</li>
+                            <li>• Stronger community ties</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quote */}
+                    <blockquote className="border-l-4 border-success pl-4 py-2 my-6">
+                      <p className="text-foreground font-medium italic">
+                        "Every swap introduced me to someone new in my community. These aren't just transactions — they're relationships. The web developer now recommends me to stressed clients, the hairstylist has become a regular, and the beauty therapist and I are planning to collaborate on wellness events."
+                      </p>
+                      <footer className="text-sm text-muted-foreground mt-2">— Jenny, Carlow</footer>
+                    </blockquote>
+
+                    {/* The Bigger Picture */}
+                    <div className="mt-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Users className="h-4 w-4 text-primary" />
+                        <h4 className="font-bold text-foreground">The Swap-Skills Difference</h4>
+                      </div>
+                      <p className="text-sm">
+                        Jenny's story showcases what makes Swap-Skills special. It's not just about saving money — though that's certainly a benefit. It's about <strong className="text-foreground">building genuine local connections</strong>, <strong className="text-foreground">gaining potential customers</strong> who've experienced your work firsthand, and <strong className="text-foreground">strengthening community bonds</strong> through mutual support.
+                      </p>
+                      <p className="text-sm mt-3 font-medium text-foreground">
+                        When you trade skills, everyone wins — and those wins often multiply in ways you never expected.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-border">
+                    <div>
+                      <span className="font-bold">— Jenny</span>
+                      <span className="text-muted-foreground text-sm ml-2">Reiki Practitioner, Carlow</span>
+                    </div>
+                    <div className="flex items-center gap-3 ml-auto">
+                      <SocialShareButtons 
+                        url="https://swap-skills.com/stories#jenny-3-swaps"
+                        title="3 Skill Exchanges in 1 Month - Jenny's Swap-Skills Success Story"
+                        description="How Jenny used her Reiki business to get a website, hair treatment, and facial while making real local connections."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
         {/* Founder Story Section */}
-        <section id="founder-story" className="py-10 md:py-12 scroll-mt-20">
+        <section id="founder-story" className="py-10 md:py-12 bg-muted/30 scroll-mt-20">
           <div className="container max-w-4xl">
             <div className="flex items-center gap-2 mb-6">
               <Badge variant="default" className="bg-amber-600 text-white">
@@ -329,158 +482,6 @@ export default function Stories() {
           </div>
         </section>
 
-        {/* Jenny's 3 Swaps Success Story */}
-        <section id="jenny-3-swaps" className="py-10 md:py-12 bg-muted/30 scroll-mt-20">
-          <div className="container max-w-4xl">
-            <div className="flex items-center gap-2 mb-6">
-              <Badge variant="default" className="bg-success text-white">
-                Success Story
-              </Badge>
-              <span className="text-sm text-muted-foreground">Real results from skill trading</span>
-            </div>
-            
-            <Card className="overflow-hidden border-border">
-              <CardContent className="p-0">
-                {/* Hero Banner */}
-                <div className="relative bg-gradient-to-br from-success/20 via-primary/10 to-accent/20 p-6 md:p-8">
-                  <div className="text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/20 text-success mb-4">
-                      <Sparkles className="h-4 w-4" />
-                      <span className="text-sm font-bold">3 Exchanges • 1 Month • €0 Spent</span>
-                    </div>
-                    <h2 className="text-2xl md:text-3xl font-display font-bold">
-                      3 Skill Exchanges in 1 Month
-                    </h2>
-                  </div>
-                </div>
-
-                {/* Story Content */}
-                <div className="p-6 md:p-8">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Badge variant="secondary">Reiki & Wellness</Badge>
-                    <span className="text-xs text-muted-foreground">January 2026 • Carlow</span>
-                  </div>
-                  
-                  <h3 className="text-lg text-primary font-medium mb-6">
-                    How Jenny Used Her Reiki Business to Transform Her Life
-                  </h3>
-                  
-                  <div className="space-y-4 text-muted-foreground">
-                    <p className="font-medium text-foreground">
-                      Jenny runs a successful Reiki healing practice in Carlow. In just one month, she completed three skill exchanges that would have cost her hundreds of euros — and gained so much more than money could buy.
-                    </p>
-
-                    {/* The 3 Exchanges */}
-                    <div className="grid gap-4 mt-6">
-                      {/* Exchange 1: Website */}
-                      <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                            <span className="text-primary font-bold text-sm">1</span>
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-foreground mb-1">🌐 A Brand New Website</h4>
-                            <p className="text-sm">Jenny exchanged Reiki sessions with a local web developer who was looking for stress relief and energy healing. In return, she received a professionally designed website for her business — something that typically costs <strong className="text-foreground">€500-€1,500</strong>.</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Exchange 2: Hair Treatment */}
-                      <div className="p-4 bg-accent/10 rounded-lg border border-accent/20">
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-accent/30 flex items-center justify-center shrink-0">
-                            <span className="text-accent-foreground font-bold text-sm">2</span>
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-foreground mb-1">💇‍♀️ Balayage for Her Daughter</h4>
-                            <p className="text-sm">A local hairstylist was curious about Reiki and wanted to experience its benefits. Jenny provided healing sessions, and in exchange, her daughter received a beautiful balayage hair colouring treatment — normally priced at <strong className="text-foreground">€120-€200</strong>.</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Exchange 3: Facial */}
-                      <div className="p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800/50">
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-amber-200 dark:bg-amber-800 flex items-center justify-center shrink-0">
-                            <span className="text-amber-700 dark:text-amber-200 font-bold text-sm">3</span>
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-foreground mb-1">✨ Professional Facial Treatment</h4>
-                            <p className="text-sm">A beauty therapist from a local Carlow business wanted to try Reiki for her own wellbeing. Jenny provided sessions and received a luxurious professional facial in return — valued at around <strong className="text-foreground">€80-€150</strong>.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Value Breakdown */}
-                    <div className="mt-6 p-4 bg-success/10 rounded-lg border border-success/20">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Heart className="h-5 w-5 text-success" />
-                        <h4 className="font-bold text-foreground">The Real Value</h4>
-                      </div>
-                      <div className="grid sm:grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="font-medium text-foreground mb-2">💰 Monetary Savings:</p>
-                          <ul className="space-y-1 text-muted-foreground">
-                            <li>• Website: €500-€1,500</li>
-                            <li>• Balayage: €120-€200</li>
-                            <li>• Facial: €80-€150</li>
-                            <li className="font-bold text-success pt-1">Total Saved: €700-€1,850</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground mb-2">🤝 Beyond Money:</p>
-                          <ul className="space-y-1 text-muted-foreground">
-                            <li>• 3 new local connections</li>
-                            <li>• Potential paying customers</li>
-                            <li>• Word-of-mouth referrals</li>
-                            <li>• Stronger community ties</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Quote */}
-                    <blockquote className="border-l-4 border-success pl-4 py-2 my-6">
-                      <p className="text-foreground font-medium italic">
-                        "Every swap introduced me to someone new in my community. These aren't just transactions — they're relationships. The web developer now recommends me to stressed clients, the hairstylist has become a regular, and the beauty therapist and I are planning to collaborate on wellness events."
-                      </p>
-                      <footer className="text-sm text-muted-foreground mt-2">— Jenny, Carlow</footer>
-                    </blockquote>
-
-                    {/* The Bigger Picture */}
-                    <div className="mt-6">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Users className="h-4 w-4 text-primary" />
-                        <h4 className="font-bold text-foreground">The Swap-Skills Difference</h4>
-                      </div>
-                      <p className="text-sm">
-                        Jenny's story showcases what makes Swap-Skills special. It's not just about saving money — though that's certainly a benefit. It's about <strong className="text-foreground">building genuine local connections</strong>, <strong className="text-foreground">gaining potential customers</strong> who've experienced your work firsthand, and <strong className="text-foreground">strengthening community bonds</strong> through mutual support.
-                      </p>
-                      <p className="text-sm mt-3 font-medium text-foreground">
-                        When you trade skills, everyone wins — and those wins often multiply in ways you never expected.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-border">
-                    <div>
-                      <span className="font-bold">— Jenny</span>
-                      <span className="text-muted-foreground text-sm ml-2">Reiki Practitioner, Carlow</span>
-                    </div>
-                    <div className="flex items-center gap-3 ml-auto">
-                      <SocialShareButtons 
-                        url="https://swap-skills.com/stories#jenny-3-swaps"
-                        title="3 Skill Exchanges in 1 Month - Jenny's Swap-Skills Success Story"
-                        description="How Jenny used her Reiki business to get a website, hair treatment, and facial while making real local connections."
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
 
         {/* Jennifer & Delia Story */}
         <section id="jennifer-delia" className="py-10 md:py-12 scroll-mt-20">
