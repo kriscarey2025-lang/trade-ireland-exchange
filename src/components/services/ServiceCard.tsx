@@ -323,7 +323,6 @@ export function ServiceCard({
                     <span className="font-medium text-xs sm:text-sm truncate hover:underline">
                       {formatDisplayName(service.user.name)}
                     </span>
-                    <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                     {service.user.isFounder && <FoundersBadge size="sm" />}
                     {/* Social Media & Website Icons - Clickable links */}
                     {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl || service.user.websiteUrl) && (
@@ -378,6 +377,10 @@ export function ServiceCard({
                   </div>
                   {/* Trust Indicators Row */}
                   <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+                    {/* ID Verified Badge */}
+                    {service.user.verificationStatus === 'verified' && (
+                      <VerifiedBadge status={service.user.verificationStatus} size="sm" showLabel />
+                    )}
                     {/* Swap Count Badge */}
                     {(service.user.completedTrades ?? 0) > 0 && (
                       <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] sm:text-xs font-medium border border-accent/20">
