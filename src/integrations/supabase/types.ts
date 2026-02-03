@@ -1415,6 +1415,7 @@ export type Database = {
           provider_location: string
           provider_name: string
           provider_verification_status: string
+          provider_website: string
           status: string
           title: string
           type: string
