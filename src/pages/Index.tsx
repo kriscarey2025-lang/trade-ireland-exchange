@@ -424,7 +424,8 @@ const Index = () => {
                     Please try again later
                   </p>
                 </div> : filteredServices.length > 0 ? <>
-                  <div className="grid grid-cols-2 gap-3 md:hidden">
+                  {/* Mobile View - Single column for better usability */}
+                  <div className="flex flex-col gap-4 md:hidden">
                     {filteredServices.map((service) => (
                       <ServiceCardMobile key={service.id} service={service} />
                     ))}

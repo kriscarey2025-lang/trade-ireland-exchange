@@ -669,10 +669,10 @@ export default function Browse() {
 
           {isLoading ? (
             <>
-              {/* Mobile skeleton - 2 column grid */}
-              <div className="grid grid-cols-2 gap-3 md:hidden">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="aspect-square rounded-lg bg-muted animate-pulse" />
+              {/* Mobile skeleton - single column */}
+              <div className="flex flex-col gap-4 md:hidden">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-48 rounded-lg bg-muted animate-pulse" />
                 ))}
               </div>
               {/* Desktop skeleton */}
@@ -691,7 +691,7 @@ export default function Browse() {
             </div>
           ) : filteredServices.length > 0 ? (
             <>
-              {/* Mobile View - Vinted style 2-column grid or list */}
+              {/* Mobile View - Single column for better usability */}
               <div className="md:hidden">
                 {viewMode === "list" ? (
                   <div className="flex flex-col gap-2">
@@ -700,7 +700,7 @@ export default function Browse() {
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-4">
                     {filteredServices.map((service) => (
                       <ServiceCardMobile key={service.id} service={service} />
                     ))}
