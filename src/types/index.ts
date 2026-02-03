@@ -55,6 +55,7 @@ export type ServiceCategory =
   | 'music'
   | 'photography'
   | 'holistic_wellness'
+  | 'coaching_mentoring'
   | 'local_goods'
   | 'other';
 
