@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MapPin, Star, Send, Loader2, Zap, RefreshCw, Linkedin, Facebook, Instagram, Handshake } from "lucide-react";
+import { MapPin, Star, Send, Loader2, Zap, RefreshCw, Linkedin, Facebook, Instagram, Handshake, Globe, ExternalLink } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
-import { format, isToday, isTomorrow, differenceInDays, formatDistanceToNow } from "date-fns";
+import { format, isToday, isTomorrow, differenceInDays } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { useStartConversation, useGetOrCreateConversation } from "@/hooks/useMessaging";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ interface ServiceUser {
   linkedinUrl?: string;
   facebookUrl?: string;
   instagramUrl?: string;
+  websiteUrl?: string;
   isFounder?: boolean;
 }
 
@@ -87,6 +88,12 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
   const isOwnService = service.user?.id === user?.id;
   const isSkillSwap = service.type === "skill_swap";
 
+  // Check if user has social links or website
+  const hasSocialLinks = service.user?.linkedinUrl || service.user?.facebookUrl || service.user?.instagramUrl || service.user?.websiteUrl;
+  
+  // Check if user has reviews or swaps
+  const hasReviewsOrSwaps = (service.user?.rating !== null) || ((service.user?.completedTrades ?? 0) > 0);
+
   const handleSendMessage = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -149,191 +156,235 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
         to={`/services/${service.id}`} 
         className="block active:scale-[0.98] transition-transform"
       >
-        {/* Image Container - Square aspect ratio with fixed dimensions to prevent CLS */}
-        <div 
-          className={cn(
-            "relative aspect-square overflow-hidden bg-muted",
-            service.isTimeSensitive && "ring-2 ring-warning ring-inset"
-          )}
-          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 150px' }}
-        >
-          {hasImage ? (
-            <>
-              {!imageLoaded && (
-                <div className="absolute inset-0 bg-muted animate-pulse" aria-hidden="true" />
+        {/* Image or Compact Icon Area */}
+        {hasImage ? (
+          <div 
+            className={cn(
+              "relative aspect-[16/10] overflow-hidden bg-muted",
+              service.isTimeSensitive && "ring-2 ring-warning ring-inset"
+            )}
+          >
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-muted animate-pulse" aria-hidden="true" />
+            )}
+            <img 
+              src={service.images![0]} 
+              alt={`${service.title} - ${categoryLabels[service.category]} service in ${service.location}`}
+              width={400}
+              height={250}
+              className={cn(
+                "w-full h-full object-cover transition-opacity duration-200",
+                imageLoaded ? "opacity-100" : "opacity-0"
               )}
-              <img 
-                src={service.images![0]} 
-                alt={`${service.title} - ${categoryLabels[service.category]} service in ${service.location}`}
-                width={300}
-                height={300}
-                className={cn(
-                  "w-full h-full object-cover transition-opacity duration-200",
-                  imageLoaded ? "opacity-100" : "opacity-0"
-                )}
-                loading="lazy"
-                decoding="async"
-                onLoad={() => setImageLoaded(true)}
-              />
-            </>
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center p-3 bg-gradient-to-br from-primary/5 to-primary/10">
-              <span className="text-3xl mb-2" aria-hidden="true">{categoryIcons[service.category]}</span>
-              <p className="text-xs text-center text-muted-foreground line-clamp-3 px-1">
-                {service.description || service.title}
-              </p>
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setImageLoaded(true)}
+            />
+            
+            {/* Time Sensitive Badge */}
+            {service.isTimeSensitive && (
+              <div className="absolute top-2 left-2 bg-warning text-warning-foreground px-2 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
+                <Zap className="h-3 w-3" />
+                {neededByLabel}
+              </div>
+            )}
+            
+            {/* Post Type Badge */}
+            <div className="absolute top-2 right-2 bg-background/90 backdrop-blur-sm px-2 py-0.5 rounded text-xs font-medium">
+              {postType.emoji} {postType.label}
             </div>
-          )}
-          
-          {/* Time Sensitive Badge */}
-          {service.isTimeSensitive && (
-            <div className="absolute top-1.5 left-1.5 bg-warning text-warning-foreground px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5">
-              <Zap className="h-2.5 w-2.5" />
-              {neededByLabel}
-            </div>
-          )}
-          
-          {/* Post Type Badge */}
-          <div className="absolute top-1.5 right-1.5 bg-background/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] font-medium">
-            {postType.emoji} {postType.label}
           </div>
-        </div>
+        ) : (
+          /* Compact header for no-image posts */
+          <div className={cn(
+            "flex items-center gap-3 px-3 py-2.5 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border",
+            service.isTimeSensitive && "ring-2 ring-warning ring-inset"
+          )}>
+            <span className="text-2xl" aria-hidden="true">{categoryIcons[service.category]}</span>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs font-medium text-muted-foreground">{categoryLabels[service.category]}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {service.isTimeSensitive && (
+                <span className="bg-warning text-warning-foreground px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5">
+                  <Zap className="h-2.5 w-2.5" />
+                  {neededByLabel}
+                </span>
+              )}
+              <span className="bg-background/80 px-1.5 py-0.5 rounded text-[10px] font-medium">
+                {postType.emoji} {postType.label}
+              </span>
+            </div>
+          </div>
+        )}
         
-        {/* Content Below Image - Cleaner layout */}
-        <div className="p-2.5 space-y-2">
+        {/* Content */}
+        <div className="p-3 space-y-2.5">
           {/* Title */}
-          <h3 className="font-semibold text-sm line-clamp-2 leading-tight">
+          <h3 className="font-semibold text-base line-clamp-2 leading-snug">
             {service.title}
           </h3>
           
-          {/* Category & Location & Date */}
-          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
-            <span>{categoryLabels[service.category]}</span>
-            <span>·</span>
-            <MapPin className="h-2.5 w-2.5" />
-            <span className="truncate max-w-[60px]">{service.location}</span>
-            {service.createdAt && (
+          {/* Description - show for no-image posts */}
+          {!hasImage && service.description && (
+            <p className="text-sm text-muted-foreground line-clamp-2 italic">
+              "{service.description}"
+            </p>
+          )}
+          
+          {/* Location */}
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <MapPin className="h-3 w-3" />
+            <span>{service.location}</span>
+            {hasImage && (
               <>
                 <span>·</span>
-                <span className="shrink-0">{formatDistanceToNow(service.createdAt, { addSuffix: false }).replace('about ', '').replace('less than a minute', 'now')}</span>
+                <span>{categoryLabels[service.category]}</span>
               </>
             )}
           </div>
           
           {/* What they want in exchange - for skill swaps */}
           {isSkillSwap && service.acceptedCategories && service.acceptedCategories.length > 0 && (
-            <div className="flex items-center gap-1 text-[11px]">
-              <RefreshCw className="h-2.5 w-2.5 text-muted-foreground shrink-0" />
+            <div className="flex items-center gap-1.5 text-xs">
+              <RefreshCw className="h-3 w-3 text-muted-foreground shrink-0" />
               <span className="text-muted-foreground">Wants:</span>
-              <div className="flex gap-0.5 overflow-hidden">
+              <div className="flex gap-1 overflow-hidden">
                 {service.acceptedCategories.includes("_open_to_all_") ? (
                   <span className="text-accent font-medium">Any skill ✨</span>
                 ) : (
                   service.acceptedCategories
                     .filter(cat => !cat.startsWith("custom:") && cat !== "_open_to_all_")
-                    .slice(0, 3)
+                    .slice(0, 4)
                     .map(cat => (
-                      <span key={cat} title={categoryLabels[cat as ServiceCategory]}>
+                      <span key={cat} className="text-base" title={categoryLabels[cat as ServiceCategory]}>
                         {categoryIcons[cat as ServiceCategory]}
                       </span>
                     ))
                 )}
-                {service.acceptedCategories.filter(cat => !cat.startsWith("custom:") && cat !== "_open_to_all_").length > 3 && (
-                  <span className="text-muted-foreground">+{service.acceptedCategories.filter(cat => !cat.startsWith("custom:") && cat !== "_open_to_all_").length - 3}</span>
+                {service.acceptedCategories.filter(cat => !cat.startsWith("custom:") && cat !== "_open_to_all_").length > 4 && (
+                  <span className="text-muted-foreground">+{service.acceptedCategories.filter(cat => !cat.startsWith("custom:") && cat !== "_open_to_all_").length - 4}</span>
                 )}
               </div>
             </div>
           )}
 
-          {/* User Info - Clean single row with essential info only */}
+          {/* User Info Row */}
           {service.user && (
             <Link
               to={`/profile/${service.user.id}`}
-              className="flex items-center gap-2 pt-2 border-t border-border hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2.5 pt-2.5 border-t border-border hover:opacity-80 transition-opacity"
               onClick={(e) => e.stopPropagation()}
             >
-              <Avatar className="h-7 w-7 ring-1 ring-border shrink-0">
-                <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover" />
-                <AvatarFallback className="text-[9px] bg-primary/10 text-primary">
+              <Avatar className="h-9 w-9 ring-1 ring-border shrink-0">
+                <AvatarImage src={service.user.avatar} alt={service.user.name} className="object-cover object-top" />
+                <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
                   {service.user.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-medium truncate max-w-[70px] hover:underline">
-                    {formatDisplayName(service.user.name).split(' ')[0]}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-medium truncate hover:underline">
+                    {formatDisplayName(service.user.name)}
                   </span>
                   <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                   {service.user.isFounder && <FoundersBadge size="sm" />}
                 </div>
-                {/* Rating & Swaps on second line */}
-                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                  {service.user.rating !== null && (
-                    <span className="flex items-center gap-0.5 text-warning">
-                      <Star className="h-2.5 w-2.5 fill-current" />
-                      {service.user.rating.toFixed(1)}
+              </div>
+            </Link>
+          )}
+
+          {/* Dedicated Frames Section */}
+          {(hasSocialLinks || hasReviewsOrSwaps) && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              {/* Reviews & Swaps Frame */}
+              {hasReviewsOrSwaps && (
+                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-secondary/50 border border-border">
+                  {(service.user?.completedTrades ?? 0) > 0 && (
+                    <span className="flex items-center gap-1 text-xs font-medium text-accent">
+                      <Handshake className="h-3.5 w-3.5" />
+                      {service.user?.completedTrades}
                     </span>
                   )}
-                  {(service.user.completedTrades ?? 0) > 0 && (
+                  {service.user?.rating !== null && (
                     <>
-                      {service.user.rating !== null && <span>·</span>}
-                      <span className="text-primary font-medium">
-                        {service.user.completedTrades} swaps
+                      {(service.user?.completedTrades ?? 0) > 0 && <span className="text-border">|</span>}
+                      <span className="flex items-center gap-1 text-xs font-medium text-warning">
+                        <Star className="h-3.5 w-3.5 fill-current" />
+                        {service.user?.rating?.toFixed(1)}
                       </span>
                     </>
                   )}
                 </div>
-              </div>
-              {/* Social icons - compact on the right */}
-              {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
-                <div className="flex items-center gap-1 shrink-0">
-                  {service.user.linkedinUrl && (
+              )}
+
+              {/* Social & Website Frame */}
+              {hasSocialLinks && (
+                <div 
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-secondary/50 border border-border"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {service.user?.websiteUrl && (
+                    <a 
+                      href={service.user.websiteUrl.startsWith('http') ? service.user.websiteUrl : `https://${service.user.websiteUrl}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:opacity-70 transition-opacity"
+                      title="Website"
+                    >
+                      <Globe className="h-4 w-4 text-primary" />
+                    </a>
+                  )}
+                  {service.user?.linkedinUrl && (
                     <a 
                       href={service.user.linkedinUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
+                      className="hover:opacity-70 transition-opacity"
+                      title="LinkedIn"
                     >
-                      <Linkedin className="h-3.5 w-3.5 text-[#0A66C2]" />
+                      <Linkedin className="h-4 w-4 text-[#0A66C2]" />
                     </a>
                   )}
-                  {service.user.facebookUrl && (
+                  {service.user?.facebookUrl && (
                     <a 
                       href={service.user.facebookUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
+                      className="hover:opacity-70 transition-opacity"
+                      title="Facebook"
                     >
-                      <Facebook className="h-3.5 w-3.5 text-[#1877F2]" />
+                      <Facebook className="h-4 w-4 text-[#1877F2]" />
                     </a>
                   )}
-                  {service.user.instagramUrl && (
+                  {service.user?.instagramUrl && (
                     <a 
                       href={service.user.instagramUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
+                      className="hover:opacity-70 transition-opacity"
+                      title="Instagram"
                     >
-                      <Instagram className="h-3.5 w-3.5 text-[#E4405F]" />
+                      <Instagram className="h-4 w-4 text-[#E4405F]" />
                     </a>
                   )}
                 </div>
               )}
-            </Link>
+            </div>
           )}
         </div>
       </Link>
 
-      {/* Quick Message & Action Buttons - inside card padding */}
+      {/* Quick Message & Action Buttons */}
       {user && service.user?.id && !isOwnService && (
-        <div className="px-2.5 pb-2.5 space-y-2" onClick={(e) => e.preventDefault()}>
+        <div className="px-3 pb-3 space-y-2" onClick={(e) => e.preventDefault()}>
           {/* Quick Message */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <Input
               placeholder="Say hi or ask..."
               value={quickMessage}
               onChange={(e) => setQuickMessage(e.target.value)}
-              className="h-8 text-xs flex-1"
+              className="h-9 text-sm flex-1"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && quickMessage.trim()) {
                   e.preventDefault();
@@ -343,24 +394,24 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
             />
             <Button
               size="sm"
-              className="h-8 px-2.5 shrink-0"
+              className="h-9 px-3 shrink-0"
               disabled={!quickMessage.trim() || isSending}
               onClick={handleSendMessage}
             >
               {isSending ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Send className="h-3.5 w-3.5" />
+                <Send className="h-4 w-4" />
               )}
             </Button>
           </div>
           
-          {/* Action Buttons - Compact icons */}
-          <div className="flex items-center gap-1.5">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
-              className="h-7 px-2 text-[10px]"
+              className="h-8 px-3 text-xs flex-1"
               asChild
             >
               <Link to={`/services/${service.id}`}>
@@ -368,29 +419,31 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
               </Link>
             </Button>
             <Button
-              size="icon"
-              className="h-7 w-7"
+              size="sm"
+              className="h-8 px-3 text-xs"
               onClick={handleInitiateTrade}
               disabled={getOrCreateConversation.isPending}
-              title="Initiate Trade"
             >
               {getOrCreateConversation.isPending ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Handshake className="h-3.5 w-3.5" />
+                <>
+                  <Handshake className="h-4 w-4 mr-1.5" />
+                  Trade
+                </>
               )}
             </Button>
           </div>
         </div>
       )}
 
-      {/* For non-logged-in users, show simple action buttons */}
+      {/* For non-logged-in users */}
       {!user && (
-        <div className="px-2.5 pb-2.5 flex items-center gap-1.5" onClick={(e) => e.preventDefault()}>
+        <div className="px-3 pb-3 flex items-center gap-2" onClick={(e) => e.preventDefault()}>
           <Button
             variant="outline"
             size="sm"
-            className="h-7 px-2 text-[10px]"
+            className="h-8 px-3 text-xs flex-1"
             asChild
           >
             <Link to={`/services/${service.id}`}>
@@ -398,13 +451,12 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
             </Link>
           </Button>
           <Button
-            variant="default"
-            size="icon"
-            className="h-7 w-7"
+            size="sm"
+            className="h-8 px-3 text-xs"
             onClick={() => navigate("/auth")}
-            title="Sign in to trade"
           >
-            <Handshake className="h-3.5 w-3.5" />
+            <Handshake className="h-4 w-4 mr-1.5" />
+            Trade
           </Button>
         </div>
       )}
