@@ -56,6 +56,7 @@ interface Profile {
   linkedin_url: string | null;
   facebook_url: string | null;
   instagram_url: string | null;
+  website_url: string | null;
   is_founder: boolean | null;
 }
 
@@ -487,12 +488,14 @@ export default function Profile() {
               linkedinUrl={profile.linkedin_url}
               facebookUrl={profile.facebook_url}
               instagramUrl={profile.instagram_url}
-              onUpdate={(linkedin, facebook, instagram) => {
+              websiteUrl={profile.website_url}
+              onUpdate={(linkedin, facebook, instagram, website) => {
                 setProfile(prev => prev ? {
                   ...prev,
                   linkedin_url: linkedin,
                   facebook_url: facebook,
                   instagram_url: instagram,
+                  website_url: website ?? null,
                 } : null);
               }}
             />

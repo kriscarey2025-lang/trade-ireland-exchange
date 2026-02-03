@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, RefreshCw, Share2, Copy, Handshake, Send, Loader2, AlertTriangle, Zap } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, ExternalLink, RefreshCw, Share2, Copy, Handshake, Send, Loader2, AlertTriangle, Zap } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -32,6 +32,7 @@ interface ServiceUser {
   linkedinUrl?: string;
   facebookUrl?: string;
   instagramUrl?: string;
+  websiteUrl?: string;
   isFounder?: boolean;
 }
 
@@ -268,12 +269,6 @@ export function ServiceCard({
               <MapPin className="h-3 w-3" />
               {service.location}
             </div>
-            {service.createdAt && (
-              <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-secondary text-[11px] sm:text-xs font-medium text-secondary-foreground">
-                <Clock className="h-3 w-3" />
-                {formatDistanceToNow(service.createdAt, { addSuffix: false }).replace('about ', '')}
-              </div>
-            )}
             {service.estimatedHours && <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-secondary text-[11px] sm:text-xs font-medium text-secondary-foreground">
                 <Clock className="h-3 w-3" />
                 ~{service.estimatedHours}h
@@ -330,9 +325,21 @@ export function ServiceCard({
                     </span>
                     <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                     {service.user.isFounder && <FoundersBadge size="sm" />}
-                    {/* Social Media Icons - Clickable links */}
-                    {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
+                    {/* Social Media & Website Icons - Clickable links */}
+                    {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl || service.user.websiteUrl) && (
                       <div className="flex items-center gap-1 ml-1">
+                        {service.user.websiteUrl && (
+                          <a 
+                            href={service.user.websiteUrl.startsWith('http') ? service.user.websiteUrl : `https://${service.user.websiteUrl}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="hover:opacity-70 transition-opacity"
+                            title="Website"
+                          >
+                            <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0" />
+                          </a>
+                        )}
                         {service.user.linkedinUrl && (
                           <a 
                             href={service.user.linkedinUrl} 
