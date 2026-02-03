@@ -283,13 +283,15 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-sm font-medium truncate hover:underline">
                     {formatDisplayName(service.user.name)}
                   </span>
-                  <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                   {service.user.isFounder && <FoundersBadge size="sm" />}
                 </div>
+                {service.user.verificationStatus === 'verified' && (
+                  <VerifiedBadge status={service.user.verificationStatus} size="sm" showLabel />
+                )}
               </div>
             </Link>
           )}
