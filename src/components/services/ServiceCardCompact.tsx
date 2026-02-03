@@ -138,7 +138,6 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
               <span>·</span>
               <span className="flex items-center gap-1 flex-wrap">
                 {formatDisplayName(service.user.name).split(' ')[0]}
-                <VerifiedBadge status={service.user.verificationStatus} size="sm" />
                 {service.user.isFounder && <FoundersBadge size="sm" />}
                 {/* Social Media Icons */}
                 {(service.user.linkedinUrl || service.user.facebookUrl || service.user.instagramUrl) && (
@@ -178,24 +177,30 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
                     )}
                   </>
                 )}
-                {service.user.rating !== null && (
-                  <span className="flex items-center gap-0.5 text-warning">
-                    <Star className="h-2.5 w-2.5 fill-current" />
-                    {service.user.rating.toFixed(1)}
-                  </span>
-                )}
-                {(service.user.rating !== null && (service.completedSwapsCount ?? 0) > 0) && (
-                  <span className="text-muted-foreground">·</span>
-                )}
-                {(service.completedSwapsCount ?? 0) > 0 && (
-                  <span className="text-primary font-medium">
-                    {service.completedSwapsCount} swaps ✓
-                  </span>
-                )}
               </span>
             </>
           )}
         </div>
+        
+        {/* Trust Indicators Row */}
+        {service.user && (
+          <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+            {service.user.verificationStatus === 'verified' && (
+              <VerifiedBadge status={service.user.verificationStatus} size="sm" showLabel />
+            )}
+            {service.user.rating !== null && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-warning/10 text-warning text-[10px] font-medium border border-warning/20">
+                <Star className="h-2.5 w-2.5 fill-current" />
+                {service.user.rating.toFixed(1)}
+              </span>
+            )}
+            {(service.completedSwapsCount ?? 0) > 0 && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-medium border border-accent/20">
+                {service.completedSwapsCount} swaps ✓
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </Link>
   );
