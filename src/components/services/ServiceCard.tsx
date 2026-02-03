@@ -385,14 +385,12 @@ export function ServiceCard({
                         {service.user.completedTrades}
                       </span>
                     )}
-                    {/* Rating Badge */}
-                    {service.user.rating !== null ? (
+                    {/* Rating Badge - only show if user has a rating */}
+                    {service.user.rating !== null && (
                       <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-warning/10 text-warning text-[10px] sm:text-xs font-medium border border-warning/20">
                         <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
                         {service.user.rating.toFixed(1)}
                       </span>
-                    ) : (
-                      <span className="text-[10px] sm:text-xs text-muted-foreground italic">New</span>
                     )}
                   </div>
                 </div>
