@@ -151,7 +151,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
   }, [user, service.user?.id, service.id, navigate, getOrCreateConversation]);
 
   return (
-    <div className={cn("relative bg-card rounded-xl border border-border overflow-hidden service-card-mobile", className)}>
+    <div className={cn("relative bg-card rounded-xl border border-border overflow-hidden service-card-mobile w-full", className)}>
       <Link 
         to={`/services/${service.id}`} 
         className="block active:scale-[0.98] transition-transform"
@@ -321,7 +321,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
               {/* Social & Website Frame */}
               {hasSocialLinks && (
                 <div 
-                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-secondary/50 border border-border"
+                  className="flex items-center gap-4 px-3 py-2 rounded-lg bg-secondary/50 border border-border"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {service.user?.websiteUrl && (
@@ -329,10 +329,10 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
                       href={service.user.websiteUrl.startsWith('http') ? service.user.websiteUrl : `https://${service.user.websiteUrl}`}
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="hover:opacity-70 transition-opacity"
-                      title="Website"
+                      className="hover:opacity-70 transition-opacity p-1"
+                      title="Visit website"
                     >
-                      <Globe className="h-4 w-4 text-primary" />
+                      <Globe className="h-5 w-5 text-primary" />
                     </a>
                   )}
                   {service.user?.linkedinUrl && (
@@ -340,10 +340,10 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
                       href={service.user.linkedinUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="hover:opacity-70 transition-opacity"
-                      title="LinkedIn"
+                      className="hover:opacity-70 transition-opacity p-1"
+                      title="View LinkedIn profile"
                     >
-                      <Linkedin className="h-4 w-4 text-[#0A66C2]" />
+                      <Linkedin className="h-5 w-5 text-[#0A66C2]" />
                     </a>
                   )}
                   {service.user?.facebookUrl && (
@@ -351,10 +351,10 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
                       href={service.user.facebookUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="hover:opacity-70 transition-opacity"
-                      title="Facebook"
+                      className="hover:opacity-70 transition-opacity p-1"
+                      title="View Facebook profile"
                     >
-                      <Facebook className="h-4 w-4 text-[#1877F2]" />
+                      <Facebook className="h-5 w-5 text-[#1877F2]" />
                     </a>
                   )}
                   {service.user?.instagramUrl && (
@@ -362,10 +362,10 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
                       href={service.user.instagramUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="hover:opacity-70 transition-opacity"
-                      title="Instagram"
+                      className="hover:opacity-70 transition-opacity p-1"
+                      title="View Instagram profile"
                     >
-                      <Instagram className="h-4 w-4 text-[#E4405F]" />
+                      <Instagram className="h-5 w-5 text-[#E4405F]" />
                     </a>
                   )}
                 </div>

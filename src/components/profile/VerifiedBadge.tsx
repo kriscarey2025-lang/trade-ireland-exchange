@@ -21,14 +21,14 @@ const statusConfig = {
   verified: {
     icon: BadgeCheck,
     label: "ID Verified",
-    tooltip: "This user has verified their identity",
+    tooltip: "✓ Identity Verified – This user has submitted official ID and been verified by our team",
     iconClass: "text-primary",
     bgClass: "bg-primary/10",
   },
   pending: {
     icon: Clock,
     label: "Pending",
-    tooltip: "Verification is being reviewed",
+    tooltip: "⏳ Verification Pending – This user's ID is currently being reviewed",
     iconClass: "text-warning",
     bgClass: "bg-warning/10",
   },
