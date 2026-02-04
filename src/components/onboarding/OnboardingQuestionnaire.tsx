@@ -144,12 +144,26 @@ export function OnboardingQuestionnaire() {
 
     setIsLoading(true);
 
+    // Check if profile already has full_name set (e.g., from OAuth signup)
+    // The immutability trigger prevents changing full_name once set
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    // Only update full_name if it's not already set
+    const updateData: { location: string; full_name?: string } = {
+      location: location.trim(),
+    };
+    
+    if (!existingProfile?.full_name) {
+      updateData.full_name = fullName.trim();
+    }
+
     const { error } = await supabase
       .from("profiles")
-      .update({
-        full_name: fullName.trim(),
-        location: location.trim(),
-      })
+      .update(updateData)
       .eq("id", user.id);
 
     if (error) {
