@@ -29,6 +29,7 @@ import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
 import { useDebounce } from "@/hooks/useDebounce";
 import { SEO } from "@/components/SEO";
+import { OrganizationJsonLd, WebsiteJsonLd, HowToJsonLd } from "@/components/seo/JsonLd";
 import { useAuth } from "@/hooks/useAuth";
 import { postCategoryLabels } from "@/lib/postCategories";
 import { MatchesDialog } from "@/components/matching/MatchesDialog";
@@ -169,7 +170,20 @@ export default function Browse() {
         title="Browse Services"
         description="Find skills and services you need in Ireland. Browse tiling, tutoring, gardening, childcare and more from verified community members."
         keywords="find services Ireland, skill swap Dublin, service exchange Cork, community help Galway"
-        url="https://swap-skills.com/browse"
+        url="https://swap-skills.ie"
+      />
+      <OrganizationJsonLd />
+      <WebsiteJsonLd />
+      <HowToJsonLd 
+        name="How to Swap Skills on SwapSkills Ireland"
+        description="Learn how to trade skills and services with neighbours in Ireland without using money."
+        steps={[
+          { name: "Create Your Free Account", text: "Sign up in 60 seconds with just your email. No payment required." },
+          { name: "Post What You Can Offer", text: "List your skills - tutoring, gardening, photography, tech help, or anything else you're good at." },
+          { name: "Browse Available Skills", text: "Search for services you need from verified community members across Ireland." },
+          { name: "Connect and Arrange", text: "Message other members to discuss and arrange your skill swap." },
+          { name: "Complete Your Swap", text: "Exchange skills, leave reviews, and build your reputation in the community." }
+        ]}
       />
       <div className="min-h-screen flex flex-col">
         <Header />
