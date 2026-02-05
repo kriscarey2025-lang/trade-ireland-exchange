@@ -172,8 +172,8 @@ export function OrganizationJsonLd() {
     "@type": "Organization",
     name: "SwapSkills Ireland",
     alternateName: "Swap Skills",
-    url: "https://swap-skills.com",
-    logo: "https://swap-skills.com/og-image.png",
+    url: "https://swap-skills.ie",
+    logo: "https://swap-skills.ie/og-image.png",
     description: "Ireland's community for trading skills and services without money. Connect with neighbours to exchange tiling, tutoring, gardening, childcare and more.",
     foundingDate: "2024",
     founder: {
@@ -192,7 +192,7 @@ export function OrganizationJsonLd() {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      url: "https://swap-skills.com/contact",
+      url: "https://swap-skills.ie/contact",
     },
     sameAs: [],
   };
@@ -206,14 +206,14 @@ export function WebsiteJsonLd() {
     "@type": "WebSite",
     name: "SwapSkills Ireland",
     alternateName: "Swap Skills",
-    url: "https://swap-skills.com",
+    url: "https://swap-skills.ie",
     description: "Trade skills, not money. Ireland's community for skill swapping and service exchange.",
     inLanguage: "en-IE",
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://swap-skills.com/browse?search={search_term_string}",
+        urlTemplate: "https://swap-skills.ie/browse?search={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },
