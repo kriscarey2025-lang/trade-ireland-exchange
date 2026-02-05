@@ -257,7 +257,7 @@ export default function Browse() {
 
           {/* Page Header */}
           <div className="mb-4 md:mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">Browse All Services</h1>
+            <h2 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">Browse All Services</h2>
             <p className="text-sm md:text-base text-muted-foreground">
               Find services you need or see what others are looking for
             </p>
