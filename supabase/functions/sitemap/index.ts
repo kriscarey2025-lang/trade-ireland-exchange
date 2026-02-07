@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Base URL for the site
-    const baseUrl = 'https://swapskills.ie';
+    const baseUrl = 'https://swap-skills.ie';
 
     // Fetch all active, approved services
     const { data: services, error } = await supabase
@@ -36,14 +36,21 @@ Deno.serve(async (req) => {
     // Static pages with their priorities
     const staticPages = [
       { url: '/', priority: '1.0', changefreq: 'daily' },
-      { url: '/browse', priority: '0.9', changefreq: 'hourly' },
-      { url: '/how-it-works', priority: '0.8', changefreq: 'weekly' },
-      { url: '/about', priority: '0.7', changefreq: 'monthly' },
+      { url: '/browse', priority: '0.9', changefreq: 'daily' },
       { url: '/community', priority: '0.8', changefreq: 'daily' },
+      { url: '/how-it-works', priority: '0.8', changefreq: 'monthly' },
+      { url: '/about', priority: '0.7', changefreq: 'monthly' },
+      { url: '/stories', priority: '0.7', changefreq: 'weekly' },
+      { url: '/press', priority: '0.6', changefreq: 'weekly' },
       { url: '/faq', priority: '0.6', changefreq: 'monthly' },
       { url: '/safety', priority: '0.6', changefreq: 'monthly' },
-      { url: '/contact', priority: '0.5', changefreq: 'monthly' },
-      { url: '/stories', priority: '0.7', changefreq: 'weekly' },
+      { url: '/contact', priority: '0.6', changefreq: 'monthly' },
+      { url: '/getting-started', priority: '0.6', changefreq: 'monthly' },
+      { url: '/advertise', priority: '0.5', changefreq: 'monthly' },
+      { url: '/auth', priority: '0.5', changefreq: 'monthly' },
+      { url: '/terms', priority: '0.3', changefreq: 'yearly' },
+      { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
+      { url: '/cookies', priority: '0.3', changefreq: 'yearly' },
     ];
 
     // Build XML sitemap
