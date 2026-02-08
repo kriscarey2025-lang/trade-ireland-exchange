@@ -121,7 +121,7 @@ const Index = () => {
         </div>}
     </>;
   return <>
-      <SEO description="Join Ireland's trusted community for trading skills and services without money. Exchange tiling, tutoring, gardening, childcare and more with verified neighbours." keywords="skill swap Ireland, service exchange, barter services, trade skills Dublin, skill trading Cork, time bank Galway" url="https://swap-skills.com/" />
+      <SEO description="Join Ireland's trusted community for trading skills and services without money. Exchange tiling, tutoring, gardening, childcare and more with verified neighbours." keywords="skill swap Ireland, service exchange, barter services, trade skills Dublin, skill trading Cork, time bank Galway" url="https://swap-skills.ie/" />
       <OrganizationJsonLd />
       <WebsiteJsonLd />
       <div className="min-h-screen flex flex-col">

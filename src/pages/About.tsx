@@ -101,19 +101,19 @@ export default function About() {
         title="About Us"
         description="Learn about Swap Skills - Ireland's community-driven platform for trading skills and services without money. Founded by Kristina Carey to help neighbours help each other."
         keywords="about swap skills, skill exchange Ireland, Kristina Carey, community trading, barter Ireland"
-        url="https://swap-skills.com/about"
+        url="https://swap-skills.ie/about"
       />
       <OrganizationJsonLd />
       <PersonJsonLd 
         name="Kristina Carey"
         jobTitle="Founder"
         description="Founder of SwapSkills Ireland - building a community-driven platform for trading skills and services."
-        url="https://swap-skills.com/about"
+        url="https://swap-skills.ie/about"
       />
       <BreadcrumbJsonLd 
         items={[
-          { name: "Home", url: "https://swap-skills.com" },
-          { name: "About", url: "https://swap-skills.com/about" },
+          { name: "Home", url: "https://swap-skills.ie" },
+          { name: "About", url: "https://swap-skills.ie/about" },
         ]} 
       />
       <div className="min-h-screen flex flex-col">

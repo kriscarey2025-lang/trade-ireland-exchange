@@ -3,260 +3,260 @@
   <!-- Static Pages -->
   <url>
     <loc>https://swap-skills.ie/</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/browse</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/community</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/how-it-works</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/about</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/stories</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/press</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/faq</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/safety</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/contact</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/getting-started</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/advertise</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/auth</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/terms</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/privacy</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/cookies</loc>
-    <lastmod>2026-02-07</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <!-- Service Pages (27 active services) -->
   <url>
-    <loc>https://swap-skills.ie/service/7b4299fb-c6a1-4c86-b0b6-49888a996ca1</loc>
+    <loc>https://swap-skills.ie/services/7b4299fb-c6a1-4c86-b0b6-49888a996ca1</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/b8e6c51e-3f8d-4167-b577-5f2405cbcaa8</loc>
+    <loc>https://swap-skills.ie/services/b8e6c51e-3f8d-4167-b577-5f2405cbcaa8</loc>
     <lastmod>2026-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/d200333b-f7be-45e5-b1e5-430fe8250653</loc>
+    <loc>https://swap-skills.ie/services/d200333b-f7be-45e5-b1e5-430fe8250653</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/4884e91e-5816-440d-baf7-4a4d70d9f6af</loc>
+    <loc>https://swap-skills.ie/services/4884e91e-5816-440d-baf7-4a4d70d9f6af</loc>
     <lastmod>2026-02-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/b32c2edc-66ff-4aec-b81d-c55c3396e4ed</loc>
+    <loc>https://swap-skills.ie/services/b32c2edc-66ff-4aec-b81d-c55c3396e4ed</loc>
     <lastmod>2026-01-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/f85ac8c8-7934-4bd2-9330-8a299619555b</loc>
+    <loc>https://swap-skills.ie/services/f85ac8c8-7934-4bd2-9330-8a299619555b</loc>
     <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/81aaf1d9-b2ac-4d85-b438-107bb1364810</loc>
+    <loc>https://swap-skills.ie/services/81aaf1d9-b2ac-4d85-b438-107bb1364810</loc>
     <lastmod>2026-01-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/8c83abea-07bd-416a-9418-8e14018f0997</loc>
+    <loc>https://swap-skills.ie/services/8c83abea-07bd-416a-9418-8e14018f0997</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/a779b1bb-bef6-465e-ba41-caafac9d5397</loc>
+    <loc>https://swap-skills.ie/services/a779b1bb-bef6-465e-ba41-caafac9d5397</loc>
     <lastmod>2026-01-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/66ead3f3-2627-4c17-a2f6-35bae0d7525b</loc>
+    <loc>https://swap-skills.ie/services/66ead3f3-2627-4c17-a2f6-35bae0d7525b</loc>
     <lastmod>2026-01-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/c2325421-6dcf-4864-a1c4-e267c66b38ee</loc>
+    <loc>https://swap-skills.ie/services/c2325421-6dcf-4864-a1c4-e267c66b38ee</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/b6a02739-a5c6-4c7a-88cc-7b63dd95937d</loc>
+    <loc>https://swap-skills.ie/services/b6a02739-a5c6-4c7a-88cc-7b63dd95937d</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/5ac912f5-7ce5-4ae7-bd34-315dd3245526</loc>
+    <loc>https://swap-skills.ie/services/5ac912f5-7ce5-4ae7-bd34-315dd3245526</loc>
     <lastmod>2026-01-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/1d587143-ded2-46c1-afaf-b669e6fe8b80</loc>
+    <loc>https://swap-skills.ie/services/1d587143-ded2-46c1-afaf-b669e6fe8b80</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/607e5335-db66-465f-88b2-b73dc714b67c</loc>
+    <loc>https://swap-skills.ie/services/607e5335-db66-465f-88b2-b73dc714b67c</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/aebba916-5239-4a70-b2f8-40c9dd151157</loc>
+    <loc>https://swap-skills.ie/services/aebba916-5239-4a70-b2f8-40c9dd151157</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/9fe2997f-756b-44cf-af30-379756c36c81</loc>
+    <loc>https://swap-skills.ie/services/9fe2997f-756b-44cf-af30-379756c36c81</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/86bdc3bc-9b1c-4147-963b-9f02b6be537d</loc>
+    <loc>https://swap-skills.ie/services/86bdc3bc-9b1c-4147-963b-9f02b6be537d</loc>
     <lastmod>2026-01-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/80bdef2b-4e9f-4312-9303-388905ed0e2e</loc>
+    <loc>https://swap-skills.ie/services/80bdef2b-4e9f-4312-9303-388905ed0e2e</loc>
     <lastmod>2026-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/71d94eaa-2c72-4e07-89c0-b1aa5d3525da</loc>
+    <loc>https://swap-skills.ie/services/71d94eaa-2c72-4e07-89c0-b1aa5d3525da</loc>
     <lastmod>2026-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/4575e90c-335b-4594-ad3b-cecab0110c16</loc>
+    <loc>https://swap-skills.ie/services/4575e90c-335b-4594-ad3b-cecab0110c16</loc>
     <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/707b0e03-2f55-41d4-bd61-11ab0b2c6e2e</loc>
+    <loc>https://swap-skills.ie/services/707b0e03-2f55-41d4-bd61-11ab0b2c6e2e</loc>
     <lastmod>2026-01-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/c60299d8-ed46-4f2c-98a7-9c42790ac790</loc>
+    <loc>https://swap-skills.ie/services/c60299d8-ed46-4f2c-98a7-9c42790ac790</loc>
     <lastmod>2026-01-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/ce3eef35-40de-4a95-863b-31cb78073edf</loc>
+    <loc>https://swap-skills.ie/services/ce3eef35-40de-4a95-863b-31cb78073edf</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/8ab8a28d-3eb6-4416-ba40-812d4a307254</loc>
+    <loc>https://swap-skills.ie/services/8ab8a28d-3eb6-4416-ba40-812d4a307254</loc>
     <lastmod>2025-12-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/13f11359-8194-4246-9b6f-148dbc87e9fe</loc>
+    <loc>https://swap-skills.ie/services/13f11359-8194-4246-9b6f-148dbc87e9fe</loc>
     <lastmod>2025-12-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/service/fda50e8d-9afa-47e0-ad29-445fdcff1757</loc>
+    <loc>https://swap-skills.ie/services/fda50e8d-9afa-47e0-ad29-445fdcff1757</loc>
     <lastmod>2025-12-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

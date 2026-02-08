@@ -49,14 +49,14 @@ const howToSteps = steps.map(step => ({
 }));
 export default function HowItWorks() {
   return <>
-      <SEO title="How It Works" description="Learn how Swap Skills works - create your account, post services, browse listings, connect with neighbours, and start trading skills in Ireland." keywords="how swap skills works, skill exchange tutorial, barter services Ireland guide, trade skills step by step" url="https://swap-skills.com/how-it-works" />
+      <SEO title="How It Works" description="Learn how Swap Skills works - create your account, post services, browse listings, connect with neighbours, and start trading skills in Ireland." keywords="how swap skills works, skill exchange tutorial, barter services Ireland guide, trade skills step by step" url="https://swap-skills.ie/how-it-works" />
       <HowToJsonLd name="How to Swap Skills in Ireland" description="A step-by-step guide to trading skills and services with neighbours in Ireland using SwapSkills." steps={howToSteps} />
       <BreadcrumbJsonLd items={[{
       name: "Home",
-      url: "https://swap-skills.com"
+      url: "https://swap-skills.ie"
     }, {
       name: "How It Works",
-      url: "https://swap-skills.com/how-it-works"
+      url: "https://swap-skills.ie/how-it-works"
     }]} />
       <div className="min-h-screen flex flex-col">
         <Header />

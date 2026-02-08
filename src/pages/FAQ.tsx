@@ -58,13 +58,13 @@ export default function FAQ() {
         title="FAQ"
         description="Find answers to frequently asked questions about Swap Skills - how skill swapping works, safety tips, getting started, and more."
         keywords="swap skills FAQ, skill exchange questions, barter Ireland help, how to swap services"
-        url="https://swap-skills.com/faq"
+        url="https://swap-skills.ie/faq"
       />
       <FAQJsonLd faqs={faqs} />
       <BreadcrumbJsonLd 
         items={[
-          { name: "Home", url: "https://swap-skills.com" },
-          { name: "FAQ", url: "https://swap-skills.com/faq" },
+          { name: "Home", url: "https://swap-skills.ie" },
+          { name: "FAQ", url: "https://swap-skills.ie/faq" },
         ]} 
       />
       <div className="flex min-h-screen flex-col">

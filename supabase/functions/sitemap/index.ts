@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
         const lastmod = new Date(service.updated_at || service.created_at).toISOString().split('T')[0];
         // Services get priority 0.8 - they're important content
         xml += `  <url>
-    <loc>${baseUrl}/service/${service.id}</loc>
+    <loc>${baseUrl}/services/${service.id}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

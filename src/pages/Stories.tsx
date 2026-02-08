@@ -77,7 +77,7 @@ export default function Stories() {
       <SEO 
         title="Swap-Skill Stories | Founder's Story" 
         description="Discover how a home exchange experience in Spain inspired the creation of Swap-Skills - Ireland's community for trading skills without money."
-        url="https://swap-skills.com/stories"
+        url="https://swap-skills.ie/stories"
         image={founderStoryOgImage}
         keywords="skill swap, founder story, Ireland, community, skill exchange, home exchange"
       />
@@ -277,7 +277,7 @@ export default function Stories() {
                     </div>
                     <div className="flex items-center gap-3 ml-auto">
                       <SocialShareButtons 
-                        url="https://swap-skills.com/stories#jenny-3-swaps"
+                        url="https://swap-skills.ie/stories#jenny-3-swaps"
                         title="3 Skill Exchanges in 1 Month - Jenny's Swap-Skills Success Story"
                         description="How Jenny used her Reiki business to get a website, hair treatment, and facial while making real local connections."
                       />
@@ -471,7 +471,7 @@ export default function Stories() {
                       <span className="text-muted-foreground text-sm ml-2">Founder of Swap-Skills</span>
                     </div>
                     <SocialShareButtons 
-                      url="https://swap-skills.com/stories#founder-story"
+                      url="https://swap-skills.ie/stories#founder-story"
                       title="From Home Exchange to Skill Exchange - Why I Built Swap-Skills"
                       description="A home exchange experience that inspired the creation of Ireland's community for trading skills without money."
                     />
@@ -544,7 +544,7 @@ export default function Stories() {
                     </div>
                     <div className="flex items-center gap-3 ml-auto flex-wrap">
                       <SocialShareButtons 
-                        url="https://swap-skills.com/stories#jennifer-delia"
+                        url="https://swap-skills.ie/stories#jennifer-delia"
                         title="A Real Life Story from Carlow - Jennifer & Delia"
                         description="Two wellness professionals discovered the power of skill-trading and built a business partnership."
                       />

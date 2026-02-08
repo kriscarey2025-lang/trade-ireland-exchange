@@ -93,7 +93,7 @@ export default function Contact() {
         title="Contact Us"
         description="Get in touch with the Swap Skills team. We'd love to hear your questions, feedback, or ideas about skill swapping in Ireland."
         keywords="contact swap skills, skill exchange support, Ireland community help"
-        url="https://swap-skills.com/contact"
+        url="https://swap-skills.ie/contact"
       />
       <div className="flex min-h-screen flex-col">
         <Header />

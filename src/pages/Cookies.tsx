@@ -28,7 +28,7 @@ export default function Cookies() {
         title="Cookie Policy"
         description="Learn about the cookies used on Swap Skills - essential, functional, and analytics cookies that help improve your experience."
         keywords="swap skills cookies, cookie policy Ireland, website cookies"
-        url="https://swap-skills.com/cookies"
+        url="https://swap-skills.ie/cookies"
       />
       <div className="flex min-h-screen flex-col">
         <Header />
