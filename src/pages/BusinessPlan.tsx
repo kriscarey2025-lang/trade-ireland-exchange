@@ -40,7 +40,7 @@ export default function BusinessPlan() {
           </div>
           
           <div className="mt-8 text-gray-500 text-sm">
-            <p className="font-medium">swap-skills.com</p>
+            <p className="font-medium">swap-skills.ie</p>
             <p>hello@swap-skills.com</p>
             <p>085-8505597</p>
           </div>
@@ -850,7 +850,7 @@ export default function BusinessPlan() {
             <h3 className="text-2xl font-bold mb-2">Contact</h3>
             <p className="text-lg"><strong>Kristina Carey</strong> – Founder</p>
             <p className="text-lg">085-8505597</p>
-            <p className="text-lg text-primary">swap-skills.com</p>
+            <p className="text-lg text-primary">swap-skills.ie</p>
             <p className="text-lg">hello@swap-skills.com</p>
           </div>
         </section>

@@ -49,7 +49,7 @@ export default function Safety() {
         title="Safety Guidelines"
         description="Stay safe while swapping skills on Swap Skills. Learn our safety tips for meeting new people, exchanging services, and building trust in your community."
         keywords="swap skills safety, safe skill exchange, meeting strangers safely Ireland, community trading safety"
-        url="https://swap-skills.com/safety"
+        url="https://swap-skills.ie/safety"
       />
       <div className="flex min-h-screen flex-col">
         <Header />

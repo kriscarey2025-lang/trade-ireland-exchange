@@ -268,7 +268,7 @@ Terms Accepted: Yes
         title="For Business | Sponsorship & Advertising"
         description="Support Swap-Skills and get visibility for your local Irish business. Advertise to local users or become a sponsor to support the community."
         keywords="swap skills sponsorship, local business Ireland, community supporter, ethical advertising, advertise swap skills"
-        url="https://swap-skills.com/advertise"
+        url="https://swap-skills.ie/advertise"
       />
       <div className="flex min-h-screen flex-col">
         <Header />

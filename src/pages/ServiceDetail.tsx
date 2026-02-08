@@ -358,11 +358,11 @@ export default function ServiceDetail() {
 
   const isOwner = user?.id === service.user_id;
 
-  const serviceUrl = `https://swap-skills.com/services/${service.id}`;
+  const serviceUrl = `https://swap-skills.ie/services/${service.id}`;
   
   // Use actual service image if available, otherwise use default OG image
   // Note: Dynamic SVG OG images aren't supported by Facebook - they require PNG/JPG
-  const ogImage = service.images?.[0] || `https://swap-skills.com/og-image.png`;
+  const ogImage = service.images?.[0] || `https://swap-skills.ie/og-image.png`;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -390,8 +390,8 @@ export default function ServiceDetail() {
       />
       <BreadcrumbJsonLd
         items={[
-          { name: "Home", url: "https://swap-skills.com" },
-          { name: "Browse Services", url: "https://swap-skills.com/browse" },
+          { name: "Home", url: "https://swap-skills.ie" },
+          { name: "Browse Services", url: "https://swap-skills.ie/browse" },
           { name: service.title, url: serviceUrl },
         ]}
       />

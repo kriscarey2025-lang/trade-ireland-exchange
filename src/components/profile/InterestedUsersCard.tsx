@@ -240,7 +240,7 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
                       <p className="text-xs text-muted-foreground mb-1">They offer:</p>
                       <div className="flex flex-wrap gap-1">
                         {interest.user_services.slice(0, 3).map((service) => (
-                          <Link key={service.id} to={`/service/${service.id}`}>
+                          <Link key={service.id} to={`/services/${service.id}`}>
                             <Badge 
                               variant="outline" 
                               className="text-xs cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
@@ -272,7 +272,7 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
                       <MessageCircle className="h-4 w-4" />
                     )}
                   </Button>
-                  <Link to={`/service/${interest.service_id}`}>
+                  <Link to={`/services/${interest.service_id}`}>
                     <Button variant="ghost" size="icon" className="h-8 w-8">
                       <ExternalLink className="h-4 w-4" />
                     </Button>

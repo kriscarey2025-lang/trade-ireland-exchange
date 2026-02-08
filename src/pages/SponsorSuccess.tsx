@@ -87,7 +87,7 @@ export default function SponsorSuccess() {
       <SEO
         title="Thank You for Your Support!"
         description="Complete your sponsorship by choosing your display preferences."
-        url="https://swap-skills.com/sponsor-success"
+        url="https://swap-skills.ie/sponsor-success"
       />
       <div className="flex min-h-screen flex-col">
         <Header />

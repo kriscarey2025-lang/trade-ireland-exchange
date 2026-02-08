@@ -156,7 +156,7 @@ export function ServiceCard({
     }
   };
 
-  const shareUrl = `https://swap-skills.com/services/${service.id}`;
+  const shareUrl = `https://swap-skills.ie/services/${service.id}`;
   const shareText = `Check out "${service.title}" on SwapSkills - Trade skills, not money! 🔄`;
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedText = encodeURIComponent(shareText);

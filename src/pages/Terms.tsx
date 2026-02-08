@@ -9,7 +9,7 @@ export default function Terms() {
         title="Terms of Service"
         description="Read the Terms of Service for Swap Skills - Ireland's community platform for trading skills and services."
         keywords="swap skills terms, service agreement, skill exchange terms Ireland"
-        url="https://swap-skills.com/terms"
+        url="https://swap-skills.ie/terms"
       />
       <div className="flex min-h-screen flex-col">
         <Header />

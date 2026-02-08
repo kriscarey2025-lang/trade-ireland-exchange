@@ -41,6 +41,6 @@ Allow: /terms
 Allow: /privacy
 Allow: /cookies
 Allow: /auth
-Allow: /service/*
+Allow: /services/*
 Allow: /stories
 Allow: /community

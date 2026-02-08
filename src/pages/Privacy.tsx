@@ -9,7 +9,7 @@ export default function Privacy() {
         title="Privacy Policy"
         description="Learn how Swap Skills protects your privacy and handles your personal data under GDPR and Irish data protection law."
         keywords="swap skills privacy, data protection Ireland, GDPR compliance, skill exchange privacy policy"
-        url="https://swap-skills.com/privacy"
+        url="https://swap-skills.ie/privacy"
       />
       <div className="flex min-h-screen flex-col">
         <Header />

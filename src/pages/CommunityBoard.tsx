@@ -16,7 +16,7 @@ export default function CommunityBoard() {
       <SEO
         title="Community Board"
         description="Your local community noticeboard. Share events, lost & found, free items, and local news with your neighbours."
-        url="https://swap-skills.com/community"
+        url="https://swap-skills.ie/community"
       />
       <div className="min-h-screen flex flex-col">
         <Header />

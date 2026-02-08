@@ -81,8 +81,8 @@ export async function generateSitemap(): Promise<string> {
 `;
     for (const service of services) {
       const lastmod = new Date(service.updated_at || service.created_at).toISOString().split('T')[0];
-      xml += `  <url>
-    <loc>${BASE_URL}/service/${service.id}</loc>
+    xml += `  <url>
+    <loc>${BASE_URL}/services/${service.id}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
