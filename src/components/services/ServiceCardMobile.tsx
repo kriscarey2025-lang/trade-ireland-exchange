@@ -156,74 +156,57 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
         to={`/services/${service.id}`} 
         className="block active:scale-[0.98] transition-transform"
       >
-        {/* Image or Compact Icon Area */}
-        {hasImage ? (
-          <div 
-            className={cn(
-              "relative aspect-[16/10] overflow-hidden bg-muted",
-              service.isTimeSensitive && "ring-2 ring-warning ring-inset"
-            )}
-          >
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-muted animate-pulse" aria-hidden="true" />
-            )}
-            <img 
-              src={service.images![0]} 
-              alt={`${service.title} - ${categoryLabels[service.category]} service in ${service.location}`}
-              width={400}
-              height={250}
-              className={cn(
-                "w-full h-full object-cover transition-opacity duration-200",
-                imageLoaded ? "opacity-100" : "opacity-0"
-              )}
-              loading="lazy"
-              decoding="async"
-              onLoad={() => setImageLoaded(true)}
-            />
-            
-            {/* Time Sensitive Badge */}
+        {/* Compact header with badges */}
+        <div className={cn(
+          "flex items-center gap-3 px-3 py-2.5 border-b border-border",
+          !hasImage && "bg-gradient-to-r from-primary/5 to-primary/10",
+          service.isTimeSensitive && "ring-2 ring-warning ring-inset"
+        )}>
+          <span className="text-2xl" aria-hidden="true">{categoryIcons[service.category]}</span>
+          <div className="flex-1 min-w-0">
+            <span className="text-xs font-medium text-muted-foreground">{categoryLabels[service.category]}</span>
+          </div>
+          <div className="flex items-center gap-2">
             {service.isTimeSensitive && (
-              <div className="absolute top-2 left-2 bg-warning text-warning-foreground px-2 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
-                <Zap className="h-3 w-3" />
+              <span className="bg-warning text-warning-foreground px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5">
+                <Zap className="h-2.5 w-2.5" />
                 {neededByLabel}
-              </div>
-            )}
-            
-            {/* Post Type Badge */}
-            <div className="absolute top-2 right-2 bg-background/90 backdrop-blur-sm px-2 py-0.5 rounded text-xs font-medium">
-              {postType.emoji} {postType.label}
-            </div>
-          </div>
-        ) : (
-          /* Compact header for no-image posts */
-          <div className={cn(
-            "flex items-center gap-3 px-3 py-2.5 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border",
-            service.isTimeSensitive && "ring-2 ring-warning ring-inset"
-          )}>
-            <span className="text-2xl" aria-hidden="true">{categoryIcons[service.category]}</span>
-            <div className="flex-1 min-w-0">
-              <span className="text-xs font-medium text-muted-foreground">{categoryLabels[service.category]}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {service.isTimeSensitive && (
-                <span className="bg-warning text-warning-foreground px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5">
-                  <Zap className="h-2.5 w-2.5" />
-                  {neededByLabel}
-                </span>
-              )}
-              <span className="bg-background/80 px-1.5 py-0.5 rounded text-[10px] font-medium">
-                {postType.emoji} {postType.label}
               </span>
-            </div>
+            )}
+            <span className="bg-background/80 px-1.5 py-0.5 rounded text-[10px] font-medium">
+              {postType.emoji} {postType.label}
+            </span>
           </div>
-        )}
+        </div>
         
         {/* Content */}
         <div className="p-3 space-y-2.5">
-          {/* Title */}
+          {/* Title - always first */}
           <h3 className="font-semibold text-base line-clamp-2 leading-snug">
             {service.title}
           </h3>
+
+          {/* Image - after title */}
+          {hasImage && (
+            <div className="relative aspect-[16/10] overflow-hidden bg-muted rounded-lg">
+              {!imageLoaded && (
+                <div className="absolute inset-0 bg-muted animate-pulse" aria-hidden="true" />
+              )}
+              <img 
+                src={service.images![0]} 
+                alt={`${service.title} - ${categoryLabels[service.category]} service in ${service.location}`}
+                width={400}
+                height={250}
+                className={cn(
+                  "w-full h-full object-cover transition-opacity duration-200",
+                  imageLoaded ? "opacity-100" : "opacity-0"
+                )}
+                loading="lazy"
+                decoding="async"
+                onLoad={() => setImageLoaded(true)}
+              />
+            </div>
+          )}
           
           {/* Description - show for no-image posts */}
           {!hasImage && service.description && (
