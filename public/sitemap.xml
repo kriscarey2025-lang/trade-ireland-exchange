@@ -3,7 +3,7 @@
   <!-- Static Pages -->
   <url>
     <loc>https://swap-skills.ie/</loc>
-    <lastmod>2026-02-08</lastmod>
+    <lastmod>2026-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -98,7 +98,13 @@
     <priority>0.3</priority>
   </url>
 
-  <!-- Service Pages (27 active services) -->
+  <!-- Service Pages (28 active services) -->
+  <url>
+    <loc>https://swap-skills.ie/services/8335732b-3aad-4921-8dc5-438bbae60bc5</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://swap-skills.ie/services/7b4299fb-c6a1-4c86-b0b6-49888a996ca1</loc>
     <lastmod>2026-02-07</lastmod>
