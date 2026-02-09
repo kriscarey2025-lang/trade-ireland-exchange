@@ -219,8 +219,8 @@ export function OnboardingQuestionnaire() {
       .update({ onboarding_completed: true })
       .eq("user_id", user.id);
     
-    toast.success("You're all set! Let's create your first post.");
-    navigate("/getting-started");
+    toast.success("You're all set! Welcome to SwapSkills!");
+    navigate("/welcome");
   };
 
   const handleSkip = async () => {
@@ -487,7 +487,7 @@ export function OnboardingQuestionnaire() {
                   {allCategories.filter(c => c !== "other").map((category) => (
                     <div
                       key={category}
-                      className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-all ${
+                      className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-all overflow-hidden ${
                         skillsOffered.includes(category)
                           ? "bg-primary/10 border-primary"
                           : "bg-background border-border hover:border-primary/50"
@@ -498,7 +498,7 @@ export function OnboardingQuestionnaire() {
                         checked={skillsOffered.includes(category)}
                         className="pointer-events-none"
                       />
-                      <span className="text-sm">
+                      <span className="text-sm truncate">
                         {categoryIcons[category]} {categoryLabels[category]}
                       </span>
                     </div>
@@ -561,7 +561,7 @@ export function OnboardingQuestionnaire() {
                   {allCategories.filter(c => c !== "other").map((category) => (
                     <div
                       key={category}
-                      className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-all ${
+                      className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-all overflow-hidden ${
                         skillsWanted.includes(category)
                           ? "bg-accent/20 border-accent"
                           : "bg-background border-border hover:border-accent/50"
@@ -572,7 +572,7 @@ export function OnboardingQuestionnaire() {
                         checked={skillsWanted.includes(category)}
                         className="pointer-events-none"
                       />
-                      <span className="text-sm">
+                      <span className="text-sm truncate">
                         {categoryIcons[category]} {categoryLabels[category]}
                       </span>
                     </div>
