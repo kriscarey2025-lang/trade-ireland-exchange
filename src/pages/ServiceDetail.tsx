@@ -406,7 +406,7 @@ export default function ServiceDetail() {
       )}
       <Header />
       <main className="flex-1 bg-secondary/20">
-        <div className="container py-8">
+        <article className="container py-8" itemScope itemType="https://schema.org/Service">
           {/* Back Button */}
           <Button
             variant="ghost"
@@ -445,21 +445,42 @@ export default function ServiceDetail() {
                     )}
                   </div>
 
-                  <h1 className="text-2xl md:text-3xl font-bold mb-4">
+                  <h1 className="text-2xl md:text-3xl font-bold mb-4" itemProp="name">
                     {service.title}
                   </h1>
+
+                  {/* Crawlable summary line for SEO */}
+                  <p className="text-base text-foreground/80 mb-4">
+                    {service.type === "request" ? "Seeking" : "Offering"}{" "}
+                    <strong itemProp="category">{categoryLabels[service.category as ServiceCategory]}</strong>
+                    {service.location && (
+                      <> in <span itemProp="areaServed">{service.location}</span></>
+                    )}
+                    {" — "}
+                    {service.status === "active" ? "Currently available" : "No longer available"}
+                    {service.price ? ` · ${formatPrice(service.price, service.price_type)}` : " · Free / Skill swap"}
+                  </p>
 
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                     {service.location && (
                       <div className="flex items-center gap-1.5">
                         <MapPin className="h-4 w-4" />
-                        {service.location}
+                        <span>{service.location}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-1.5">
                       <Calendar className="h-4 w-4" />
-                      Posted {formatDate(service.created_at)}
+                      <time dateTime={service.created_at}>Posted {formatDate(service.created_at)}</time>
                     </div>
+                    {service.price !== null && service.price !== undefined && (
+                      <div className="flex items-center gap-1.5">
+                        <Coins className="h-4 w-4" />
+                        <span itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                          <meta itemProp="priceCurrency" content="EUR" />
+                          <span itemProp="price">{formatPrice(service.price, service.price_type)}</span>
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -491,9 +512,28 @@ export default function ServiceDetail() {
               <Card className="shadow-elevated border-border/50">
                 <CardContent className="p-6">
                   <h2 className="text-lg font-semibold mb-4">Description</h2>
-                  <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                  <div itemProp="description" className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
                     {service.description || "No description provided."}
-                  </p>
+                  </div>
+
+                  {/* Tags for crawlability */}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="text-xs text-muted-foreground/70 font-medium">Tags:</span>
+                    <span className="text-xs bg-secondary px-2 py-0.5 rounded-full text-muted-foreground">
+                      {categoryLabels[service.category as ServiceCategory]}
+                    </span>
+                    <span className="text-xs bg-secondary px-2 py-0.5 rounded-full text-muted-foreground">
+                      {service.type === "request" ? "Seeking" : "Offering"}
+                    </span>
+                    {service.location && (
+                      <span className="text-xs bg-secondary px-2 py-0.5 rounded-full text-muted-foreground">
+                        {service.location}
+                      </span>
+                    )}
+                    <span className="text-xs bg-secondary px-2 py-0.5 rounded-full text-muted-foreground">
+                      Skill Swap Ireland
+                    </span>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -663,11 +703,14 @@ export default function ServiceDetail() {
                     </>
                   ) : (
                     <div className="text-center py-4">
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Sign in to see provider details
+                      <p className="text-base font-medium text-foreground mb-2">
+                        Interested in this {service.type === "request" ? "request" : "service"}?
                       </p>
-                      <Button variant="outline" size="sm" onClick={() => navigate('/auth')}>
-                        Sign In
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Sign in to see provider details, send a message, or request a swap.
+                      </p>
+                      <Button variant="hero" size="sm" onClick={() => navigate('/auth')}>
+                        Sign In to {service.type === "request" ? "Offer a Trade" : "Request a Swap"}
                       </Button>
                     </div>
                   )}
@@ -821,7 +864,7 @@ export default function ServiceDetail() {
               )}
             </div>
           </div>
-        </div>
+        </article>
       </main>
       <Footer />
 
