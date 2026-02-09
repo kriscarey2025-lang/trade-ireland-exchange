@@ -219,28 +219,8 @@ export function ServiceCard({
             </span>
           </div>
         )}
-        {/* Service Image - fixed aspect ratio prevents CLS */}
-        <div 
-          className={cn(
-            "relative w-full overflow-hidden bg-muted",
-            hasImage ? "aspect-[16/10] sm:aspect-[16/9]" : "hidden"
-          )}
-          style={{ contentVisibility: 'auto', containIntrinsicSize: '0 200px' }}
-        >
-          {hasImage && (
-            <img 
-              src={service.images![0]} 
-              alt={`${service.title} - ${categoryLabels[service.category]} service in ${service.location}`}
-              width={400}
-              height={225}
-              className="w-full h-full object-cover object-center"
-              loading="lazy"
-              decoding="async"
-            />
-          )}
-        </div>
-        <CardContent className={cn("p-4 sm:p-5 flex-1 flex flex-col", hasImage && "pt-3 sm:pt-4")}>
-          {/* Header */}
+        <CardContent className="p-4 sm:p-5 flex-1 flex flex-col">
+          {/* Header Badges */}
           <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
             <Badge variant={postTypeBadge.variant} className={cn("shrink-0 rounded-lg text-xs", postTypeBadge.className)}>
               {postTypeBadge.label}
@@ -251,10 +231,28 @@ export function ServiceCard({
             </div>
           </div>
 
-          {/* Title */}
+          {/* Title - always first */}
           <h3 className="font-display font-semibold text-base sm:text-lg mb-2 line-clamp-2">
             {service.title}
           </h3>
+
+          {/* Service Image - after title */}
+          {hasImage && (
+            <div 
+              className="relative w-full overflow-hidden bg-muted rounded-lg mb-3 aspect-[16/10] sm:aspect-[16/9]"
+              style={{ contentVisibility: 'auto', containIntrinsicSize: '0 200px' }}
+            >
+              <img 
+                src={service.images![0]} 
+                alt={`${service.title} - ${categoryLabels[service.category]} service in ${service.location}`}
+                width={400}
+                height={225}
+                className="w-full h-full object-cover object-center"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          )}
 
           {/* Description - only show when no image */}
           {!hasImage && service.description && (
