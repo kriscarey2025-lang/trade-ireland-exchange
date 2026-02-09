@@ -28,7 +28,7 @@ interface DiscoveryStepProps {
 }
 
 const ITEMS_PER_PAGE = 6;
-const MAX_PAGES = 2;
+const MAX_PAGES = 1;
 
 export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) {
   const { user } = useAuth();
