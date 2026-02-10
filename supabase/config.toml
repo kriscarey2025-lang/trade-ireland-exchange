@@ -89,6 +89,3 @@ verify_jwt = false
 
 [functions.send-trustpilot-invite]
 verify_jwt = false
-
-[functions.send-trustpilot-invite-bulk]
-verify_jwt = false
