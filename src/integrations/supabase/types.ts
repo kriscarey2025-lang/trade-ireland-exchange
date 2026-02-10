@@ -1020,6 +1020,27 @@ export type Database = {
         }
         Relationships: []
       }
+      trustpilot_invites_sent: {
+        Row: {
+          email: string
+          id: string
+          sent_at: string
+          user_id: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          sent_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          sent_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_engagement: {
         Row: {
           created_at: string
