@@ -92,6 +92,20 @@ function HeroSectionComponent() {
                 </Button>
               </div>
 
+              {/* Trustpilot Review Box */}
+              <div className="flex justify-center md:justify-start mb-2 md:mb-4 animate-fade-up" style={{ animationDelay: "0.27s" }}>
+                <div 
+                  className="trustpilot-widget" 
+                  data-locale="en-IE" 
+                  data-template-id="56278e9abfbbba0bdcd568bc" 
+                  data-businessunit-id="67a9d98b55346c6e73e3f5f3" 
+                  data-style-height="52px" 
+                  data-style-width="100%"
+                >
+                  <a href="https://www.trustpilot.com/review/swap-skills.ie" target="_blank" rel="noopener noreferrer">Trustpilot</a>
+                </div>
+              </div>
+
               {/* Speed promise badge - hidden on mobile */}
               <div className="hidden md:flex items-center justify-center md:justify-start gap-2 text-xs text-muted-foreground animate-fade-up" style={{ animationDelay: "0.3s" }}>
                 <Clock className="h-3.5 w-3.5 text-primary" />
