@@ -86,3 +86,6 @@ verify_jwt = false
 
 [functions.send-listing-enhancement-email]
 verify_jwt = false
+
+[functions.send-trustpilot-invite]
+verify_jwt = false
