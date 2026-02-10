@@ -96,13 +96,14 @@ function HeroSectionComponent() {
               <div className="flex justify-center md:justify-start mb-2 md:mb-4 animate-fade-up" style={{ animationDelay: "0.27s" }}>
                 <div 
                   className="trustpilot-widget" 
-                  data-locale="en-IE" 
+                  data-locale="en-US" 
                   data-template-id="56278e9abfbbba0bdcd568bc" 
-                  data-businessunit-id="67a9d98b55346c6e73e3f5f3" 
+                  data-businessunit-id="698afcf7c5b7f0ff5cd43437" 
                   data-style-height="52px" 
                   data-style-width="100%"
+                  data-token="bb0aa621-6b7c-4584-a3ea-216a9ba2397e"
                 >
-                  <a href="https://www.trustpilot.com/review/swap-skills.ie" target="_blank" rel="noopener noreferrer">Trustpilot</a>
+                  <a href="https://www.trustpilot.com/review/swap-skills.com" target="_blank" rel="noopener">Trustpilot</a>
                 </div>
               </div>
 
