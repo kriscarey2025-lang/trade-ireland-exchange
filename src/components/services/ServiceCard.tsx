@@ -210,26 +210,29 @@ export function ServiceCard({
           : "border-primary/30",
         className
       )}>
-        {/* Time Sensitive Banner */}
-        {service.isTimeSensitive && (
-          <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 flex items-center justify-center gap-2">
-            <Zap className="h-4 w-4" />
-            <span className="text-sm font-semibold">
-              {neededByLabel === "ASAP" ? "Needed ASAP!" : `Needed by ${neededByLabel}`}
-            </span>
+        {/* Post Type Banner */}
+        <div className={cn(
+          "flex items-center justify-between px-4 py-2.5",
+          service.type === "skill_swap" && "bg-primary text-primary-foreground",
+          service.type === "free_offer" && "bg-green-600 text-white dark:bg-green-700",
+          service.type === "help_request" && "bg-amber-500 text-white dark:bg-amber-600",
+        )}>
+          <span className="text-sm font-semibold flex items-center gap-2">
+            {service.type === "skill_swap" && "🔄 Skill Swap"}
+            {service.type === "free_offer" && "🎁 Free Offer"}
+            {service.type === "help_request" && "🙋 Looking for Help"}
+          </span>
+          <div className="flex items-center gap-2">
+            {service.isTimeSensitive && (
+              <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
+                <Zap className="h-3 w-3" />
+                {neededByLabel}
+              </span>
+            )}
+            <span className="text-xl" title={categoryLabels[service.category]}>{categoryIcons[service.category]}</span>
           </div>
-        )}
+        </div>
         <CardContent className="p-4 sm:p-5 flex-1 flex flex-col">
-          {/* Header Badges */}
-          <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <Badge variant={postTypeBadge.variant} className={cn("shrink-0 rounded-lg text-xs", postTypeBadge.className)}>
-              {postTypeBadge.label}
-            </Badge>
-            <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-muted text-xs text-muted-foreground font-medium">
-              <span>{categoryIcons[service.category]}</span>
-              <span className="hidden sm:inline">{categoryLabels[service.category]}</span>
-            </div>
-          </div>
 
           {/* Title - always first */}
           <h3 className="font-display font-semibold text-base sm:text-lg mb-2 line-clamp-2">

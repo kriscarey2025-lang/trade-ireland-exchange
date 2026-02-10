@@ -156,26 +156,24 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
         to={`/services/${service.id}`} 
         className="block active:scale-[0.98] transition-transform"
       >
-        {/* Compact header with badges */}
+        {/* Post Type Banner */}
         <div className={cn(
-          "flex items-center gap-3 px-3 py-2.5 border-b border-border",
-          !hasImage && "bg-gradient-to-r from-primary/5 to-primary/10",
-          service.isTimeSensitive && "ring-2 ring-warning ring-inset"
+          "flex items-center justify-between px-3 py-2",
+          service.type === "skill_swap" && "bg-primary text-primary-foreground",
+          service.type === "free_offer" && "bg-green-600 text-white dark:bg-green-700",
+          service.type === "help_request" && "bg-amber-500 text-white dark:bg-amber-600",
         )}>
-          <span className="text-2xl" aria-hidden="true">{categoryIcons[service.category]}</span>
-          <div className="flex-1 min-w-0">
-            <span className="text-xs font-medium text-muted-foreground">{categoryLabels[service.category]}</span>
-          </div>
+          <span className="text-sm font-semibold flex items-center gap-1.5">
+            {postType.emoji} {postType.label}
+          </span>
           <div className="flex items-center gap-2">
             {service.isTimeSensitive && (
-              <span className="bg-warning text-warning-foreground px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5">
+              <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5">
                 <Zap className="h-2.5 w-2.5" />
                 {neededByLabel}
               </span>
             )}
-            <span className="bg-background/80 px-1.5 py-0.5 rounded text-[10px] font-medium">
-              {postType.emoji} {postType.label}
-            </span>
+            <span className="text-lg" title={categoryLabels[service.category]}>{categoryIcons[service.category]}</span>
           </div>
         </div>
         
