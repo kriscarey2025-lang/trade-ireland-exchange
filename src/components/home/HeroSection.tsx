@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Coffee, Sparkles, Lightbulb, Clock, Zap } from "lucide-react";
@@ -13,6 +13,17 @@ function HeroSectionComponent() {
   const [brainstormOpen, setBrainstormOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
+  const trustpilotRef = useRef<HTMLDivElement>(null);
+
+  // Manually load Trustpilot widget after React renders the element
+  useEffect(() => {
+    const el = trustpilotRef.current;
+    if (!el) return;
+    const w = window as any;
+    if (w.Trustpilot) {
+      w.Trustpilot.loadFromElement(el, true);
+    }
+  }, []);
   
   // Reduce animations on mobile for better performance
   const shouldAnimate = !prefersReducedMotion && !isMobile;
@@ -95,6 +106,7 @@ function HeroSectionComponent() {
               {/* Trustpilot Review Box */}
               <div className="flex justify-center md:justify-start mb-2 md:mb-4 animate-fade-up" style={{ animationDelay: "0.27s" }}>
                 <div 
+                  ref={trustpilotRef}
                   className="trustpilot-widget" 
                   data-locale="en-US" 
                   data-template-id="56278e9abfbbba0bdcd568bc" 
