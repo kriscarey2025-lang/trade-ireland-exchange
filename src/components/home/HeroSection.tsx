@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Coffee, Sparkles, Lightbulb, Clock, Zap } from "lucide-react";
+import { ArrowRight, Coffee, Sparkles, Lightbulb, Clock, Zap } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -53,9 +53,17 @@ function HeroSectionComponent() {
             {/* Left column - Headlines and CTAs */}
             <div className="text-center md:text-left">
               {/* Friendly welcome badge - hidden on mobile */}
-              <div className="hidden md:inline-flex items-center gap-1 md:gap-2 px-2.5 md:px-5 py-1 md:py-2.5 rounded-full bg-accent/10 text-accent text-[10px] md:text-sm font-semibold mb-2 md:mb-6 animate-fade-up border border-accent/20">
-                <Heart className="h-2.5 w-2.5 md:h-4 md:w-4" />
-                Welcome to our wee corner of the internet 🍀
+              <div className="hidden md:flex items-center gap-2 mb-2 md:mb-6 animate-fade-up">
+                <a href="https://www.buymeacoffee.com/swapskills" target="_blank" rel="noopener noreferrer">
+                  <img 
+                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" 
+                    alt="Support Swap Skills on Buy Me a Coffee"
+                    height="36"
+                    width="217"
+                    className="h-9"
+                    loading="lazy"
+                  />
+                </a>
               </div>
 
               {/* Warm, inviting headline - more compact on mobile */}
@@ -119,22 +127,8 @@ function HeroSectionComponent() {
                 </div>
               </div>
 
-              {/* Buy Me a Coffee */}
-              <div className="flex justify-center md:justify-start mb-2 md:mb-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
-                <a href="https://www.buymeacoffee.com/swapskills" target="_blank" rel="noopener noreferrer">
-                  <img 
-                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" 
-                    alt="Support Swap Skills on Buy Me a Coffee"
-                    height="40"
-                    width="217"
-                    className="h-9 md:h-10"
-                    loading="lazy"
-                  />
-                </a>
-              </div>
-
               {/* Speed promise badge - hidden on mobile */}
-              <div className="hidden md:flex items-center justify-center md:justify-start gap-2 text-xs text-muted-foreground animate-fade-up" style={{ animationDelay: "0.33s" }}>
+              <div className="hidden md:flex items-center justify-center md:justify-start gap-2 text-xs text-muted-foreground animate-fade-up" style={{ animationDelay: "0.3s" }}>
                 <Clock className="h-3.5 w-3.5 text-primary" />
                 <span>No forms. No fees. Just share what you can do.</span>
               </div>
