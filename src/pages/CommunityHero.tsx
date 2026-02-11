@@ -68,7 +68,7 @@ export default function CommunityHero() {
               </div>
               <CardTitle className="text-2xl">Thank You! 🎉</CardTitle>
               <CardDescription className="text-base">
-                Your nomination for the 2026 Community Hero Award has been submitted. The winner will be featured in a dedicated article on our website and announced at the end of March 2026.
+                Your nomination for the 2026 Community Hero Award has been submitted. The winner will be featured in a dedicated article on our website and announced on the 31st of March 2026. We will contact you if your submission makes it into the final selection to gather the consent to publish.
               </CardDescription>
             </CardHeader>
             <CardContent>
