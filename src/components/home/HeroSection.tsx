@@ -24,23 +24,23 @@ function HeroSectionComponent() {
       w.Trustpilot.loadFromElement(el, true);
     }
   }, []);
-  
+
   // Reduce animations on mobile for better performance
   const shouldAnimate = !prefersReducedMotion && !isMobile;
-  
+
   return (
     <section className="relative overflow-hidden min-h-[40vh] md:min-h-[80vh] flex items-center pt-1 md:pt-0 contain-layout">
       {/* Warm animated background blobs - only animate on desktop */}
       <div className="absolute inset-0 overflow-hidden">
         <div className={`absolute -top-20 -right-20 md:-top-40 md:-right-40 w-48 h-48 md:w-96 md:h-96 bg-primary/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`} />
-        <div 
-          className={`absolute top-1/2 -left-20 md:-left-40 w-40 h-40 md:w-80 md:h-80 bg-accent/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`} 
-          style={shouldAnimate ? { animationDelay: "3s" } : undefined} 
-        />
-        <div 
-          className={`absolute -bottom-10 right-1/4 w-36 h-36 md:w-72 md:h-72 bg-highlight/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`} 
-          style={shouldAnimate ? { animationDelay: "6s" } : undefined} 
-        />
+        <div
+          className={`absolute top-1/2 -left-20 md:-left-40 w-40 h-40 md:w-80 md:h-80 bg-accent/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`}
+          style={shouldAnimate ? { animationDelay: "3s" } : undefined} />
+
+        <div
+          className={`absolute -bottom-10 right-1/4 w-36 h-36 md:w-72 md:h-72 bg-highlight/15 rounded-full blur-3xl ${shouldAnimate ? 'animate-blob' : ''}`}
+          style={shouldAnimate ? { animationDelay: "6s" } : undefined} />
+
       </div>
 
       {/* Subtle pattern overlay */}
@@ -55,14 +55,14 @@ function HeroSectionComponent() {
               {/* Friendly welcome badge - hidden on mobile */}
               <div className="hidden md:flex items-center gap-2 mb-2 md:mb-6 animate-fade-up">
                 <a href="https://www.buymeacoffee.com/swapskills" target="_blank" rel="noopener noreferrer">
-                  <img 
-                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" 
+                  <img
+                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00"
                     alt="Support Swap Skills on Buy Me a Coffee"
                     height="36"
                     width="217"
                     className="h-9"
-                    loading="lazy"
-                  />
+                    loading="lazy" />
+
                 </a>
               </div>
 
@@ -76,8 +76,8 @@ function HeroSectionComponent() {
               {/* Tagline - hidden on mobile */}
               <p className="hidden md:block text-xs md:text-lg font-medium text-foreground mb-0.5 md:mb-3 animate-fade-up" style={{
                 animationDelay: "0.15s"
-              }}>
-                A free, local platform for exchanging skills — no money involved.
+              }}>trevor approved
+
               </p>
 
               {/* Ireland tagline */}
@@ -98,14 +98,14 @@ function HeroSectionComponent() {
                     <ArrowRight className="ml-1 h-3 w-3 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="default" 
+                <Button
+                  variant="outline"
+                  size="default"
                   className="rounded-full px-4 md:px-8 text-[11px] md:text-base h-9 md:h-12"
                   onClick={() => {
                     document.getElementById('services-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
+                  }}>
+
                   Browse
                   <Coffee className="ml-1 h-3 w-3 md:h-4 md:w-4" />
                 </Button>
@@ -113,16 +113,16 @@ function HeroSectionComponent() {
 
               {/* Trustpilot Review Box */}
               <div className="flex justify-center md:justify-start mb-2 md:mb-4 animate-fade-up" style={{ animationDelay: "0.27s" }}>
-                <div 
+                <div
                   ref={trustpilotRef}
-                  className="trustpilot-widget" 
-                  data-locale="en-US" 
-                  data-template-id="56278e9abfbbba0bdcd568bc" 
-                  data-businessunit-id="698afcf7c5b7f0ff5cd43437" 
-                  data-style-height="52px" 
+                  className="trustpilot-widget"
+                  data-locale="en-US"
+                  data-template-id="56278e9abfbbba0bdcd568bc"
+                  data-businessunit-id="698afcf7c5b7f0ff5cd43437"
+                  data-style-height="52px"
                   data-style-width="100%"
-                  data-token="bb0aa621-6b7c-4584-a3ea-216a9ba2397e"
-                >
+                  data-token="bb0aa621-6b7c-4584-a3ea-216a9ba2397e">
+
                   <a href="https://www.trustpilot.com/review/swap-skills.com" target="_blank" rel="noopener">Trustpilot</a>
                 </div>
               </div>
@@ -161,14 +161,14 @@ function HeroSectionComponent() {
               {/* Buy Me a Coffee - mobile only */}
               <div className="flex md:hidden justify-center mt-2 animate-fade-up" style={{ animationDelay: "0.3s" }}>
                 <a href="https://www.buymeacoffee.com/swapskills" target="_blank" rel="noopener noreferrer">
-                  <img 
-                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" 
+                  <img
+                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00"
                     alt="Support Swap Skills on Buy Me a Coffee"
                     height="36"
                     width="217"
                     className="h-8"
-                    loading="lazy"
-                  />
+                    loading="lazy" />
+
                 </a>
               </div>
               
@@ -194,8 +194,8 @@ function HeroSectionComponent() {
         </div>
       </div>
       <BrainstormDialog open={brainstormOpen} onOpenChange={setBrainstormOpen} />
-    </section>
-  );
+    </section>);
+
 }
 
 export const HeroSection = memo(HeroSectionComponent);
