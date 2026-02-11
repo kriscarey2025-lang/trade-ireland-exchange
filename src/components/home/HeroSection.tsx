@@ -157,6 +157,20 @@ function HeroSectionComponent() {
             {/* Right column - Supply & Demand Dashboard */}
             <div className="animate-fade-up" style={{ animationDelay: "0.2s" }}>
               <SupplyDemandDashboard />
+
+              {/* Buy Me a Coffee - mobile only */}
+              <div className="flex md:hidden justify-center mt-2 animate-fade-up" style={{ animationDelay: "0.3s" }}>
+                <a href="https://www.buymeacoffee.com/swapskills" target="_blank" rel="noopener noreferrer">
+                  <img 
+                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" 
+                    alt="Support Swap Skills on Buy Me a Coffee"
+                    height="36"
+                    width="217"
+                    className="h-8"
+                    loading="lazy"
+                  />
+                </a>
+              </div>
               
               {/* Quick social proof - hidden on mobile */}
               <div className="hidden md:flex mt-4 items-center justify-center gap-4 text-xs text-muted-foreground">
