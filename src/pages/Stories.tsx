@@ -5,12 +5,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SocialShareButtons } from "@/components/shared/SocialShareButtons";
-import { BookOpen, MessageCircle, ExternalLink, Home, Heart, Users, Sparkles, ChevronRight } from "lucide-react";
+import { BookOpen, MessageCircle, ExternalLink, Home, Heart, Users, Sparkles, ChevronRight, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import jenniferDeliaImage from "@/assets/jennifer-delia-carlow-edited.png";
 
 // Story index for navigation
 const stories = [
+  {
+    id: "community-hero-2026",
+    title: "Community Hero Award 2026",
+    subtitle: "Nominate Your Hero",
+    author: "Swap Skills",
+    badge: "Award",
+    badgeColor: "bg-amber-500",
+    preview: "Know someone who goes above and beyond? Nominate them for the 2026 Community Hero Award!"
+  },
   {
     id: "jenny-3-swaps",
     title: "3 Skill Exchanges in 1 Month",
@@ -133,6 +142,48 @@ export default function Stories() {
                 </button>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Community Hero Award 2026 Section */}
+        <section id="community-hero-2026" className="py-10 md:py-12 scroll-mt-20">
+          <div className="container max-w-4xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Badge variant="default" className="bg-amber-500 text-white">
+                Award
+              </Badge>
+              <span className="text-sm text-muted-foreground">Nominations open until mid-March 2026</span>
+            </div>
+
+            <Card className="overflow-hidden border-border">
+              <CardContent className="p-0">
+                <div className="relative bg-gradient-to-br from-amber-500/20 via-primary/10 to-accent/20 p-6 md:p-10 text-center">
+                  <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-4">
+                    <Award className="h-8 w-8 text-white" />
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-3">
+                    Swap Skills Community Hero Award 2026
+                  </h2>
+                  <p className="text-muted-foreground max-w-xl mx-auto mb-2">
+                    Do you know someone who goes above and beyond for their community? Someone who selflessly helps others, brings people together, or makes a real difference?
+                  </p>
+                  <p className="text-foreground font-medium max-w-xl mx-auto mb-6">
+                    Nominate them for the <strong>2026 Community Hero Award</strong>! The winner will be <strong>featured in a dedicated article on our website</strong> and receive the spotlight they truly deserve.
+                  </p>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <Button size="lg" className="rounded-full" asChild>
+                      <Link to="/community-hero">
+                        <Award className="mr-2 h-4 w-4" />
+                        Nominate a Community Hero
+                      </Link>
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-4">
+                    Nominations close mid-March 2026 · Winner announced end of March 2026
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
