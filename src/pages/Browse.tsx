@@ -203,16 +203,16 @@ export default function Browse() {
           <div className="bg-primary/5 border-y border-primary/10 overflow-hidden py-3">
             <div className="animate-marquee whitespace-nowrap flex items-center">
               <span className="text-base font-medium text-foreground mx-8">
-                🏆 Swap Skills is looking for the <strong>Community Hero</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
+                🏆 Swap Skills is looking for the <strong>Community Hero 2026</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
               </span>
               <span className="text-base font-medium text-foreground mx-8">
-                🏆 Swap Skills is looking for the <strong>Community Hero</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
+                🏆 Swap Skills is looking for the <strong>Community Hero 2026</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
               </span>
               <span className="text-base font-medium text-foreground mx-8">
-                🏆 Swap Skills is looking for the <strong>Community Hero</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
+                🏆 Swap Skills is looking for the <strong>Community Hero 2026</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
               </span>
               <span className="text-base font-medium text-foreground mx-8">
-                🏆 Swap Skills is looking for the <strong>Community Hero</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
+                🏆 Swap Skills is looking for the <strong>Community Hero 2026</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
               </span>
             </div>
           </div>

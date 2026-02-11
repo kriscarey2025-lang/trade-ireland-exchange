@@ -59,7 +59,7 @@ export default function CommunityHero() {
   if (isSubmitted) {
     return (
       <>
-        <SEO title="Community Hero Nominated | Swap Skills" description="Thank you for nominating a Community Hero!" />
+        <SEO title="Community Hero Award 2026 | Swap Skills" description="Thank you for nominating a Community Hero!" />
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
           <Card className="max-w-md w-full text-center">
             <CardHeader>
@@ -68,7 +68,7 @@ export default function CommunityHero() {
               </div>
               <CardTitle className="text-2xl">Thank You! 🎉</CardTitle>
               <CardDescription className="text-base">
-                Your Community Hero nomination has been submitted. We'll review all nominations and announce the winner at the end of March.
+                Your nomination for the 2026 Community Hero Award has been submitted. The winner will be featured in a dedicated article on our website and announced at the end of March 2026.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -85,8 +85,8 @@ export default function CommunityHero() {
   return (
     <>
       <SEO
-        title="Nominate a Community Hero | Swap Skills"
-        description="Know someone who goes above and beyond for their community? Nominate them as Swap Skills' Community Hero!"
+        title="Community Hero Award 2026 | Swap Skills"
+        description="Nominate someone for the Swap Skills Community Hero Award 2026! The winner will be featured in an article on our website."
       />
       <div className="min-h-screen bg-background">
         <div className="container max-w-2xl py-12 px-4">
@@ -96,10 +96,10 @@ export default function CommunityHero() {
               <Award className="h-8 w-8 text-primary-foreground" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-3">
-              <span className="gradient-text">Community Hero</span> Nomination
+              <span className="gradient-text">Swap Skills Community Hero Award</span> 2026
             </h1>
             <p className="text-muted-foreground text-lg max-w-lg mx-auto">
-              Know someone who goes above and beyond for their community? Tell us about them! We're collecting nominations from <strong>mid-February to mid-March</strong> and will announce <strong>one Community Hero at the end of March</strong>.
+              Know someone who goes above and beyond for their community? Nominate them for the <strong>2026 Community Hero Award</strong>! The winner will be <strong>featured in a dedicated article on our website</strong> and receive the spotlight they truly deserve. We're collecting nominations from <strong>mid-February to mid-March 2026</strong> and will announce the Community Hero <strong>at the end of March</strong>.
             </p>
           </div>
 
