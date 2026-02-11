@@ -363,6 +363,33 @@ export type Database = {
           },
         ]
       }
+      community_hero_nominations: {
+        Row: {
+          created_at: string
+          description: string
+          hero_name: string
+          id: string
+          nominator_email: string | null
+          nominator_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          hero_name: string
+          id?: string
+          nominator_email?: string | null
+          nominator_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          hero_name?: string
+          id?: string
+          nominator_email?: string | null
+          nominator_name?: string | null
+        }
+        Relationships: []
+      }
       community_posts: {
         Row: {
           archived_at: string | null
