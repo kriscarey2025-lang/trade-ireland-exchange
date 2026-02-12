@@ -47,22 +47,32 @@ serve(async (req: Request) => {
     }
 
     const actionLink = data?.properties?.action_link;
-    if (!actionLink) {
-      console.error("No action_link returned from generateLink");
+    const hashedToken = data?.properties?.hashed_token;
+    
+    if (!actionLink && !hashedToken) {
+      console.error("No action_link or hashed_token returned from generateLink");
       return new Response(JSON.stringify({ error: "Failed to generate reset link" }), {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    // Extract token from supabase action_link and build a swap-skills.ie URL
-    // This avoids supabase.co domain in emails which triggers spam filters
-    const url = new URL(actionLink);
-    const token = url.searchParams.get("token");
-    const type = url.searchParams.get("type") || "recovery";
-    const resetLink = `https://swap-skills.ie/reset-password?token_hash=${token}&type=${type}`;
+    // Use hashed_token from generateLink response (not the raw token from action_link URL)
+    // verifyOtp on the frontend requires the hashed version
+    const tokenHash = hashedToken;
+    
+    if (!tokenHash) {
+      console.error("No hashed_token in generateLink response");
+      return new Response(JSON.stringify({ error: "Failed to extract reset token" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const resetLink = `https://swap-skills.ie/reset-password?token_hash=${tokenHash}&type=recovery`;
 
     console.log("Password reset link generated for:", email);
+    console.log("Reset link (redacted):", resetLink.substring(0, 65) + "...");
 
     // Send email via Resend
     const { error: emailError } = await resend.emails.send({
