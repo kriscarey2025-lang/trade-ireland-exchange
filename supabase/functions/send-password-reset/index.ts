@@ -46,14 +46,21 @@ serve(async (req: Request) => {
       });
     }
 
-    const resetLink = data?.properties?.action_link;
-    if (!resetLink) {
+    const actionLink = data?.properties?.action_link;
+    if (!actionLink) {
       console.error("No action_link returned from generateLink");
       return new Response(JSON.stringify({ error: "Failed to generate reset link" }), {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
+
+    // Extract token from supabase action_link and build a swap-skills.ie URL
+    // This avoids supabase.co domain in emails which triggers spam filters
+    const url = new URL(actionLink);
+    const token = url.searchParams.get("token");
+    const type = url.searchParams.get("type") || "recovery";
+    const resetLink = `https://swap-skills.ie/reset-password?token_hash=${token}&type=${type}`;
 
     console.log("Password reset link generated for:", email);
 

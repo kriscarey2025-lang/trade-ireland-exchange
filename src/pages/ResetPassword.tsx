@@ -36,16 +36,42 @@ export default function ResetPassword() {
   const passwordStrength = getPasswordStrength(password);
 
   useEffect(() => {
-    // Check if user arrived via recovery link (session will be set by Supabase)
-    supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") {
-        setHasSession(true);
+    const verifyToken = async () => {
+      // Check for token_hash in URL (custom reset link from our edge function)
+      const params = new URLSearchParams(window.location.search);
+      const tokenHash = params.get("token_hash");
+      const type = params.get("type");
+
+      if (tokenHash && type === "recovery") {
+        try {
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: "recovery",
+          });
+          if (error) {
+            console.error("Token verification failed:", error);
+            toast.error("This reset link has expired or is invalid. Please request a new one.");
+          } else {
+            setHasSession(true);
+          }
+        } catch (err) {
+          console.error("Error verifying token:", err);
+        }
+        return;
       }
-    });
-    // Also check existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setHasSession(true);
-    });
+
+      // Fallback: Check if user arrived via old-style Supabase recovery link
+      supabase.auth.onAuthStateChange((event) => {
+        if (event === "PASSWORD_RECOVERY") {
+          setHasSession(true);
+        }
+      });
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) setHasSession(true);
+      });
+    };
+
+    verifyToken();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
