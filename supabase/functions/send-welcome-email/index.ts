@@ -71,7 +71,7 @@ const handler = async (req: Request): Promise<Response> => {
     const firstName = fullName?.split(" ")[0] || "there";
 
     const { error } = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [email],
       subject: "Welcome to Swap Skills! 🎉",
       html: `
@@ -148,13 +148,13 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               
               <div style="text-align: center; margin: 36px 0;">
-                <a href="https://swap-skills.com/browse" style="display: inline-block; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(74, 222, 128, 0.4);">
+                <a href="https://swap-skills.ie/browse" style="display: inline-block; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(74, 222, 128, 0.4);">
                   Start Exploring →
                 </a>
               </div>
               
               <p style="margin: 32px 0 0 0; font-size: 16px; line-height: 1.6; color: #4b5563;">
-                If you have any questions, we're here to help! Just reply to this email or visit our <a href="https://swap-skills.com/faq" style="color: #f97316; text-decoration: none; font-weight: 500;">FAQ page</a>.
+                If you have any questions, we're here to help! Just reply to this email or visit our <a href="https://swap-skills.ie/faq" style="color: #f97316; text-decoration: none; font-weight: 500;">FAQ page</a>.
               </p>
               
               <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
@@ -177,8 +177,8 @@ const handler = async (req: Request): Promise<Response> => {
               </p>
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
                 © ${new Date().getFullYear()} Swap Skills. All rights reserved.<br>
-                <a href="https://swap-skills.com/privacy" style="color: #6b7280;">Privacy Policy</a> · 
-                <a href="https://swap-skills.com/terms" style="color: #6b7280;">Terms of Service</a>
+                <a href="https://swap-skills.ie/privacy" style="color: #6b7280;">Privacy Policy</a> · 
+                <a href="https://swap-skills.ie/terms" style="color: #6b7280;">Terms of Service</a>
               </p>
             </td>
           </tr>

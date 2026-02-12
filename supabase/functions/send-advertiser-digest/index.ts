@@ -190,7 +190,7 @@ const handler = async (req: Request): Promise<Response> => {
         console.log(`Sending email to: ${recipientEmail}`);
         
         const emailResponse = await resend.emails.send({
-          from: "SwapSkills <onboarding@resend.dev>",
+          from: "SwapSkills <hello@swap-skills.ie>",
           to: [recipientEmail],
           subject: `📊 Your Weekly Ad Performance - ${formatDate(weekAgo)} to ${formatDate(now)}`,
           html: `

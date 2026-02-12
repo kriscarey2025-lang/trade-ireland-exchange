@@ -27,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Sending welcome email to ${email} for business: ${business_name}`);
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [email],
       subject: `Welcome to SwapSkills Advertising, ${business_name}! 🎉`,
       html: `
@@ -101,7 +101,7 @@ const handler = async (req: Request): Promise<Response> => {
           <p>We're here to support you! If you have any questions about advertising or need assistance setting up your campaigns, don't hesitate to reach out through our contact page.</p>
 
           <div style="text-align: center; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%); border-radius: 12px;">
-            <a href="https://swap-skills.com/advertiser-dashboard" style="display: inline-block; background: white; color: #D97706; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold;">Go to Your Dashboard →</a>
+            <a href="https://swap-skills.ie/advertiser-dashboard" style="display: inline-block; background: white; color: #D97706; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold;">Go to Your Dashboard →</a>
           </div>
 
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #E5E7EB; text-align: center; color: #9CA3AF; font-size: 14px;">

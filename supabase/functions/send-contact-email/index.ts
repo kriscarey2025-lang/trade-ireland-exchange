@@ -28,8 +28,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send notification email to the site owner
     const { error: notifyError } = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
-      to: ["hello@swap-skills.com"],
+      from: "SwapSkills <hello@swap-skills.ie>",
+      to: ["hello@swap-skills.ie"],
       subject: `Contact Form: ${subject}`,
       html: `
         <h2>New Contact Form Submission</h2>
@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to the user
     const { error: confirmError } = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [email],
       subject: "We received your message!",
       html: `

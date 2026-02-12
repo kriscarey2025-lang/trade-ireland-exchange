@@ -109,7 +109,7 @@ const handler = async (req: Request): Promise<Response> => {
     const adminEmail = "kristina@swapskills.ie";
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <noreply@swapskills.ie>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [adminEmail],
       subject: `${tierLabel} - New Sponsor Signup!`,
       html: emailHtml,

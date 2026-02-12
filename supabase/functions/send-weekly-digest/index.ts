@@ -11,7 +11,7 @@ const corsHeaders = {
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const baseUrl = "https://swap-skills.com";
+const baseUrl = "https://swap-skills.ie";
 
 interface UserPreference {
   user_id: string;
@@ -116,7 +116,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         await resend.emails.send({
-          from: "SwapSkills <hello@swap-skills.com>",
+          from: "SwapSkills <hello@swap-skills.ie>",
           to: [testEmail],
           subject: "📬 Your Weekly SwapSkills Digest (TEST)",
           html: generateDigestEmail(
@@ -251,7 +251,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         const { data: emailData, error: emailError } = await resend.emails.send({
-          from: "SwapSkills <hello@swap-skills.com>",
+          from: "SwapSkills <hello@swap-skills.ie>",
           to: [profile.email],
           subject: hasMatches 
             ? `🎯 ${matchingServices.length} new skill offers match your interests!` 

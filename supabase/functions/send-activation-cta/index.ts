@@ -51,7 +51,7 @@ const handler = async (req: Request): Promise<Response> => {
       
       try {
         await resend.emails.send({
-          from: "SwapSkills <hello@swap-skills.com>",
+          from: "SwapSkills <hello@swap-skills.ie>",
           to: [testEmail],
           subject: "🌟 Your neighbours are swapping skills — join them!",
           html: generateCTAEmail("there"),
@@ -156,7 +156,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         const { data: emailData, error: emailError } = await resend.emails.send({
-          from: "SwapSkills <hello@swap-skills.com>",
+          from: "SwapSkills <hello@swap-skills.ie>",
           to: [user.email],
           subject: "🌟 Your neighbours are swapping skills — join them!",
           html: generateCTAEmail(firstName),
@@ -259,11 +259,11 @@ function generateCTAEmail(firstName: string): string {
               
               <!-- Two CTAs -->
               <div style="text-align: center; margin: 32px 0;">
-                <a href="https://swap-skills.com/browse" style="display: inline-block; background: #f97316; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); margin-bottom: 12px;">
+                <a href="https://swap-skills.ie/browse" style="display: inline-block; background: #f97316; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); margin-bottom: 12px;">
                   🔍 Browse Skills Near You
                 </a>
                 <br>
-                <a href="https://swap-skills.com/services/new" style="display: inline-block; background: #ffffff; color: #f97316; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 600; border: 2px solid #f97316; margin-top: 12px;">
+                <a href="https://swap-skills.ie/services/new" style="display: inline-block; background: #ffffff; color: #f97316; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 600; border: 2px solid #f97316; margin-top: 12px;">
                   ✨ Share My First Skill
                 </a>
               </div>
@@ -285,11 +285,11 @@ function generateCTAEmail(firstName: string): string {
                       Built with 🧡 in Ireland
                     </p>
                     <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                      <a href="https://swap-skills.com" style="color: #6b7280; text-decoration: none;">swap-skills.com</a>
+                      <a href="https://swap-skills.ie" style="color: #6b7280; text-decoration: none;">swap-skills.ie</a>
                     </p>
                     <p style="margin: 16px 0 0 0; font-size: 11px; color: #9ca3af;">
                       You're receiving this because you signed up for SwapSkills.<br>
-                      <a href="https://swap-skills.com/unsubscribe" style="color: #9ca3af;">Unsubscribe from all emails</a>
+                      <a href="https://swap-skills.ie/unsubscribe" style="color: #9ca3af;">Unsubscribe from all emails</a>
                     </p>
                   </td>
                 </tr>

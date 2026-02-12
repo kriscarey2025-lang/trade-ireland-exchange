@@ -39,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending new service offer notification for:", service_title);
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: ["krisokyay@gmail.com"],
       subject: "🆕 New Service Offer Posted!",
       html: `
@@ -67,7 +67,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <p style="margin: 16px 0; color: #4b5563;">
-            <a href="https://swap-skills.com/service/${service_id}" style="color: #10b981; text-decoration: underline;">View Service</a>
+            <a href="https://swap-skills.ie/services/${service_id}" style="color: #10b981; text-decoration: underline;">View Service</a>
           </p>
           
           <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">

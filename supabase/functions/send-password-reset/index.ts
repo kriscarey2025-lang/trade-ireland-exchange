@@ -66,7 +66,7 @@ serve(async (req: Request) => {
 
     // Send email via Resend
     const { error: emailError } = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [email],
       subject: "Reset Your SwapSkills Password",
       html: `

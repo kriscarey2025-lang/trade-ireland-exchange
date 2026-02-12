@@ -165,7 +165,7 @@ function generateHtmlResponse(status: "success" | "error", message: string): str
     </div>
     <h1>${isSuccess ? "Successfully Unsubscribed" : "Oops!"}</h1>
     <p>${message}</p>
-    <a href="https://swap-skills.com" class="btn">Go to Swap Skills</a>
+    <a href="https://swap-skills.ie" class="btn">Go to Swap Skills</a>
   </div>
 </body>
 </html>

@@ -116,7 +116,7 @@ serve(async (req) => {
 
         try {
           await resend.emails.send({
-            from: "SwapSkills <notifications@swapskills.ie>",
+            from: "SwapSkills <hello@swap-skills.ie>",
             to: [participant.email],
             subject: "🎯 Your Skill Exchange is Due Today!",
             html: `
