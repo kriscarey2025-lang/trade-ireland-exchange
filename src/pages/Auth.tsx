@@ -61,16 +61,19 @@ export default function Auth() {
       return;
     }
     setForgotLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    setForgotLoading(false);
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      const { data, error } = await supabase.functions.invoke('send-password-reset', {
+        body: { email: forgotEmail },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setForgotSent(true);
+      toast.success("Password reset email sent! Check your inbox.");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to send reset email");
+    } finally {
+      setForgotLoading(false);
     }
-    setForgotSent(true);
-    toast.success("Password reset email sent! Check your inbox.");
   };
 
   const handleGoogleLogin = async () => {
