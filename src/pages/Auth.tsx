@@ -415,7 +415,18 @@ export default function Auth() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
+                          {!showForgotPassword && (
+                            <button
+                              type="button"
+                              className="text-xs text-primary hover:underline font-medium"
+                              onClick={() => { setShowForgotPassword(true); setForgotEmail(loginEmail); }}
+                            >
+                              Forgot password?
+                            </button>
+                          )}
+                        </div>
                         <div className="relative">
                           <Input
                             id="login-password"
@@ -492,15 +503,7 @@ export default function Auth() {
                             </form>
                           </div>
                         )
-                      ) : (
-                        <button
-                          type="button"
-                          className="text-sm text-primary hover:underline font-medium"
-                          onClick={() => { setShowForgotPassword(true); setForgotEmail(loginEmail); }}
-                        >
-                          Forgot your password?
-                        </button>
-                      )}
+                      ) : null}
 
                       <Button
                         type="submit"
