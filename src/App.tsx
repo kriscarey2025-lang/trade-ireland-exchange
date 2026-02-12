@@ -55,6 +55,7 @@ const Flyer = lazy(() => import("./pages/Flyer"));
 const SponsorSuccess = lazy(() => import("./pages/SponsorSuccess"));
 const Sponsors = lazy(() => import("./pages/Sponsors"));
 const CommunityHero = lazy(() => import("./pages/CommunityHero"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -125,6 +126,7 @@ const App = () => (
               <Route path="/sponsors" element={<Sponsors />} />
               <Route path="/flyer" element={<Flyer />} />
               <Route path="/community-hero" element={<CommunityHero />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

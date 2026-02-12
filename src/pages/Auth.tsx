@@ -48,6 +48,30 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const emailResult = emailSchema.safeParse(forgotEmail);
+    if (!emailResult.success) {
+      toast.error(emailResult.error.errors[0].message);
+      return;
+    }
+    setForgotLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setForgotLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setForgotSent(true);
+    toast.success("Password reset email sent! Check your inbox.");
+  };
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
@@ -432,6 +456,52 @@ export default function Auth() {
                           Remember me for 30 days
                         </Label>
                       </div>
+                      
+                      {showForgotPassword ? (
+                        forgotSent ? (
+                          <div className="rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 p-4 text-center space-y-2">
+                            <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto" />
+                            <p className="text-sm font-medium text-green-800 dark:text-green-200">Reset email sent!</p>
+                            <p className="text-xs text-muted-foreground">Check your inbox and spam folder for the password reset link.</p>
+                            <Button variant="ghost" size="sm" onClick={() => { setShowForgotPassword(false); setForgotSent(false); }}>
+                              Back to Sign In
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="rounded-lg border border-border p-4 space-y-3">
+                            <p className="text-sm font-medium">Reset your password</p>
+                            <p className="text-xs text-muted-foreground">Enter your email and we'll send you a link to reset your password.</p>
+                            <form onSubmit={handleForgotPassword} className="space-y-3">
+                              <Input
+                                type="email"
+                                placeholder="you@example.ie"
+                                value={forgotEmail}
+                                onChange={(e) => setForgotEmail(e.target.value)}
+                                required
+                                disabled={forgotLoading}
+                                className="h-10"
+                              />
+                              <div className="flex gap-2">
+                                <Button type="submit" size="sm" disabled={forgotLoading} className="flex-1">
+                                  {forgotLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send Reset Link"}
+                                </Button>
+                                <Button type="button" variant="ghost" size="sm" onClick={() => setShowForgotPassword(false)}>
+                                  Cancel
+                                </Button>
+                              </div>
+                            </form>
+                          </div>
+                        )
+                      ) : (
+                        <button
+                          type="button"
+                          className="text-sm text-primary hover:underline font-medium"
+                          onClick={() => { setShowForgotPassword(true); setForgotEmail(loginEmail); }}
+                        >
+                          Forgot your password?
+                        </button>
+                      )}
+
                       <Button
                         type="submit"
                         variant="hero"

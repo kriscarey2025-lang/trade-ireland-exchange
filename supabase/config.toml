@@ -89,3 +89,6 @@ verify_jwt = false
 
 [functions.send-trustpilot-invite]
 verify_jwt = false
+
+[functions.send-password-reset]
+verify_jwt = false
