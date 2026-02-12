@@ -23,7 +23,7 @@ serve(async (req) => {
     const greeting = name ? `Hi ${name}!` : "Hi there!";
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [to],
       subject: subject,
       html: `
@@ -37,7 +37,7 @@ serve(async (req) => {
             <p style="font-size: 16px; color: #1a1a1a; margin: 0 0 16px;">${greeting}</p>
             <div style="font-size: 15px; color: #333; line-height: 1.7; white-space: pre-line;">${message}</div>
             <div style="margin-top: 28px; text-align: center;">
-              <a href="https://swap-skills.com/messages" style="display: inline-block; background: linear-gradient(135deg, #F97316, #EA580C); color: white; text-decoration: none; padding: 14px 32px; border-radius: 12px; font-weight: 600; font-size: 15px;">Go to My Messages</a>
+              <a href="https://swap-skills.ie/messages" style="display: inline-block; background: linear-gradient(135deg, #F97316, #EA580C); color: white; text-decoration: none; padding: 14px 32px; border-radius: 12px; font-weight: 600; font-size: 15px;">Go to My Messages</a>
             </div>
           </div>
           <div style="background-color: #f0f0f0; padding: 20px; text-align: center;">

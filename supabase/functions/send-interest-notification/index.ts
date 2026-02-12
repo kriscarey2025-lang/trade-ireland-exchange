@@ -89,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
       .limit(3);
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [ownerProfile.email],
       subject: `${interestedUserName} is interested in your skill: ${service_title}`,
       html: generateInterestEmail(ownerName, interestedUserName, service_title, interested_user_id, userServices || []),
@@ -125,7 +125,7 @@ function generateInterestEmail(
         </p>
         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
           ${userServices.map(s => `
-            <a href="https://swap-skills.com/service/${s.id}" 
+            <a href="https://swap-skills.ie/services/${s.id}" 
                style="display: inline-block; background: #fef3c7; color: #92400e; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 500;">
               ${s.title}
             </a>
@@ -183,7 +183,7 @@ function generateInterestEmail(
               ${servicesHtml}
               
               <div style="text-align: center; margin-top: 32px;">
-                <a href="https://swap-skills.com/profile/${interestedUserId}" 
+                <a href="https://swap-skills.ie/profile/${interestedUserId}" 
                    style="background: #f97316; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
                   View Their Profile →
                 </a>
@@ -199,15 +199,15 @@ function generateInterestEmail(
           <tr>
             <td style="background-color: #faf8f5; padding: 32px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
               <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280;">
-                <a href="https://swap-skills.com/profile" style="color: #f97316; text-decoration: none; font-weight: 500;">View Interested Users</a>
+                <a href="https://swap-skills.ie/profile" style="color: #f97316; text-decoration: none; font-weight: 500;">View Interested Users</a>
                 &nbsp;·&nbsp;
-                <a href="https://swap-skills.com/unsubscribe" style="color: #6b7280; text-decoration: none;">Unsubscribe</a>
+                <a href="https://swap-skills.ie/unsubscribe" style="color: #6b7280; text-decoration: none;">Unsubscribe</a>
               </p>
               
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
                 © ${new Date().getFullYear()} SwapSkills Ireland. All rights reserved.<br>
-                <a href="https://swap-skills.com/privacy" style="color: #9ca3af;">Privacy Policy</a> · 
-                <a href="https://swap-skills.com/terms" style="color: #9ca3af;">Terms of Service</a>
+                <a href="https://swap-skills.ie/privacy" style="color: #9ca3af;">Privacy Policy</a> · 
+                <a href="https://swap-skills.ie/terms" style="color: #9ca3af;">Terms of Service</a>
               </p>
             </td>
           </tr>

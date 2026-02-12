@@ -71,7 +71,7 @@ const handler = async (req: Request): Promise<Response> => {
           <p style="font-size: 16px;">Your verified badge will now be visible on your profile and next to your name throughout SwapSkills.</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://swap-skills.com/profile" style="display: inline-block; background: linear-gradient(135deg, #E07B39 0%, #D4682F 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">View Your Profile</a>
+            <a href="https://swap-skills.ie/profile" style="display: inline-block; background: linear-gradient(135deg, #E07B39 0%, #D4682F 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">View Your Profile</a>
           </div>
           
           <p style="font-size: 16px;">Thank you for being part of our trusted community!</p>
@@ -82,7 +82,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           <p style="font-size: 12px; color: #888; text-align: center;">
             This email was sent by SwapSkills. You received this because your verification was processed.<br>
-            <a href="https://swap-skills.com" style="color: #E07B39;">swap-skills.com</a>
+            <a href="https://swap-skills.ie" style="color: #E07B39;">swap-skills.ie</a>
           </p>
         </body>
         </html>
@@ -125,7 +125,7 @@ const handler = async (req: Request): Promise<Response> => {
           <p style="font-size: 16px;">You're welcome to submit a new verification request with a clearer image or different document.</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://swap-skills.com/profile" style="display: inline-block; background: linear-gradient(135deg, #E07B39 0%, #D4682F 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Try Again</a>
+            <a href="https://swap-skills.ie/profile" style="display: inline-block; background: linear-gradient(135deg, #E07B39 0%, #D4682F 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Try Again</a>
           </div>
           
           <p style="font-size: 16px;">If you have any questions, feel free to contact us.</p>
@@ -136,7 +136,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           <p style="font-size: 12px; color: #888; text-align: center;">
             This email was sent by SwapSkills. You received this because your verification was processed.<br>
-            <a href="https://swap-skills.com" style="color: #E07B39;">swap-skills.com</a>
+            <a href="https://swap-skills.ie" style="color: #E07B39;">swap-skills.ie</a>
           </p>
         </body>
         </html>
@@ -144,7 +144,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <notifications@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [email],
       subject: subject,
       html: html,

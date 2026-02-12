@@ -27,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Sending rejection email to ${email} for business: ${business_name}`);
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [email],
       subject: `Update on Your SwapSkills Advertising Application`,
       html: `
@@ -67,7 +67,7 @@ const handler = async (req: Request): Promise<Response> => {
           <p>If you have any questions about this decision or would like to discuss your application further, we'd be happy to hear from you. Please reach out to us through our contact page and we'll get back to you as soon as possible.</p>
 
           <div style="text-align: center; margin-top: 30px;">
-            <a href="https://swap-skills.com/contact" style="display: inline-block; background: #D97706; color: white; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold;">Contact Us</a>
+            <a href="https://swap-skills.ie/contact" style="display: inline-block; background: #D97706; color: white; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold;">Contact Us</a>
           </div>
 
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #E5E7EB; text-align: center; color: #9CA3AF; font-size: 14px;">

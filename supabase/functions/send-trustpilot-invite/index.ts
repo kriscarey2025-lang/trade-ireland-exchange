@@ -73,7 +73,7 @@ serve(async (req: Request) => {
 
       try {
         const { error: emailError } = await resend.emails.send({
-          from: "SwapSkills <hello@swap-skills.com>",
+          from: "SwapSkills <hello@swap-skills.ie>",
           to: [user.email],
           bcc: [TRUSTPILOT_BCC],
           subject: "How's your Swap Skills experience so far? ⭐",
@@ -128,7 +128,7 @@ serve(async (req: Request) => {
               </p>
               
               <div style="text-align: center; margin: 24px 0;">
-                <a href="https://swap-skills.com/new-service" style="display: inline-block; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 14px; font-weight: 600;">
+                <a href="https://swap-skills.ie/new-service" style="display: inline-block; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 14px; font-weight: 600;">
                   Post Your First Service →
                 </a>
               </div>
@@ -145,8 +145,8 @@ serve(async (req: Request) => {
             <td style="background-color: #f9fafb; padding: 32px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
                 © ${new Date().getFullYear()} Swap Skills Ireland. All rights reserved.<br>
-                <a href="https://swap-skills.com/privacy" style="color: #6b7280;">Privacy Policy</a> · 
-                <a href="https://swap-skills.com/terms" style="color: #6b7280;">Terms of Service</a>
+                <a href="https://swap-skills.ie/privacy" style="color: #6b7280;">Privacy Policy</a> · 
+                <a href="https://swap-skills.ie/terms" style="color: #6b7280;">Terms of Service</a>
               </p>
             </td>
           </tr>

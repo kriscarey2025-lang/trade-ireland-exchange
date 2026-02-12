@@ -77,7 +77,7 @@ const handler = async (req: Request): Promise<Response> => {
       : message_preview;
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: [recipientEmail],
       subject: `New message from ${sender_name} on SwapSkills`,
       html: generateMessageEmail(recipientName, sender_name, truncatedMessage, conversation_id),
@@ -141,7 +141,7 @@ function generateMessageEmail(recipientName: string, senderName: string, message
               </div>
               
               <div style="text-align: center; margin-top: 32px;">
-                <a href="https://swap-skills.com/messages/${conversationId}" 
+                <a href="https://swap-skills.ie/messages/${conversationId}" 
                    style="background: #f97316; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
                   View Message →
                 </a>
@@ -157,15 +157,15 @@ function generateMessageEmail(recipientName: string, senderName: string, message
           <tr>
             <td style="background-color: #faf8f5; padding: 32px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
               <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280;">
-                <a href="https://swap-skills.com/profile" style="color: #f97316; text-decoration: none; font-weight: 500;">Manage Notifications</a>
+                <a href="https://swap-skills.ie/profile" style="color: #f97316; text-decoration: none; font-weight: 500;">Manage Notifications</a>
                 &nbsp;·&nbsp;
-                <a href="https://swap-skills.com/unsubscribe" style="color: #6b7280; text-decoration: none;">Unsubscribe</a>
+                <a href="https://swap-skills.ie/unsubscribe" style="color: #6b7280; text-decoration: none;">Unsubscribe</a>
               </p>
               
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
                 © ${new Date().getFullYear()} SwapSkills Ireland. All rights reserved.<br>
-                <a href="https://swap-skills.com/privacy" style="color: #9ca3af;">Privacy Policy</a> · 
-                <a href="https://swap-skills.com/terms" style="color: #9ca3af;">Terms of Service</a>
+                <a href="https://swap-skills.ie/privacy" style="color: #9ca3af;">Privacy Policy</a> · 
+                <a href="https://swap-skills.ie/terms" style="color: #9ca3af;">Terms of Service</a>
               </p>
             </td>
           </tr>

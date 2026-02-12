@@ -105,7 +105,7 @@ function generateSVG(title: string, category: string, location: string, type: st
   </g>
   
   <rect x="60" y="540" width="300" height="2" fill="#10b981" opacity="0.3"/>
-  <text x="60" y="585" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#64748b">swap-skills.com</text>
+  <text x="60" y="585" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#64748b">swap-skills.ie</text>
   <text x="240" y="585" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#475569">•</text>
   <text x="260" y="585" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#64748b">Trade Skills, Not Money</text>
   

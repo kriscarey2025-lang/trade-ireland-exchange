@@ -62,7 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const hasReviewedBack = !!existingReview;
 
-    const reviewUrl = `https://swap-skills.com/messages/${conversation_id}`;
+    const reviewUrl = `https://swap-skills.ie/messages/${conversation_id}`;
     const stars = "⭐".repeat(user_rating);
     const firstName = reviewedUser.full_name?.split(" ")[0] || "there";
 
@@ -140,7 +140,7 @@ const handler = async (req: Request): Promise<Response> => {
                 Swap Skills - Ireland's Skill Exchange Community
               </p>
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                <a href="https://swap-skills.com" style="color: #16a34a; text-decoration: none;">swap-skills.com</a>
+                <a href="https://swap-skills.ie" style="color: #16a34a; text-decoration: none;">swap-skills.ie</a>
               </p>
             </td>
           </tr>
@@ -160,7 +160,7 @@ const handler = async (req: Request): Promise<Response> => {
         "Authorization": `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Swap Skills <hello@swap-skills.com>",
+        from: "SwapSkills <hello@swap-skills.ie>",
         to: [reviewedUser.email],
         subject: `⭐ ${reviewer_name} just left you a ${user_rating}-star review!`,
         html: emailHtml,

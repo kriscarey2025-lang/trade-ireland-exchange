@@ -59,7 +59,7 @@ serve(async (req) => {
       }
     }
 
-    const origin = req.headers.get("origin") || "https://swap-skills.com";
+    const origin = req.headers.get("origin") || "https://swap-skills.ie";
     
     const session = await stripe.checkout.sessions.create({
       customer: customerId,

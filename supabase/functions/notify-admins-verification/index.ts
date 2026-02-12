@@ -60,7 +60,7 @@ serve(async (req) => {
     console.log(`Sending verification notification to ${adminEmails.length} admin(s)`);
 
     const emailResponse = await resend.emails.send({
-      from: "SwapSkills <hello@swap-skills.com>",
+      from: "SwapSkills <hello@swap-skills.ie>",
       to: adminEmails,
       subject: "🆔 New ID Verification Request - Swap Skills",
       html: `
