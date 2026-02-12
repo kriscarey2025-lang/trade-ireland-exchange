@@ -52,19 +52,6 @@ function HeroSectionComponent() {
           <div className="grid md:grid-cols-2 gap-4 md:gap-10 items-center">
             {/* Left column - Headlines and CTAs */}
             <div className="text-center md:text-left">
-              {/* Friendly welcome badge - hidden on mobile */}
-              <div className="hidden md:flex items-center gap-2 mb-2 md:mb-6 animate-fade-up">
-                <a href="https://www.buymeacoffee.com/swapskills" target="_blank" rel="noopener noreferrer">
-                  <img 
-                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" 
-                    alt="Support Swap Skills on Buy Me a Coffee"
-                    height="36"
-                    width="217"
-                    className="h-9"
-                    loading="lazy"
-                  />
-                </a>
-              </div>
 
               {/* Warm, inviting headline - more compact on mobile */}
               <h1 className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-1 md:mb-4">
@@ -158,19 +145,6 @@ function HeroSectionComponent() {
             <div className="animate-fade-up" style={{ animationDelay: "0.2s" }}>
               <SupplyDemandDashboard />
 
-              {/* Buy Me a Coffee - mobile only */}
-              <div className="flex md:hidden justify-center mt-2 animate-fade-up" style={{ animationDelay: "0.3s" }}>
-                <a href="https://www.buymeacoffee.com/swapskills" target="_blank" rel="noopener noreferrer">
-                  <img 
-                    src="https://img.buymeacoffee.com/button-api/?text=Support Swap Skills&emoji=🤝&slug=swapskills&button_colour=f0740f&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" 
-                    alt="Support Swap Skills on Buy Me a Coffee"
-                    height="36"
-                    width="217"
-                    className="h-8"
-                    loading="lazy"
-                  />
-                </a>
-              </div>
               
               {/* Quick social proof - hidden on mobile */}
               <div className="hidden md:flex mt-4 items-center justify-center gap-4 text-xs text-muted-foreground">
