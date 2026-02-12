@@ -87,13 +87,26 @@ export default function ResetPassword() {
     }
 
     setIsLoading(true);
-    const { error } = await supabase.auth.updateUser({ password });
-    setIsLoading(false);
-
-    if (error) {
-      toast.error(error.message);
+    try {
+      // Add timeout to prevent infinite spinner
+      const updatePromise = supabase.auth.updateUser({ password });
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Request timed out. Please try again.")), 15000)
+      );
+      
+      const { error } = await Promise.race([updatePromise, timeoutPromise]) as Awaited<ReturnType<typeof supabase.auth.updateUser>>;
+      
+      if (error) {
+        toast.error(error.message);
+        setIsLoading(false);
+        return;
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong. Please try again.");
+      setIsLoading(false);
       return;
     }
+    setIsLoading(false);
 
     setIsSuccess(true);
     toast.success("Password updated successfully!");
