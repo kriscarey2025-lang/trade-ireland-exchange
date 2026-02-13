@@ -99,7 +99,7 @@ export default function CommunityHero() {
               <span className="gradient-text">Swap Skills Community Hero Award</span> 2026
             </h1>
             <p className="text-muted-foreground text-lg max-w-lg mx-auto">
-              Know someone who goes above and beyond for their community? Nominate them for the <strong>2026 Community Hero Award</strong>! The winner will be <strong>featured in a dedicated article on our website</strong> and receive the spotlight they truly deserve. We're collecting nominations from <strong>mid-February to mid-March 2026</strong> and will announce the Community Hero <strong>at the end of March</strong>.
+              Know someone who goes above and beyond for their community? Nominate them for the <strong>2026 Community Hero Award</strong>! The winner will be <strong>featured in a dedicated article on our website</strong> and receive the spotlight they truly deserve. We're collecting nominations from <strong>mid-February to mid-March 2026</strong> and will announce the Community Hero <strong>on the 31st of March</strong>.
             </p>
           </div>
 
