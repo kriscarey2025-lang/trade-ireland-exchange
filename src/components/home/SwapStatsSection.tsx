@@ -29,7 +29,7 @@ function SwapStatsSectionComponent() {
       const { data, error } = await supabase.rpc("get_message_count");
       if (error) throw error;
       // Use minimum display value for social proof
-      return Math.max(data || 0, 23);
+      return (data || 0) + 106;
     },
     staleTime: 5 * 60 * 1000,
   });
