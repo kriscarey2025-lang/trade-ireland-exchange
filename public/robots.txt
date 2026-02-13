@@ -1,35 +1,7 @@
 # Robots.txt for Swap Skills
 # https://swap-skills.ie
 
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
-Allow: /
-
-# Sitemap location
-Sitemap: https://swap-skills.ie/sitemap.xml
-
-# Disallow admin and private pages
-Disallow: /admin*
-Disallow: /profile
-Disallow: /messages
-Disallow: /conversation/*
-Disallow: /new-service
-Disallow: /edit-service/*
-Disallow: /onboarding
-Disallow: /advertiser-dashboard
-
-# Allow search engines to crawl these
 Allow: /
 Allow: /browse
 Allow: /about
@@ -44,3 +16,28 @@ Allow: /auth
 Allow: /services/*
 Allow: /stories
 Allow: /community
+Allow: /press
+Allow: /getting-started
+Allow: /advertise
+Allow: /sponsors
+Allow: /community-hero
+
+# Disallow admin and private pages
+Disallow: /admin*
+Disallow: /profile
+Disallow: /messages
+Disallow: /conversation/*
+Disallow: /new-service
+Disallow: /edit-service/*
+Disallow: /onboarding
+Disallow: /advertiser-dashboard
+Disallow: /advertiser
+Disallow: /welcome
+Disallow: /seed-images
+Disallow: /flyer
+
+# Disallow old singular /service/ path (redirects to /services/)
+Disallow: /service/*
+
+# Sitemap location
+Sitemap: https://swap-skills.ie/sitemap.xml

@@ -19,15 +19,18 @@ const staticPages = [
   { url: '/how-it-works', priority: '0.8', changefreq: 'monthly' },
   { url: '/about', priority: '0.7', changefreq: 'monthly' },
   { url: '/stories', priority: '0.7', changefreq: 'weekly' },
+  { url: '/press', priority: '0.6', changefreq: 'weekly' },
   { url: '/faq', priority: '0.6', changefreq: 'monthly' },
   { url: '/safety', priority: '0.6', changefreq: 'monthly' },
   { url: '/contact', priority: '0.6', changefreq: 'monthly' },
-  { url: '/getting-started', priority: '0.6', changefreq: 'monthly' },
+  { url: '/getting-started', priority: '0.6', changefreq: 'monthly', noindex: true },
+  { url: '/sponsors', priority: '0.5', changefreq: 'monthly' },
+  { url: '/community-hero', priority: '0.5', changefreq: 'monthly' },
   { url: '/advertise', priority: '0.5', changefreq: 'monthly' },
+  { url: '/auth', priority: '0.5', changefreq: 'monthly' },
   { url: '/terms', priority: '0.3', changefreq: 'yearly' },
   { url: '/privacy', priority: '0.3', changefreq: 'yearly' },
   { url: '/cookies', priority: '0.3', changefreq: 'yearly' },
-  { url: '/auth', priority: '0.5', changefreq: 'monthly' },
 ];
 
 export async function generateSitemap(): Promise<string> {
