@@ -66,11 +66,6 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                   Sponsorship Packages
                 </Link>
               </li>
-              <li>
-                <Link to="/advertise" className="hover:text-primary transition-colors">
-                  Advertise With Us
-                </Link>
-              </li>
             </ul>
           </div>
 
