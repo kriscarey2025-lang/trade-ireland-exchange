@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { BackToTop } from "@/components/BackToTop";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
@@ -69,6 +69,12 @@ const queryClient = new QueryClient({
   },
 });
 
+// Redirect component for singular /service/:id → /services/:id
+function ServiceRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/services/${id}`} replace />;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -96,7 +102,9 @@ const App = () => (
               <Route path="/new-service" element={<NewService />} />
               <Route path="/services/new" element={<NewService />} />
               <Route path="/services/:id/edit" element={<EditService />} />
-              <Route path="/services/:id" element={<ServiceDetail />} />
+               <Route path="/services/:id" element={<ServiceDetail />} />
+               {/* Redirect singular /service/:id to plural /services/:id (fixes Google soft 404s) */}
+               <Route path="/service/:id" element={<ServiceRedirect />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/messages/:id" element={<Conversation />} />
               <Route path="/faq" element={<FAQ />} />
