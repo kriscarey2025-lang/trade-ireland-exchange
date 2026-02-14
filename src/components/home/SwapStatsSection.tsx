@@ -16,7 +16,7 @@ function SwapStatsSectionComponent() {
       const realInProgress = stats?.in_progress_count || 0;
       return {
         inProgress: Math.max(realInProgress, 6),
-        completed: Math.max(realCompleted, 6),
+        completed: Math.max(realCompleted, 7),
       };
     },
     staleTime: 5 * 60 * 1000,
