@@ -38,6 +38,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://swap-skills.ie/stories#swap-skills-faq</loc>
+    <lastmod>2026-02-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://swap-skills.ie/press</loc>
     <lastmod>2026-02-08</lastmod>
     <changefreq>weekly</changefreq>

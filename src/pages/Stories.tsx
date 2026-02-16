@@ -5,12 +5,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SocialShareButtons } from "@/components/shared/SocialShareButtons";
-import { BookOpen, MessageCircle, ExternalLink, Home, Heart, Users, Sparkles, ChevronRight, Award } from "lucide-react";
+import { BookOpen, MessageCircle, ExternalLink, Home, Heart, Users, Sparkles, ChevronRight, Award, HelpCircle } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
 import jenniferDeliaImage from "@/assets/jennifer-delia-carlow-edited.png";
 
 // Story index for navigation
 const stories = [
+  {
+    id: "swap-skills-faq",
+    title: "Your Questions Answered",
+    subtitle: "Common Concerns About Skill Swapping",
+    author: "Swap Skills",
+    badge: "FAQ",
+    badgeColor: "bg-blue-600",
+    preview: "Does Swap-Skills replace service providers? Is it always in person? Why is it free? Get honest answers."
+  },
   {
     id: "community-hero-2026",
     title: "Community Hero Award 2026",
@@ -142,6 +152,193 @@ export default function Stories() {
                 </button>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* FAQ Article Section */}
+        <section id="swap-skills-faq" className="py-10 md:py-12 scroll-mt-20">
+          <div className="container max-w-4xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Badge variant="default" className="bg-blue-600 text-white">
+                FAQ
+              </Badge>
+              <span className="text-sm text-muted-foreground">Honest answers to real questions</span>
+            </div>
+
+            <Card className="overflow-hidden border-border">
+              <CardContent className="p-0">
+                <div className="relative bg-gradient-to-br from-blue-600/20 via-primary/10 to-accent/20 p-6 md:p-10 text-center">
+                  <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center mb-4">
+                    <HelpCircle className="h-8 w-8 text-white" />
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-3">
+                    Your Questions About Swap-Skills, Answered
+                  </h2>
+                  <p className="text-muted-foreground max-w-xl mx-auto">
+                    We believe in transparency. Here are honest answers to the most common questions and concerns people have about skill swapping.
+                  </p>
+                </div>
+
+                <div className="p-6 md:p-8">
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="replace-providers">
+                      <AccordionTrigger className="text-left font-semibold">
+                        Does Swap-Skills replace professional service providers?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p><strong className="text-foreground">Absolutely not.</strong> Swap-Skills is not designed to replace professionals, trades, or businesses. It's a community platform where people exchange skills on a casual, voluntary basis.</p>
+                        <p>Think of it like asking a neighbour for help with your garden and returning the favour by helping them with something else. It's informal, human, and complementary to the professional services that our communities rely on.</p>
+                        <p>Many of our members <em>are</em> professional service providers who use Swap-Skills to network, build relationships, and connect with potential future clients.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="fairness">
+                      <AccordionTrigger className="text-left font-semibold">
+                        How does Swap-Skills ensure fairness in exchanges?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p>Fairness is ultimately a personal and relative concept — what feels fair to one person may differ for another. We trust our community members to communicate openly and agree on terms that work for both sides.</p>
+                        <p>That said, we provide tools to support fair exchanges:</p>
+                        <ul className="list-disc pl-5 space-y-1">
+                          <li>A <strong className="text-foreground">reporting system</strong> for any concerns or disputes</li>
+                          <li><strong className="text-foreground">User reviews</strong> so the community can self-regulate</li>
+                          <li><strong className="text-foreground">Messaging tools</strong> to discuss and agree on details before committing</li>
+                          <li>Clear <strong className="text-foreground">community guidelines</strong> that set expectations</li>
+                        </ul>
+                        <p>If a swap doesn't feel right, you're never obligated to proceed. Your comfort and safety come first.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="in-person">
+                      <AccordionTrigger className="text-left font-semibold">
+                        Does every skill swap need to happen in person?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p><strong className="text-foreground">Not at all!</strong> While many swaps happen face-to-face — especially hands-on skills like massage, gardening, or hairdressing — plenty of exchanges happen remotely.</p>
+                        <p>We've already had members connect via <strong className="text-foreground">Zoom and video calls</strong> for things like language tutoring, career coaching, tech support, and business mentoring.</p>
+                        <p>How you swap is entirely up to you and your swap partner. Whatever works best for both of you is the right way to do it.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="political">
+                      <AccordionTrigger className="text-left font-semibold">
+                        Is Swap-Skills a political organisation?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p><strong className="text-foreground">No.</strong> Swap-Skills is not affiliated with any political party, movement, or ideology. We are a community platform, plain and simple.</p>
+                        <p>Our mission is to help people connect, share skills, and support each other — regardless of background, beliefs, or political views. We welcome everyone.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="why-free">
+                      <AccordionTrigger className="text-left font-semibold">
+                        Why is Swap-Skills free to use?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p>Because the whole point of Swap-Skills is to make skill exchange <strong className="text-foreground">accessible to everyone</strong>. Charging for access would go against the spirit of what we're building.</p>
+                        <p>We sustain the platform through community sponsorships and local advertising partnerships — not by charging users. We believe that a tool for community connection should be available to all, especially those who need it most.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="quality">
+                      <AccordionTrigger className="text-left font-semibold">
+                        How do I know the quality of someone's skills?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p>Great question. Swap-Skills provides several ways to assess and build trust:</p>
+                        <ul className="list-disc pl-5 space-y-1">
+                          <li><strong className="text-foreground">Profile descriptions</strong> where members describe their experience</li>
+                          <li><strong className="text-foreground">Reviews from previous swaps</strong> left by other community members</li>
+                          <li><strong className="text-foreground">Verified badges</strong> for members who've completed identity verification</li>
+                          <li><strong className="text-foreground">Direct messaging</strong> so you can ask questions before committing</li>
+                        </ul>
+                        <p>We always recommend having a conversation first. Most people are happy to explain their experience and discuss what they can offer.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="tax">
+                      <AccordionTrigger className="text-left font-semibold">
+                        Are there tax implications for skill swapping?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p>Swap-Skills facilitates informal, casual exchanges between community members — similar to neighbours helping each other out. No money changes hands on the platform.</p>
+                        <p>However, tax rules can vary depending on your situation. If you're unsure about how skill swapping may affect your personal tax obligations, we recommend consulting a tax professional or checking with Revenue.</p>
+                        <p>Swap-Skills does not provide tax, legal, or financial advice.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="safety">
+                      <AccordionTrigger className="text-left font-semibold">
+                        Is it safe to meet strangers for a skill swap?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p>Safety is something we take very seriously. Here are our recommendations:</p>
+                        <ul className="list-disc pl-5 space-y-1">
+                          <li>Always <strong className="text-foreground">communicate through the platform</strong> before meeting</li>
+                          <li>For first meetings, choose a <strong className="text-foreground">public place</strong> or do the swap via video call</li>
+                          <li>Let someone know where you're going and who you're meeting</li>
+                          <li>Check the person's <strong className="text-foreground">profile, reviews, and verification status</strong></li>
+                          <li>Trust your instincts — if something feels off, don't proceed</li>
+                        </ul>
+                        <p>We also have a <Link to="/safety" className="text-primary hover:underline font-medium">dedicated Safety page</Link> with more detailed guidance.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="liability">
+                      <AccordionTrigger className="text-left font-semibold">
+                        What happens if something goes wrong during a swap?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p>Swap-Skills is a platform that connects people — we don't employ anyone or supervise swaps. Each exchange is an agreement between two individuals.</p>
+                        <p>If you experience an issue, you can:</p>
+                        <ul className="list-disc pl-5 space-y-1">
+                          <li><strong className="text-foreground">Report the user</strong> through our reporting system</li>
+                          <li><strong className="text-foreground">Leave a review</strong> to help inform other members</li>
+                          <li><strong className="text-foreground">Contact us</strong> if you believe community guidelines were violated</li>
+                        </ul>
+                        <p>We review all reports and take appropriate action, including removing users who breach our community standards.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="data-privacy">
+                      <AccordionTrigger className="text-left font-semibold">
+                        How is my personal data handled?
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground space-y-2">
+                        <p>We take your privacy seriously. Your personal information is only shared with other members when <strong className="text-foreground">you choose to share it</strong> — for example, through our contact sharing feature during a conversation.</p>
+                        <p>We follow GDPR guidelines, and you can read our full <Link to="/privacy" className="text-primary hover:underline font-medium">Privacy Policy</Link> for complete details on how we handle, store, and protect your data.</p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  <div className="mt-8 p-4 bg-primary/5 rounded-lg border border-primary/10 text-center">
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Still have questions? We're always happy to chat.
+                    </p>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/contact">
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        Get in Touch
+                      </Link>
+                    </Button>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-border">
+                    <div>
+                      <span className="font-bold">— Swap Skills Team</span>
+                      <span className="text-muted-foreground text-sm ml-2">February 2026</span>
+                    </div>
+                    <div className="flex items-center gap-3 ml-auto">
+                      <SocialShareButtons 
+                        url="https://swap-skills.ie/stories#swap-skills-faq"
+                        title="Your Questions About Swap-Skills, Answered"
+                        description="Honest answers to common questions about skill swapping — fairness, safety, why it's free, and more."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
 

@@ -19,6 +19,7 @@ const staticPages = [
   { url: '/how-it-works', priority: '0.8', changefreq: 'monthly' },
   { url: '/about', priority: '0.7', changefreq: 'monthly' },
   { url: '/stories', priority: '0.7', changefreq: 'weekly' },
+  { url: '/stories#swap-skills-faq', priority: '0.7', changefreq: 'monthly' },
   { url: '/press', priority: '0.6', changefreq: 'weekly' },
   { url: '/faq', priority: '0.6', changefreq: 'monthly' },
   { url: '/safety', priority: '0.6', changefreq: 'monthly' },
