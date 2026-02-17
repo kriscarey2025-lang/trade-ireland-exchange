@@ -4,6 +4,8 @@
 User-agent: *
 Allow: /
 Allow: /browse
+Allow: /skills
+Allow: /skills/*
 Allow: /about
 Allow: /how-it-works
 Allow: /faq
