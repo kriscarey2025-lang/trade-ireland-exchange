@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { DiscoveryStep } from "@/components/wizard/DiscoveryStep";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface PostCreationMatchDialogProps {
   open: boolean;
@@ -9,40 +10,30 @@ interface PostCreationMatchDialogProps {
   newServiceTitle: string;
   newServiceCategory: string;
   userId: string;
+  userLocation?: string;
 }
 
 export function PostCreationMatchDialog({
   open,
   onOpenChange,
-  newServiceId,
   newServiceTitle,
-  newServiceCategory,
-  userId,
+  userLocation,
 }: PostCreationMatchDialogProps) {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (open) {
-      // Close the dialog
-      onOpenChange(false);
-      
-      toast.success("Skill posted! 🎉", {
-        description: "Finding people who want your skill...",
-      });
-      
-      // Navigate to AI Matches page with boost offer flag
-      navigate("/matches", { 
-        state: { 
-          newServiceCategory,
-          newServiceTitle,
-          showNewMatches: true,
-          showBoostOffer: true,
-          boostServiceId: newServiceId,
-        } 
-      });
-    }
-  }, [open, onOpenChange, navigate, newServiceCategory, newServiceTitle, newServiceId]);
+  const handleComplete = () => {
+    onOpenChange(false);
+    navigate("/browse");
+  };
 
-  // This component no longer renders anything - it just handles navigation
-  return null;
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <VisuallyHidden>
+          <DialogTitle>Discover listings after posting "{newServiceTitle}"</DialogTitle>
+        </VisuallyHidden>
+        <DiscoveryStep onComplete={handleComplete} userLocation={userLocation} />
+      </DialogContent>
+    </Dialog>
+  );
 }
