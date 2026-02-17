@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ServiceCardCompact } from "@/components/services/ServiceCardCompact";
 import { ServiceCardMobile } from "@/components/services/ServiceCardMobile";
 import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
+import { JsonLd, FAQJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { getSkillGuideBySlug, skillGuides } from "@/lib/skillGuides";
 import { useServices } from "@/hooks/useServices";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -53,6 +54,29 @@ export default function SkillGuide() {
         url={`https://swap-skills.ie/skills/${guide.slug}`}
         keywords={`${guide.label.toLowerCase()} Ireland, ${guide.label.toLowerCase()} swap, skill exchange ${guide.label.toLowerCase()}, ${guide.label.toLowerCase()} help Ireland`}
       />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: `${guide.label} in Ireland — Skill Guide`,
+        description: guide.metaDescription,
+        url: `https://swap-skills.ie/skills/${guide.slug}`,
+        datePublished: "2026-02-17",
+        dateModified: "2026-02-17",
+        author: { "@type": "Organization", name: "SwapSkills Ireland", url: "https://swap-skills.ie" },
+        publisher: { "@type": "Organization", name: "SwapSkills Ireland", logo: { "@type": "ImageObject", url: "https://swap-skills.ie/og-image.png" } },
+        mainEntityOfPage: { "@type": "WebPage", "@id": `https://swap-skills.ie/skills/${guide.slug}` },
+        about: { "@type": "Thing", name: guide.label },
+        inLanguage: "en-IE",
+      }} />
+      <FAQJsonLd faqs={guide.funFacts.map((fact, i) => ({
+        question: `What's an interesting fact about ${guide.label.toLowerCase()} in Ireland? (#${i + 1})`,
+        answer: fact,
+      }))} />
+      <BreadcrumbJsonLd items={[
+        { name: "Home", url: "https://swap-skills.ie/" },
+        { name: "Skill Guides", url: "https://swap-skills.ie/skills" },
+        { name: guide.label, url: `https://swap-skills.ie/skills/${guide.slug}` },
+      ]} />
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1">
