@@ -110,19 +110,24 @@ export default function SkillGuide() {
               </div>
             </section>
 
-            {/* Swap Ideas */}
-            <section>
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <Sparkles className="h-6 w-6 text-primary" />
-                Swap Ideas
-              </h2>
-              <p className="text-muted-foreground mb-4">Here are some creative ways people swap {guide.label.toLowerCase()} skills:</p>
-              <div className="flex flex-wrap gap-2">
-                {guide.swapIdeas.map((idea, i) => (
-                  <Badge key={i} variant="secondary" className="px-4 py-2 text-sm">
-                    {idea}
-                  </Badge>
-                ))}
+            {/* Expert CTA */}
+            <section className="bg-accent/10 border border-accent/20 rounded-xl p-6 md:p-8">
+              <div className="flex gap-3">
+                <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Want to be listed as a {guide.label} expert?</h3>
+                  <p className="text-foreground/80 leading-relaxed mb-4">
+                    Get featured in our directory and connect with people across Ireland looking for {guide.label.toLowerCase()} skills. Or if you fancy a good ol' barter, create a SwapSkills post and trade your talent!
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Button asChild>
+                      <Link to="/contact">Get a Directory Listing</Link>
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <Link to="/new-service">Create a Swap Post</Link>
+                    </Button>
+                  </div>
+                </div>
               </div>
             </section>
 
