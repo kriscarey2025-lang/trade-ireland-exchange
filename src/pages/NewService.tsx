@@ -181,9 +181,13 @@ export default function NewService() {
     // Track service creation
     trackServiceCreated(user.id, newService.id, title.trim());
     
-    // Track in HubSpot
+    // Track in HubSpot (fire-and-forget, never block the flow)
     if (user.email) {
-      trackServiceCreatedHubSpot(user.email, title.trim(), category, postCategory);
+      try {
+        trackServiceCreatedHubSpot(user.email, title.trim(), category, postCategory);
+      } catch (_) {
+        // silently ignore HubSpot errors
+      }
     }
 
     if (!moderationResult.approved) {
