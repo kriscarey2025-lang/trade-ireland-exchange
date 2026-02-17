@@ -2,6 +2,8 @@
 # https://swap-skills.ie
 
 User-agent: *
+Allow: /county
+Allow: /county/*
 Allow: /
 Allow: /browse
 Allow: /skills

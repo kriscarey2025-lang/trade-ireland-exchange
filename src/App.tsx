@@ -48,6 +48,8 @@ const GettingStarted = lazy(() => import("./pages/GettingStarted"));
 const Stories = lazy(() => import("./pages/Stories"));
 const SkillGuide = lazy(() => import("./pages/SkillGuide"));
 const SkillGuidesIndex = lazy(() => import("./pages/SkillGuidesIndex"));
+const CountySpotlight = lazy(() => import("./pages/CountySpotlight"));
+const CountySpotlightsIndex = lazy(() => import("./pages/CountySpotlightsIndex"));
 const PressKit = lazy(() => import("./pages/PressKit"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const SeedImages = lazy(() => import("./pages/SeedImages"));
@@ -127,6 +129,8 @@ const App = () => (
               <Route path="/stories" element={<Stories />} />
               <Route path="/skills" element={<SkillGuidesIndex />} />
               <Route path="/skills/:slug" element={<SkillGuide />} />
+              <Route path="/county" element={<CountySpotlightsIndex />} />
+              <Route path="/county/:slug" element={<CountySpotlight />} />
               <Route path="/press" element={<PressKit />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route path="/seed-images" element={<SeedImages />} />

@@ -214,6 +214,35 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- County Spotlights -->
+  <url><loc>https://swap-skills.ie/county</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://swap-skills.ie/county/carlow</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/dublin</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/cork</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/galway</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/limerick</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/kerry</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/waterford</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/kilkenny</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/wexford</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/wicklow</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/meath</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/kildare</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/tipperary</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/clare</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/mayo</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/donegal</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/sligo</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/leitrim</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/roscommon</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/westmeath</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/offaly</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/laois</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/longford</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/louth</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/cavan</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://swap-skills.ie/county/monaghan</loc><lastmod>2026-02-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+
   <!-- Service Pages (28 active services) -->
   <url>
     <loc>https://swap-skills.ie/services/8335732b-3aad-4921-8dc5-438bbae60bc5</loc>
