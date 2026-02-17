@@ -138,7 +138,7 @@ export function Header() {
   const isDiscoverActive = discoverLinks.some(l => location.pathname === l.href);
 
   return (
-    <header ref={headerRef} className="sticky top-0 z-50 w-full border-b border-primary-foreground/10 bg-primary text-primary-foreground backdrop-blur-xl">
+    <header ref={headerRef} className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl">
       <div className="container flex h-14 items-center justify-between">
         {/* Logo - explicit dimensions prevent CLS */}
         <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg group shrink-0" aria-label="SwapSkills Home">
@@ -150,8 +150,8 @@ export function Header() {
             className="w-8 h-8 rounded-xl shadow-sm group-hover:shadow-md transition-shadow"
             style={{ aspectRatio: '1/1' }}
           />
-          <span className="hidden sm:inline text-primary-foreground">
-            Swap<span className="text-primary-foreground/80">Skills</span>
+          <span className="hidden sm:inline text-foreground">
+            Swap<span className="text-primary">Skills</span>
           </span>
         </Link>
 
@@ -162,8 +162,8 @@ export function Header() {
             className={cn(
               "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
               location.pathname === "/stories"
-                ? "text-primary-foreground bg-primary-foreground/15"
-                : "text-primary-foreground/70"
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground"
             )}
           >
             <BookOpen className="h-3.5 w-3.5" />
@@ -174,8 +174,8 @@ export function Header() {
             className={cn(
               "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
               location.pathname === "/how-it-works"
-                ? "text-primary-foreground bg-primary-foreground/15"
-                : "text-primary-foreground/70"
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground"
             )}
           >
             <Compass className="h-3.5 w-3.5" />
@@ -186,8 +186,8 @@ export function Header() {
             className={cn(
               "flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors",
               location.pathname === "/faq"
-                ? "text-primary-foreground bg-primary-foreground/15"
-                : "text-primary-foreground/70"
+                ? "text-primary bg-primary/10"
+                : "text-muted-foreground"
             )}
           >
             <HelpCircle className="h-3.5 w-3.5" />
@@ -203,8 +203,8 @@ export function Header() {
               className={cn(
                 "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                 isBrowseActive
-                  ? "bg-primary-foreground/15 text-primary-foreground"
-                  : "text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
               <Search className="h-4 w-4" />
@@ -238,8 +238,8 @@ export function Header() {
               className={cn(
                 "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                 isDiscoverActive
-                  ? "bg-primary-foreground/15 text-primary-foreground"
-                  : "text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
               <Compass className="h-4 w-4" />
@@ -287,8 +287,8 @@ export function Header() {
               className={cn(
                 "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                 location.pathname === link.href
-                  ? "bg-primary-foreground/15 text-primary-foreground"
-                  : "text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
               {link.icon && <link.icon className="h-4 w-4" />}
@@ -304,8 +304,8 @@ export function Header() {
                 className={cn(
                   "flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                   adminLinks.some(l => location.pathname === l.href)
-                    ? "bg-primary-foreground/15 text-primary-foreground"
-                    : "text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >
                 <Shield className="h-4 w-4" />
@@ -338,15 +338,15 @@ export function Header() {
         <div className="hidden md:flex items-center gap-2">
           {loading ? (
             <div className="flex items-center gap-2" aria-hidden="true">
-              <div className="h-10 w-10 rounded-xl bg-primary-foreground/20 animate-pulse" />
-              <div className="h-10 w-24 rounded-xl bg-primary-foreground/20 animate-pulse" />
-              <div className="h-10 w-24 rounded-xl bg-primary-foreground/20 animate-pulse" />
+              <div className="h-10 w-10 rounded-xl bg-muted/40 animate-pulse" />
+              <div className="h-10 w-24 rounded-xl bg-muted/40 animate-pulse" />
+              <div className="h-10 w-24 rounded-xl bg-muted/40 animate-pulse" />
             </div>
           ) : (
             <>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground" asChild aria-label="Follow us on Facebook">
+                  <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Follow us on Facebook">
                     <a href="https://www.facebook.com/people/Swap-Skills/61584889451637/?sk=followers" target="_blank" rel="noopener noreferrer">
                       <Facebook className="h-5 w-5" aria-hidden="true" />
                       <span className="sr-only">Follow us on Facebook</span>
@@ -357,7 +357,7 @@ export function Header() {
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground" asChild aria-label="Follow us on LinkedIn">
+                  <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Follow us on LinkedIn">
                     <a href="https://www.linkedin.com/company/swap-skills-ireland/" target="_blank" rel="noopener noreferrer">
                       <Linkedin className="h-5 w-5" aria-hidden="true" />
                       <span className="sr-only">Follow us on LinkedIn</span>
@@ -366,7 +366,7 @@ export function Header() {
                 </TooltipTrigger>
                 <TooltipContent>Follow us on LinkedIn</TooltipContent>
               </Tooltip>
-              <Button variant="ghost" size="icon" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground" asChild aria-label="Search services">
+              <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Search services">
                 <Link to="/browse">
                   <Search className="h-5 w-5" aria-hidden="true" />
                   <span className="sr-only">Search services</span>
@@ -387,26 +387,26 @@ export function Header() {
                     </Link>
                   </Button>
                   <NotificationBell />
-                  <Button variant="ghost" size="icon" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground" asChild>
+                  <Button variant="ghost" size="icon" className="rounded-xl" asChild>
                     <Link to="/messages">
                       <MessageCircle className="h-5 w-5" />
                     </Link>
                   </Button>
-                  <Button variant="ghost" size="icon" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground" asChild>
+                  <Button variant="ghost" size="icon" className="rounded-xl" asChild>
                     <Link to="/profile">
                       <User className="h-5 w-5" />
                     </Link>
                   </Button>
-                  <Button variant="ghost" size="icon" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground" onClick={handleSignOut}>
+                  <Button variant="ghost" size="icon" className="rounded-xl" onClick={handleSignOut}>
                     <LogOut className="h-5 w-5" />
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button variant="ghost" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground" asChild>
+                  <Button variant="ghost" className="rounded-xl" asChild>
                     <Link to="/auth">Sign In</Link>
                   </Button>
-                  <Button className="rounded-xl shadow-md hover:shadow-lg bg-primary-foreground text-primary hover:bg-primary-foreground/90" asChild>
+                  <Button variant="hero" className="rounded-xl shadow-md hover:shadow-lg" asChild>
                     <Link to="/auth?mode=signup">
                       <Sparkles className="h-4 w-4 mr-1.5" />
                       Join Free
@@ -421,14 +421,14 @@ export function Header() {
         {/* Mobile Actions - simplified since MobileBottomNav handles main nav */}
         <div className="flex md:hidden items-center gap-1">
           {loading ? (
-            <div className="h-11 w-11 rounded-xl bg-primary-foreground/20 animate-pulse" aria-hidden="true" />
+            <div className="h-11 w-11 rounded-xl bg-muted/40 animate-pulse" aria-hidden="true" />
           ) : isLoggedIn ? (
             <NotificationBell />
           ) : null}
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-xl text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"
+            className="rounded-xl"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
