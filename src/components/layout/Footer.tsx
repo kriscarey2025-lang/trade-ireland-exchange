@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { AlertTriangle, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import swapSkillsLogo from "@/assets/swapskills-logo.png";
+import swapSkillsLogo from "@/assets/swap-skills-logo-512x512.png";
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   return (
