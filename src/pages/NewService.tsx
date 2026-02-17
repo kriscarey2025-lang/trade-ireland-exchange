@@ -93,6 +93,9 @@ export default function NewService() {
   const [neededByDate, setNeededByDate] = useState<Date | null>(null);
   const [neededByOption, setNeededByOption] = useState<"asap" | "date">("asap");
 
+  // Boost opt-in
+  const [wantsBoost, setWantsBoost] = useState(false);
+
   // Redirect if not logged in
   useEffect(() => {
     if (!authLoading && !user) {
@@ -205,16 +208,34 @@ export default function NewService() {
     
     setIsSubmitting(false);
     
-    // For skill_swap posts, show the match dialog (which navigates to matches)
-    // then show boost offer. For other types, show boost offer directly.
-    if (postCategory === "skill_swap" && moderationResult.approved) {
+    if (!moderationResult.approved) {
+      navigate("/browse");
+      return;
+    }
+
+    // If user opted into boost in the form, go straight to checkout
+    if (wantsBoost) {
+      try {
+        const { data, error } = await supabase.functions.invoke("create-boost-checkout", {
+          body: { serviceId: newService.id },
+        });
+        if (error) throw error;
+        if (data?.url) {
+          window.location.href = data.url;
+          return;
+        }
+      } catch (err: any) {
+        toast.error(err.message || "Failed to start boost checkout");
+      }
+    }
+
+    // Otherwise show discovery step (skill_swap) or boost offer card
+    if (postCategory === "skill_swap") {
       setCreatedServiceId(newService.id);
       setShowMatchDialog(true);
-    } else if (moderationResult.approved) {
+    } else {
       setCreatedServiceId(newService.id);
       setShowBoostOffer(true);
-    } else {
-      navigate("/browse");
     }
   };
 
@@ -550,6 +571,45 @@ export default function NewService() {
                       </div>
                     )}
                   </div>
+                </div>
+
+                {/* Boost Your Post */}
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-amber-500" />
+                      <Label htmlFor="boost-toggle" className="font-semibold text-base cursor-pointer">
+                        Boost this post
+                      </Label>
+                    </div>
+                    <Switch
+                      id="boost-toggle"
+                      checked={wantsBoost}
+                      onCheckedChange={setWantsBoost}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  {wantsBoost && (
+                    <div className="rounded-xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 p-4 space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        For just <span className="font-bold text-foreground">€5</span> (one-off), your listing gets:
+                      </p>
+                      <ul className="text-sm space-y-1.5">
+                        <li className="flex items-center gap-2">
+                          <span className="text-amber-500">✦</span> Pinned to top of browse results for 30 days
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-amber-500">✦</span> Highlighted card with golden badge
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-amber-500">✦</span> Weekly performance stats by email
+                        </li>
+                      </ul>
+                      <p className="text-xs text-muted-foreground pt-1">
+                        You'll be taken to a secure checkout after posting.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Submit - Desktop */}
