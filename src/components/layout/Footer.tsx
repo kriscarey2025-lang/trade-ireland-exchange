@@ -54,6 +54,21 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                   About Us
                 </Link>
               </li>
+              <li>
+                <Link to="/skills" className="hover:text-primary transition-colors">
+                  Skill Guides
+                </Link>
+              </li>
+              <li>
+                <Link to="/county" className="hover:text-primary transition-colors">
+                  County Spotlights
+                </Link>
+              </li>
+              <li>
+                <Link to="/stories" className="hover:text-primary transition-colors">
+                  Swap-Skill Stories
+                </Link>
+              </li>
             </ul>
           </div>
 
