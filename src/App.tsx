@@ -45,7 +45,6 @@ const AdvertiserDashboard = lazy(() => import("./pages/AdvertiserDashboard"));
 const AIMatches = lazy(() => import("./pages/AIMatches"));
 const Advertise = lazy(() => import("./pages/Advertise"));
 const GettingStarted = lazy(() => import("./pages/GettingStarted"));
-const CommunityBoard = lazy(() => import("./pages/CommunityBoard"));
 const Stories = lazy(() => import("./pages/Stories"));
 const PressKit = lazy(() => import("./pages/PressKit"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
@@ -123,7 +122,6 @@ const App = () => (
               <Route path="/ai-matches" element={<AIMatches />} />
               <Route path="/advertiser" element={<AdvertiserDashboard />} />
               <Route path="/getting-started" element={<GettingStarted />} />
-              <Route path="/community" element={<CommunityBoard />} />
               <Route path="/stories" element={<Stories />} />
               <Route path="/press" element={<PressKit />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
