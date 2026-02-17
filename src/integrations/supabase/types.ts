@@ -319,6 +319,47 @@ export type Database = {
           },
         ]
       }
+      boosted_listings: {
+        Row: {
+          boosted_at: string
+          created_at: string
+          expires_at: string
+          id: string
+          service_id: string
+          status: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          boosted_at?: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          service_id: string
+          status?: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          boosted_at?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          service_id?: string
+          status?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boosted_listings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: true
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       browse_nudges: {
         Row: {
           contacted_at: string | null
