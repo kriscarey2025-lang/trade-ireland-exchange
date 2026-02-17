@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Linkedin, Clover, FileText, Activity, HelpCircle } from "lucide-react";
+import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Linkedin, Clover, FileText, Activity, HelpCircle, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -115,6 +115,7 @@ export function Header() {
 
   const discoverLinks = [
     { href: "/skills", label: "Skill Guides", icon: BookOpen },
+    { href: "/county", label: "County Spotlights", icon: MapPin },
     { href: "/how-it-works", label: "How It Works", icon: Compass },
     { href: "#brainstorm", label: "Brainstorm Ideas", icon: Lightbulb, action: () => setBrainstormOpen(true) },
   ];
