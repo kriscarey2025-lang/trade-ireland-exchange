@@ -643,14 +643,14 @@ export default function NewService() {
           onOpenChange={(open) => {
             setShowMatchDialog(open);
             if (!open) {
-              // After match dialog closes, show boost offer
-              setShowBoostOffer(true);
+              navigate("/browse");
             }
           }}
           newServiceId={createdServiceId}
           newServiceTitle={title}
           newServiceCategory={category}
           userId={user.id}
+          userLocation={location}
         />
       )}
     </div>
