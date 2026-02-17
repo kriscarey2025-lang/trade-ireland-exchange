@@ -114,6 +114,7 @@ export function Header() {
   ];
 
   const discoverLinks = [
+    { href: "/skills", label: "Skill Guides", icon: BookOpen },
     { href: "/how-it-works", label: "How It Works", icon: Compass },
     { href: "#brainstorm", label: "Brainstorm Ideas", icon: Lightbulb, action: () => setBrainstormOpen(true) },
   ];
