@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AIMatchCard } from "@/components/matching/AIMatchCard";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Sparkles, RefreshCw, AlertCircle, ArrowRight } from "lucide-react";
+import { Sparkles, RefreshCw, AlertCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { BoostOfferCard } from "@/components/services/BoostOfferCard";
@@ -115,6 +115,16 @@ export default function AIMatches() {
       <SEO title="AI Skill Matching - SwapSkills Ireland" description="Get AI-powered skill match suggestions to find the perfect swap partners." />
       <Header />
       <main className="flex-1 container py-8">
+        {/* Back navigation */}
+        <div className="mb-6">
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/browse">
+              <ArrowLeft className="mr-1.5 h-4 w-4" />
+              Back to Browse
+            </Link>
+          </Button>
+        </div>
+
         {/* Hero Section */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
