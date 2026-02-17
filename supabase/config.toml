@@ -98,3 +98,6 @@ verify_jwt = false
 
 [functions.verify-boost]
 verify_jwt = false
+
+[functions.send-boost-stats]
+verify_jwt = false
