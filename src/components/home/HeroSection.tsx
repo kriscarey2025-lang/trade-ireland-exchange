@@ -97,6 +97,13 @@ function HeroSectionComponent() {
                   <Coffee className="ml-1 h-3 w-3 md:h-4 md:w-4" />
                 </Button>
               </div>
+              
+              {/* Skill Guides link */}
+              <div className="text-center md:text-left animate-fade-up" style={{ animationDelay: "0.26s" }}>
+                <Link to="/skills" className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2">
+                  🇮🇪 Explore our Skill Guides — fun facts & local listings
+                </Link>
+              </div>
 
               {/* Trustpilot Review Box */}
               <div className="flex justify-center md:justify-start mb-2 md:mb-4 animate-fade-up" style={{ animationDelay: "0.27s" }}>
