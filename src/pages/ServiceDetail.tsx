@@ -43,7 +43,8 @@ import {
   Instagram,
   Globe,
   Handshake,
-  Quote
+  Quote,
+  Sparkles
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
@@ -130,6 +131,7 @@ export default function ServiceDetail() {
   const { user, loading: authLoading } = useAuth();
   const [contactOpen, setContactOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isBoostLoading, setIsBoostLoading] = useState(false);
   const getOrCreateConversation = useGetOrCreateConversation();
 
   // Handle boost verification on redirect from Stripe
@@ -355,6 +357,22 @@ export default function ServiceDetail() {
     return formatted;
   };
 
+  // Check if this listing is already boosted (must be before early returns for hooks rules)
+  const { data: boostStatus } = useQuery({
+    queryKey: ["boost-status", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("boosted_listings")
+        .select("id, expires_at")
+        .eq("service_id", id!)
+        .eq("status", "active")
+        .gt("expires_at", new Date().toISOString())
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!id && !!user && !!service && user.id === service.user_id,
+  });
+
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
@@ -385,6 +403,23 @@ export default function ServiceDetail() {
   }
 
   const isOwner = user?.id === service.user_id;
+  const isBoosted = !!boostStatus;
+
+  const handleBoost = async () => {
+    setIsBoostLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-boost-checkout", {
+        body: { serviceId: service.id },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to start checkout");
+      setIsBoostLoading(false);
+    }
+  };
 
   const serviceUrl = `https://swap-skills.ie/services/${service.id}`;
   
@@ -809,6 +844,31 @@ export default function ServiceDetail() {
                             Edit {service.type === "request" ? "Request" : "Service"}
                           </Link>
                         </Button>
+
+                        {/* Boost Button */}
+                        {!isBoosted && service.status === "active" && (
+                          <Button
+                            variant="outline"
+                            className="w-full border-amber-400/50 text-amber-700 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-950/30"
+                            onClick={handleBoost}
+                            disabled={isBoostLoading}
+                          >
+                            {isBoostLoading ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <Sparkles className="h-4 w-4 mr-2" />
+                            )}
+                            Boost for €5
+                          </Button>
+                        )}
+                        {isBoosted && (
+                          <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-amber-400/50 bg-amber-50/50 dark:bg-amber-950/20">
+                            <Sparkles className="h-4 w-4 text-amber-600" />
+                            <span className="text-sm font-medium text-amber-700 dark:text-amber-400">
+                              Boosted until {new Date(boostStatus!.expires_at).toLocaleDateString('en-IE', { day: 'numeric', month: 'short' })}
+                            </span>
+                          </div>
+                        )}
                         
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
