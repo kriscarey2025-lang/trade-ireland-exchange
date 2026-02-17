@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { SupplyDemandDashboard } from "./SupplyDemandDashboard";
+
 
 function HeroSectionComponent() {
   const { user } = useAuth();
@@ -148,27 +148,21 @@ function HeroSectionComponent() {
               </div>
             </div>
 
-            {/* Right column - Supply & Demand Dashboard */}
-            <div className="animate-fade-up" style={{ animationDelay: "0.2s" }}>
-              <SupplyDemandDashboard />
-
-              
-              {/* Quick social proof - hidden on mobile */}
-              <div className="hidden md:flex mt-4 items-center justify-center gap-4 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base">🇮🇪</span>
-                  <span>100% Irish</span>
-                </div>
-                <div className="w-px h-3 bg-border" />
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base">🤝</span>
-                  <span>100% Free</span>
-                </div>
-                <div className="w-px h-3 bg-border" />
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base">✨</span>
-                  <span>No Money</span>
-                </div>
+            {/* Right column - Social proof */}
+            <div className="hidden md:flex animate-fade-up items-center justify-center gap-4 text-xs text-muted-foreground" style={{ animationDelay: "0.2s" }}>
+              <div className="flex items-center gap-1.5">
+                <span className="text-base">🇮🇪</span>
+                <span>100% Irish</span>
+              </div>
+              <div className="w-px h-3 bg-border" />
+              <div className="flex items-center gap-1.5">
+                <span className="text-base">🤝</span>
+                <span>100% Free</span>
+              </div>
+              <div className="w-px h-3 bg-border" />
+              <div className="flex items-center gap-1.5">
+                <span className="text-base">✨</span>
+                <span>No Money</span>
               </div>
             </div>
           </div>
