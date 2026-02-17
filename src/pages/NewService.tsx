@@ -643,7 +643,7 @@ export default function NewService() {
           onOpenChange={(open) => {
             setShowMatchDialog(open);
             if (!open) {
-              navigate("/browse");
+              setShowBoostOffer(true);
             }
           }}
           newServiceId={createdServiceId}
