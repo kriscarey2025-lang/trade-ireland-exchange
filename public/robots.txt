@@ -2,12 +2,12 @@
 # https://swap-skills.ie
 
 User-agent: *
-Allow: /county
-Allow: /county/*
 Allow: /
 Allow: /browse
 Allow: /skills
 Allow: /skills/*
+Allow: /county
+Allow: /county/*
 Allow: /about
 Allow: /how-it-works
 Allow: /faq
@@ -38,6 +38,12 @@ Disallow: /advertiser
 Disallow: /welcome
 Disallow: /seed-images
 Disallow: /flyer
+Disallow: /reset-password
+Disallow: /matches
+Disallow: /ai-matches
+Disallow: /sponsor-success
+Disallow: /unsubscribe
+Disallow: /home
 
 # Disallow old singular /service/ path (redirects to /services/)
 Disallow: /service/*
