@@ -15,7 +15,6 @@ Allow: /cookies
 Allow: /auth
 Allow: /services/*
 Allow: /stories
-Allow: /community
 Allow: /press
 Allow: /getting-started
 Allow: /advertise
