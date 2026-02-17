@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, RefreshCw, AlertCircle, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
+import { BoostOfferCard } from "@/components/services/BoostOfferCard";
 
 export default function AIMatches() {
   const { user } = useAuth();
@@ -21,7 +22,19 @@ export default function AIMatches() {
     showNewMatches?: boolean; 
     newServiceTitle?: string;
     newServiceCategory?: string;
+    showBoostOffer?: boolean;
+    boostServiceId?: string;
   } | null;
+  
+  const [showBoostOffer, setShowBoostOffer] = useState(false);
+  const [boostServiceId, setBoostServiceId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (navigationState?.showBoostOffer && navigationState?.boostServiceId) {
+      setShowBoostOffer(true);
+      setBoostServiceId(navigationState.boostServiceId);
+    }
+  }, [navigationState]);
   
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['ai-matches', user?.id],
@@ -69,6 +82,14 @@ export default function AIMatches() {
                 potential swap partners within your preferred radius.
               </p>
             </div>
+
+            {/* Boost offer after posting */}
+            {showBoostOffer && boostServiceId && (
+              <BoostOfferCard
+                serviceId={boostServiceId}
+                onDismiss={() => setShowBoostOffer(false)}
+              />
+            )}
 
             <Card>
               <CardContent className="pt-6 text-center">

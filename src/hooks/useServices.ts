@@ -71,6 +71,7 @@ export interface ServiceWithUser {
   completedSwapsCount?: number;
   isTimeSensitive?: boolean;
   neededByDate?: Date | null;
+  isBoosted?: boolean;
   user?: {
     id: string | null;
     name: string;
@@ -179,38 +180,50 @@ export function useServices(options: UseServicesOptions = {}) {
 
       const services = (data as SecureServiceResponse[]).map(transformSecureService);
       
-      // Fetch ratings and user completed swaps in batch queries
+      // Fetch ratings and boost status in parallel
       const userIds = [...new Set(services.map(s => s.userId).filter(Boolean))] as string[];
+      const serviceIds = services.map(s => s.id);
       
-      if (userIds.length > 0) {
-        // Use a single query to get all reviews and aggregate on client
-        const { data: reviewsData } = await supabase
-          .from("reviews")
-          .select("reviewed_user_id, user_rating")
-          .in("reviewed_user_id", userIds);
-        
-        const ratingsMap = new Map<string, { sum: number; count: number }>();
-        
-        if (reviewsData) {
-          reviewsData.forEach(review => {
-            const existing = ratingsMap.get(review.reviewed_user_id) || { sum: 0, count: 0 };
-            ratingsMap.set(review.reviewed_user_id, {
-              sum: existing.sum + review.user_rating,
-              count: existing.count + 1
-            });
+      const [reviewsResult, boostsResult] = await Promise.all([
+        userIds.length > 0
+          ? supabase
+              .from("reviews")
+              .select("reviewed_user_id, user_rating")
+              .in("reviewed_user_id", userIds)
+          : Promise.resolve({ data: null }),
+        supabase
+          .from("boosted_listings")
+          .select("service_id")
+          .in("service_id", serviceIds)
+          .eq("status", "active")
+          .gt("expires_at", new Date().toISOString()),
+      ]);
+      
+      // Build ratings map
+      const ratingsMap = new Map<string, { sum: number; count: number }>();
+      if (reviewsResult.data) {
+        reviewsResult.data.forEach((review: any) => {
+          const existing = ratingsMap.get(review.reviewed_user_id) || { sum: 0, count: 0 };
+          ratingsMap.set(review.reviewed_user_id, {
+            sum: existing.sum + review.user_rating,
+            count: existing.count + 1
           });
-        }
-        
-        // Update services with calculated average ratings (completedTrades already set from DB)
-        services.forEach(service => {
-          if (service.user && service.userId) {
-            if (ratingsMap.has(service.userId)) {
-              const rating = ratingsMap.get(service.userId)!;
-              service.user.rating = rating.sum / rating.count;
-            }
-          }
         });
       }
+      
+      // Build boosted set
+      const boostedSet = new Set(boostsResult.data?.map((b: any) => b.service_id) || []);
+      
+      // Update services
+      services.forEach(service => {
+        service.isBoosted = boostedSet.has(service.id);
+        if (service.user && service.userId) {
+          if (ratingsMap.has(service.userId)) {
+            const rating = ratingsMap.get(service.userId)!;
+            service.user.rating = rating.sum / rating.count;
+          }
+        }
+      });
       
       return services;
     },
