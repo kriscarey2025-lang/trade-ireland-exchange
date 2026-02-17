@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,12 +15,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Edit2, Trash2, Plus, MapPin, Package } from "lucide-react";
+import { Edit2, Trash2, Plus, MapPin, Package, Sparkles, Loader2 } from "lucide-react";
 import { useUserServices, ServiceWithUser } from "@/hooks/useServices";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 
 interface UserListingsProps {
   userId: string;
@@ -29,6 +30,21 @@ export function UserListings({ userId }: UserListingsProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: services, isLoading, error } = useUserServices(userId);
+
+  // Fetch active boosts for this user's services
+  const { data: boostedServiceIds = [] } = useQuery({
+    queryKey: ["user-boosts", userId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("boosted_listings")
+        .select("service_id")
+        .eq("user_id", userId)
+        .eq("status", "active")
+        .gt("expires_at", new Date().toISOString());
+      return data?.map(b => b.service_id) || [];
+    },
+    enabled: !!userId,
+  });
 
   const handleDelete = async (serviceId: string) => {
     const { error } = await supabase
@@ -103,6 +119,7 @@ export function UserListings({ userId }: UserListingsProps) {
                 key={service.id} 
                 service={service} 
                 onDelete={handleDelete}
+                isBoosted={boostedServiceIds.includes(service.id)}
               />
             ))}
           </div>
@@ -127,11 +144,31 @@ export function UserListings({ userId }: UserListingsProps) {
 interface ListingItemProps {
   service: ServiceWithUser;
   onDelete: (id: string) => void;
+  isBoosted: boolean;
 }
 
-function ListingItem({ service, onDelete }: ListingItemProps) {
+function ListingItem({ service, onDelete, isBoosted }: ListingItemProps) {
   const navigate = useNavigate();
+  const [isBoostLoading, setIsBoostLoading] = useState(false);
   const isOffer = service.type === "free_offer" || service.type === "skill_swap";
+
+  const handleBoost = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsBoostLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-boost-checkout", {
+        body: { serviceId: service.id },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to start checkout");
+      setIsBoostLoading(false);
+    }
+  };
 
   return (
     <div className="flex items-center gap-4 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors">
@@ -172,6 +209,30 @@ function ListingItem({ service, onDelete }: ListingItemProps) {
       </div>
       
       <div className="flex items-center gap-2 shrink-0">
+        {!isBoosted && service.status === "active" && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg h-8 px-2.5 text-xs border-amber-400/50 text-amber-700 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-950/30"
+            onClick={handleBoost}
+            disabled={isBoostLoading}
+          >
+            {isBoostLoading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <>
+                <Sparkles className="h-3.5 w-3.5 mr-1" />
+                Boost
+              </>
+            )}
+          </Button>
+        )}
+        {isBoosted && (
+          <Badge variant="outline" className="border-amber-400/50 text-amber-700 dark:text-amber-400 text-xs">
+            <Sparkles className="h-3 w-3 mr-1" />
+            Boosted
+          </Badge>
+        )}
         <Button
           variant="outline"
           size="sm"

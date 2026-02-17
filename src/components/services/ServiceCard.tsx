@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, ExternalLink, RefreshCw, Share2, Copy, Handshake, Send, Loader2, AlertTriangle, Zap } from "lucide-react";
+import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, ExternalLink, RefreshCw, Share2, Copy, Handshake, Send, Loader2, AlertTriangle, Zap, Sparkles } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
 import { ServiceCategory, PostCategory } from "@/types";
@@ -50,6 +50,7 @@ interface ServiceData {
   isTimeSensitive?: boolean;
   neededByDate?: Date | null;
   createdAt?: Date;
+  isBoosted?: boolean;
   user?: ServiceUser;
 }
 
@@ -205,9 +206,11 @@ export function ServiceCard({
       <Card className={cn(
         "overflow-hidden cursor-pointer border-2 bg-card h-full flex flex-col will-change-auto",
         "sm:hover:border-primary sm:hover:shadow-lg sm:transition-shadow sm:duration-200",
-        service.isTimeSensitive 
-          ? "border-orange-400 dark:border-orange-500" 
-          : "border-primary/30",
+        service.isBoosted
+          ? "border-amber-400 dark:border-amber-500 ring-1 ring-amber-400/30"
+          : service.isTimeSensitive 
+            ? "border-orange-400 dark:border-orange-500" 
+            : "border-primary/30",
         className
       )}>
         {/* Post Type Banner */}
@@ -223,6 +226,12 @@ export function ServiceCard({
             {service.type === "help_request" && "🙋 Looking for Help"}
           </span>
           <div className="flex items-center gap-2">
+            {service.isBoosted && (
+              <span className="bg-amber-400/90 text-amber-950 px-2 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
+                <Sparkles className="h-3 w-3" />
+                Boosted
+              </span>
+            )}
             {service.isTimeSensitive && (
               <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-semibold flex items-center gap-1">
                 <Zap className="h-3 w-3" />

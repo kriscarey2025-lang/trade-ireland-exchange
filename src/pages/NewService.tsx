@@ -32,6 +32,7 @@ import { useContentModeration } from "@/hooks/useContentModeration";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { trackServiceCreatedHubSpot } from "@/hooks/useHubSpot";
 import { PostCreationMatchDialog } from "@/components/services/PostCreationMatchDialog";
+import { BoostOfferCard } from "@/components/services/BoostOfferCard";
 import { format, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -62,6 +63,7 @@ export default function NewService() {
   // Match dialog state
   const [showMatchDialog, setShowMatchDialog] = useState(false);
   const [createdServiceId, setCreatedServiceId] = useState<string | null>(null);
+  const [showBoostOffer, setShowBoostOffer] = useState(false);
   
   // Get initial post category from URL param, default to skill_swap
   const getInitialPostCategory = (): PostCategory => {
@@ -203,10 +205,14 @@ export default function NewService() {
     
     setIsSubmitting(false);
     
-    // For skill_swap posts, show the match dialog instead of navigating away
+    // For skill_swap posts, show the match dialog (which navigates to matches)
+    // then show boost offer. For other types, show boost offer directly.
     if (postCategory === "skill_swap" && moderationResult.approved) {
       setCreatedServiceId(newService.id);
       setShowMatchDialog(true);
+    } else if (moderationResult.approved) {
+      setCreatedServiceId(newService.id);
+      setShowBoostOffer(true);
     } else {
       navigate("/browse");
     }
@@ -615,14 +621,30 @@ export default function NewService() {
         </div>
       </main>
 
-      {/* Post-creation match dialog */}
+      {/* Boost offer for non-skill-swap posts */}
+      {showBoostOffer && createdServiceId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="max-w-lg w-full">
+            <BoostOfferCard
+              serviceId={createdServiceId}
+              onDismiss={() => {
+                setShowBoostOffer(false);
+                navigate("/browse");
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Post-creation match dialog (skill_swap only) */}
       {user && createdServiceId && (
         <PostCreationMatchDialog
           open={showMatchDialog}
           onOpenChange={(open) => {
             setShowMatchDialog(open);
             if (!open) {
-              navigate("/browse");
+              // After match dialog closes, show boost offer
+              setShowBoostOffer(true);
             }
           }}
           newServiceId={createdServiceId}

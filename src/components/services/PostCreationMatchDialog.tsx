@@ -23,23 +23,25 @@ export function PostCreationMatchDialog({
 
   useEffect(() => {
     if (open) {
-      // Close the dialog and navigate to AI Matches page
+      // Close the dialog
       onOpenChange(false);
       
       toast.success("Skill posted! 🎉", {
         description: "Finding people who want your skill...",
       });
       
-      // Navigate to AI Matches page with a flag to highlight new matches
+      // Navigate to AI Matches page with boost offer flag
       navigate("/matches", { 
         state: { 
           newServiceCategory,
           newServiceTitle,
-          showNewMatches: true 
+          showNewMatches: true,
+          showBoostOffer: true,
+          boostServiceId: newServiceId,
         } 
       });
     }
-  }, [open, onOpenChange, navigate, newServiceCategory, newServiceTitle]);
+  }, [open, onOpenChange, navigate, newServiceCategory, newServiceTitle, newServiceId]);
 
   // This component no longer renders anything - it just handles navigation
   return null;

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -125,11 +125,39 @@ function FeaturedReview({ text, reviewerName }: { text: string; reviewerName: st
 export default function ServiceDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { user, loading: authLoading } = useAuth();
   const [contactOpen, setContactOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const getOrCreateConversation = useGetOrCreateConversation();
+
+  // Handle boost verification on redirect from Stripe
+  useEffect(() => {
+    const boosted = searchParams.get("boosted");
+    const sessionId = searchParams.get("session_id");
+    
+    if (boosted === "true" && sessionId && user) {
+      // Clean up URL params
+      setSearchParams({});
+      
+      // Verify the boost
+      supabase.functions.invoke("verify-boost", {
+        body: { sessionId },
+      }).then(({ data, error }) => {
+        if (error) {
+          toast.error("Failed to activate boost");
+          console.error("Boost verification error:", error);
+        } else {
+          toast.success("🚀 Your listing is now boosted!", {
+            description: "It will appear at the top of browse results for 30 days.",
+            duration: 6000,
+          });
+          queryClient.invalidateQueries({ queryKey: ["services"] });
+        }
+      });
+    }
+  }, [searchParams, user, setSearchParams, queryClient]);
 
   // Prevent a race where we fetch an "anonymous" view before auth is hydrated,
   // then React Query caches it and keeps showing "Sign in" even though the user is logged in.
