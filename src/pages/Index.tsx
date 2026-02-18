@@ -144,10 +144,10 @@ const Index = () => {
               
               <div className="container text-center relative">
                 {/* Mobile-only compact hero - reserve minimum height */}
-                <div className="md:hidden" style={{ minHeight: '140px' }}>
+                <div className="md:hidden" style={{ minHeight: '160px' }}>
                   {/* Trust badge */}
                    {!user && !loading && (
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-[11px] font-semibold mb-2">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-[11px] font-semibold mb-4">
                       <span className="relative flex h-1.5 w-1.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
@@ -156,27 +156,18 @@ const Index = () => {
                     </div>
                   )}
                   
-                  <h1 className="text-2xl font-bold tracking-tight mb-1.5">
+                  <h1 className="text-2xl font-bold tracking-tight mb-3">
                     <span className="gradient-text">Swap skills.</span>{" "}
                     <span className="text-foreground">Save money.</span>
                   </h1>
                   
-                  <p className="text-xs text-muted-foreground mb-3">
+                  <p className="text-xs text-muted-foreground mb-4">
                     Trade talents with neighbours — <span className="font-semibold text-foreground">100% free</span>
                   </p>
                   
-                  {/* Compact social proof strip */}
-                  <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground mb-3">
-                    <span className="flex items-center gap-1">🇮🇪 Irish Made</span>
-                    <span className="text-border">•</span>
-                    <span className="flex items-center gap-1">🤝 Free Forever</span>
-                    <span className="text-border">•</span>
-                    <span className="flex items-center gap-1">✓ Verified Users</span>
-                  </div>
-                  
                   {/* Mobile CTA - only for non-logged-in users */}
                    {!user && !loading && (
-                    <div className="flex gap-2 mb-2">
+                    <div className="flex gap-2 mb-3">
                       <Button 
                         size="sm" 
                         className="flex-1 rounded-full h-9 text-xs font-semibold shadow-md" 
@@ -285,8 +276,8 @@ const Index = () => {
               </div>
             </section>
 
-            {/* Sponsorship CTA Banner */}
-            <div className="bg-amber-100 dark:bg-amber-950/40 border-y border-amber-200 dark:border-amber-800 py-3 px-4">
+            {/* Sponsorship CTA Banner - desktop only */}
+            <div className="hidden md:block bg-amber-100 dark:bg-amber-950/40 border-y border-amber-200 dark:border-amber-800 py-3 px-4">
               <Link to="/advertise" className="flex items-center justify-center gap-2 text-center hover:opacity-80 transition-opacity">
                 <span className="text-sm md:text-base font-medium text-amber-800 dark:text-amber-200">
                   💼 Support SwapSkills through Sponsorship & Business Advertisement
