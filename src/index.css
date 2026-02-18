@@ -53,16 +53,19 @@
 
     /* Gradients - warm and inviting */
     --gradient-hero: linear-gradient(135deg, hsl(18 70% 50%) 0%, hsl(28 75% 55%) 50%, hsl(38 80% 60%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(40 40% 99%) 0%, hsl(35 35% 96%) 100%);
+    --gradient-card: linear-gradient(160deg, hsl(40 60% 99%) 0%, hsl(35 40% 97%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(145 35% 42%) 0%, hsl(155 40% 50%) 100%);
     --gradient-warm: linear-gradient(135deg, hsl(18 70% 50%) 0%, hsl(38 75% 55%) 50%, hsl(145 35% 42%) 100%);
+    --gradient-section-alt: linear-gradient(180deg, hsl(35 40% 96%) 0%, hsl(40 30% 98%) 100%);
+    --gradient-section-feature: linear-gradient(160deg, hsl(18 40% 97%) 0%, hsl(145 20% 96%) 100%);
 
-    /* Shadows - softer, warmer */
-    --shadow-sm: 0 2px 8px -2px hsl(25 25% 15% / 0.06);
-    --shadow-md: 0 8px 16px -4px hsl(25 25% 15% / 0.08), 0 2px 8px -2px hsl(25 25% 15% / 0.04);
-    --shadow-lg: 0 16px 32px -8px hsl(25 25% 15% / 0.1), 0 8px 16px -4px hsl(25 25% 15% / 0.06);
-    --shadow-glow: 0 0 60px hsl(18 70% 50% / 0.15);
-    --shadow-warm: 0 8px 30px hsl(38 75% 55% / 0.15);
+    /* Shadows - modern and lifted */
+    --shadow-sm: 0 2px 12px -2px hsl(25 25% 15% / 0.09), 0 1px 3px hsl(25 25% 15% / 0.06);
+    --shadow-md: 0 8px 24px -4px hsl(25 25% 15% / 0.12), 0 3px 8px -2px hsl(25 25% 15% / 0.07);
+    --shadow-lg: 0 20px 48px -8px hsl(25 25% 15% / 0.15), 0 8px 20px -4px hsl(25 25% 15% / 0.09);
+    --shadow-glow: 0 0 80px hsl(18 70% 50% / 0.22), 0 0 20px hsl(18 70% 50% / 0.1);
+    --shadow-warm: 0 12px 40px hsl(38 75% 55% / 0.2), 0 4px 12px hsl(18 70% 50% / 0.1);
+    --shadow-fun: 4px 4px 0px hsl(18 70% 50% / 0.3);
 
     --sidebar-background: 40 30% 97%;
     --sidebar-foreground: 25 25% 25%;
@@ -129,8 +132,14 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Fraunces', Georgia, serif;
-    @apply font-semibold tracking-tight;
+    @apply font-semibold;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
+
+  h1 { letter-spacing: -0.03em; line-height: 1.1; }
+  h2 { letter-spacing: -0.025em; }
+  h3 { letter-spacing: -0.015em; line-height: 1.2; }
 }
 
 @layer utilities {
@@ -251,7 +260,7 @@
   }
 
   .hover-lift:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow-lg);
   }
 
@@ -272,7 +281,16 @@
   }
 
   .glass-effect {
-    @apply backdrop-blur-xl bg-card/80;
+    @apply backdrop-blur-xl;
+    background: hsl(var(--card) / 0.75);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .glass-card {
+    @apply backdrop-blur-md rounded-2xl;
+    background: hsl(var(--card) / 0.8);
+    border: 1px solid hsl(var(--border) / 0.4);
+    box-shadow: var(--shadow-md), inset 0 1px 0 hsl(40 60% 99% / 0.6);
   }
 
   .gradient-text {
@@ -300,18 +318,28 @@
   }
 
   .cozy-shadow {
-    box-shadow: 0 4px 20px hsl(25 25% 15% / 0.08);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Section zoning helpers */
+  .section-alt {
+    background: var(--gradient-section-alt);
+  }
+
+  .section-feature {
+    background: var(--gradient-section-feature);
   }
 
   /* Mobile card improvements */
   .mobile-card {
-    @apply rounded-2xl bg-card shadow-sm transition-all duration-200;
+    @apply rounded-2xl bg-card shadow-medium transition-all duration-200;
   }
 
   .mobile-card:active {
-    @apply scale-[0.98] shadow-none;
+    @apply scale-[0.98] shadow-soft;
   }
 }
+
 
 @keyframes fadeIn {
   from {

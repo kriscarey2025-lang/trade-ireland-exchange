@@ -127,11 +127,11 @@ const Index = () => {
       <div className="min-h-screen flex flex-col">
         <Header />
         <ActionRequiredBanner />
-        <main className="flex-1 bg-secondary/20">
+        <main className="flex-1">
           <AdsLayout>
             {/* Hero Section - COMPACT for mobile, optimized for CLS */}
             <section 
-              className="py-4 md:py-10 bg-gradient-to-b from-background to-secondary/30 relative overflow-hidden"
+              className="py-4 md:py-10 relative overflow-hidden section-feature"
               style={{ minHeight: '180px', contentVisibility: 'auto', containIntrinsicSize: '0 200px' }}
             >
               {/* Subtle animated background - aria-hidden to prevent a11y issues */}
@@ -277,12 +277,12 @@ const Index = () => {
             </section>
 
             {/* Sponsorship CTA Banner - desktop only */}
-            <div className="hidden md:block bg-amber-100 dark:bg-amber-950/40 border-y border-amber-200 dark:border-amber-800 py-3 px-4">
+            <div className="hidden md:block bg-highlight/10 border-y border-highlight/20 py-3 px-4">
               <Link to="/advertise" className="flex items-center justify-center gap-2 text-center hover:opacity-80 transition-opacity">
-                <span className="text-sm md:text-base font-medium text-amber-800 dark:text-amber-200">
+                <span className="text-sm md:text-base font-medium text-foreground/80">
                   💼 Support SwapSkills through Sponsorship & Business Advertisement
                 </span>
-                <ArrowRight className="h-4 w-4 text-amber-700 dark:text-amber-300 shrink-0" />
+                <ArrowRight className="h-4 w-4 text-primary shrink-0" />
               </Link>
             </div>
 
