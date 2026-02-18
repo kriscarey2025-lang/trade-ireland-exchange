@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
       { url: '/faq', priority: '0.6', changefreq: 'monthly' },
       { url: '/safety', priority: '0.6', changefreq: 'monthly' },
       { url: '/contact', priority: '0.6', changefreq: 'monthly' },
-      { url: '/getting-started', priority: '0.5', changefreq: 'monthly' },
+      
       { url: '/sponsors', priority: '0.5', changefreq: 'monthly' },
       { url: '/community-hero', priority: '0.5', changefreq: 'monthly' },
       { url: '/advertise', priority: '0.5', changefreq: 'monthly' },
