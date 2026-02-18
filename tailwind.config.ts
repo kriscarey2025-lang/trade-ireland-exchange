@@ -94,6 +94,8 @@ export default {
         'gradient-card': 'var(--gradient-card)',
         'gradient-accent': 'var(--gradient-accent)',
         'gradient-warm': 'var(--gradient-warm)',
+        'gradient-section-alt': 'var(--gradient-section-alt)',
+        'gradient-section-feature': 'var(--gradient-section-feature)',
       },
       keyframes: {
         "accordion-down": {
