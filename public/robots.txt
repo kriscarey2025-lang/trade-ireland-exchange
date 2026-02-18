@@ -20,13 +20,14 @@ Allow: /auth
 Allow: /services/*
 Allow: /stories
 Allow: /press
-Allow: /getting-started
+
 Allow: /advertise
 Allow: /sponsors
 Allow: /community-hero
 
 # Disallow admin and private pages
 Disallow: /admin*
+Disallow: /getting-started
 Disallow: /profile
 Disallow: /messages
 Disallow: /conversation/*
