@@ -348,6 +348,36 @@ export default function NewService() {
                   </RadioGroup>
                 </div>
 
+                {/* Boost Your Post - Prominent placement */}
+                <div className="rounded-xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 p-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                        <Sparkles className="h-4 w-4 text-white" />
+                      </div>
+                      <div>
+                        <Label htmlFor="boost-toggle" className="font-semibold text-base cursor-pointer">
+                          Boost this post
+                        </Label>
+                      </div>
+                    </div>
+                    <Switch
+                      id="boost-toggle"
+                      checked={wantsBoost}
+                      onCheckedChange={setWantsBoost}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    For just <span className="font-bold text-foreground">€5</span> (one-off), your listing gets pinned to the top of browse results for 30 days with a highlighted card and weekly performance stats by email.
+                  </p>
+                  {wantsBoost && (
+                    <p className="text-xs text-muted-foreground border-t border-amber-200 dark:border-amber-800 pt-2">
+                      ✨ You'll be taken to a secure checkout after posting.
+                    </p>
+                  )}
+                </div>
+
                 {/* Section 1: Your Skill / What You Need */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 pb-2 border-b border-border">
@@ -577,44 +607,6 @@ export default function NewService() {
                   </div>
                 </div>
 
-                {/* Boost Your Post */}
-                <div className="space-y-3 pt-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-amber-500" />
-                      <Label htmlFor="boost-toggle" className="font-semibold text-base cursor-pointer">
-                        Boost this post
-                      </Label>
-                    </div>
-                    <Switch
-                      id="boost-toggle"
-                      checked={wantsBoost}
-                      onCheckedChange={setWantsBoost}
-                      disabled={isSubmitting}
-                    />
-                  </div>
-                  {wantsBoost && (
-                    <div className="rounded-xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 p-4 space-y-2">
-                      <p className="text-sm text-muted-foreground">
-                        For just <span className="font-bold text-foreground">€5</span> (one-off), your listing gets:
-                      </p>
-                      <ul className="text-sm space-y-1.5">
-                        <li className="flex items-center gap-2">
-                          <span className="text-amber-500">✦</span> Pinned to top of browse results for 30 days
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-amber-500">✦</span> Highlighted card with golden badge
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-amber-500">✦</span> Weekly performance stats by email
-                        </li>
-                      </ul>
-                      <p className="text-xs text-muted-foreground pt-1">
-                        You'll be taken to a secure checkout after posting.
-                      </p>
-                    </div>
-                  )}
-                </div>
 
                 {/* Submit - Desktop */}
                 <div className="hidden md:flex pt-4 gap-3">
