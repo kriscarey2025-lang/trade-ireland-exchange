@@ -58,6 +58,12 @@ export function DiscoveryStep({ onComplete, userLocation }: DiscoveryStepProps) 
         .filter((s: LocalService) => s.user_id !== user?.id)
         .slice(0, ITEMS_PER_PAGE * MAX_PAGES);
 
+      // If no listings found in the area, skip discovery and go straight to completion
+      if (filteredServices.length === 0) {
+        onComplete();
+        return;
+      }
+
       setAllServices(filteredServices);
     } catch (error) {
       console.error("Error fetching services:", error);
