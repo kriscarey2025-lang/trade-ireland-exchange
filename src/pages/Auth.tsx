@@ -103,8 +103,6 @@ export default function Auth() {
   const [signupPassword, setSignupPassword] = useState("");
   const [signupLocation, setSignupLocation] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [agreedToDisclaimer, setAgreedToDisclaimer] = useState(false);
-  const [agreedToConduct, setAgreedToConduct] = useState(false);
 
   // Password strength
   const passwordStrength = useMemo(() => getPasswordStrength(signupPassword), [signupPassword]);
@@ -199,8 +197,8 @@ export default function Auth() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!agreedToTerms || !agreedToDisclaimer || !agreedToConduct) {
-      toast.error("Please agree to all required conditions before signing up");
+    if (!agreedToTerms) {
+      toast.error("Please agree to the terms before signing up");
       return;
     }
 
@@ -662,56 +660,30 @@ export default function Auth() {
                         )}
                       </div>
                       
-                      <div className="space-y-3 rounded-xl border border-border p-4 bg-muted/30">
-                        <p className="text-sm font-semibold text-foreground">Before signing up, please confirm:</p>
-                        
-                        <div className="space-y-3">
-                          <label className="flex items-start gap-3 cursor-pointer group">
-                            <Checkbox
-                              id="terms"
-                              checked={agreedToTerms}
-                              onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
-                              disabled={isLoading}
-                              className="mt-0.5"
-                            />
-                            <span className="text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
-                              I have read the{" "}
-                              <Link to="/terms" className="text-primary hover:underline font-medium">
-                                Terms
-                              </Link>{" "}
-                              and{" "}
-                              <Link to="/privacy" className="text-primary hover:underline font-medium">
-                                Privacy Policy
-                              </Link>
-                            </span>
-                          </label>
-
-                          <label className="flex items-start gap-3 cursor-pointer group">
-                            <Checkbox
-                              id="disclaimer"
-                              checked={agreedToDisclaimer}
-                              onCheckedChange={(checked) => setAgreedToDisclaimer(checked as boolean)}
-                              disabled={isLoading}
-                              className="mt-0.5"
-                            />
-                            <span className="text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
-                              I understand SwapSkills is not responsible for services listed or personal safety
-                            </span>
-                          </label>
-
-                          <label className="flex items-start gap-3 cursor-pointer group">
-                            <Checkbox
-                              id="conduct"
-                              checked={agreedToConduct}
-                              onCheckedChange={(checked) => setAgreedToConduct(checked as boolean)}
-                              disabled={isLoading}
-                              className="mt-0.5"
-                            />
-                            <span className="text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
-                              I commit to being kind and respectful
-                            </span>
-                          </label>
-                        </div>
+                      <div className="rounded-xl border border-border p-4 bg-muted/30">
+                        <label className="flex items-start gap-3 cursor-pointer group">
+                          <Checkbox
+                            id="terms"
+                            checked={agreedToTerms}
+                            onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+                            disabled={isLoading}
+                            className="mt-0.5"
+                          />
+                          <span className="text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
+                            I agree to the{" "}
+                            <Link to="/terms" className="text-primary hover:underline font-medium">
+                              Terms
+                            </Link>
+                            ,{" "}
+                            <Link to="/privacy" className="text-primary hover:underline font-medium">
+                              Privacy Policy
+                            </Link>
+                            {" "}and{" "}
+                            <Link to="/safety" className="text-primary hover:underline font-medium">
+                              Community Guidelines
+                            </Link>
+                          </span>
+                        </label>
                       </div>
                       
                       <Button
