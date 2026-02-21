@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Clock, Star, ArrowUpRight, Linkedin, Facebook, Instagram, ExternalLink, RefreshCw, Share2, Copy, Handshake, Send, Loader2, AlertTriangle, Zap, Sparkles } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
+import { serviceUrl as buildServiceUrl, serviceCanonicalUrl } from "@/lib/slugify";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
@@ -157,7 +158,7 @@ export function ServiceCard({
     }
   };
 
-  const shareUrl = `https://swap-skills.ie/services/${service.id}`;
+  const shareUrl = serviceCanonicalUrl(service.title, service.id);
   const shareText = `Check out "${service.title}" on SwapSkills - Trade skills, not money! 🔄`;
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedText = encodeURIComponent(shareText);
@@ -202,7 +203,7 @@ export function ServiceCard({
   };
   const hasImage = service.images && service.images.length > 0 && service.images[0];
 
-  return <Link to={`/services/${service.id}`} className="block h-full">
+  return <Link to={buildServiceUrl(service.title, service.id)} className="block h-full">
       <Card className={cn(
         "overflow-hidden cursor-pointer border-2 bg-card h-full flex flex-col will-change-auto",
         "sm:hover:border-primary sm:hover:shadow-lg sm:transition-shadow sm:duration-200",

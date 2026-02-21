@@ -8,9 +8,22 @@ const BASE_URL = 'https://swap-skills.ie';
 
 interface Service {
   id: string;
+  title: string;
   updated_at: string;
   created_at: string;
 }
+
+const slugify = (title: string, id: string): string => {
+  const slug = title
+    .toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 60);
+  return `${slug}-${id}`;
+};
 
 const staticPages = [
   { url: '/', priority: '1.0', changefreq: 'daily' },
@@ -92,7 +105,7 @@ export async function generateSitemap(): Promise<string> {
   try {
     const { data, error } = await supabase
       .from('services')
-      .select('id, updated_at, created_at')
+      .select('id, title, updated_at, created_at')
       .eq('status', 'active')
       .eq('moderation_status', 'approved');
     
@@ -130,8 +143,9 @@ export async function generateSitemap(): Promise<string> {
 `;
     for (const service of services) {
       const lastmod = new Date(service.updated_at || service.created_at).toISOString().split('T')[0];
+      const serviceSlug = slugify(service.title, service.id);
     xml += `  <url>
-    <loc>${BASE_URL}/services/${service.id}</loc>
+    <loc>${BASE_URL}/services/${serviceSlug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

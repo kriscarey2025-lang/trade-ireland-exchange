@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -192,7 +193,7 @@ function ListingItem({ service, onDelete, isBoosted }: ListingItemProps) {
         </div>
         
         <Link 
-          to={`/services/${service.id}`}
+          to={buildServiceUrl(service.title, service.id)}
           className="font-medium text-sm hover:text-primary transition-colors line-clamp-1"
         >
           {service.title}
@@ -237,7 +238,7 @@ function ListingItem({ service, onDelete, isBoosted }: ListingItemProps) {
           variant="outline"
           size="sm"
           className="rounded-lg h-8 w-8 p-0"
-          onClick={() => navigate(`/services/${service.id}/edit`)}
+          onClick={() => navigate(`/services/${service.id}/edit`)}  
         >
           <Edit2 className="h-4 w-4" />
           <span className="sr-only">Edit</span>

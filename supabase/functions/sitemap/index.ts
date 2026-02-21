@@ -26,6 +26,19 @@ Deno.serve(async (req) => {
       .eq('moderation_status', 'approved')
       .order('updated_at', { ascending: false });
 
+    // Slugify helper
+    const slugify = (title: string, id: string): string => {
+      const slug = title
+        .toLowerCase()
+        .replace(/['']/g, '')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 60);
+      return `${slug}-${id}`;
+    };
+
     if (error) {
       console.error('Error fetching services:', error);
       throw error;
@@ -122,9 +135,9 @@ Deno.serve(async (req) => {
     if (services && services.length > 0) {
       for (const service of services) {
         const lastmod = new Date(service.updated_at || service.created_at).toISOString().split('T')[0];
-        // Services get priority 0.8 - they're important content
+        const serviceSlug = slugify(service.title, service.id);
         xml += `  <url>
-    <loc>${baseUrl}/services/${service.id}</loc>
+    <loc>${baseUrl}/services/${serviceSlug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

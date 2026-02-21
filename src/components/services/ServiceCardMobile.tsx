@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { MapPin, Star, Send, Loader2, Zap, RefreshCw, Linkedin, Facebook, Instagram, Handshake, Globe, ExternalLink } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
@@ -153,7 +154,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
   return (
     <div className={cn("relative bg-card rounded-xl border border-border overflow-hidden service-card-mobile w-full", className)}>
       <Link 
-        to={`/services/${service.id}`} 
+        to={buildServiceUrl(service.title, service.id)} 
         className="block active:scale-[0.98] transition-transform"
       >
         {/* Post Type Banner */}
@@ -397,7 +398,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
               className="h-8 px-3 text-xs flex-1"
               asChild
             >
-              <Link to={`/services/${service.id}`}>
+              <Link to={buildServiceUrl(service.title, service.id)}>
                 Read more
               </Link>
             </Button>
@@ -429,7 +430,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
             className="h-8 px-3 text-xs flex-1"
             asChild
           >
-            <Link to={`/services/${service.id}`}>
+            <Link to={buildServiceUrl(service.title, service.id)}>
               Read more
             </Link>
           </Button>
