@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Sparkles, Send, CheckCircle, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
 import { useStartConversation } from "@/hooks/useMessaging";
@@ -141,7 +142,7 @@ export function AIMatchCard({ match, isNewMatch }: AIMatchCardProps) {
                     {match.service.category}
                   </Badge>
                 </div>
-                <Link to={`/services/${match.service.id}`} className="hover:underline">
+                <Link to={buildServiceUrl(match.service.title, match.service.id)} className="hover:underline">
                   <h3 className="font-semibold text-lg line-clamp-1">{match.service.title}</h3>
                 </Link>
               </div>

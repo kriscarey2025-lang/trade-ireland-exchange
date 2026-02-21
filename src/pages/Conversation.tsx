@@ -310,7 +310,7 @@ export default function Conversation() {
               </p>
               {conversation.service && (
                 <Link 
-                  to={`/services/${conversation.service.id}`}
+                  to={`/services/${conversation.service.id}`}  
                   className="text-sm text-primary hover:underline flex items-center gap-1"
                 >
                   {conversation.service.title}

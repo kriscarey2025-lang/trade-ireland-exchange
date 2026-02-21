@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Star, Zap, Clock, Linkedin, Facebook, Instagram } from "lucide-react";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
 import { cn, formatDisplayName } from "@/lib/utils";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 import { ServiceCategory, PostCategory } from "@/types";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { FoundersBadge } from "@/components/profile/FoundersBadge";
@@ -72,7 +73,7 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
 
   return (
     <Link 
-      to={`/services/${service.id}`} 
+      to={buildServiceUrl(service.title, service.id)} 
       className={cn(
         "flex items-center gap-3 p-3 bg-card border rounded-lg",
         service.isTimeSensitive 

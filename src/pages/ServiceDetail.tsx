@@ -52,6 +52,7 @@ import { ServiceCategory } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import { ContactDialog } from "@/components/messaging/ContactDialog";
 import { formatDisplayName } from "@/lib/utils";
+import { extractServiceId, serviceCanonicalUrl } from "@/lib/slugify";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { Disclaimer } from "@/components/shared/Disclaimer";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
@@ -124,7 +125,8 @@ function FeaturedReview({ text, reviewerName }: { text: string; reviewerName: st
 }
 
 export default function ServiceDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id: slugOrId } = useParams<{ id: string }>();
+  const id = slugOrId ? extractServiceId(slugOrId) : undefined;
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
@@ -421,7 +423,7 @@ export default function ServiceDetail() {
     }
   };
 
-  const serviceUrl = `https://swap-skills.ie/services/${service.id}`;
+  const serviceUrl = serviceCanonicalUrl(service.title, service.id);
   
   // Use actual service image if available, otherwise use default OG image
   // Note: Dynamic SVG OG images aren't supported by Facebook - they require PNG/JPG
