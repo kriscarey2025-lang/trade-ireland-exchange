@@ -490,10 +490,10 @@ export default function ServiceDetail() {
                 <CardContent className="p-6">
                   <div className="flex flex-wrap items-center gap-3 mb-4">
                     <Badge 
-                      variant={service.type === "request" ? "accent" : "default"} 
+                      variant={service.type === "help_request" ? "accent" : "default"} 
                       className="rounded-lg"
                     >
-                      {service.type === "request" ? "🔍 Looking for" : "✨ Offering"}
+                      {service.type === "help_request" ? "🔍 Looking for" : service.type === "free_offer" ? "🎁 Free Offer" : "✨ Offering"}
                     </Badge>
                     <Badge variant="secondary" className="rounded-lg">
                       {categoryIcons[service.category as ServiceCategory]} {categoryLabels[service.category as ServiceCategory]}
@@ -505,7 +505,7 @@ export default function ServiceDetail() {
                     )}
                     {isOwner && (
                       <Badge variant="outline" className="rounded-lg">
-                        Your {service.type === "request" ? "Request" : "Service"}
+                        Your {service.type === "help_request" ? "Request" : "Service"}
                       </Badge>
                     )}
                   </div>
@@ -516,7 +516,7 @@ export default function ServiceDetail() {
 
                   {/* Crawlable summary line for SEO */}
                   <p className="text-base text-foreground/80 mb-4">
-                    {service.type === "request" ? "Seeking" : "Offering"}{" "}
+                    {service.type === "help_request" ? "Seeking" : "Offering"}{" "}
                     <strong itemProp="category">{categoryLabels[service.category as ServiceCategory]}</strong>
                     {service.location && (
                       <> in <span itemProp="areaServed">{service.location}</span></>
@@ -588,7 +588,7 @@ export default function ServiceDetail() {
                       {categoryLabels[service.category as ServiceCategory]}
                     </span>
                     <span className="text-xs bg-secondary px-2 py-0.5 rounded-full text-muted-foreground">
-                      {service.type === "request" ? "Seeking" : "Offering"}
+                      {service.type === "help_request" ? "Seeking" : "Offering"}
                     </span>
                     {service.location && (
                       <span className="text-xs bg-secondary px-2 py-0.5 rounded-full text-muted-foreground">
@@ -610,11 +610,11 @@ export default function ServiceDetail() {
                     <div className="flex items-center gap-2 mb-4">
                       <Repeat className="h-5 w-5 text-primary" />
                       <h2 className="text-lg font-semibold">
-                        {service.type === "request" ? "Can Offer in Return" : "Accepts in Return"}
+                        {service.type === "help_request" ? "Can Offer in Return" : "Accepts in Return"}
                       </h2>
                     </div>
                     <p className="text-sm text-muted-foreground mb-3">
-                      {service.type === "request" 
+                      {service.type === "help_request" 
                         ? "This person can offer these services as a trade:"
                         : "The provider is open to trading for these services:"
                       }
@@ -769,13 +769,13 @@ export default function ServiceDetail() {
                   ) : (
                     <div className="text-center py-4">
                       <p className="text-base font-medium text-foreground mb-2">
-                        Interested in this {service.type === "request" ? "request" : "service"}?
+                        Interested in this {service.type === "help_request" ? "request" : "service"}?
                       </p>
                       <p className="text-sm text-muted-foreground mb-3">
                         Sign in to see provider details, send a message, or request a swap.
                       </p>
                       <Button variant="hero" size="sm" onClick={() => navigate('/auth')}>
-                        Sign In to {service.type === "request" ? "Offer a Trade" : "Request a Swap"}
+                        Sign In to {service.type === "help_request" ? "Offer a Trade" : "Request a Swap"}
                       </Button>
                     </div>
                   )}
@@ -843,7 +843,7 @@ export default function ServiceDetail() {
                         >
                           <Link to={`/services/${service.id}/edit`}>
                             <Pencil className="h-4 w-4 mr-2" />
-                            Edit {service.type === "request" ? "Request" : "Service"}
+                            Edit {service.type === "help_request" ? "Request" : "Service"}
                           </Link>
                         </Button>
 
@@ -889,9 +889,9 @@ export default function ServiceDetail() {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Delete this {service.type === "request" ? "request" : "service"}?</AlertDialogTitle>
+                              <AlertDialogTitle>Delete this {service.type === "help_request" ? "request" : "service"}?</AlertDialogTitle>
                               <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete your {service.type === "request" ? "request" : "service"} and remove it from the marketplace.
+                                This action cannot be undone. This will permanently delete your {service.type === "help_request" ? "request" : "service"} and remove it from the marketplace.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
