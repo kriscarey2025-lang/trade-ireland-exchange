@@ -1,121 +1,72 @@
 
 
-# Premium Listings: Valuable, Effortless, Non-Intrusive
+# In-Person Swap Event: RSVP Form + Admin Dashboard
 
-## The Problem
-Currently all listings look the same. There's no way for users to stand out, and no monetisation path tied to the core product (posting a service).
+## Overview
 
-## The Strategy: "Boost" Model
+Build a public RSVP form for the Carlow in-person SwapSkills event, plus an admin page to view responses. Also create an edge function to send the invitation email to all registered users in Carlow, Kilkenny, Kildare, and Laois (~67 users).
 
-Rather than gating features behind a paywall, we use a **freemium boost** approach -- everyone posts for free as usual, and at the very end of the post form, we offer an optional one-tap "Boost" upgrade. Think of it like Facebook Marketplace's "Boost" or Gumtree's "Featured Ad".
+## What gets built
 
----
+### 1. Database table: `event_rsvps`
 
-## A) What Makes Premium Worth It
+New table to capture interest responses with these columns:
+- `id` (uuid, primary key)
+- `full_name` (text, required)
+- `email` (text, required)
+- `is_registered_user` (boolean -- "Already registered with SwapSkills?")
+- `user_id` (uuid, nullable -- link to profile if logged in)
+- `attendance` (text -- "yes" / "maybe" / "no")
+- `time_preference` (text -- "daytime" / "weekend" / "either" / "no_preference")
+- `created_at` (timestamp)
 
-Premium ("Boosted") listings get **4 concrete advantages**:
+RLS: Public INSERT (anyone can submit), admin SELECT for viewing responses.
 
-1. **Highlighted card** -- A subtle golden/gradient border and a small "Boosted" badge on the service card so it catches the eye in browse results
-2. **Pinned to top** -- Boosted posts appear first in browse results (above regular posts, sorted by boost date)
-3. **Larger card format** -- Boosted cards show the full description + image even in compact/list views
-4. **Weekly stats email** -- Boosted users get a summary of views and interest clicks on their listing
+### 2. Public RSVP page: `/event/carlow`
 
-**Pricing**: One-off payment of EUR 5 per listing, valid for 30 days. Simple, low friction, no subscription.
+A simple, branded form page (no login required) with:
+- Event header with title, brief description of the in-person swap event
+- **Name** (text input)
+- **Email** (text input)
+- **Already a SwapSkills member?** (Yes / No radio)
+- **Would you attend?** (Yes / Maybe / No radio)
+- **Time preference** (Daytime weekday / Weekend / Either works)
+- Success confirmation with confetti
 
----
+### 3. Admin page: `/admin/events`
 
-## B) Making It Effortless
+Admin-only page (follows existing admin pattern) showing:
+- Total responses with breakdown (Yes / Maybe / No)
+- Time preference summary
+- Table of all RSVP submissions with name, email, member status, attendance, preference, date
+- Export-friendly layout
 
-The boost is offered in **two places**, both one-tap:
+### 4. Edge function: `send-event-invite`
 
-1. **Post-creation success screen** -- After clicking "Post", a celebratory confirmation appears with a soft upsell card: "Want more eyes on this? Boost for EUR 5" with a single button that goes to Stripe Checkout. If they skip, the post goes live as normal.
+Branded email (matching existing SwapSkills email style) sent to users in the target counties:
+- Queries profiles where location matches Carlow, Kilkenny, Kildare, or Laois
+- Includes link to `/event/carlow` RSVP form
+- Uses sequential delays to respect Resend rate limits (per existing pattern)
+- Triggered manually by admin via the admin events page (a "Send Invites" button)
 
-2. **Existing listing management** -- On the Profile > My Listings card, each listing gets a small "Boost" button (if not already boosted). One tap to Stripe Checkout.
+### 5. Routing
 
-No forms. No extra steps in the posting flow itself. The core post form stays untouched.
+Add two new routes in `App.tsx`:
+- `/event/carlow` -- public RSVP form
+- `/admin/events` -- admin responses dashboard
 
----
+## Technical Details
 
-## C) Non-Intrusive Integration
+**Files to create:**
+- `src/pages/EventRSVP.tsx` -- public form page
+- `src/pages/AdminEvents.tsx` -- admin dashboard
+- `supabase/functions/send-event-invite/index.ts` -- email sending function
 
-- The post form (`NewService.tsx`) remains **exactly as-is** -- no new fields, no premium toggles, no friction
-- The boost offer only appears **after** the post is successfully created, as a soft suggestion
-- It uses cheerful, no-pressure language: "Your post is live! Want to give it a boost?" with a clear "No thanks, I'm good" option
-- The boosted badge on cards is subtle (small sparkle icon + thin gold border), not flashy or alienating to free users
+**Files to modify:**
+- `src/App.tsx` -- add routes
 
----
+**Database migration:**
+- Create `event_rsvps` table with RLS policies
 
-## Technical Plan
-
-### 1. Database Changes
-
-New `boosted_listings` table:
-
-```text
-boosted_listings
-  id              uuid (PK, default gen_random_uuid())
-  service_id      uuid (FK to services.id, unique)
-  user_id         uuid (not null)
-  stripe_session_id text
-  boosted_at      timestamptz (default now())
-  expires_at      timestamptz (not null)
-  status          text (default 'active')
-  created_at      timestamptz (default now())
-```
-
-RLS policies:
-- Anyone can SELECT active boosts (needed to render the badge)
-- Users can INSERT their own boosts
-- Users can view their own boosts
-
-### 2. Stripe Product + Price
-
-Create a new Stripe product "Listing Boost" with a one-off price of EUR 5.00 (500 cents).
-
-### 3. New Edge Function: `create-boost-checkout`
-
-- Receives `serviceId` and authenticated user
-- Creates a Stripe Checkout session in `mode: "payment"` for the boost price
-- Sets `success_url` to `/services/{serviceId}?boosted=true`
-- On success page, insert into `boosted_listings` table (or use a verify-boost function)
-
-### 4. New Edge Function: `verify-boost`
-
-- Called from the success redirect
-- Takes the Stripe session ID, verifies payment succeeded
-- Inserts into `boosted_listings` with `expires_at = now() + 30 days`
-
-### 5. UI Changes
-
-**Post-creation boost offer** (new component: `BoostOfferCard.tsx`):
-- Shown in the success flow after `PostCreationMatchDialog` closes, or inline on the success toast
-- Simple card: sparkle icon, "Boost this listing for EUR 5", description of benefits, two buttons: "Boost" and "No thanks"
-
-**Service card visual treatment**:
-- Query `boosted_listings` alongside services
-- If boosted and not expired: add gold border class + small "Boosted" sparkle badge in the banner area
-- Sort boosted listings first in browse results
-
-**My Listings boost button**:
-- In `UserListings.tsx`, add a small "Boost" button next to Edit/Delete for non-boosted listings
-
-### 6. Browse Page Sorting
-
-Modify the `get_public_services` database function (or the frontend query) to sort boosted listings first by joining with `boosted_listings` where `status = 'active'` and `expires_at > now()`.
-
----
-
-## File Changes Summary
-
-| File | Change |
-|------|--------|
-| New migration | Create `boosted_listings` table with RLS |
-| `supabase/functions/create-boost-checkout/index.ts` | New edge function for Stripe one-off payment |
-| `supabase/functions/verify-boost/index.ts` | New edge function to confirm payment and activate boost |
-| `src/components/services/BoostOfferCard.tsx` | New post-creation upsell component |
-| `src/components/services/ServiceCard.tsx` | Add boosted visual styling (gold border + badge) |
-| `src/components/profile/UserListings.tsx` | Add "Boost" button per listing |
-| `src/pages/NewService.tsx` | Show BoostOfferCard after successful post |
-| `src/hooks/useServices.ts` | Include boost status in service queries |
-| `src/pages/ServiceDetail.tsx` | Handle `?boosted=true` redirect and call verify-boost |
+The form will use existing UI components (Input, Button, Card, RadioGroup, Label) and follow the existing page layout pattern (Header + Footer). The admin page follows the same pattern as `AdminFeedback.tsx` with role checking via `has_role` RPC.
 
