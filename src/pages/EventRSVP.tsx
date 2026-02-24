@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { fireConfetti } from "@/hooks/useConfetti";
+import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Calendar, Users, CheckCircle2, Loader2 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 
@@ -22,6 +23,7 @@ const EventRSVP = () => {
     is_registered_user: "no",
     attendance: "yes",
     time_preference: "either",
+    notes: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,6 +41,7 @@ const EventRSVP = () => {
         is_registered_user: form.is_registered_user === "yes",
         attendance: form.attendance,
         time_preference: form.time_preference,
+        notes: form.notes.trim() || null,
       } as any);
 
       if (error) throw error;
@@ -207,6 +210,19 @@ const EventRSVP = () => {
                       <Label htmlFor="time-either" className="font-normal">Either works for me</Label>
                     </div>
                   </RadioGroup>
+                </div>
+
+                {/* Notes / Comments */}
+                <div className="space-y-2">
+                  <Label htmlFor="notes">Anything you'd like to add? (optional)</Label>
+                  <Textarea
+                    id="notes"
+                    placeholder="Questions, suggestions, or anything else..."
+                    value={form.notes}
+                    onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                    maxLength={500}
+                    rows={3}
+                  />
                 </div>
 
                 <Button type="submit" className="w-full" size="lg" disabled={loading}>

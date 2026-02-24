@@ -635,6 +635,7 @@ export type Database = {
           full_name: string
           id: string
           is_registered_user: boolean
+          notes: string | null
           time_preference: string
           user_id: string | null
         }
@@ -645,6 +646,7 @@ export type Database = {
           full_name: string
           id?: string
           is_registered_user?: boolean
+          notes?: string | null
           time_preference?: string
           user_id?: string | null
         }
@@ -655,6 +657,7 @@ export type Database = {
           full_name?: string
           id?: string
           is_registered_user?: boolean
+          notes?: string | null
           time_preference?: string
           user_id?: string | null
         }
