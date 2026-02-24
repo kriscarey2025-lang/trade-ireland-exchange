@@ -199,20 +199,20 @@ export default function Browse() {
 
 
           
-          {/* Desktop: Community Hero Banner */}
+          {/* Desktop: In-Person Event Banner */}
           <div className="bg-primary/5 border-y border-primary/10 overflow-hidden py-3">
             <div className="animate-marquee whitespace-nowrap flex items-center">
               <span className="text-base font-medium text-foreground mx-8">
-                🏆 Swap Skills is looking for the <strong>Community Hero 2026</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
+                🤝 Swap Skills is hosting its <strong>first In-Person Event in Carlow</strong>! <a href="/event/carlow" className="underline text-primary hover:text-primary/80 font-semibold">Register your interest here →</a>
               </span>
               <span className="text-base font-medium text-foreground mx-8">
-                🏆 Swap Skills is looking for the <strong>Community Hero 2026</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
+                🤝 Swap Skills is hosting its <strong>first In-Person Event in Carlow</strong>! <a href="/event/carlow" className="underline text-primary hover:text-primary/80 font-semibold">Register your interest here →</a>
               </span>
               <span className="text-base font-medium text-foreground mx-8">
-                🏆 Swap Skills is looking for the <strong>Community Hero 2026</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
+                🤝 Swap Skills is hosting its <strong>first In-Person Event in Carlow</strong>! <a href="/event/carlow" className="underline text-primary hover:text-primary/80 font-semibold">Register your interest here →</a>
               </span>
               <span className="text-base font-medium text-foreground mx-8">
-                🏆 Swap Skills is looking for the <strong>Community Hero 2026</strong>! <a href="/community-hero" className="underline text-primary hover:text-primary/80 font-semibold">Submit your nomination here →</a>
+                🤝 Swap Skills is hosting its <strong>first In-Person Event in Carlow</strong>! <a href="/event/carlow" className="underline text-primary hover:text-primary/80 font-semibold">Register your interest here →</a>
               </span>
             </div>
           </div>
