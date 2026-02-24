@@ -15,7 +15,6 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Verify admin
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Missing authorization header");
 
@@ -33,6 +32,8 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
     if (!isAdmin) throw new Error("Not authorized");
 
+    const eventSlug = "carlow-april-2026";
+
     // Get users in target counties
     const targetCounties = ["carlow", "kilkenny", "kildare", "laois"];
     const { data: profiles, error } = await supabase
@@ -42,26 +43,44 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (error) throw error;
 
-    // Filter by location containing target counties (case-insensitive)
+    // Filter by location containing target counties
     const targetUsers = (profiles || []).filter((p: any) => {
-      if (!p.location) return false;
+      if (!p.location || !p.email) return false;
       const loc = p.location.toLowerCase();
       return targetCounties.some((county) => loc.includes(county));
     });
 
     console.log(`Found ${targetUsers.length} users in target counties`);
 
+    // Get already-sent invites for this event to prevent duplicates
+    const { data: alreadySent } = await supabase
+      .from("event_invites_sent")
+      .select("email")
+      .eq("event_slug", eventSlug);
+
+    const sentEmails = new Set((alreadySent || []).map((r: any) => r.email.toLowerCase()));
+    const usersToEmail = targetUsers.filter((p: any) => !sentEmails.has(p.email.toLowerCase()));
+
+    console.log(`${sentEmails.size} already invited, ${usersToEmail.length} new invites to send`);
+
+    if (usersToEmail.length === 0) {
+      return new Response(
+        JSON.stringify({ success: true, sent: 0, failed: 0, skipped: targetUsers.length, message: "All users already invited" }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     let sent = 0;
     let failed = 0;
 
-    for (const profile of targetUsers) {
+    for (const profile of usersToEmail) {
       try {
         const firstName = profile.full_name?.split(" ")[0] || "there";
 
         await resend.emails.send({
           from: "SwapSkills <hello@swap-skills.ie>",
           to: [profile.email],
-          subject: "🤝 You're Invited — SwapSkills In-Person Meet-Up in Carlow!",
+          subject: "🤝 Swap-Skills IN-Person Event Carlow — RSVP Now!",
           html: `
 <!DOCTYPE html>
 <html lang="en">
@@ -78,11 +97,11 @@ const handler = async (req: Request): Promise<Response> => {
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #f97316 0%, #fbbf24 50%, #4ade80 100%); padding: 48px 40px; text-align: center;">
-              <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff;">
-                🤝 SwapSkills Meet-Up
+              <h1 style="margin: 0; font-size: 26px; font-weight: 700; color: #ffffff;">
+                🤝 Swap-Skills IN-Person Event
               </h1>
-              <p style="margin: 12px 0 0 0; font-size: 18px; color: rgba(255, 255, 255, 0.95);">
-                In-Person Event — Carlow
+              <p style="margin: 12px 0 0 0; font-size: 20px; font-weight: 600; color: rgba(255, 255, 255, 0.95);">
+                Carlow · Early April 2026
               </p>
             </td>
           </tr>
@@ -90,31 +109,35 @@ const handler = async (req: Request): Promise<Response> => {
           <!-- Body -->
           <tr>
             <td style="padding: 48px 40px; background-color: #ffffff;">
-              <h2 style="margin: 0 0 20px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
+              <h2 style="margin: 0 0 20px 0; font-size: 22px; font-weight: 700; color: #1f2937;">
                 Hey ${firstName}! 👋
               </h2>
               
               <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                Great news — we're exploring the idea of hosting a <strong>real-life SwapSkills meet-up in Carlow</strong>! A chance to meet fellow skill-swappers face to face, have a cuppa, and maybe even arrange a swap on the spot.
+                We're excited to announce our <strong>first-ever Swap-Skills in-person event in Carlow</strong>, planned for <strong>early April 2026</strong>.
+              </p>
+
+              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
+                This is your chance to <strong>meet fellow skill-swappers face to face</strong> in a friendly, safe environment. You'll be able to make real connections, chat about what you can offer and what you need — and potentially even <strong>arrange a skill exchange on the spot</strong>.
               </p>
               
               <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                Before we lock in a date and venue, we'd love to know if you'd be interested. It takes 30 seconds:
+                We'd love to know if you're interested! Fill out this quick RSVP form — it takes 30 seconds:
               </p>
               
               <div style="text-align: center; margin: 36px 0;">
-                <a href="https://swap-skills.ie/event/carlow" style="display: inline-block; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(74, 222, 128, 0.4);">
-                  Let Us Know If You'd Come →
+                <a href="https://swap-skills.ie/event/carlow" style="display: inline-block; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 17px; font-weight: 700; box-shadow: 0 4px 14px rgba(74, 222, 128, 0.4);">
+                  RSVP for the Carlow Event →
                 </a>
               </div>
               
-              <p style="margin: 24px 0 0 0; font-size: 16px; line-height: 1.6; color: #4b5563;">
-                We're looking at both daytime and weekend options — the form lets you share your preference so we can pick the best time for everyone.
+              <p style="margin: 24px 0 0 0; font-size: 15px; line-height: 1.6; color: #6b7280;">
+                The form lets you share your time preference (daytime vs. weekend) so we can pick the best option for everyone.
               </p>
               
               <p style="margin: 24px 0 0 0; font-size: 16px; color: #4b5563;">
-                See you there (hopefully)!<br>
-                <strong style="color: #1f2937;">The SwapSkills Team</strong>
+                Looking forward to seeing you there!<br>
+                <strong style="color: #1f2937;">The Swap-Skills Team 🇮🇪</strong>
               </p>
             </td>
           </tr>
@@ -123,7 +146,7 @@ const handler = async (req: Request): Promise<Response> => {
           <tr>
             <td style="background-color: #f9fafb; padding: 32px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                © ${new Date().getFullYear()} SwapSkills. All rights reserved.<br>
+                © ${new Date().getFullYear()} Swap-Skills. All rights reserved.<br>
                 <a href="https://swap-skills.ie/privacy" style="color: #6b7280;">Privacy Policy</a> · 
                 <a href="https://swap-skills.ie/unsubscribe" style="color: #6b7280;">Unsubscribe</a>
               </p>
@@ -139,6 +162,13 @@ const handler = async (req: Request): Promise<Response> => {
           `,
         });
 
+        // Record that this invite was sent
+        await supabase.from("event_invites_sent").insert({
+          email: profile.email,
+          event_slug: eventSlug,
+          user_id: profile.id,
+        });
+
         sent++;
         console.log(`Sent invite to ${profile.email}`);
 
@@ -150,10 +180,10 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    console.log(`Event invites complete: ${sent} sent, ${failed} failed`);
+    console.log(`Event invites complete: ${sent} sent, ${failed} failed, ${sentEmails.size} skipped (already invited)`);
 
     return new Response(
-      JSON.stringify({ success: true, sent, failed, total: targetUsers.length }),
+      JSON.stringify({ success: true, sent, failed, skipped: sentEmails.size, total: targetUsers.length }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error: any) {
