@@ -59,7 +59,20 @@ const handler = async (req: Request): Promise<Response> => {
       .eq("event_slug", eventSlug);
 
     const sentEmails = new Set((alreadySent || []).map((r: any) => r.email.toLowerCase()));
-    const usersToEmail = targetUsers.filter((p: any) => !sentEmails.has(p.email.toLowerCase()));
+
+    // Get users who have unsubscribed (weekly_digest_enabled = false)
+    const { data: unsubscribedPrefs } = await supabase
+      .from("user_preferences")
+      .select("user_id")
+      .eq("weekly_digest_enabled", false);
+
+    const unsubscribedUserIds = new Set((unsubscribedPrefs || []).map((p: any) => p.user_id));
+
+    const usersToEmail = targetUsers.filter((p: any) => {
+      if (sentEmails.has(p.email.toLowerCase())) return false;
+      if (unsubscribedUserIds.has(p.id)) return false;
+      return true;
+    });
 
     console.log(`${sentEmails.size} already invited, ${usersToEmail.length} new invites to send`);
 
