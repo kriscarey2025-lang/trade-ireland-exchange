@@ -627,6 +627,39 @@ export type Database = {
           },
         ]
       }
+      event_rsvps: {
+        Row: {
+          attendance: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_registered_user: boolean
+          time_preference: string
+          user_id: string | null
+        }
+        Insert: {
+          attendance?: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          is_registered_user?: boolean
+          time_preference?: string
+          user_id?: string | null
+        }
+        Update: {
+          attendance?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          is_registered_user?: boolean
+          time_preference?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       interests: {
         Row: {
           created_at: string
