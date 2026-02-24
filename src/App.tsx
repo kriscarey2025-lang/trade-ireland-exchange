@@ -59,7 +59,8 @@ const SponsorSuccess = lazy(() => import("./pages/SponsorSuccess"));
 const Sponsors = lazy(() => import("./pages/Sponsors"));
 const CommunityHero = lazy(() => import("./pages/CommunityHero"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
-const EventRSVP = lazy(() => import("./pages/EventRSVP"));
+// Eagerly load EventRSVP - critical campaign landing page (from Facebook/email links)
+import EventRSVP from "./pages/EventRSVP";
 const AdminEvents = lazy(() => import("./pages/AdminEvents"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
