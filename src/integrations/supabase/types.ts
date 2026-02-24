@@ -627,6 +627,30 @@ export type Database = {
           },
         ]
       }
+      event_invites_sent: {
+        Row: {
+          email: string
+          event_slug: string
+          id: string
+          sent_at: string
+          user_id: string | null
+        }
+        Insert: {
+          email: string
+          event_slug: string
+          id?: string
+          sent_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          email?: string
+          event_slug?: string
+          id?: string
+          sent_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       event_rsvps: {
         Row: {
           attendance: string
