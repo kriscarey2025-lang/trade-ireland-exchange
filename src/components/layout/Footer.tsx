@@ -55,30 +55,87 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                 </Link>
               </li>
               <li>
-                <Link to="/skills" className="hover:text-primary transition-colors">
-                  Skill Guides
-                </Link>
-              </li>
-              <li>
-                <Link to="/county" className="hover:text-primary transition-colors">
-                  County Spotlights
-                </Link>
-              </li>
-              <li>
                 <Link to="/stories" className="hover:text-primary transition-colors">
                   Swap-Skill Stories
+                </Link>
+              </li>
+              <li>
+                <Link to="/press" className="hover:text-primary transition-colors">
+                  Press Kit
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* For Business */}
+          {/* Popular Skills */}
           <div className="space-y-4">
-            <h4 className="font-semibold">For Business</h4>
+            <h4 className="font-semibold">Popular Skills</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/advertise#sponsorship" className="hover:text-primary transition-colors">
-                  Sponsorship Packages
+                <Link to="/skills/home-improvement" className="hover:text-primary transition-colors">
+                  Home Improvement
+                </Link>
+              </li>
+              <li>
+                <Link to="/skills/gardening" className="hover:text-primary transition-colors">
+                  Gardening
+                </Link>
+              </li>
+              <li>
+                <Link to="/skills/education" className="hover:text-primary transition-colors">
+                  Education & Tutoring
+                </Link>
+              </li>
+              <li>
+                <Link to="/skills/childcare" className="hover:text-primary transition-colors">
+                  Childcare
+                </Link>
+              </li>
+              <li>
+                <Link to="/skills/tech-support" className="hover:text-primary transition-colors">
+                  Tech Support
+                </Link>
+              </li>
+              <li>
+                <Link to="/skills" className="hover:text-primary transition-colors font-medium">
+                  All Skill Guides →
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Browse by County */}
+          <div className="space-y-4">
+            <h4 className="font-semibold">Browse by County</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <Link to="/county/dublin" className="hover:text-primary transition-colors">
+                  Dublin
+                </Link>
+              </li>
+              <li>
+                <Link to="/county/cork" className="hover:text-primary transition-colors">
+                  Cork
+                </Link>
+              </li>
+              <li>
+                <Link to="/county/galway" className="hover:text-primary transition-colors">
+                  Galway
+                </Link>
+              </li>
+              <li>
+                <Link to="/county/carlow" className="hover:text-primary transition-colors">
+                  Carlow
+                </Link>
+              </li>
+              <li>
+                <Link to="/county/limerick" className="hover:text-primary transition-colors">
+                  Limerick
+                </Link>
+              </li>
+              <li>
+                <Link to="/county" className="hover:text-primary transition-colors font-medium">
+                  All Counties →
                 </Link>
               </li>
             </ul>

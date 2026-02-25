@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ServiceCardCompact } from "@/components/services/ServiceCardCompact";
 import { ServiceCardMobile } from "@/components/services/ServiceCardMobile";
 import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
-import { JsonLd, FAQJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import { JsonLd, FAQJsonLd, BreadcrumbJsonLd, SpeakableJsonLd } from "@/components/seo/JsonLd";
 import { getSkillGuideBySlug, skillGuides } from "@/lib/skillGuides";
 import { useServices } from "@/hooks/useServices";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -77,6 +77,10 @@ export default function SkillGuide() {
         { name: "Skill Guides", url: "https://swap-skills.ie/skills" },
         { name: guide.label, url: `https://swap-skills.ie/skills/${guide.slug}` },
       ]} />
+      <SpeakableJsonLd
+        name={`${guide.label} in Ireland — Skill Guide`}
+        url={`https://swap-skills.ie/skills/${guide.slug}`}
+      />
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1">
@@ -237,6 +241,14 @@ export default function SkillGuide() {
                     </div>
                   </Link>
                 ))}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/skills">All Skill Guides</Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/county">Browse by County</Link>
+                </Button>
               </div>
             </section>
           </div>
