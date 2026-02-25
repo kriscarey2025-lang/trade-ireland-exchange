@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -76,6 +77,16 @@ const EventRSVP = () => {
           <p className="text-lg text-muted-foreground max-w-lg mx-auto">
             Meet fellow skill-swappers face to face! Connect, chat, and maybe even arrange a skill exchange on the spot.
           </p>
+        </div>
+
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+          <Button size="lg" className="w-full sm:w-auto rounded-full" asChild>
+            <Link to="/">Browse Offerings</Link>
+          </Button>
+          <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-full" asChild>
+            <Link to="/auth?mode=signup">Join for Free</Link>
+          </Button>
         </div>
 
         {/* Info Cards */}
