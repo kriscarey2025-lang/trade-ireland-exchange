@@ -217,17 +217,21 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
                 key={interest.id}
                 className="flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
               >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={interest.user_avatar || undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                    {getInitials(interest.user_name)}
-                  </AvatarFallback>
-                </Avatar>
+                <Link to={`/profile/${interest.user_id}`}>
+                  <Avatar className="h-10 w-10 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+                    <AvatarImage src={interest.user_avatar || undefined} />
+                    <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                      {getInitials(interest.user_name)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="font-medium truncate">
-                      {formatDisplayName(interest.user_name)}
-                    </p>
+                    <Link to={`/profile/${interest.user_id}`} className="hover:underline">
+                      <p className="font-medium truncate text-primary">
+                        {formatDisplayName(interest.user_name)}
+                      </p>
+                    </Link>
                     <span className="text-xs text-muted-foreground whitespace-nowrap">
                       {formatDate(interest.created_at)}
                     </span>
@@ -265,6 +269,7 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
                     className="h-8 w-8"
                     onClick={() => handleStartConversation(interest.user_id, interest.service_id)}
                     disabled={startingChat === interest.user_id}
+                    title="Send message"
                   >
                     {startingChat === interest.user_id ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -272,8 +277,8 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
                       <MessageCircle className="h-4 w-4" />
                     )}
                   </Button>
-                  <Link to={`/services/${interest.service_id}`}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Link to={`/profile/${interest.user_id}`}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" title="View profile">
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                   </Link>
