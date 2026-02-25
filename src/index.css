@@ -688,7 +688,7 @@
 .marquee-content {
   display: flex;
   flex-shrink: 0;
-  animation: marquee-scroll 80s linear infinite;
+  animation: marquee-scroll 120s linear infinite;
 }
 
 @keyframes marquee-scroll {
