@@ -298,3 +298,31 @@ export function ItemListJsonLd({
 
   return <JsonLd data={data} />;
 }
+
+export function SpeakableJsonLd({
+  name,
+  url,
+  cssSelector = ["h1", "[data-speakable]"],
+}: {
+  name: string;
+  url: string;
+  cssSelector?: string[];
+}) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name,
+    url,
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector,
+    },
+    isPartOf: {
+      "@type": "WebSite",
+      name: "SwapSkills Ireland",
+      url: "https://swap-skills.ie",
+    },
+  };
+
+  return <JsonLd data={data} />;
+}

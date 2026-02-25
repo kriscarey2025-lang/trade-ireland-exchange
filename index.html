@@ -62,6 +62,26 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="SwapSkills" />
 
+    <!-- Speakable Structured Data for AEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "SwapSkills — Trade Skills, Not Money",
+      "description": "Ireland's free community platform for swapping skills and services without money. Exchange tiling, tutoring, gardening, childcare and more with verified neighbours.",
+      "url": "https://swap-skills.ie/",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": ["h1", ".hero-description", "article"]
+      },
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "SwapSkills Ireland",
+        "url": "https://swap-skills.ie"
+      }
+    }
+    </script>
+
     <!-- TrustBox script -->
     <script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
     <!-- End TrustBox script -->
@@ -99,12 +119,45 @@
         
         <h2>Popular Skill Categories</h2>
         <ul>
-          <li>Home & Garden: Tiling, Painting, Plumbing, Gardening, Landscaping</li>
-          <li>Education: Tutoring, Language Lessons, Music Lessons, Homework Help</li>
-          <li>Technology: Web Design, IT Support, Photography, Video Editing</li>
-          <li>Personal Services: Childcare, Pet Sitting, Hairdressing, Fitness Training</li>
-          <li>Creative: Art, Crafts, Writing, Design, Music</li>
-          <li>Professional: Legal Advice, Accounting, Business Consulting</li>
+          <li><a href="https://swap-skills.ie/skills/home-improvement">Home Improvement</a> — Tiling, Painting, Plumbing, Carpentry</li>
+          <li><a href="https://swap-skills.ie/skills/education">Education & Tutoring</a> — Grinds, Language Lessons, Homework Help</li>
+          <li><a href="https://swap-skills.ie/skills/gardening">Gardening</a> — Landscaping, Lawn Care, Veggie Growing</li>
+          <li><a href="https://swap-skills.ie/skills/childcare">Childcare</a> — Babysitting, After-School Care</li>
+          <li><a href="https://swap-skills.ie/skills/tech-support">Tech Support</a> — IT Help, Website Building</li>
+          <li><a href="https://swap-skills.ie/skills/cooking">Cooking</a> — Meal Prep, Baking Lessons</li>
+          <li><a href="https://swap-skills.ie/skills/fitness">Fitness</a> — Personal Training, Yoga</li>
+          <li><a href="https://swap-skills.ie/skills/beauty">Beauty</a> — Nails, Makeup, Skincare</li>
+          <li><a href="https://swap-skills.ie/skills/music">Music</a> — Guitar, Piano, Trad Sessions</li>
+          <li><a href="https://swap-skills.ie/skills/arts-crafts">Arts & Crafts</a> — Painting, Pottery, Knitting</li>
+        </ul>
+
+        <h2>Browse by County</h2>
+        <ul>
+          <li><a href="https://swap-skills.ie/county/dublin">Dublin</a></li>
+          <li><a href="https://swap-skills.ie/county/cork">Cork</a></li>
+          <li><a href="https://swap-skills.ie/county/galway">Galway</a></li>
+          <li><a href="https://swap-skills.ie/county/limerick">Limerick</a></li>
+          <li><a href="https://swap-skills.ie/county/carlow">Carlow</a></li>
+          <li><a href="https://swap-skills.ie/county/kerry">Kerry</a></li>
+          <li><a href="https://swap-skills.ie/county/kilkenny">Kilkenny</a></li>
+          <li><a href="https://swap-skills.ie/county/waterford">Waterford</a></li>
+          <li><a href="https://swap-skills.ie/county/wicklow">Wicklow</a></li>
+          <li><a href="https://swap-skills.ie/county/wexford">Wexford</a></li>
+          <li><a href="https://swap-skills.ie/county/meath">Meath</a></li>
+          <li><a href="https://swap-skills.ie/county/kildare">Kildare</a></li>
+        </ul>
+
+        <h2>Helpful Pages</h2>
+        <ul>
+          <li><a href="https://swap-skills.ie/browse">Browse All Services</a></li>
+          <li><a href="https://swap-skills.ie/how-it-works">How It Works</a></li>
+          <li><a href="https://swap-skills.ie/about">About Us</a></li>
+          <li><a href="https://swap-skills.ie/faq">FAQs</a></li>
+          <li><a href="https://swap-skills.ie/safety">Safety Guidelines</a></li>
+          <li><a href="https://swap-skills.ie/contact">Contact Us</a></li>
+          <li><a href="https://swap-skills.ie/stories">Swap Stories</a></li>
+          <li><a href="https://swap-skills.ie/press">Press Kit</a></li>
+          <li><a href="https://swap-skills.ie/auth">Sign Up / Log In</a></li>
         </ul>
         
         <h2>Why Swap Skills?</h2>
@@ -112,9 +165,19 @@
           <li>100% Free to use - no subscription fees or hidden costs</li>
           <li>Verified users for safety and trust</li>
           <li>AI-powered skill matching to find perfect swaps</li>
-          <li>Built for Irish communities, covering all 32 counties</li>
-          <li>Founded by Kristina Carey to strengthen local communities</li>
+          <li>Built for Irish communities, covering all 26 counties</li>
+          <li>Founded by Kristina Carey in Carlow to strengthen local communities</li>
         </ul>
+
+        <h2>Frequently Asked Questions</h2>
+        <dl>
+          <dt>How do I swap skills in Ireland without money?</dt>
+          <dd>Sign up free on SwapSkills, list what you can offer, browse what others need, and arrange a direct skill exchange — no money changes hands.</dd>
+          <dt>Is SwapSkills free to use?</dt>
+          <dd>Yes, SwapSkills is 100% free. There are no subscription fees, listing fees, or hidden costs.</dd>
+          <dt>How does skill swapping work?</dt>
+          <dd>You offer a skill (like gardening) and find someone who needs it but can offer something you need (like tutoring). You arrange the exchange directly through our messaging system.</dd>
+        </dl>
         
         <p>Visit <a href="https://swap-skills.ie">swap-skills.ie</a> to start swapping skills today!</p>
       </article>

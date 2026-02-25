@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ServiceCardCompact } from "@/components/services/ServiceCardCompact";
 import { ServiceCardMobile } from "@/components/services/ServiceCardMobile";
 import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
-import { JsonLd, FAQJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import { JsonLd, FAQJsonLd, BreadcrumbJsonLd, SpeakableJsonLd } from "@/components/seo/JsonLd";
 import { getCountyBySlug, countySpotlights } from "@/lib/countySpotlights";
 import { useServices } from "@/hooks/useServices";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -82,6 +82,10 @@ export default function CountySpotlight() {
         { name: "County Spotlights", url: "https://swap-skills.ie/county" },
         { name: county.name, url: `https://swap-skills.ie/county/${county.slug}` },
       ]} />
+      <SpeakableJsonLd
+        name={`Skill Swapping in ${county.name}, Ireland`}
+        url={`https://swap-skills.ie/county/${county.slug}`}
+      />
 
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -261,6 +265,14 @@ export default function CountySpotlight() {
                     </div>
                   </Link>
                 ))}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/county">All Counties</Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/skills">Skill Guides</Link>
+                </Button>
               </div>
             </section>
           </div>

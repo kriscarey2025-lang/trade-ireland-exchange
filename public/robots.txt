@@ -20,7 +20,6 @@ Allow: /auth
 Allow: /services/*
 Allow: /stories
 Allow: /press
-
 Allow: /advertise
 Allow: /sponsors
 Allow: /community-hero
