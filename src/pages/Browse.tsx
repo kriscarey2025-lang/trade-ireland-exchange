@@ -36,6 +36,7 @@ import { MatchesDialog } from "@/components/matching/MatchesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { HeroSection } from "@/components/home/HeroSection";
 import { SwapStatsSection } from "@/components/home/SwapStatsSection";
+import { ReviewsMarquee } from "@/components/home/ReviewsMarquee";
 
 const locations = [
 "All Ireland",
@@ -187,6 +188,7 @@ export default function Browse() {
 
       <div className="min-h-screen flex flex-col">
         <Header />
+        <ReviewsMarquee />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
           {/* Sponsorship CTA Banner */}

@@ -38,7 +38,7 @@ serve(async (req: Request): Promise<Response> => {
     let limit = 5;
     try {
       const body: RequestBody = await req.json();
-      if (typeof body.limit === "number" && body.limit > 0 && body.limit <= 10) {
+      if (typeof body.limit === "number" && body.limit > 0 && body.limit <= 20) {
         limit = body.limit;
       }
     } catch {

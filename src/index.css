@@ -678,3 +678,24 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+/* Reviews marquee animation */
+.marquee-track {
+  display: flex;
+  width: max-content;
+}
+
+.marquee-content {
+  display: flex;
+  flex-shrink: 0;
+  animation: marquee-scroll 40s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.marquee-track:hover .marquee-content {
+  animation-play-state: paused;
+}
