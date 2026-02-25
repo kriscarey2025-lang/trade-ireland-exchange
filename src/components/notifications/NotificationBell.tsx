@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Check, Trash2, MessageCircle, Sparkles, Heart, X, Handshake, CalendarCheck, CalendarClock } from "lucide-react";
+import { Bell, Check, Trash2, MessageCircle, Sparkles, Heart, X, Handshake, CalendarCheck, CalendarClock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,9 +14,11 @@ import {
   useDeleteNotification,
   Notification,
 } from "@/hooks/useNotifications";
+import { ProfileContactDialog } from "@/components/messaging/ProfileContactDialog";
 
 export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
+  const [contactDialog, setContactDialog] = useState<{ open: boolean; profileId: string; profileName: string }>({ open: false, profileId: "", profileName: "" });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { data: notifications, isLoading } = useNotifications();
@@ -191,18 +193,48 @@ export function NotificationBell() {
                       <p className="text-xs text-muted-foreground mt-1">
                         {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                       </p>
-                      {getNotificationLink(notification) && (
+                      {notification.type === "interest" && notification.related_user_id ? (
+                        <div className="flex items-center gap-2 mt-2">
+                          <Button
+                            size="sm"
+                            className="h-7 text-xs gap-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!notification.read) markRead.mutate(notification.id);
+                              // Extract name from title (e.g. "Aodh D. is interested!")
+                              const nameMatch = notification.title.match(/^(.+?)\s+is interested/);
+                              const name = nameMatch ? nameMatch[1] : "this user";
+                              setIsOpen(false);
+                              setContactDialog({ open: true, profileId: notification.related_user_id!, profileName: name });
+                            }}
+                          >
+                            <Send className="h-3 w-3" />
+                            Send Message
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!notification.read) markRead.mutate(notification.id);
+                              setIsOpen(false);
+                              navigate(`/profile/${notification.related_user_id}`);
+                            }}
+                          >
+                            View Profile
+                          </Button>
+                        </div>
+                      ) : getNotificationLink(notification) ? (
                         <p className="text-xs text-primary mt-1">
                           {notification.type === "message" || 
                            notification.type === "skill_trade_request" || 
                            notification.type === "skill_trade_accepted" ||
                            notification.type === "skill_trade_counter" 
                             ? "View conversation →" 
-                            : notification.type === "interest"
-                            ? "View & contact →"
                             : "View service →"}
                         </p>
-                      )}
+                      ) : null}
                     </div>
                     {!notification.read && (
                       <div className="flex-shrink-0 w-2 h-2 rounded-full bg-primary mt-2" />
@@ -222,6 +254,12 @@ export function NotificationBell() {
           </ScrollArea>
         </div>
       )}
+      <ProfileContactDialog
+        open={contactDialog.open}
+        onOpenChange={(open) => setContactDialog(prev => ({ ...prev, open }))}
+        profileId={contactDialog.profileId}
+        profileName={contactDialog.profileName}
+      />
     </div>
   );
 }
