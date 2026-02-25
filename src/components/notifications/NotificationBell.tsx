@@ -69,8 +69,11 @@ export function NotificationBell() {
     ) {
       return `/messages/${notification.related_conversation_id}`;
     }
-    // Interest notifications go to the user's profile to see interested users & message them
+    // Interest notifications go to the interested user's profile
     if (notification.type === "interest") {
+      if (notification.related_user_id) {
+        return `/profile/${notification.related_user_id}`;
+      }
       return `/profile`;
     }
     // Fallback to service if available
