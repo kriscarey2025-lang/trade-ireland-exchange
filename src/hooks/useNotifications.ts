@@ -12,6 +12,7 @@ export interface Notification {
   read: boolean;
   related_service_id: string | null;
   related_conversation_id: string | null;
+  related_user_id: string | null;
   created_at: string;
 }
 

@@ -807,6 +807,7 @@ export type Database = {
           read: boolean
           related_conversation_id: string | null
           related_service_id: string | null
+          related_user_id: string | null
           title: string
           type: string
           user_id: string
@@ -818,6 +819,7 @@ export type Database = {
           read?: boolean
           related_conversation_id?: string | null
           related_service_id?: string | null
+          related_user_id?: string | null
           title: string
           type?: string
           user_id: string
@@ -829,6 +831,7 @@ export type Database = {
           read?: boolean
           related_conversation_id?: string | null
           related_service_id?: string | null
+          related_user_id?: string | null
           title?: string
           type?: string
           user_id?: string
