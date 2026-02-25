@@ -69,9 +69,9 @@ export function NotificationBell() {
     ) {
       return `/messages/${notification.related_conversation_id}`;
     }
-    // Interest notifications go to the service
-    if (notification.type === "interest" && notification.related_service_id) {
-      return `/services/${notification.related_service_id}`;
+    // Interest notifications go to the user's profile to see interested users & message them
+    if (notification.type === "interest") {
+      return `/profile`;
     }
     // Fallback to service if available
     if (notification.related_service_id) {
@@ -195,6 +195,8 @@ export function NotificationBell() {
                            notification.type === "skill_trade_accepted" ||
                            notification.type === "skill_trade_counter" 
                             ? "View conversation →" 
+                            : notification.type === "interest"
+                            ? "View & contact →"
                             : "View service →"}
                         </p>
                       )}
