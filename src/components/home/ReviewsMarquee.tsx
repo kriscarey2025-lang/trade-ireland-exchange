@@ -24,7 +24,8 @@ export function ReviewsMarquee() {
         if (payload && payload.length > 0) {
           const filtered = payload.filter((r) => {
             const t = r.review_text.toLowerCase();
-            return !t.includes("kris") && !t.includes("web design");
+            const n = r.reviewer_name.toLowerCase();
+            return !t.includes("kris") && !t.includes("web design") && !t.includes("delia") && !n.includes("kris") && !n.includes("delia");
           });
           const pinIdx = filtered.findIndex((r) =>
             r.review_text.toLowerCase().includes("amy was absolutely brilliant")
