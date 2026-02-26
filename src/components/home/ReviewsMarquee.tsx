@@ -22,6 +22,13 @@ export function ReviewsMarquee() {
       if (!error) {
         const payload = (data as any)?.reviews as Review[] | undefined;
         if (payload && payload.length > 0) {
+          const pinIdx = payload.findIndex((r) =>
+            r.review_text.toLowerCase().includes("amy was absolutely brilliant")
+          );
+          if (pinIdx > 0) {
+            const [pinned] = payload.splice(pinIdx, 1);
+            payload.unshift(pinned);
+          }
           setReviews(payload);
         }
       }
