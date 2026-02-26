@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Linkedin, Clover, FileText, Activity, HelpCircle, MapPin } from "lucide-react";
+import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Linkedin, Clover, FileText, Activity, HelpCircle, MapPin, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -128,6 +128,7 @@ export function Header() {
 
   const adminLinks = [
     { href: "/admin/health", label: "Platform Health", icon: Activity },
+    { href: "/admin/events", label: "Events", icon: Calendar },
     { href: "/admin/advertisers", label: "Advertisers", icon: Megaphone },
     { href: "/admin/reports", label: "Reports", icon: Flag },
     { href: "/admin/verification", label: "Verification", icon: CheckCircle },
