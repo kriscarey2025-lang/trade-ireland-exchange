@@ -369,20 +369,16 @@ export function Header() {
                 </TooltipTrigger>
                 <TooltipContent>Follow us on LinkedIn</TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-xl"
-                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    aria-label="Toggle dark mode"
-                  >
-                    {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{theme === "dark" ? "Light mode" : "Dark mode"}</TooltipContent>
-              </Tooltip>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full gap-1.5 px-3 border-border/60"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                aria-label="Toggle dark mode"
+              >
+                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                <span className="text-xs font-medium">{theme === "dark" ? "Light" : "Dark"}</span>
+              </Button>
               <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Search services">
                 <Link to="/browse">
                   <Search className="h-5 w-5" aria-hidden="true" />
