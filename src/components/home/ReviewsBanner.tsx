@@ -31,15 +31,18 @@ export const ReviewsBanner = () => {
 
       const payload = (data as any)?.reviews as Review[] | undefined;
       if (payload && payload.length > 0) {
-        // Pin "Amy was absolutely brilliant" review to the front
-        const pinIdx = payload.findIndex((r) =>
+        const filtered = payload.filter((r) => {
+          const t = r.review_text.toLowerCase();
+          return !t.includes("kris") && !t.includes("web design");
+        });
+        const pinIdx = filtered.findIndex((r) =>
           r.review_text.toLowerCase().includes("amy was absolutely brilliant")
         );
         if (pinIdx > 0) {
-          const [pinned] = payload.splice(pinIdx, 1);
-          payload.unshift(pinned);
+          const [pinned] = filtered.splice(pinIdx, 1);
+          filtered.unshift(pinned);
         }
-        setReviews(payload);
+        setReviews(filtered);
       }
       setIsLoading(false);
     };
