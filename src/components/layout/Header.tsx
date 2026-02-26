@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Linkedin, Clover, FileText, Activity, HelpCircle, MapPin, Calendar } from "lucide-react";
+import { Menu, X, Search, User, PenLine, Sparkles, LogOut, MessageCircle, ChevronDown, Shield, Flag, CheckCircle, Megaphone, Lightbulb, RefreshCw, BookOpen, Compass, Facebook, Linkedin, Clover, FileText, Activity, HelpCircle, MapPin, Calendar, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -15,6 +15,7 @@ import FeatureRequestDialog from "@/components/sidebar/FeatureRequestDialog";
 import FeedbackDialog from "@/components/sidebar/FeedbackDialog";
 import LeprechaunWizard from "@/components/sidebar/LeprechaunWizard";
 import swapSkillsLogo from "@/assets/swap-skills-logo-512x512.png";
+import { useTheme } from "next-themes";
 
 export function Header() {
   const headerRef = useRef<HTMLElement>(null);
@@ -33,6 +34,7 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
   
   const isLoggedIn = !loading && !!user;
 
@@ -366,6 +368,20 @@ export function Header() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Follow us on LinkedIn</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-xl"
+                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    aria-label="Toggle dark mode"
+                  >
+                    {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{theme === "dark" ? "Light mode" : "Dark mode"}</TooltipContent>
               </Tooltip>
               <Button variant="ghost" size="icon" className="rounded-xl" asChild aria-label="Search services">
                 <Link to="/browse">
