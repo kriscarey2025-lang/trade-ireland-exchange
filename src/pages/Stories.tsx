@@ -417,7 +417,7 @@ export default function Stories() {
                   </div>
                   
                   <h3 className="text-lg text-primary font-medium mb-6">
-                    How Jenny Used Her Reiki Business to Transform Her Life
+                    Jenny Knows How to Swap-Skill!
                   </h3>
                   
                   <div className="space-y-4 text-muted-foreground">
