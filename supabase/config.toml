@@ -101,3 +101,6 @@ verify_jwt = false
 
 [functions.send-boost-stats]
 verify_jwt = false
+
+[functions.send-announcement]
+verify_jwt = false
