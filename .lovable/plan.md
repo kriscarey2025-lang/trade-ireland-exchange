@@ -1,141 +1,43 @@
 
 
-# SEO & Crawlability Improvement Plan
+## SEO Audit and Sitemap Fix
 
-## Root Cause: Why Only 7 of 46 Pages Are Indexed
+### Problem
+The static sitemap (`public/sitemap.xml`) is outdated and has several issues:
+- Only 28 of 30 active services are listed (2 missing)
+- Service URLs use raw UUIDs instead of SEO-friendly title-based slugs
+- The file goes stale whenever new listings are created
+- Contains a fragment URL (`/stories#swap-skills-faq`) that Google ignores
+- Includes `/getting-started` which is an auth-gated redirect page
 
-The **single biggest issue** is that swap-skills.ie is a **client-side rendered Single Page Application (SPA)**. When Google's crawler visits any page, it receives this:
+### Plan
 
-```text
-<div id="root"></div>
-<script type="module" src="/src/main.tsx"></script>
-```
+**1. Regenerate the static sitemap now**
+- Call the `sitemap` edge function to produce a fresh, correct sitemap with all 30 services using proper title-based slugs
+- Save the output to `public/sitemap.xml`
 
-Google must then execute JavaScript to see content. While Googlebot *can* render JS, it:
-- Deprioritises JS-rendered pages (goes into a "render queue" that can take days/weeks)
-- Often classifies thin JS pages as "soft 404s"
-- Struggles with dynamically loaded content from database calls
+**2. Fix the sitemap edge function**
+- Remove the fragment URL (`/stories#swap-skills-faq`)
+- Remove `/getting-started` (auth-gated, causes soft 404s for crawlers)
+- Add the `/event/carlow` campaign page (currently your top-visited page at 179 views this week)
+- Ensure the static sitemap script (`scripts/generate-sitemap.ts`) matches the edge function
 
-Additionally, there are several sitemap and robots.txt inconsistencies making things worse.
+**3. Fix the static sitemap to use slugs**
+- The committed `public/sitemap.xml` uses raw UUIDs, but the edge function already generates slug-based URLs -- the static file simply hasn't been regenerated since the slug feature was added
+- Regenerate it with the updated edge function output
 
----
+**4. Additional SEO improvements to consider (future)**
+- **Auto-refresh sitemap**: Set up a scheduled task to regenerate the static sitemap weekly, or serve the dynamic edge function URL in `robots.txt` instead
+- **Bounce rate (84%)**: Very high -- consider adding more internal links and related listings on service detail pages
+- **Mobile-first**: 57% of traffic is mobile; verify service detail pages render well on small screens
+- **ChatGPT referrals**: You're already getting traffic from `chatgpt.com` -- the JSON-LD and AEO work is paying off
 
-## The Fix: 5 Changes
+### Technical Details
 
-### 1. Dynamic Pre-rendering for Crawlers (Edge Function)
+Files to modify:
+- `public/sitemap.xml` -- regenerate with all 30 services using slug URLs
+- `supabase/functions/sitemap/index.ts` -- remove fragment URL, remove `/getting-started`, add `/event/carlow`
+- `scripts/generate-sitemap.ts` -- same fixes to keep in sync
 
-Create a lightweight edge function that detects crawler user agents (Googlebot, Bingbot, etc.) and serves a **pre-rendered HTML snapshot** with all critical SEO content embedded directly in the response. This doesn't change anything for regular users.
-
-How it works:
-- A new edge function `render-for-crawlers` checks the User-Agent
-- For crawlers, it returns a full HTML page with the page title, description, structured data, and key content directly in the HTML -- no JavaScript execution needed
-- For normal users, it passes through to the regular SPA
-- This requires a redirect rule or Cloudflare Worker on the custom domain side (swap-skills.ie) to route crawler requests
-
-**However**, since the custom domain hosting likely doesn't support middleware routing, the more practical approach is:
-
-**Alternative: Enhance the `<noscript>` fallback per-page with dynamic meta tags in `index.html` via the sitemap edge function serving as an HTML renderer for key pages.**
-
-The most impactful and achievable approach: **Generate static HTML pages at build time** for the most important pages using the existing Vite plugin system.
-
-### 2. Fix the Static Sitemap (Critical Mismatch)
-
-The `public/sitemap.xml` (which is what's actually served) has **raw UUID URLs** for services:
-```
-/services/8335732b-3aad-4921-8dc5-438bbae60bc5
-```
-
-But the actual app uses **slug-based URLs**:
-```
-/services/guitar-lessons-in-carlow-8335732b-...
-```
-
-Google follows the UUID URL, which redirects or shows different content than expected -- causing "soft 404" classifications.
-
-**Fix**: Update the Vite build plugin to generate slug-based URLs (matching the edge function sitemap), and ensure the static sitemap is always regenerated at build time with correct slugs.
-
-### 3. Fix robots.txt and Sitemap Contradictions
-
-Current problems:
-- `/getting-started` is in the sitemap but **disallowed** in robots.txt -- Google flags this as an error
-- `/stories#swap-skills-faq` uses a fragment in the sitemap -- Google ignores fragments entirely, treating it as a duplicate of `/stories`
-- `/skills/*` and `/county/*` are not explicitly listed in robots.txt Allow rules
-- `/press` is allowed but not listed with a wildcard
-
-**Fix**: Remove `/getting-started` from sitemap, remove fragment URLs, add explicit Allow rules for `/skills/*` and `/county/*`.
-
-### 4. Add Internal Linking Between Pages
-
-Google discovers pages primarily through **internal links**. Currently, many SEO pages (skill guides, county spotlights) may lack cross-links. 
-
-**Fix**: Add a "Related Pages" or "Explore More" section at the bottom of:
-- Each Skill Guide page linking to 3-4 other skill guides + the county index
-- Each County Spotlight linking to 2-3 nearby counties + the skills index  
-- The Browse page linking to featured skill guides and county pages
-- Footer: Add direct links to top skill guides and county spotlights
-
-### 5. Add AEO (Answer Engine Optimisation) Content
-
-To appear in AI-powered search results (Google AI Overviews, ChatGPT, Perplexity):
-
-- Add **speakable** structured data to key pages (tells AI assistants which content to read aloud)
-- Add concise, question-and-answer formatted content blocks on the homepage and key pages
-- Enhance FAQ schema on the Stories/FAQ pages with more conversational Q&A pairs
-- Add `<meta name="description">` values that directly answer common queries (e.g., "How to swap skills in Ireland without money")
-
----
-
-## Technical Implementation Details
-
-### Files to Create
-- None (edge function approach deferred -- see note below)
-
-### Files to Modify
-
-**`public/robots.txt`**
-- Add `Allow: /skills/*` and `Allow: /county/*`  
-- Remove `/getting-started` from Allow if present
-- Add `Allow: /press`
-
-**`vite-plugin-sitemap.ts`**
-- Fetch service titles alongside IDs to generate slug-based URLs
-- Remove `/getting-started` from static pages
-- Remove fragment URL (`/stories#swap-skills-faq`)
-- Add all skill guide and county spotlight URLs
-- Match the edge function sitemap exactly
-
-**`public/sitemap.xml`**  
-- Regenerate with correct slug-based service URLs (will be auto-generated by the updated plugin at next build)
-
-**`supabase/functions/sitemap/index.ts`**
-- Remove `/getting-started` from static pages
-- Remove `/stories#swap-skills-faq` fragment URL
-
-**`src/components/layout/Footer.tsx`**
-- Add "Popular Skills" section linking to top 6 skill guide pages
-- Add "Browse by County" section linking to 4-6 top county pages
-
-**`src/pages/SkillGuide.tsx`**
-- Add "Related Skills" section at bottom with links to 3-4 other skill guides
-
-**`src/pages/CountySpotlight.tsx`**  
-- Add "Nearby Counties" section at bottom with links to neighbouring counties
-
-**`index.html`**
-- Enhance the `<noscript>` section with links to key pages (helps crawlers discover content even without JS)
-- Add speakable structured data for AEO
-
-**`src/components/seo/JsonLd.tsx`**
-- Add `SpeakableJsonLd` component for AEO
-- Add `WebPageJsonLd` component for individual pages
-
-### Important Note on Pre-rendering
-
-Full server-side pre-rendering would require either migrating to a framework like Next.js/Vike, or setting up a headless browser rendering service. For now, the combination of:
-1. Fixing the sitemap/robots contradictions
-2. Adding strong internal linking
-3. Enhancing structured data
-4. Ensuring the `<noscript>` fallback has rich content
-
-...should significantly improve Google's ability to crawl and index the site. If indexing doesn't improve within 4-6 weeks after these changes, the next step would be investigating a pre-rendering service like Prerender.io.
+Total URL count after fix: ~76 URLs (16 static + 1 event + 18 skill guides + 27 counties + 1 county index + 1 skills index + ~30 services) -- but the number will grow dynamically as new services are posted.
 
