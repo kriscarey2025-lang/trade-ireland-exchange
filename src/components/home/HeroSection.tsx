@@ -144,6 +144,7 @@ function HeroSectionComponent() {
               data-businessunit-id="698afcf7c5b7f0ff5cd43437"
               data-style-height="52px"
               data-style-width="100%"
+              data-theme="dark"
               data-token="bb0aa621-6b7c-4584-a3ea-216a9ba2397e"
             >
               <a href="https://www.trustpilot.com/review/swap-skills.com" target="_blank" rel="noopener">Trustpilot</a>
