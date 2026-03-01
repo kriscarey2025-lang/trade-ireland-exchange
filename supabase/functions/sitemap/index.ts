@@ -99,12 +99,11 @@ Deno.serve(async (req) => {
       { url: '/how-it-works', priority: '0.8', changefreq: 'monthly' },
       { url: '/about', priority: '0.7', changefreq: 'monthly' },
       { url: '/stories', priority: '0.7', changefreq: 'weekly' },
-      // Removed fragment URL - Google ignores fragments
       { url: '/press', priority: '0.6', changefreq: 'weekly' },
       { url: '/faq', priority: '0.6', changefreq: 'monthly' },
       { url: '/safety', priority: '0.6', changefreq: 'monthly' },
       { url: '/contact', priority: '0.6', changefreq: 'monthly' },
-      
+      { url: '/event/carlow', priority: '0.7', changefreq: 'weekly' },
       { url: '/sponsors', priority: '0.5', changefreq: 'monthly' },
       { url: '/community-hero', priority: '0.5', changefreq: 'monthly' },
       { url: '/advertise', priority: '0.5', changefreq: 'monthly' },
