@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo } from "react";
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Coffee, Zap, MapPin, BookOpen, Star } from "lucide-react";
@@ -10,16 +10,6 @@ function HeroSectionComponent() {
   const { user } = useAuth();
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
-  const trustpilotRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = trustpilotRef.current;
-    if (!el) return;
-    const w = window as any;
-    if (w.Trustpilot) {
-      w.Trustpilot.loadFromElement(el, true);
-    }
-  }, []);
 
   const shouldAnimate = !prefersReducedMotion && !isMobile;
 
@@ -134,21 +124,19 @@ function HeroSectionComponent() {
             })}
           </div>
 
-          {/* Trustpilot widget */}
+          {/* Trustpilot link */}
           <div className="flex justify-center mt-3 md:mt-6 animate-fade-up" style={{ animationDelay: "0.35s" }}>
-            <div
-              ref={trustpilotRef}
-              className="trustpilot-widget"
-              data-locale="en-US"
-              data-template-id="56278e9abfbbba0bdcd568bc"
-              data-businessunit-id="698afcf7c5b7f0ff5cd43437"
-              data-style-height="52px"
-              data-style-width="100%"
-              data-theme="dark"
-              data-token="bb0aa621-6b7c-4584-a3ea-216a9ba2397e"
+            <a
+              href="https://www.trustpilot.com/review/swap-skills.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card/70 backdrop-blur-sm border border-border/50 hover:border-primary/30 hover:shadow-md transition-all duration-200 text-xs md:text-sm text-muted-foreground hover:text-foreground"
             >
-              <a href="https://www.trustpilot.com/review/swap-skills.com" target="_blank" rel="noopener">Trustpilot</a>
-            </div>
+              <Star className="h-3.5 w-3.5 md:h-4 md:w-4 text-green-400 fill-green-400" />
+              <span className="font-medium">Rated on</span>
+              <span className="font-bold text-foreground">Trustpilot</span>
+              <ArrowRight className="h-3 w-3 md:h-3.5 md:w-3.5" />
+            </a>
           </div>
         </div>
       </div>
