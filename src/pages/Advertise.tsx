@@ -265,9 +265,9 @@ Terms Accepted: Yes
   return (
     <>
       <SEO
-        title="For Business | Sponsorship & Advertising"
-        description="Support Swap-Skills and get visibility for your local Irish business. Advertise to local users or become a sponsor to support the community."
-        keywords="swap skills sponsorship, local business Ireland, community supporter, ethical advertising, advertise swap skills"
+        title="Support Swap-Skills | Sponsorship"
+        description="Help keep Swap-Skills free for everyone. Sponsorships cover hosting, development, and in-person community events across Ireland. Posting is always free."
+        keywords="swap skills sponsorship, support swap skills, community sponsor Ireland, keep it free, skill swap events"
         url="https://swap-skills.ie/advertise"
       />
       <div className="flex min-h-screen flex-col">
@@ -278,17 +278,17 @@ Terms Accepted: Yes
             <div className="container">
               <div className="max-w-3xl mx-auto text-center">
                 <Badge variant="secondary" className="mb-4">
-                  <Star className="h-3 w-3 mr-1" />
-                  For Local Businesses
+                  <Heart className="h-3 w-3 mr-1" />
+                  For Supporters
                 </Badge>
                 <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">
-                  Support Your Community,
+                  Help Keep Swap-Skills
                   <br />
-                  <span className="text-primary">Grow Your Business</span>
+                  <span className="text-primary">Free for Everyone</span>
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Choose from advertising to reach local customers or sponsorship to support 
-                  Swap-Skills and get listed in our Sponsors Directory.
+                  Swap-Skills is 100% free to use — posting, browsing, and swapping costs nothing. 
+                  Sponsorships help us cover hosting, development, and in-person community events across Ireland.
                 </p>
               </div>
             </div>
@@ -297,103 +297,12 @@ Terms Accepted: Yes
           {/* Two Options Overview */}
           <section id="sponsorship" className="py-16">
             <div className="container">
-              <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                
-                {/* Package A: Advertise with us */}
+              <div className="max-w-xl mx-auto">
+
+                {/* Sponsorship Card */}
                 <Card className="relative border-primary shadow-lg ring-2 ring-primary/20">
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <Badge className="bg-primary text-primary-foreground">
-                      For Businesses
-                    </Badge>
-                  </div>
-                  <CardHeader className="text-center pb-4">
-                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mx-auto mb-4">
-                      <Building2 className="h-7 w-7 text-primary" />
-                    </div>
-                    <CardTitle className="text-2xl">Advertise with Us</CardTitle>
-                    <CardDescription>
-                      Get your business in front of local customers
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {/* Price */}
-                    <div className="text-center pb-4 border-b">
-                      <div className="text-4xl font-bold text-primary">€30</div>
-                      <div className="text-muted-foreground">per month</div>
-                      <div className="text-sm text-muted-foreground mt-1">Cancel anytime</div>
-                    </div>
-
-                    {/* Features */}
-                    <ul className="space-y-4">
-                      <li className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          <Monitor className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <span className="font-medium">Website & Mobile App Placement</span>
-                          <p className="text-sm text-muted-foreground">
-                            Your ad displayed to users browsing our website and mobile app
-                          </p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          <MapPin className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <span className="font-medium">Shown to Local Users</span>
-                          <p className="text-sm text-muted-foreground">
-                            Reach people in your area who are actively seeking local services
-                          </p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          <BarChart3 className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <span className="font-medium">Your Own Dashboard</span>
-                          <p className="text-sm text-muted-foreground">
-                            Manage your ad and track clicks, impressions, and traffic to your page
-                          </p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          <CreditCard className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <span className="font-medium">Simple Fixed Price</span>
-                          <p className="text-sm text-muted-foreground">
-                            No hidden fees, no bidding - just €30/month flat rate
-                          </p>
-                        </div>
-                      </li>
-                    </ul>
-
-                    {/* CTA */}
-                    <Button 
-                      className="w-full" 
-                      size="lg"
-                      onClick={() => handleCheckout(STRIPE_PRICES.advertising, "Advertising")}
-                      disabled={isCheckingOut !== null}
-                    >
-                      {isCheckingOut === STRIPE_PRICES.advertising ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        "Subscribe Now - €30/month"
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                {/* Package B: Sponsorship */}
-                <Card className="relative">
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge variant="secondary">
                       For Supporters
                     </Badge>
                   </div>
@@ -401,9 +310,10 @@ Terms Accepted: Yes
                     <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mx-auto mb-4">
                       <Heart className="h-7 w-7 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl">Sponsorship</CardTitle>
-                    <CardDescription>
-                      Support the community without advertising
+                    <CardTitle className="text-2xl">Become a Sponsor</CardTitle>
+                    <CardDescription className="max-w-md mx-auto">
+                      Your contribution helps us keep Swap-Skills completely free, 
+                      cover hosting &amp; development costs, and organise in-person skill-swap events across Ireland.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -414,16 +324,46 @@ Terms Accepted: Yes
                       <div className="text-sm text-muted-foreground mt-1">Cancel anytime</div>
                     </div>
 
-                    {/* Features */}
+                    {/* Clarification banner */}
+                    <div className="rounded-lg bg-muted/50 border border-border p-4 text-center">
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-semibold text-foreground">Posting on Swap-Skills is always free.</span>{" "}
+                        Sponsorships are purely voluntary and help us maintain the platform, advertise Swap-Skills to grow the community, and host events.
+                      </p>
+                    </div>
+
+                    {/* What your sponsorship funds */}
                     <ul className="space-y-4">
                       <li className="flex items-start gap-3">
                         <div className="flex-shrink-0 mt-0.5">
                           <Heart className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <span className="font-medium">Support Swap-Skills</span>
+                          <span className="font-medium">Keep the Platform Free</span>
                           <p className="text-sm text-muted-foreground">
-                            Help keep the platform free and accessible for everyone in the community
+                            Covers hosting, development, and running costs so everyone can swap for free
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <Users className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">Grow the Community</span>
+                          <p className="text-sm text-muted-foreground">
+                            Funds advertising and outreach to bring more neighbours onto the platform
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <MapPin className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">In-Person Events</span>
+                          <p className="text-sm text-muted-foreground">
+                            Helps organise local skill-swap meetups and community events across Ireland
                           </p>
                         </div>
                       </li>
@@ -434,29 +374,7 @@ Terms Accepted: Yes
                         <div>
                           <span className="font-medium">Listed in Sponsors Directory</span>
                           <p className="text-sm text-muted-foreground">
-                            Your name or business featured on our Sponsors page with appreciation
-                          </p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          <Users className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <span className="font-medium">No Advertising</span>
-                          <p className="text-sm text-muted-foreground">
-                            Pure community support - no ads, no tracking, just goodwill
-                          </p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          <CheckCircle2 className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <span className="font-medium">Flexible Contributions</span>
-                          <p className="text-sm text-muted-foreground">
-                            Choose the level that works for you
+                            Your name or business featured on our Sponsors page as a thank-you
                           </p>
                         </div>
                       </li>
