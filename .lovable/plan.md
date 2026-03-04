@@ -1,43 +1,40 @@
 
 
-## SEO Audit and Sitemap Fix
+## Make the Posting Flow More Fun and Exciting
 
-### Problem
-The static sitemap (`public/sitemap.xml`) is outdated and has several issues:
-- Only 28 of 30 active services are listed (2 missing)
-- Service URLs use raw UUIDs instead of SEO-friendly title-based slugs
-- The file goes stale whenever new listings are created
-- Contains a fragment URL (`/stories#swap-skills-faq`) that Google ignores
-- Includes `/getting-started` which is an auth-gated redirect page
+Keep Skill Swap as the default. Instead of changing the post type order, add excitement and delight to the flow itself.
 
-### Plan
+### Changes
 
-**1. Regenerate the static sitemap now**
-- Call the `sitemap` edge function to produce a fresh, correct sitemap with all 30 services using proper title-based slugs
-- Save the output to `public/sitemap.xml`
+**1. Move Boost upsell out of the main form (lines 351-379)**
+- Remove the Boost toggle from the middle of the form -- it creates a "this costs money" impression before users even fill in their details
+- The `BoostOfferCard` already shows after submission; the boost checkout logic already handles it post-submit
+- This alone makes the form feel lighter and less transactional
 
-**2. Fix the sitemap edge function**
-- Remove the fragment URL (`/stories#swap-skills-faq`)
-- Remove `/getting-started` (auth-gated, causes soft 404s for crawlers)
-- Add the `/event/carlow` campaign page (currently your top-visited page at 179 views this week)
-- Ensure the static sitemap script (`scripts/generate-sitemap.ts`) matches the edge function
+**2. Add confetti celebration on successful post (line 210)**
+- Fire `fireConfetti()` (already exists in `src/hooks/useConfetti.ts`) when the post is successfully created
+- Instant dopamine hit -- makes posting feel rewarding
 
-**3. Fix the static sitemap to use slugs**
-- The committed `public/sitemap.xml` uses raw UUIDs, but the edge function already generates slug-based URLs -- the static file simply hasn't been regenerated since the slug feature was added
-- Regenerate it with the updated edge function output
+**3. Add an encouraging progress indicator**
+- Replace the plain numbered sections (1, 2) with a lightweight step progress bar at the top of the form
+- Shows "Step 1 of 2" (or "1 of 3" for skill_swap) with a colourful progress fill
+- Makes the form feel shorter and gives a sense of momentum
 
-**4. Additional SEO improvements to consider (future)**
-- **Auto-refresh sitemap**: Set up a scheduled task to regenerate the static sitemap weekly, or serve the dynamic edge function URL in `robots.txt` instead
-- **Bounce rate (84%)**: Very high -- consider adding more internal links and related listings on service detail pages
-- **Mobile-first**: 57% of traffic is mobile; verify service detail pages render well on small screens
-- **ChatGPT referrals**: You're already getting traffic from `chatgpt.com` -- the JSON-LD and AEO work is paying off
+**4. Add an AI "Help me write this" button next to the description field**
+- Small sparkle button that calls the existing `generate-service-post` edge function
+- User types a few words, AI fills in a polished title + description
+- Reduces blank-page anxiety significantly
 
-### Technical Details
+**5. Add a motivational micro-copy banner at the top of the form**
+- Rotating encouraging messages like "You're 2 minutes away from your first swap!" or "30 people swapped skills this month -- join them!"
+- Light, friendly tone with an emoji
 
-Files to modify:
-- `public/sitemap.xml` -- regenerate with all 30 services using slug URLs
-- `supabase/functions/sitemap/index.ts` -- remove fragment URL, remove `/getting-started`, add `/event/carlow`
-- `scripts/generate-sitemap.ts` -- same fixes to keep in sync
+### Files to modify
+- `src/pages/NewService.tsx` -- all changes above
 
-Total URL count after fix: ~76 URLs (16 static + 1 event + 18 skill guides + 27 counties + 1 county index + 1 skills index + ~30 services) -- but the number will grow dynamically as new services are posted.
+### What stays the same
+- Skill Swap remains the default post type
+- Post type order stays: Free Offer, Help Request, Skill Swap (current order in the radio group)
+- Onboarding flow unchanged
+- No database changes needed
 
