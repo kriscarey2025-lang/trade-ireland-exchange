@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
@@ -17,8 +17,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw, AlertTriangle, Zap, CalendarIcon } from "lucide-react";
+import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw, AlertTriangle, Zap, CalendarIcon, Wand2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
@@ -35,6 +36,7 @@ import { PostCreationMatchDialog } from "@/components/services/PostCreationMatch
 import { BoostOfferCard } from "@/components/services/BoostOfferCard";
 import { format, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
+import { fireConfetti } from "@/hooks/useConfetti";
 
 const serviceSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),
@@ -51,6 +53,14 @@ const locations = [
   "Westmeath", "Wexford", "Wicklow"
 ];
 
+const motivationalMessages = [
+  "🚀 You're 2 minutes away from your first swap!",
+  "🤝 30+ people swapped skills this month — join them!",
+  "✨ Your skill could be exactly what someone needs right now",
+  "🌟 Great things happen when neighbours help each other",
+  "💡 The best swaps start with a simple post",
+];
+
 export default function NewService() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -59,6 +69,7 @@ export default function NewService() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [moderationWarning, setModerationWarning] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   
   // Match dialog state
   const [showMatchDialog, setShowMatchDialog] = useState(false);
@@ -93,8 +104,25 @@ export default function NewService() {
   const [neededByDate, setNeededByDate] = useState<Date | null>(null);
   const [neededByOption, setNeededByOption] = useState<"asap" | "date">("asap");
 
-  // Boost opt-in
-  const [wantsBoost, setWantsBoost] = useState(false);
+  // Motivational message (pick one randomly per session)
+  const motivationalMessage = useMemo(() => motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)], []);
+
+  // Progress calculation
+  const totalSteps = postCategory === "skill_swap" ? 3 : 2;
+  const currentStep = (() => {
+    // Step 1: post type selected (always done)
+    // Step 2: core details filled
+    const coreDetailsFilled = title.length >= 5 && description.length >= 20 && category !== "" && location !== "";
+    if (postCategory === "skill_swap") {
+      const swapDetailsFilled = openToGeneralOffers || acceptedSkills.length > 0 || customSkills.length > 0;
+      if (coreDetailsFilled && swapDetailsFilled) return 3;
+      if (coreDetailsFilled) return 2;
+      return 1;
+    }
+    if (coreDetailsFilled) return 2;
+    return 1;
+  })();
+  const progressPercent = (currentStep / totalSteps) * 100;
 
   // Redirect if not logged in
   useEffect(() => {
@@ -103,6 +131,39 @@ export default function NewService() {
       navigate('/auth');
     }
   }, [user, authLoading, navigate]);
+
+  const handleAIGenerate = async () => {
+    if (!category) {
+      toast.error("Please select a category first");
+      return;
+    }
+    
+    setIsGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-service-post", {
+        body: {
+          goal: postCategory === "help_request" ? "find_help" : postCategory === "free_offer" ? "share_skill" : "both",
+          postCategory,
+          experienceLevel: "intermediate",
+          skillCategory: categoryLabels[category as ServiceCategory] || category,
+          skillDetails: description || title || "general skills",
+          location: location || "Ireland",
+          whatTheyWant: acceptedSkills.length > 0 ? acceptedSkills.map(s => categoryLabels[s as ServiceCategory] || s).join(", ") : undefined,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.title) setTitle(data.title);
+      if (data?.description) setDescription(data.description);
+      toast.success("✨ AI draft ready! Feel free to edit it.");
+    } catch (err: any) {
+      console.error("AI generate error:", err);
+      toast.error("Couldn't generate a draft right now. Try again in a moment.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,7 +268,9 @@ export default function NewService() {
       });
       setModerationWarning(moderationResult.reason || "Your post is being reviewed by our team.");
     } else {
-      toast.success("Posted successfully!");
+      // 🎉 Confetti celebration on successful post!
+      fireConfetti();
+      toast.success("🎉 Your post is live! Nice one!");
     }
     
     setIsSubmitting(false);
@@ -217,23 +280,7 @@ export default function NewService() {
       return;
     }
 
-    // If user opted into boost in the form, go straight to checkout
-    if (wantsBoost) {
-      try {
-        const { data, error } = await supabase.functions.invoke("create-boost-checkout", {
-          body: { serviceId: newService.id },
-        });
-        if (error) throw error;
-        if (data?.url) {
-          window.location.href = data.url;
-          return;
-        }
-      } catch (err: any) {
-        toast.error(err.message || "Failed to start boost checkout");
-      }
-    }
-
-    // Otherwise show discovery step (skill_swap) or boost offer card
+    // Show discovery step (skill_swap) or boost offer card
     if (postCategory === "skill_swap") {
       setCreatedServiceId(newService.id);
       setShowMatchDialog(true);
@@ -310,6 +357,20 @@ export default function NewService() {
                   <CardDescription>{getHeaderDescription()}</CardDescription>
                 </div>
               </div>
+
+              {/* Motivational Banner */}
+              <div className="mt-4 rounded-lg bg-primary/5 border border-primary/10 px-4 py-3 text-sm text-primary font-medium">
+                {motivationalMessage}
+              </div>
+
+              {/* Step Progress Indicator */}
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Step {currentStep} of {totalSteps}</span>
+                  <span>{Math.round(progressPercent)}% complete</span>
+                </div>
+                <Progress value={progressPercent} className="h-2" />
+              </div>
             </CardHeader>
             <CardContent>
               <form id="new-service-form" onSubmit={handleSubmit} className="space-y-8 pb-24 md:pb-0">
@@ -346,36 +407,6 @@ export default function NewService() {
                       );
                     })}
                   </RadioGroup>
-                </div>
-
-                {/* Boost Your Post - Prominent placement */}
-                <div className="rounded-xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 p-5 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                        <Sparkles className="h-4 w-4 text-white" />
-                      </div>
-                      <div>
-                        <Label htmlFor="boost-toggle" className="font-semibold text-base cursor-pointer">
-                          Boost this post
-                        </Label>
-                      </div>
-                    </div>
-                    <Switch
-                      id="boost-toggle"
-                      checked={wantsBoost}
-                      onCheckedChange={setWantsBoost}
-                      disabled={isSubmitting}
-                    />
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    For just <span className="font-bold text-foreground">€5</span> (one-off), your listing gets pinned to the top of browse results for 30 days with a highlighted card and weekly performance stats by email.
-                  </p>
-                  {wantsBoost && (
-                    <p className="text-xs text-muted-foreground border-t border-amber-200 dark:border-amber-800 pt-2">
-                      ✨ You'll be taken to a secure checkout after posting.
-                    </p>
-                  )}
                 </div>
 
                 {/* Section 1: Your Skill / What You Need */}
@@ -427,9 +458,26 @@ export default function NewService() {
                     </Select>
                   </div>
 
-                  {/* Description */}
+                  {/* Description with AI helper */}
                   <div className="space-y-2">
-                    <Label htmlFor="description">Description *</Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="description">Description *</Label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 text-xs gap-1.5 text-primary hover:text-primary/80"
+                        onClick={handleAIGenerate}
+                        disabled={isGenerating || isSubmitting || !category}
+                      >
+                        {isGenerating ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Wand2 className="h-3.5 w-3.5" />
+                        )}
+                        {isGenerating ? "Writing..." : "Help me write this"}
+                      </Button>
+                    </div>
                     <Textarea
                       id="description"
                       value={description}
