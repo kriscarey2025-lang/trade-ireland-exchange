@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,21 +11,58 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { fireConfetti } from "@/hooks/useConfetti";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Calendar, Users, CheckCircle2, Loader2 } from "lucide-react";
+import { MapPin, Calendar, Users, CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { SEO } from "@/components/SEO";
 
 const EventRSVP = () => {
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [actionProcessing, setActionProcessing] = useState(false);
+  const [actionResult, setActionResult] = useState<{ type: "confirmed" | "cancelled"; name: string } | null>(null);
   const [form, setForm] = useState({
     full_name: "",
     email: "",
     is_registered_user: "no",
     attendance: "yes",
-    time_preference: "either",
     notes: "",
   });
+
+  // Handle confirm/cancel URL params from email links
+  useEffect(() => {
+    const action = searchParams.get("action");
+    const email = searchParams.get("email");
+    const token = searchParams.get("token");
+
+    if (action && email && token && (action === "confirm" || action === "cancel")) {
+      handleEmailAction(action, email, token);
+    }
+  }, [searchParams]);
+
+  const handleEmailAction = async (action: "confirm" | "cancel", email: string, token: string) => {
+    setActionProcessing(true);
+    try {
+      const newStatus = action === "confirm" ? "confirmed" : "cancelled";
+      const { data, error } = await supabase
+        .from("event_rsvps" as any)
+        .update({ registration_status: newStatus } as any)
+        .eq("id", token)
+        .eq("email", email)
+        .select("full_name")
+        .single();
+
+      if (error) throw error;
+
+      setActionResult({ type: newStatus as "confirmed" | "cancelled", name: (data as any)?.full_name || "" });
+      if (action === "confirm") fireConfetti();
+    } catch (error) {
+      console.error("Action error:", error);
+      toast({ title: "Something went wrong", description: "This link may have expired or already been used.", variant: "destructive" });
+    } finally {
+      setActionProcessing(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,8 +78,9 @@ const EventRSVP = () => {
         email: form.email.trim().toLowerCase(),
         is_registered_user: form.is_registered_user === "yes",
         attendance: form.attendance,
-        time_preference: form.time_preference,
+        time_preference: "either",
         notes: form.notes.trim() || null,
+        registration_status: "confirmed",
       } as any);
 
       if (error) throw error;
@@ -57,11 +95,61 @@ const EventRSVP = () => {
     }
   };
 
+  // Show action result (confirm/cancel from email)
+  if (actionProcessing) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (actionResult) {
+    const firstName = actionResult.name?.split(" ")[0] || "there";
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <SEO title="Event Registration — SwapSkills" description="Carlow in-person meet-up registration" />
+        <Header />
+        <main className="flex-grow container mx-auto px-4 py-8 max-w-2xl">
+          <Card className="border-primary/20">
+            <CardContent className="py-12 text-center space-y-4">
+              {actionResult.type === "confirmed" ? (
+                <>
+                  <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto" />
+                  <h2 className="text-2xl font-bold">You're confirmed, {firstName}! 🎉</h2>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    We'll see you at <strong>Enterprise House, O'Brien's Road, Carlow</strong> on <strong>Friday 17th April</strong> from <strong>6–8 PM</strong>. Light refreshments will be provided!
+                  </p>
+                </>
+              ) : (
+                <>
+                  <XCircle className="h-16 w-16 text-muted-foreground mx-auto" />
+                  <h2 className="text-2xl font-bold">RSVP Cancelled</h2>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    No worries, {firstName}! Your spot has been freed up for someone else. We hope to see you at a future event. 🤝
+                  </p>
+                </>
+              )}
+              <Button asChild className="mt-4">
+                <Link to="/">Back to SwapSkills</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEO
-        title="In-Person Swap Event – Carlow | SwapSkills"
-        description="Join our first in-person SwapSkills event in Carlow! Meet fellow skill-swappers, arrange exchanges, and connect with the community."
+        title="Register for the Carlow Meet-Up | SwapSkills"
+        description="Register for the SwapSkills in-person meet-up at Enterprise House, Carlow on Friday 17th April 2026, 6–8 PM. Places limited!"
       />
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8 max-w-2xl">
@@ -75,7 +163,7 @@ const EventRSVP = () => {
             🤝 SwapSkills In-Person Meet-Up
           </h1>
           <p className="text-lg text-muted-foreground max-w-lg mx-auto">
-            Meet fellow skill-swappers face to face! Connect, chat, and maybe even arrange a skill exchange on the spot.
+            Meet fellow skill-swappers face to face! Connect, chat, and arrange a skill exchange on the spot.
           </p>
         </div>
 
@@ -95,21 +183,21 @@ const EventRSVP = () => {
             <MapPin className="h-5 w-5 text-primary shrink-0" />
             <div>
               <p className="font-medium text-sm">Location</p>
-              <p className="text-xs text-muted-foreground">Carlow Town (TBC)</p>
+              <p className="text-xs text-muted-foreground">Enterprise House, O'Brien's Road, Carlow</p>
             </div>
           </div>
           <div className="flex items-center gap-3 bg-muted/50 rounded-lg p-4">
             <Calendar className="h-5 w-5 text-primary shrink-0" />
             <div>
-              <p className="font-medium text-sm">Date</p>
-              <p className="text-xs text-muted-foreground">To be confirmed</p>
+              <p className="font-medium text-sm">Date & Time</p>
+              <p className="text-xs text-muted-foreground">Friday 17th April 2026, 6–8 PM</p>
             </div>
           </div>
           <div className="flex items-center gap-3 bg-muted/50 rounded-lg p-4">
             <Users className="h-5 w-5 text-primary shrink-0" />
             <div>
               <p className="font-medium text-sm">Who</p>
-              <p className="text-xs text-muted-foreground">Everyone welcome!</p>
+              <p className="text-xs text-muted-foreground">Places limited · Light refreshments</p>
             </div>
           </div>
         </div>
@@ -118,18 +206,18 @@ const EventRSVP = () => {
           <Card className="border-primary/20">
             <CardContent className="py-12 text-center space-y-4">
               <CheckCircle2 className="h-16 w-16 text-primary mx-auto" />
-              <h2 className="text-2xl font-bold">Thanks, {form.full_name.split(" ")[0]}! 🎉</h2>
+              <h2 className="text-2xl font-bold">You're registered, {form.full_name.split(" ")[0]}! 🎉</h2>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Your interest has been recorded. We'll be in touch with event details once the date and venue are confirmed.
+                We'll see you at <strong>Enterprise House, O'Brien's Road, Carlow</strong> on <strong>Friday 17th April</strong> from <strong>6–8 PM</strong>. Expect light refreshments, skill swapping, connecting and learning about SwapSkills!
               </p>
             </CardContent>
           </Card>
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>Express Your Interest</CardTitle>
+              <CardTitle>Register Your Place</CardTitle>
               <p className="text-sm text-muted-foreground">
-                We're gauging interest before confirming the event. Fill in this quick form — no commitment yet!
+                Places are limited — register below to secure your spot at our first in-person event!
               </p>
             </CardHeader>
             <CardContent>
@@ -181,44 +269,22 @@ const EventRSVP = () => {
 
                 {/* Would you attend? */}
                 <div className="space-y-3">
-                  <Label>Would you attend?</Label>
+                  <Label>Will you attend?</Label>
                   <RadioGroup
                     value={form.attendance}
                     onValueChange={(v) => setForm({ ...form, attendance: v })}
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="yes" id="attend-yes" />
-                      <Label htmlFor="attend-yes" className="font-normal">Yes, I'd love to!</Label>
+                      <Label htmlFor="attend-yes" className="font-normal">Yes, I'll be there!</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="maybe" id="attend-maybe" />
-                      <Label htmlFor="attend-maybe" className="font-normal">Maybe — depends on timing</Label>
+                      <Label htmlFor="attend-maybe" className="font-normal">Maybe — I'll try my best</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="no" id="attend-no" />
                       <Label htmlFor="attend-no" className="font-normal">Not this time</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                {/* Time preference */}
-                <div className="space-y-3">
-                  <Label>Time preference</Label>
-                  <RadioGroup
-                    value={form.time_preference}
-                    onValueChange={(v) => setForm({ ...form, time_preference: v })}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="daytime" id="time-day" />
-                      <Label htmlFor="time-day" className="font-normal">Daytime (weekday)</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="weekend" id="time-weekend" />
-                      <Label htmlFor="time-weekend" className="font-normal">Weekend</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="either" id="time-either" />
-                      <Label htmlFor="time-either" className="font-normal">Either works for me</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -240,10 +306,10 @@ const EventRSVP = () => {
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Submitting...
+                      Registering...
                     </>
                   ) : (
-                    "Submit My Interest 🎉"
+                    "Register My Place 🎉"
                   )}
                 </Button>
               </form>
