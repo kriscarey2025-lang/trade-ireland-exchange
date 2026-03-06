@@ -660,6 +660,7 @@ export type Database = {
           id: string
           is_registered_user: boolean
           notes: string | null
+          registration_status: string
           time_preference: string
           user_id: string | null
         }
@@ -671,6 +672,7 @@ export type Database = {
           id?: string
           is_registered_user?: boolean
           notes?: string | null
+          registration_status?: string
           time_preference?: string
           user_id?: string | null
         }
@@ -682,6 +684,7 @@ export type Database = {
           id?: string
           is_registered_user?: boolean
           notes?: string | null
+          registration_status?: string
           time_preference?: string
           user_id?: string | null
         }
