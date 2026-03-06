@@ -104,3 +104,6 @@ verify_jwt = false
 
 [functions.send-announcement]
 verify_jwt = false
+
+[functions.send-event-confirmation-request]
+verify_jwt = false
