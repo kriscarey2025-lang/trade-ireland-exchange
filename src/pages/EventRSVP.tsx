@@ -44,17 +44,15 @@ const EventRSVP = () => {
     setActionProcessing(true);
     try {
       const newStatus = action === "confirm" ? "confirmed" : "cancelled";
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("event_rsvps" as any)
         .update({ registration_status: newStatus } as any)
         .eq("id", token)
-        .eq("email", email)
-        .select("full_name")
-        .single();
+        .eq("email", email);
 
       if (error) throw error;
 
-      setActionResult({ type: newStatus as "confirmed" | "cancelled", name: (data as any)?.full_name || "" });
+      setActionResult({ type: newStatus as "confirmed" | "cancelled", name: email });
       if (action === "confirm") fireConfetti();
     } catch (error) {
       console.error("Action error:", error);
