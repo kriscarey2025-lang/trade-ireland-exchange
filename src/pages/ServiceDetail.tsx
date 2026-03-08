@@ -824,6 +824,7 @@ export default function ServiceDetail() {
                                 serviceId={service.id} 
                                 serviceTitle={service.title}
                                 ownerId={service.user_id}
+                                ownerName={service.provider_name}
                                 className="w-full"
                               />
                             </span>
