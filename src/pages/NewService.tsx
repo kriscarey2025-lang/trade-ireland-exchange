@@ -124,6 +124,39 @@ export default function NewService() {
   })();
   const progressPercent = (currentStep / totalSteps) * 100;
 
+  const isFirstPost = searchParams.get("first") === "true";
+
+  // Pre-fill from user preferences for first-time posters
+  useEffect(() => {
+    if (!isFirstPost || !user) return;
+    
+    const prefill = async () => {
+      const { data: prefs } = await supabase
+        .from("user_preferences")
+        .select("skills_offered, skills_offered_custom")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("location")
+        .eq("id", user.id)
+        .maybeSingle();
+      
+      // Pre-fill category from first offered skill
+      if (prefs?.skills_offered && prefs.skills_offered.length > 0 && !category) {
+        setCategory(prefs.skills_offered[0] as ServiceCategory);
+      }
+      
+      // Pre-fill location from profile
+      if (profile?.location && !location) {
+        setLocation(profile.location);
+      }
+    };
+    
+    prefill();
+  }, [isFirstPost, user]);
+
   // Redirect if not logged in
   useEffect(() => {
     if (!authLoading && !user) {

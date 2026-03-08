@@ -219,8 +219,9 @@ export function OnboardingQuestionnaire() {
       .update({ onboarding_completed: true })
       .eq("user_id", user.id);
     
-    toast.success("You're all set! Welcome to SwapSkills!");
-    navigate("/welcome");
+    toast.success("You're all set! Let's create your first post!");
+    // Redirect to guided first post instead of homepage
+    navigate("/services/new?first=true");
   };
 
   const handleSkip = async () => {
