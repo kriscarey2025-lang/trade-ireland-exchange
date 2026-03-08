@@ -290,6 +290,11 @@ const Index = () => {
             {/* Social Proof Reviews Banner */}
             <ReviewsBanner />
 
+            {/* Jenny's Success Story */}
+            <div className="container py-4">
+              <SuccessStoryCard />
+            </div>
+
             {/* Swap Stats Section */}
             <SwapStatsSection />
             {/* First Post CTA for users with 0 services */}
