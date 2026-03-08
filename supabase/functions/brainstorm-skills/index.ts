@@ -6,13 +6,12 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { strengths, needs } = await req.json();
+    const { strengths, needs, mode } = await req.json();
 
     if (!strengths || !needs) {
       return new Response(
@@ -27,7 +26,38 @@ serve(async (req) => {
       throw new Error('API key not configured');
     }
 
-    const systemPrompt = `You are a creative skill-swap matchmaker for a community platform in Ireland. 
+    let systemPrompt: string;
+    let userPrompt: string;
+
+    if (mode === 'quick_post') {
+      systemPrompt = `You are a friendly skill-swap post writer for a community platform in Ireland called Swap Skills.
+Your job is to generate a single, ready-to-post listing based on what someone can offer and what they need.
+
+The post should sound warm, personal, and approachable — like a real person writing on a community board.
+Use British/Irish English spelling.
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "title": "A catchy, specific title (max 80 chars) that mentions both the offer and the need",
+  "description": "A friendly 3-4 sentence description. Start with what you can offer, then what you're looking for in return. End with something inviting like 'Drop me a message if interested!'",
+  "category": "The best matching category from this list: home_improvement, childcare, education, gardening, cleaning, cooking, pet_care, transportation, tech_support, fitness, beauty, barbering, crafts, music, photography, holistic_wellness, coaching_mentoring, local_goods, other",
+  "offerSummary": "One line summary of what they offer",
+  "needSummary": "One line summary of what they need"
+}
+
+Pick the category based on the PRIMARY skill being offered. Make the title engaging and specific.`;
+
+      userPrompt = `Write a skill swap post for someone with these details:
+
+WHAT THEY'RE GOOD AT / CAN OFFER:
+${strengths}
+
+WHAT THEY NEED HELP WITH / LOOKING FOR:
+${needs}
+
+Generate one polished, ready-to-post listing.`;
+    } else {
+      systemPrompt = `You are a creative skill-swap matchmaker for a community platform in Ireland. 
 Your job is to generate practical, creative skill swap ideas based on what someone is good at and what they need help with.
 
 Generate exactly 4 skill swap post ideas. Each idea should be a realistic, practical swap that someone could post on a local community board.
@@ -44,7 +74,7 @@ Return ONLY a valid JSON array with this exact structure:
 
 Make the titles engaging and the descriptions specific. Focus on practical, local community swaps.`;
 
-    const userPrompt = `Generate skill swap ideas for someone with these characteristics:
+      userPrompt = `Generate skill swap ideas for someone with these characteristics:
 
 WHAT THEY'RE GOOD AT / LOVE DOING:
 ${strengths}
@@ -53,8 +83,9 @@ WHAT THEY NEED HELP WITH / NOT GOOD AT:
 ${needs}
 
 Generate 4 creative and practical skill swap post ideas.`;
+    }
 
-    console.log('Calling Lovable AI for brainstorm ideas...');
+    console.log(`Calling Lovable AI for ${mode === 'quick_post' ? 'quick post' : 'brainstorm ideas'}...`);
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -100,33 +131,56 @@ Generate 4 creative and practical skill swap post ideas.`;
 
     console.log('AI response:', content);
 
-    // Parse the JSON from the response
-    let ideas;
-    try {
-      // Try to extract JSON from the response (it might be wrapped in markdown)
-      const jsonMatch = content.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        ideas = JSON.parse(jsonMatch[0]);
-      } else {
-        ideas = JSON.parse(content);
-      }
-    } catch (parseError) {
-      console.error('Failed to parse AI response:', parseError);
-      // Return fallback ideas
-      ideas = [
-        {
-          title: "Skills Exchange Opportunity",
-          description: "Looking to swap skills with someone in the community. Let's help each other out!",
-          yourOffer: "Based on your strengths",
-          yourNeed: "Help with your needs"
+    if (mode === 'quick_post') {
+      let post;
+      try {
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          post = JSON.parse(jsonMatch[0]);
+        } else {
+          post = JSON.parse(content);
         }
-      ];
-    }
+      } catch (parseError) {
+        console.error('Failed to parse AI response:', parseError);
+        post = {
+          title: "Skill Swap Opportunity",
+          description: "Looking to swap skills with someone in the community. Let's help each other out!",
+          category: "other",
+          offerSummary: strengths.substring(0, 100),
+          needSummary: needs.substring(0, 100)
+        };
+      }
 
-    return new Response(
-      JSON.stringify({ ideas }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+      return new Response(
+        JSON.stringify({ post }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } else {
+      let ideas;
+      try {
+        const jsonMatch = content.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+          ideas = JSON.parse(jsonMatch[0]);
+        } else {
+          ideas = JSON.parse(content);
+        }
+      } catch (parseError) {
+        console.error('Failed to parse AI response:', parseError);
+        ideas = [
+          {
+            title: "Skills Exchange Opportunity",
+            description: "Looking to swap skills with someone in the community. Let's help each other out!",
+            yourOffer: "Based on your strengths",
+            yourNeed: "Help with your needs"
+          }
+        ];
+      }
+
+      return new Response(
+        JSON.stringify({ ideas }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
   } catch (error) {
     console.error('Error in brainstorm-skills function:', error);
