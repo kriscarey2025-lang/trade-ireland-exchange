@@ -23,6 +23,7 @@ Allow: /press
 Allow: /advertise
 Allow: /sponsors
 Allow: /community-hero
+Allow: /event/*
 
 # Disallow admin and private pages
 Disallow: /admin*
