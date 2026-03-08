@@ -9,9 +9,9 @@ import { ServiceCategory } from "@/types";
 export function DemandSection() {
   const { data: services = [], isLoading } = useServices({});
 
-  // Filter to help_request and skill_swap_request type posts
+  // Filter to help_request type posts
   const demandPosts = services
-    .filter((s) => s.type === "request" || s.type === "help_request")
+    .filter((s) => s.type === "help_request")
     .slice(0, 6);
 
   if (isLoading || demandPosts.length === 0) return null;

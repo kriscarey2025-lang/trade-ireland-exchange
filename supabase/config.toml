@@ -107,3 +107,6 @@ verify_jwt = false
 
 [functions.send-event-confirmation-request]
 verify_jwt = false
+
+[functions.send-reply-reminder]
+verify_jwt = false
