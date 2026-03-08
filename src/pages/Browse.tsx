@@ -194,9 +194,6 @@ export default function Browse() {
         <ReviewsMarquee />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
-          {/* Demand Section - What people are looking for */}
-          <DemandSection />
-          
           {/* Success Story + Quick Post Wizard - show for everyone */}
           <div className="container py-6 space-y-4">
             <SuccessStoryCard />
