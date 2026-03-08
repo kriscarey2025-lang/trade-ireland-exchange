@@ -1,40 +1,28 @@
 
 
-## Make the Posting Flow More Fun and Exciting
+## Plan: Jenny's Success Story Card + Wizard for All Users
 
-Keep Skill Swap as the default. Instead of changing the post type order, add excitement and delight to the flow itself.
+### Change 1: Jenny's Success Story Inline Card on Homepage/Browse
 
-### Changes
+Create `src/components/home/SuccessStoryCard.tsx` — a compact, eye-catching card featuring Jenny's story:
+- Photo placeholder with her name, role ("Reiki Practitioner, Carlow")
+- One-liner: "3 swaps in 1 month — a website, balayage, and a facial. All through skill swapping."
+- Quote: "These aren't just transactions — they're relationships."
+- "Read her story →" link to `/stories#jenny-3-swaps`
+- Warm styling with a subtle gradient border, consistent with existing card design
 
-**1. Move Boost upsell out of the main form (lines 351-379)**
-- Remove the Boost toggle from the middle of the form -- it creates a "this costs money" impression before users even fill in their details
-- The `BoostOfferCard` already shows after submission; the boost checkout logic already handles it post-submit
-- This alone makes the form feel lighter and less transactional
+Add it to `src/pages/Browse.tsx` — placed after the DemandSection and before the QuickPostWizard, as social proof to inspire posting.
 
-**2. Add confetti celebration on successful post (line 210)**
-- Fire `fireConfetti()` (already exists in `src/hooks/useConfetti.ts`) when the post is successfully created
-- Instant dopamine hit -- makes posting feel rewarding
+### Change 2: Show QuickPostWizard to All Users (Not Just Logged-In)
 
-**3. Add an encouraging progress indicator**
-- Replace the plain numbered sections (1, 2) with a lightweight step progress bar at the top of the form
-- Shows "Step 1 of 2" (or "1 of 3" for skill_swap) with a colourful progress fill
-- Makes the form feel shorter and gives a sense of momentum
+In `src/pages/Browse.tsx` line 200, remove the `{user && (` wrapper so the wizard renders for everyone.
 
-**4. Add an AI "Help me write this" button next to the description field**
-- Small sparkle button that calls the existing `generate-service-post` edge function
-- User types a few words, AI fills in a polished title + description
-- Reduces blank-page anxiety significantly
+The wizard component already handles the non-authenticated case — when a guest clicks "Post This Now", it saves state to localStorage, shows "Sign In to Post" on the button, and redirects to `/auth?redirect=/browse`. On return, the saved wizard state is restored and they can publish. No changes needed to the wizard component itself.
 
-**5. Add a motivational micro-copy banner at the top of the form**
-- Rotating encouraging messages like "You're 2 minutes away from your first swap!" or "30 people swapped skills this month -- join them!"
-- Light, friendly tone with an emoji
+### Files Changed
 
-### Files to modify
-- `src/pages/NewService.tsx` -- all changes above
-
-### What stays the same
-- Skill Swap remains the default post type
-- Post type order stays: Free Offer, Help Request, Skill Swap (current order in the radio group)
-- Onboarding flow unchanged
-- No database changes needed
+| File | Change |
+|------|--------|
+| `src/components/home/SuccessStoryCard.tsx` | New component — Jenny's inline success story card |
+| `src/pages/Browse.tsx` | Add SuccessStoryCard, remove `user &&` guard from QuickPostWizard |
 
