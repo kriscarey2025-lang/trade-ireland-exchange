@@ -147,6 +147,7 @@ const App = () => (
                 <Route path="/community-hero" element={<CommunityHero />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/event/carlow" element={<EventRSVP />} />
+                <Route path="/carlow/event" element={<Navigate to="/event/carlow" replace />} />
                 <Route path="/admin/events" element={<AdminEvents />} />
                 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
