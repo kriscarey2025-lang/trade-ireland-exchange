@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ServiceCard } from "@/components/services/ServiceCard";
+import { QuickPostWizard } from "@/components/brainstorm/QuickPostWizard";
 import { ServiceCardMobile } from "@/components/services/ServiceCardMobile";
 import { ServiceCardCompact } from "@/components/services/ServiceCardCompact";
 import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
@@ -195,10 +196,13 @@ export default function Browse() {
           {/* Demand Section - What people are looking for */}
           <DemandSection />
           
-
-
-
-
+          {/* Quick Post Wizard - show for logged-in users */}
+          {user && (
+            <div className="container py-6">
+              <QuickPostWizard onPostCreated={() => window.location.reload()} />
+            </div>
+          )}
+          
 
 
 
