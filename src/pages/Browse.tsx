@@ -191,7 +191,8 @@ export default function Browse() {
         <ReviewsMarquee />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
-          {/* Sponsorship CTA Banner */}
+          {/* Demand Section - What people are looking for */}
+          <DemandSection />
           
 
 
