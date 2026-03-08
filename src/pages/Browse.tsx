@@ -38,7 +38,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { HeroSection } from "@/components/home/HeroSection";
 import { SwapStatsSection } from "@/components/home/SwapStatsSection";
 import { ReviewsMarquee } from "@/components/home/ReviewsMarquee";
-import { DemandSection } from "@/components/home/DemandSection";
+
 import { SuccessStoryCard } from "@/components/home/SuccessStoryCard";
 
 const locations = [
@@ -194,9 +194,6 @@ export default function Browse() {
         <ReviewsMarquee />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
-          {/* Demand Section - What people are looking for */}
-          <DemandSection />
-          
           {/* Success Story + Quick Post Wizard - show for everyone */}
           <div className="container py-6 space-y-4">
             <SuccessStoryCard />
