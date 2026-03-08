@@ -1,40 +1,34 @@
 
 
-## Make the Posting Flow More Fun and Exciting
+## Plan: 3-Step Guided Post Wizard with AI Generation
 
-Keep Skill Swap as the default. Instead of changing the post type order, add excitement and delight to the flow itself.
+The user wants a streamlined 3-step form that captures what users are good at and what they need, then uses AI to generate a ready-to-post listing with a direct "Post This" button. This builds on the existing `BrainstormSection` and `brainstorm-skills` edge function but replaces the current 2-textarea + 4-idea-cards flow with a more guided, step-by-step wizard that produces a single polished post.
 
-### Changes
+### What Changes
 
-**1. Move Boost upsell out of the main form (lines 351-379)**
-- Remove the Boost toggle from the middle of the form -- it creates a "this costs money" impression before users even fill in their details
-- The `BoostOfferCard` already shows after submission; the boost checkout logic already handles it post-submit
-- This alone makes the form feel lighter and less transactional
+**1. New component: `src/components/brainstorm/QuickPostWizard.tsx`**
+A 3-step inline wizard (not a dialog):
+- **Step 1**: "Name things you're good at, love doing, or things others usually pay for that you can do yourself" — single textarea with friendly placeholder
+- **Step 2**: "Name everyday services you usually pay for, can't do, or don't like doing" — single textarea
+- **Step 3**: AI generates a single polished post preview ("I can offer X and I'm looking for Y") with title, description, category auto-detected. Shows a "Post This" button and an "Edit before posting" option.
 
-**2. Add confetti celebration on successful post (line 210)**
-- Fire `fireConfetti()` (already exists in `src/hooks/useConfetti.ts`) when the post is successfully created
-- Instant dopamine hit -- makes posting feel rewarding
+The wizard will have a progress indicator (step dots), smooth transitions, and a warm, conversational tone. Each step has a "Next" button.
 
-**3. Add an encouraging progress indicator**
-- Replace the plain numbered sections (1, 2) with a lightweight step progress bar at the top of the form
-- Shows "Step 1 of 2" (or "1 of 3" for skill_swap) with a colourful progress fill
-- Makes the form feel shorter and gives a sense of momentum
+**2. Update `brainstorm-skills` edge function**
+Add a `mode: "quick_post"` parameter. When set, the AI returns a single ready-to-post object `{ title, description, category, offerSummary, needSummary }` instead of 4 idea cards. Reuses the same edge function to avoid duplication.
 
-**4. Add an AI "Help me write this" button next to the description field**
-- Small sparkle button that calls the existing `generate-service-post` edge function
-- User types a few words, AI fills in a polished title + description
-- Reduces blank-page anxiety significantly
+**3. Integration into Browse page**
+Replace or supplement the existing `BrainstormSection` on Browse with the new `QuickPostWizard` for logged-in users who have 0 posts (the biggest drop-off group). For users who already have posts or aren't logged in, keep showing the existing brainstorm card.
 
-**5. Add a motivational micro-copy banner at the top of the form**
-- Rotating encouraging messages like "You're 2 minutes away from your first swap!" or "30 people swapped skills this month -- join them!"
-- Light, friendly tone with an emoji
+**4. Direct posting from wizard**
+Step 3's "Post This" button will insert directly into the `services` table (reusing the same validation/moderation logic from `NewService.tsx`) without navigating away. On success, confetti + toast + the new post appears in the feed.
 
-### Files to modify
-- `src/pages/NewService.tsx` -- all changes above
+### Technical Details
 
-### What stays the same
-- Skill Swap remains the default post type
-- Post type order stays: Free Offer, Help Request, Skill Swap (current order in the radio group)
-- Onboarding flow unchanged
-- No database changes needed
+- The wizard detects category from the AI response and maps it to the existing `ServiceCategory` enum
+- Location is pre-filled from the user's profile
+- Post type defaults to `skill_swap`
+- Content moderation runs before insert (reuse `useContentModeration`)
+- Non-logged-in users hitting "Post This" get redirected to auth with wizard state saved in localStorage
+- The edge function prompt for `quick_post` mode generates Irish/British English, warm tone, specific to the user's inputs
 
