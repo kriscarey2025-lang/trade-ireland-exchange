@@ -39,6 +39,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { SwapStatsSection } from "@/components/home/SwapStatsSection";
 import { ReviewsMarquee } from "@/components/home/ReviewsMarquee";
 import { DemandSection } from "@/components/home/DemandSection";
+import { SuccessStoryCard } from "@/components/home/SuccessStoryCard";
 
 const locations = [
 "All Ireland",
@@ -196,12 +197,11 @@ export default function Browse() {
           {/* Demand Section - What people are looking for */}
           <DemandSection />
           
-          {/* Quick Post Wizard - show for logged-in users */}
-          {user && (
-            <div className="container py-6">
-              <QuickPostWizard onPostCreated={() => window.location.reload()} />
-            </div>
-          )}
+          {/* Success Story + Quick Post Wizard - show for everyone */}
+          <div className="container py-6 space-y-4">
+            <SuccessStoryCard />
+            <QuickPostWizard onPostCreated={() => window.location.reload()} />
+          </div>
           
 
 
