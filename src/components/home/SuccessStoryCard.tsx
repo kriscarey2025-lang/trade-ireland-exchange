@@ -45,6 +45,12 @@ export function SuccessStoryCard() {
 
             <Link
               to="/stories#jenny-3-swaps"
+              onClick={() => {
+                setTimeout(() => {
+                  const el = document.getElementById('jenny-3-swaps');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+              }}
               className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors group"
             >
               Read Jenny's story

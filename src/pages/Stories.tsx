@@ -498,7 +498,7 @@ export default function Stories() {
                     {/* Quote */}
                     <blockquote className="border-l-4 border-success pl-4 py-2 my-6">
                       <p className="text-foreground font-medium italic">
-                        "Every swap introduced me to someone new in my community. These aren't just transactions — they're relationships. The web developer now recommends me to stressed clients, the hairstylist has become a regular, and the beauty therapist and I are planning to collaborate on wellness events."
+                        "Every swap introduced me to someone new in my community. These aren't just transactions — they're relationships."
                       </p>
                       <footer className="text-sm text-muted-foreground mt-2">— Jenny, Carlow</footer>
                     </blockquote>
