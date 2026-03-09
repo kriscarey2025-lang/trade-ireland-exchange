@@ -31,31 +31,38 @@ serve(async (req) => {
 
     if (mode === 'quick_post') {
       systemPrompt = `You are a friendly skill-swap post writer for a community platform in Ireland called Swap Skills.
-Your job is to generate a single, ready-to-post listing based on what someone can offer and what they need.
+Your job is to generate a single, ready-to-post listing based on what someone can OFFER and what they NEED.
+
+CRITICAL RULES:
+- The user provides TWO separate inputs: their STRENGTHS (what they offer) and their NEEDS (what they want in return).
+- You MUST keep these strictly separated. NEVER mix them up or confuse offer with need.
+- The OFFER is what the user is GOOD AT and wants to GIVE to others.
+- The NEED is what the user WANTS TO RECEIVE from someone else.
+- The description MUST have two clearly labelled sections: what they're offering and what they're looking for.
 
 The post should sound warm, personal, and approachable — like a real person writing on a community board.
 Use British/Irish English spelling.
 
 Return ONLY a valid JSON object with this exact structure:
 {
-  "title": "A catchy, specific title (max 80 chars) that mentions both the offer and the need",
-  "description": "A friendly 3-4 sentence description. Start with what you can offer, then what you're looking for in return. End with something inviting like 'Drop me a message if interested!'",
+  "title": "A catchy, specific title (max 80 chars) that mentions what they OFFER in exchange for what they NEED",
+  "description": "A friendly description with clear structure: first paragraph about what you CAN OFFER (based on strengths input only), second paragraph about what you're LOOKING FOR in return (based on needs input only). End with something inviting like 'Drop me a message if interested!'",
   "category": "The best matching category from this list: home_improvement, childcare, education, gardening, cleaning, cooking, pet_care, transportation, tech_support, fitness, beauty, barbering, crafts, music, photography, holistic_wellness, coaching_mentoring, local_goods, other",
-  "offerSummary": "One line summary of what they offer",
-  "needSummary": "One line summary of what they need"
+  "offerSummary": "One line summary of what they OFFER (from strengths input ONLY)",
+  "needSummary": "One line summary of what they NEED (from needs input ONLY)"
 }
 
 Pick the category based on the PRIMARY skill being offered. Make the title engaging and specific.`;
 
-      userPrompt = `Write a skill swap post for someone with these details:
+      userPrompt = `Write a skill swap post for someone. Keep OFFER and NEED strictly separated — do NOT mix them up.
 
-WHAT THEY'RE GOOD AT / CAN OFFER:
+WHAT THIS PERSON CAN OFFER (their skills/strengths — this goes under OFFER):
 ${strengths}
 
-WHAT THEY NEED HELP WITH / LOOKING FOR:
+WHAT THIS PERSON NEEDS IN RETURN (what they want to receive — this goes under NEED):
 ${needs}
 
-Generate one polished, ready-to-post listing.`;
+Generate one polished, ready-to-post listing. Remember: strengths = OFFER, needs = NEED. Never swap them.`;
     } else {
       systemPrompt = `You are a creative skill-swap matchmaker for a community platform in Ireland. 
 Your job is to generate practical, creative skill swap ideas based on what someone is good at and what they need help with.
