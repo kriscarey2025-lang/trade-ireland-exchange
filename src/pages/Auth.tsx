@@ -82,6 +82,9 @@ export default function Auth() {
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/onboarding`,
+        queryParams: {
+          prompt: 'select_account',
+        },
       },
     });
     
