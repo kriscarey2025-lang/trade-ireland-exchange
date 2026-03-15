@@ -1,40 +1,38 @@
 
 
-## Make the Posting Flow More Fun and Exciting
+## Plan: Delete Cat Minding Post
 
-Keep Skill Swap as the default. Instead of changing the post type order, add excitement and delight to the flow itself.
+### Overview
+The post "Looking for a lovely minder for our Cat from the 26th of March until 2nd of April" needs to be removed from the database.
 
-### Changes
+### Post Identified
+- **ID**: `6421468b-5c54-439b-a4af-a66f138d0011`
+- **User ID**: `145a2d04-8646-45fe-bb64-bae892dee9f2`
+- **Title**: Looking for a lovely minder for our Cat from the 26th of March until 2nd of April
+- **Created**: 2026-02-21
 
-**1. Move Boost upsell out of the main form (lines 351-379)**
-- Remove the Boost toggle from the middle of the form -- it creates a "this costs money" impression before users even fill in their details
-- The `BoostOfferCard` already shows after submission; the boost checkout logic already handles it post-submit
-- This alone makes the form feel lighter and less transactional
+### Implementation Approach
 
-**2. Add confetti celebration on successful post (line 210)**
-- Fire `fireConfetti()` (already exists in `src/hooks/useConfetti.ts`) when the post is successfully created
-- Instant dopamine hit -- makes posting feel rewarding
+**Database Deletion**
+- Execute SQL `DELETE` statement on the `services` table
+- Target the specific post by ID: `6421468b-5c54-439b-a4af-a66f138d0011`
+- This will permanently remove the post from the platform
 
-**3. Add an encouraging progress indicator**
-- Replace the plain numbered sections (1, 2) with a lightweight step progress bar at the top of the form
-- Shows "Step 1 of 2" (or "1 of 3" for skill_swap) with a colourful progress fill
-- Makes the form feel shorter and gives a sense of momentum
+**Cascade Effects to Consider**
+The deletion may affect related data in:
+- `interests` table (users who showed interest in this post)
+- `conversations` table (any messaging related to this post)
+- `boosted_listings` (if this post was boosted)
+- `service_views` or similar tracking tables
 
-**4. Add an AI "Help me write this" button next to the description field**
-- Small sparkle button that calls the existing `generate-service-post` edge function
-- User types a few words, AI fills in a polished title + description
-- Reduces blank-page anxiety significantly
+**SQL Command**
+```sql
+DELETE FROM services 
+WHERE id = '6421468b-5c54-439b-a4af-a66f138d0011';
+```
 
-**5. Add a motivational micro-copy banner at the top of the form**
-- Rotating encouraging messages like "You're 2 minutes away from your first swap!" or "30 people swapped skills this month -- join them!"
-- Light, friendly tone with an emoji
-
-### Files to modify
-- `src/pages/NewService.tsx` -- all changes above
-
-### What stays the same
-- Skill Swap remains the default post type
-- Post type order stays: Free Offer, Help Request, Skill Swap (current order in the radio group)
-- Onboarding flow unchanged
-- No database changes needed
+### Impact
+- Post will immediately disappear from all browse/search results
+- Related interests/conversations will remain in database but orphaned (or cascade-deleted depending on foreign key constraints)
+- No UI changes needed - the post will simply not appear in query results anymore
 
