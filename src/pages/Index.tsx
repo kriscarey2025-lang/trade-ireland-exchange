@@ -425,6 +425,17 @@ const Index = () => {
               {/* Inline Ad - Below Services */}
               <InlineAd className="mt-8" />
 
+              {/* Social Proof - Below listings so core content comes first */}
+              <div className="mt-8">
+                <SuccessStoryCard />
+              </div>
+              <div className="mt-4">
+                <SwapStatsSection />
+              </div>
+              <div className="mt-4">
+                <FirstPostCTA />
+              </div>
+
               {/* Brainstorm CTA at bottom */}
                {!user && !loading && filteredServices.length > 0 && <div className="mt-12 text-center">
                   <button onClick={() => setBrainstormOpen(true)} className="group inline-block">
