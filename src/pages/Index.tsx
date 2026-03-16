@@ -277,30 +277,6 @@ const Index = () => {
               </div>
             </section>
 
-            {/* Sponsorship CTA Banner - desktop only */}
-            <div className="hidden md:block bg-highlight/10 border-y border-highlight/20 py-3 px-4">
-              <Link to="/advertise" className="flex items-center justify-center gap-2 text-center hover:opacity-80 transition-opacity">
-                <span className="text-sm md:text-base font-medium text-foreground/80">
-                  💼 Support SwapSkills through Sponsorship & Business Advertisement
-                </span>
-                <ArrowRight className="h-4 w-4 text-primary shrink-0" />
-              </Link>
-            </div>
-
-            {/* Social Proof Reviews Banner */}
-            <ReviewsBanner />
-
-            {/* Jenny's Success Story */}
-            <div className="container py-4">
-              <SuccessStoryCard />
-            </div>
-
-            {/* Swap Stats Section */}
-            <SwapStatsSection />
-            {/* First Post CTA for users with 0 services */}
-            <div className="container py-4">
-              <FirstPostCTA />
-            </div>
 
               <div id="services-section" className="container py-4 md:py-8">
                {/* Mobile: Condensed search - just essential controls */}
