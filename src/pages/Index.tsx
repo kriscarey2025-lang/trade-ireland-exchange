@@ -316,25 +316,17 @@ const Index = () => {
                  {searchFiltersContent}
                </div>
 
-               {/* Auth Prompt Banner for Non-Logged-In Users - Desktop only */}
-               {!user && !loading && <div className="hidden md:flex mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                   <div className="flex items-start sm:items-center gap-3">
-                     <div className="p-2 bg-primary/10 rounded-lg shrink-0">
-                       <UserCheck className="h-5 w-5 text-primary" />
-                     </div>
-                     <div>
-                       <p className="font-medium text-foreground">See full profiles & verification status</p>
-                       <p className="text-sm text-muted-foreground">Sign in to view verified badges and complete service information.</p>
-                     </div>
+               {/* Auth Prompt - Compact bar for Non-Logged-In Users - Desktop only */}
+               {!user && !loading && <div className="hidden md:flex mb-4 items-center justify-between bg-primary/5 border border-primary/15 rounded-lg px-4 py-2.5">
+                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                     <UserCheck className="h-4 w-4 text-primary" />
+                     <span>Sign in to see verified badges & full profiles</span>
                    </div>
                    <div className="flex gap-2 shrink-0">
-                     <Button variant="outline" size="sm" asChild>
-                       <Link to="/auth">
-                         <LogIn className="h-4 w-4 mr-1" />
-                         Sign In
-                       </Link>
+                     <Button variant="ghost" size="sm" className="h-7 text-xs" asChild>
+                       <Link to="/auth">Sign In</Link>
                      </Button>
-                     <Button size="sm" asChild>
+                     <Button size="sm" className="h-7 text-xs" asChild>
                        <Link to="/auth?mode=signup">Join Free</Link>
                      </Button>
                    </div>
