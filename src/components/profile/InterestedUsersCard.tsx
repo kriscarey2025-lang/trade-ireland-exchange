@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { formatDisplayName } from "@/lib/utils";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 
 interface InterestedUser {
   id: string;
@@ -244,7 +245,7 @@ export function InterestedUsersCard({ userId }: InterestedUsersCardProps) {
                       <p className="text-xs text-muted-foreground mb-1">They offer:</p>
                       <div className="flex flex-wrap gap-1">
                         {interest.user_services.slice(0, 3).map((service) => (
-                          <Link key={service.id} to={`/services/${service.id}`}>
+                          <Link key={service.id} to={buildServiceUrl(service.title, service.id)}>
                             <Badge 
                               variant="outline" 
                               className="text-xs cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"

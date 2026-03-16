@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams, useLocation } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -52,7 +52,7 @@ import { ServiceCategory } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import { ContactDialog } from "@/components/messaging/ContactDialog";
 import { formatDisplayName } from "@/lib/utils";
-import { extractServiceId, serviceCanonicalUrl } from "@/lib/slugify";
+import { extractServiceId, serviceCanonicalUrl, serviceUrl as buildServiceUrl } from "@/lib/slugify";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { Disclaimer } from "@/components/shared/Disclaimer";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
@@ -128,6 +128,7 @@ export default function ServiceDetail() {
   const { id: slugOrId } = useParams<{ id: string }>();
   const id = slugOrId ? extractServiceId(slugOrId) : undefined;
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { user, loading: authLoading } = useAuth();
@@ -184,6 +185,15 @@ export default function ServiceDetail() {
     },
     enabled: !!id && !authLoading,
   });
+
+  useEffect(() => {
+    if (!service || !slugOrId) return;
+
+    const canonicalPath = buildServiceUrl(service.title, service.id);
+    if (location.pathname !== canonicalPath) {
+      navigate(`${canonicalPath}${location.search}`, { replace: true });
+    }
+  }, [service, slugOrId, location.pathname, location.search, navigate]);
 
   // Fetch the latest review for this provider
   const { data: latestReview } = useQuery({

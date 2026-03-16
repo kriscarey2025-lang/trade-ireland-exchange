@@ -27,6 +27,7 @@ import { ConversationPrompts } from "@/components/messaging/ConversationPrompts"
 import { SwapAcceptanceCard } from "@/components/messaging/SwapAcceptanceCard";
 import { SwapCompletionCard } from "@/components/messaging/SwapCompletionCard";
 import { useToast } from "@/hooks/use-toast";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 
 interface ConversationDetails {
   id: string;
@@ -310,7 +311,7 @@ export default function Conversation() {
               </p>
               {conversation.service && (
                 <Link 
-                  to={`/services/${conversation.service.id}`}  
+                  to={buildServiceUrl(conversation.service.title, conversation.service.id)}
                   className="text-sm text-primary hover:underline flex items-center gap-1"
                 >
                   {conversation.service.title}
