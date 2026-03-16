@@ -52,7 +52,7 @@ import { ServiceCategory } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import { ContactDialog } from "@/components/messaging/ContactDialog";
 import { formatDisplayName } from "@/lib/utils";
-import { extractServiceId, serviceCanonicalUrl } from "@/lib/slugify";
+import { extractServiceId, serviceCanonicalUrl, serviceUrl as buildServiceUrl } from "@/lib/slugify";
 import { UserRatingBadge } from "@/components/reviews/UserRatingBadge";
 import { Disclaimer } from "@/components/shared/Disclaimer";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
