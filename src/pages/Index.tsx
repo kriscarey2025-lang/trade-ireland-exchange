@@ -22,9 +22,6 @@ import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { InlineAd } from "@/components/ads/InlineAd";
 import { ActionRequiredBanner } from "@/components/home/ActionRequiredBanner";
 
-import { FirstPostCTA } from "@/components/home/FirstPostCTA";
-import { SwapStatsSection } from "@/components/home/SwapStatsSection";
-import { SuccessStoryCard } from "@/components/home/SuccessStoryCard";
 const locations = ["All Ireland", "Antrim", "Armagh", "Carlow", "Cavan", "Clare", "Cork", "Derry", "Donegal", "Down", "Dublin", "Fermanagh", "Galway", "Kerry", "Kildare", "Kilkenny", "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", "Waterford", "Westmeath", "Wexford", "Wicklow"];
 const Index = () => {
   const { user, loading } = useAuth();
