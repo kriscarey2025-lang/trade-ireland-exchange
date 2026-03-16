@@ -421,37 +421,6 @@ const Index = () => {
 
               {/* Inline Ad - Below Services */}
               <InlineAd className="mt-8" />
-
-              {/* Social Proof - Below listings so core content comes first */}
-              <div className="mt-8">
-                <SuccessStoryCard />
-              </div>
-              <div className="mt-4">
-                <SwapStatsSection />
-              </div>
-              <div className="mt-4">
-                <FirstPostCTA />
-              </div>
-
-              {/* Brainstorm CTA at bottom */}
-               {!user && !loading && filteredServices.length > 0 && <div className="mt-12 text-center">
-                  <button onClick={() => setBrainstormOpen(true)} className="group inline-block">
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-highlight/10 p-[2px] hover:from-primary/20 hover:via-accent/20 hover:to-highlight/20 transition-all duration-300">
-                      <div className="flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card/95 backdrop-blur-sm group-hover:bg-card/90 transition-colors">
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent">
-                          <Lightbulb className="h-5 w-5 text-primary-foreground" />
-                        </div>
-                        <div className="text-left">
-                          <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                            Not sure what to offer or request?
-                          </p>
-                          <p className="text-sm text-muted-foreground">Let's brainstorm skill swap ideas together!</p>
-                        </div>
-                        <Sparkles className="h-5 w-5 text-accent group-hover:animate-spin transition-all" />
-                      </div>
-                    </div>
-                  </button>
-                </div>}
             </div>
           </AdsLayout>
         </main>
