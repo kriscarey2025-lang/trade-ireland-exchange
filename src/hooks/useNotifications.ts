@@ -30,7 +30,7 @@ export function useNotifications() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("notifications")
-        .select("*")
+        .select("*, related_service:related_service_id (id, title)")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20);

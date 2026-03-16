@@ -219,7 +219,7 @@ export default function EditService() {
     queryClient.invalidateQueries({ queryKey: ["user-services"] });
 
     toast.success("Service updated successfully!");
-    navigate(`/services/${id}`);
+    navigate(buildServiceUrl(title.trim(), id));
   };
 
   const getHeaderIcon = () => {

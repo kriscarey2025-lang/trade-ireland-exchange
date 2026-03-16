@@ -529,7 +529,7 @@ export default function AdminReports() {
                                   size="sm"
                                   asChild
                                 >
-                                  <a href={`/services/${report.reported_service.id}`} target="_blank" rel="noopener noreferrer">
+                                  <a href={buildServiceUrl(report.reported_service.title, report.reported_service.id)} target="_blank" rel="noopener noreferrer">
                                     <ExternalLink className="h-3 w-3 mr-1" />
                                     View
                                   </a>

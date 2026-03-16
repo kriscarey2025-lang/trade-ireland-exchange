@@ -186,6 +186,15 @@ export default function ServiceDetail() {
     enabled: !!id && !authLoading,
   });
 
+  useEffect(() => {
+    if (!service || !slugOrId) return;
+
+    const canonicalPath = buildServiceUrl(service.title, service.id);
+    if (location.pathname !== canonicalPath) {
+      navigate(`${canonicalPath}${location.search}`, { replace: true });
+    }
+  }, [service, slugOrId, location.pathname, location.search, navigate]);
+
   // Fetch the latest review for this provider
   const { data: latestReview } = useQuery({
     queryKey: ["latest-review", service?.user_id],

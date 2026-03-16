@@ -81,7 +81,9 @@ export function NotificationBell() {
     }
     // Fallback to service if available
     if (notification.related_service_id) {
-      return `/services/${notification.related_service_id}`;
+      return notification.related_service?.title
+        ? buildServiceUrl(notification.related_service.title, notification.related_service_id)
+        : `/services/${notification.related_service_id}`;
     }
     return null;
   };

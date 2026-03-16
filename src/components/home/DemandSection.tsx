@@ -41,7 +41,7 @@ export function DemandSection() {
           {demandPosts.map((post) => (
             <Link
               key={post.id}
-              to={`/services/${post.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${post.id}`}
+              to={buildServiceUrl(post.title, post.id)}
               className="group flex items-start gap-3 p-4 rounded-xl bg-background border border-border hover:border-primary/30 hover:shadow-soft transition-all"
             >
               <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-lg">
