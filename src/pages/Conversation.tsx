@@ -27,6 +27,7 @@ import { ConversationPrompts } from "@/components/messaging/ConversationPrompts"
 import { SwapAcceptanceCard } from "@/components/messaging/SwapAcceptanceCard";
 import { SwapCompletionCard } from "@/components/messaging/SwapCompletionCard";
 import { useToast } from "@/hooks/use-toast";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 
 interface ConversationDetails {
   id: string;

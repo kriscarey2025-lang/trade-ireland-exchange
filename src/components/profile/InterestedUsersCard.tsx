@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { formatDisplayName } from "@/lib/utils";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 
 interface InterestedUser {
   id: string;

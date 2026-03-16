@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { HelpCircle, ArrowRight, MapPin } from "lucide-react";
 import { useServices } from "@/hooks/useServices";
 import { categoryLabels, categoryIcons } from "@/lib/categories";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 import { ServiceCategory } from "@/types";
 
 export function DemandSection() {
