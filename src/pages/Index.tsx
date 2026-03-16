@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, LogIn, Gift, HelpCircle, RefreshCw, ArrowRight, Lightbulb, Sparkles, Heart } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, PackageOpen, UserCheck, Gift, HelpCircle, RefreshCw, ArrowRight, Lightbulb, Sparkles, Heart } from "lucide-react";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
 import { ServiceCategory, PostCategory } from "@/types";
 import { useServices } from "@/hooks/useServices";
@@ -21,7 +21,7 @@ import { postCategoryLabels } from "@/lib/postCategories";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { InlineAd } from "@/components/ads/InlineAd";
 import { ActionRequiredBanner } from "@/components/home/ActionRequiredBanner";
-import { ReviewsBanner } from "@/components/home/ReviewsBanner";
+
 import { FirstPostCTA } from "@/components/home/FirstPostCTA";
 import { SwapStatsSection } from "@/components/home/SwapStatsSection";
 import { SuccessStoryCard } from "@/components/home/SuccessStoryCard";
@@ -277,30 +277,6 @@ const Index = () => {
               </div>
             </section>
 
-            {/* Sponsorship CTA Banner - desktop only */}
-            <div className="hidden md:block bg-highlight/10 border-y border-highlight/20 py-3 px-4">
-              <Link to="/advertise" className="flex items-center justify-center gap-2 text-center hover:opacity-80 transition-opacity">
-                <span className="text-sm md:text-base font-medium text-foreground/80">
-                  💼 Support SwapSkills through Sponsorship & Business Advertisement
-                </span>
-                <ArrowRight className="h-4 w-4 text-primary shrink-0" />
-              </Link>
-            </div>
-
-            {/* Social Proof Reviews Banner */}
-            <ReviewsBanner />
-
-            {/* Jenny's Success Story */}
-            <div className="container py-4">
-              <SuccessStoryCard />
-            </div>
-
-            {/* Swap Stats Section */}
-            <SwapStatsSection />
-            {/* First Post CTA for users with 0 services */}
-            <div className="container py-4">
-              <FirstPostCTA />
-            </div>
 
               <div id="services-section" className="container py-4 md:py-8">
                {/* Mobile: Condensed search - just essential controls */}
@@ -340,25 +316,17 @@ const Index = () => {
                  {searchFiltersContent}
                </div>
 
-               {/* Auth Prompt Banner for Non-Logged-In Users - Desktop only */}
-               {!user && !loading && <div className="hidden md:flex mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4 flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                   <div className="flex items-start sm:items-center gap-3">
-                     <div className="p-2 bg-primary/10 rounded-lg shrink-0">
-                       <UserCheck className="h-5 w-5 text-primary" />
-                     </div>
-                     <div>
-                       <p className="font-medium text-foreground">See full profiles & verification status</p>
-                       <p className="text-sm text-muted-foreground">Sign in to view verified badges and complete service information.</p>
-                     </div>
+               {/* Auth Prompt - Compact bar for Non-Logged-In Users - Desktop only */}
+               {!user && !loading && <div className="hidden md:flex mb-4 items-center justify-between bg-primary/5 border border-primary/15 rounded-lg px-4 py-2.5">
+                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                     <UserCheck className="h-4 w-4 text-primary" />
+                     <span>Sign in to see verified badges & full profiles</span>
                    </div>
                    <div className="flex gap-2 shrink-0">
-                     <Button variant="outline" size="sm" asChild>
-                       <Link to="/auth">
-                         <LogIn className="h-4 w-4 mr-1" />
-                         Sign In
-                       </Link>
+                     <Button variant="ghost" size="sm" className="h-7 text-xs" asChild>
+                       <Link to="/auth">Sign In</Link>
                      </Button>
-                     <Button size="sm" asChild>
+                     <Button size="sm" className="h-7 text-xs" asChild>
                        <Link to="/auth?mode=signup">Join Free</Link>
                      </Button>
                    </div>
@@ -456,6 +424,17 @@ const Index = () => {
 
               {/* Inline Ad - Below Services */}
               <InlineAd className="mt-8" />
+
+              {/* Social Proof - Below listings so core content comes first */}
+              <div className="mt-8">
+                <SuccessStoryCard />
+              </div>
+              <div className="mt-4">
+                <SwapStatsSection />
+              </div>
+              <div className="mt-4">
+                <FirstPostCTA />
+              </div>
 
               {/* Brainstorm CTA at bottom */}
                {!user && !loading && filteredServices.length > 0 && <div className="mt-12 text-center">
