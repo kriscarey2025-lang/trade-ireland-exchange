@@ -1,386 +1,401 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Static Pages — Last updated: 2026-03-08 -->
   <url>
     <loc>https://swap-skills.ie/</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/browse</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/home-improvement</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/childcare</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/education</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/gardening</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/cleaning</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/cooking</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/pet-care</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/transportation</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/tech-support</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/fitness</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/beauty</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/barbering</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/arts-crafts</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/music</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/photography</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/holistic-wellness</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/coaching-mentoring</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/skills/local-goods</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/carlow</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/dublin</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/cork</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/galway</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/limerick</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/kerry</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/waterford</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/kilkenny</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/wexford</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/wicklow</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/meath</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/kildare</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/tipperary</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/clare</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/mayo</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/donegal</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/sligo</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/leitrim</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/roscommon</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/westmeath</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/offaly</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/laois</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/longford</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/louth</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/cavan</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/county/monaghan</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/how-it-works</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/about</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/stories</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/press</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/faq</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/safety</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/contact</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/event/carlow</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/sponsors</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/community-hero</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/advertise</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/auth</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/terms</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/privacy</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://swap-skills.ie/cookies</loc>
-    <lastmod>2026-03-08</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-
-  <!-- Service Pages (27 active listings) -->
+  <url>
+    <loc>https://swap-skills.ie/services/painting-and-decorating-f908e237-23de-412a-a904-2cccc6853c3d</loc>
+    <lastmod>2026-03-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://swap-skills.ie/services/personal-training-65c0bdc9-6589-4ee6-baba-de490e71a0b2</loc>
+    <lastmod>2026-03-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://swap-skills.ie/services/personal-life-coaching-66ead3f3-2627-4c17-a2f6-35bae0d7525b</loc>
+    <lastmod>2026-03-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://swap-skills.ie/services/barbering-aebba916-5239-4a70-b2f8-40c9dd151157</loc>
     <lastmod>2026-03-01</lastmod>
@@ -390,18 +405,6 @@
   <url>
     <loc>https://swap-skills.ie/services/reiki-healing-indian-head-massage-b32c2edc-66ff-4aec-b81d-c55c3396e4ed</loc>
     <lastmod>2026-02-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://swap-skills.ie/services/looking-for-a-lovely-minder-for-our-cat-from-the-26th-of-mar-6421468b-5c54-439b-a4af-a66f138d0011</loc>
-    <lastmod>2026-02-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://swap-skills.ie/services/life-mindset-coaching-66ead3f3-2627-4c17-a2f6-35bae0d7525b</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -436,12 +439,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://swap-skills.ie/services/holistic-wellness-8335732b-3aad-4921-8dc5-438bbae60bc5</loc>
-    <lastmod>2026-02-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://swap-skills.ie/services/hair-styling-colouring-services-b8e6c51e-3f8d-4167-b577-5f2405cbcaa8</loc>
     <lastmod>2026-02-06</lastmod>
     <changefreq>weekly</changefreq>
@@ -468,12 +465,6 @@
   <url>
     <loc>https://swap-skills.ie/services/cleaner-needed-8c83abea-07bd-416a-9418-8e14018f0997</loc>
     <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://swap-skills.ie/services/it-computer-advice-and-training-a779b1bb-bef6-465e-ba41-caafac9d5397</loc>
-    <lastmod>2026-01-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
