@@ -39,7 +39,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { SwapStatsSection } from "@/components/home/SwapStatsSection";
 import { ReviewsMarquee } from "@/components/home/ReviewsMarquee";
 
-import { SuccessStoryCard } from "@/components/home/SuccessStoryCard";
+
 
 const locations = [
 "All Ireland",
