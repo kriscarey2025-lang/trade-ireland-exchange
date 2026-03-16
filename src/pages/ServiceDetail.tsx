@@ -128,6 +128,7 @@ export default function ServiceDetail() {
   const { id: slugOrId } = useParams<{ id: string }>();
   const id = slugOrId ? extractServiceId(slugOrId) : undefined;
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { user, loading: authLoading } = useAuth();
