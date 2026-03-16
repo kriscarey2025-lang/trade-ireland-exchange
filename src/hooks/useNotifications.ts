@@ -14,6 +14,10 @@ export interface Notification {
   related_conversation_id: string | null;
   related_user_id: string | null;
   created_at: string;
+  related_service?: {
+    id: string;
+    title: string;
+  } | null;
 }
 
 export function useNotifications() {

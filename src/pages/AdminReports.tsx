@@ -25,6 +25,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 
 interface Report {
   id: string;

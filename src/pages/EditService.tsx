@@ -30,6 +30,7 @@ import { ImageUpload } from "@/components/services/ImageUpload";
 import { SkillSelector } from "@/components/services/SkillSelector";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 
 const serviceSchema = z.object({
   title: z.string().trim().min(5, "Title must be at least 5 characters").max(100, "Title must be less than 100 characters"),

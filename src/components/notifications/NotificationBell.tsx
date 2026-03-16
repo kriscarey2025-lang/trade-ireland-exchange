@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { serviceUrl as buildServiceUrl } from "@/lib/slugify";
 import { formatDistanceToNow } from "date-fns";
 import {
   useNotifications,
