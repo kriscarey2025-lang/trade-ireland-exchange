@@ -3,7 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ServiceCard } from "@/components/services/ServiceCard";
-import { QuickPostWizard } from "@/components/brainstorm/QuickPostWizard";
+
 import { ServiceCardMobile } from "@/components/services/ServiceCardMobile";
 import { ServiceCardCompact } from "@/components/services/ServiceCardCompact";
 import { ServiceCardSkeleton } from "@/components/services/ServiceCardSkeleton";
@@ -39,7 +39,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { SwapStatsSection } from "@/components/home/SwapStatsSection";
 import { ReviewsMarquee } from "@/components/home/ReviewsMarquee";
 
-import { SuccessStoryCard } from "@/components/home/SuccessStoryCard";
+
 
 const locations = [
 "All Ireland",
@@ -194,11 +194,6 @@ export default function Browse() {
         <ReviewsMarquee />
         <HeroSection />
         <main className="flex-1 bg-secondary/20">
-          {/* Success Story + Quick Post Wizard - show for everyone */}
-          <div className="container py-6 space-y-4">
-            <SuccessStoryCard />
-            <QuickPostWizard onPostCreated={() => window.location.reload()} />
-          </div>
           
 
 
