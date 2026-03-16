@@ -21,7 +21,7 @@ import { postCategoryLabels } from "@/lib/postCategories";
 import { BrainstormDialog } from "@/components/brainstorm/BrainstormDialog";
 import { InlineAd } from "@/components/ads/InlineAd";
 import { ActionRequiredBanner } from "@/components/home/ActionRequiredBanner";
-import { ReviewsBanner } from "@/components/home/ReviewsBanner";
+
 import { FirstPostCTA } from "@/components/home/FirstPostCTA";
 import { SwapStatsSection } from "@/components/home/SwapStatsSection";
 import { SuccessStoryCard } from "@/components/home/SuccessStoryCard";
