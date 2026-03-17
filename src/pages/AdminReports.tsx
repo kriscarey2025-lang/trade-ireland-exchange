@@ -475,7 +475,13 @@ export default function AdminReports() {
                           <div className="flex items-center gap-2 flex-wrap">
                             {getStatusBadge(report.status)}
                             <Badge variant="outline">{getReasonLabel(report.reason)}</Badge>
-                            {report.reported_service_id && (
+                            {report.reported_comment_id && (
+                              <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                                <MessageCircle className="h-3 w-3 mr-1" />
+                                Comment Report
+                              </Badge>
+                            )}
+                            {report.reported_service_id && !report.reported_comment_id && (
                               <Badge variant="secondary" className="bg-orange-100 text-orange-800">
                                 <FileX className="h-3 w-3 mr-1" />
                                 Listing Report
