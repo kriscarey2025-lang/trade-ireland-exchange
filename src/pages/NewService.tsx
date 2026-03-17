@@ -69,7 +69,7 @@ export default function NewService() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [moderationWarning, setModerationWarning] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
+  
   
   // Match dialog state
   const [showMatchDialog, setShowMatchDialog] = useState(false);
