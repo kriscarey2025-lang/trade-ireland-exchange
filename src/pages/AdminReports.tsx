@@ -389,7 +389,33 @@ export default function AdminReports() {
     },
   });
 
-  if (authLoading || roleLoading) {
+  // Delete comment mutation
+  const deleteComment = useMutation({
+    mutationFn: async ({ commentId, reportId }: { commentId: string; reportId: string }) => {
+      const { error } = await supabase.from("service_comments").delete().eq("id", commentId);
+      if (error) throw error;
+      await supabase
+        .from("reports")
+        .update({
+          status: "resolved",
+          reviewed_at: new Date().toISOString(),
+          admin_notes: adminNotes || "Comment deleted by admin",
+          resolved_by: user!.id,
+        })
+        .eq("id", reportId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-reports"] });
+      toast({ title: "Comment deleted successfully" });
+      setSelectedReport(null);
+      setAdminNotes("");
+    },
+    onError: (error: any) => {
+      toast({ title: "Failed to delete comment", description: error.message, variant: "destructive" });
+    },
+  });
+
+
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
         <Header />
