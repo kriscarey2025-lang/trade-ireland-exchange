@@ -657,6 +657,9 @@ export default function ServiceDetail() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Comments Section */}
+              <ServiceComments serviceId={service.id} serviceOwnerId={service.user_id} />
             </div>
 
             {/* Sidebar */}
