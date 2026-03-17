@@ -32,6 +32,7 @@ interface Report {
   reporter_id: string;
   reported_user_id: string;
   reported_service_id: string | null;
+  reported_comment_id: string | null;
   reason: string;
   description: string | null;
   status: string;
@@ -42,6 +43,7 @@ interface Report {
   reporter?: { full_name: string | null; avatar_url: string | null };
   reported_user?: { full_name: string | null; avatar_url: string | null; email: string | null };
   reported_service?: { id: string; title: string; status: string | null } | null;
+  reported_comment?: { id: string; content: string } | null;
 }
 
 interface BannedUser {
