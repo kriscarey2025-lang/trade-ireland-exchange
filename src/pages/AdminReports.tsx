@@ -636,7 +636,51 @@ export default function AdminReports() {
                             </AlertDialog>
                           )}
 
-                          <AlertDialog>
+                          {/* Delete Comment button for comment reports */}
+                          {report.reported_comment && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  className="gap-1"
+                                  onClick={() => setSelectedReport(report)}
+                                >
+                                  <MessageCircle className="h-4 w-4" />
+                                  Delete Comment
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete this comment?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will permanently delete the reported comment.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className="space-y-2">
+                                  <p className="text-sm italic bg-muted p-3 rounded-lg">"{report.reported_comment.content}"</p>
+                                  <Textarea
+                                    placeholder="Admin notes (optional)"
+                                    value={adminNotes}
+                                    onChange={(e) => setAdminNotes(e.target.value)}
+                                  />
+                                </div>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => deleteComment.mutate({ 
+                                      commentId: report.reported_comment!.id, 
+                                      reportId: report.id 
+                                    })}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  >
+                                    Delete Comment
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+
                             <AlertDialogTrigger asChild>
                               <Button
                                 variant="destructive"
