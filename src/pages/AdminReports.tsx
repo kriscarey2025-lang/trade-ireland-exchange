@@ -136,11 +136,14 @@ export default function AdminReports() {
       // Fetch profile and service info for each report
       const reportsWithDetails = await Promise.all(
         data.map(async (report) => {
-          const [reporterRes, reportedRes, serviceRes] = await Promise.all([
+          const [reporterRes, reportedRes, serviceRes, commentRes] = await Promise.all([
             supabase.rpc("get_basic_profile", { _profile_id: report.reporter_id }),
             supabase.from("profiles").select("full_name, avatar_url, email").eq("id", report.reported_user_id).maybeSingle(),
             report.reported_service_id 
               ? supabase.from("services").select("id, title, status").eq("id", report.reported_service_id).maybeSingle()
+              : Promise.resolve({ data: null }),
+            report.reported_comment_id
+              ? supabase.from("service_comments").select("id, content").eq("id", report.reported_comment_id).maybeSingle()
               : Promise.resolve({ data: null }),
           ]);
           return {
@@ -148,6 +151,7 @@ export default function AdminReports() {
             reporter: reporterRes.data?.[0] || null,
             reported_user: reportedRes.data || null,
             reported_service: serviceRes.data || null,
+            reported_comment: commentRes.data || null,
           };
         })
       );
