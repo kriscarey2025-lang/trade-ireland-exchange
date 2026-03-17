@@ -920,6 +920,7 @@ export type Database = {
           description: string | null
           id: string
           reason: string
+          reported_comment_id: string | null
           reported_service_id: string | null
           reported_user_id: string
           reporter_id: string
@@ -933,6 +934,7 @@ export type Database = {
           description?: string | null
           id?: string
           reason: string
+          reported_comment_id?: string | null
           reported_service_id?: string | null
           reported_user_id: string
           reporter_id: string
@@ -946,6 +948,7 @@ export type Database = {
           description?: string | null
           id?: string
           reason?: string
+          reported_comment_id?: string | null
           reported_service_id?: string | null
           reported_user_id?: string
           reporter_id?: string
@@ -954,6 +957,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "reports_reported_comment_id_fkey"
+            columns: ["reported_comment_id"]
+            isOneToOne: false
+            referencedRelation: "service_comments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "reports_reported_service_id_fkey"
             columns: ["reported_service_id"]
@@ -1007,6 +1017,41 @@ export type Database = {
           },
           {
             foreignKeyName: "reviews_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          service_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          service_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          service_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_comments_service_id_fkey"
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
