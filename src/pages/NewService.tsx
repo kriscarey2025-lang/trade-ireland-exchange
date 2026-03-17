@@ -461,24 +461,7 @@ export default function NewService() {
 
                   {/* Description with AI helper */}
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="description">Description *</Label>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 text-xs gap-1.5 text-primary hover:text-primary/80"
-                        onClick={handleAIGenerate}
-                        disabled={isGenerating || isSubmitting || !category}
-                      >
-                        {isGenerating ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        ) : (
-                          <Wand2 className="h-3.5 w-3.5" />
-                        )}
-                        {isGenerating ? "Writing..." : "Help me write this"}
-                      </Button>
-                    </div>
+                    <Label htmlFor="description">Description *</Label>
                     <Textarea
                       id="description"
                       value={description}
