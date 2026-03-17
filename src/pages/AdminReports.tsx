@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Shield, Ban, CheckCircle, XCircle, AlertTriangle, UserX, Globe, Wifi, FileX, ExternalLink } from "lucide-react";
+import { Loader2, Shield, Ban, CheckCircle, XCircle, AlertTriangle, UserX, Globe, Wifi, FileX, ExternalLink, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +32,7 @@ interface Report {
   reporter_id: string;
   reported_user_id: string;
   reported_service_id: string | null;
+  reported_comment_id: string | null;
   reason: string;
   description: string | null;
   status: string;
@@ -42,6 +43,7 @@ interface Report {
   reporter?: { full_name: string | null; avatar_url: string | null };
   reported_user?: { full_name: string | null; avatar_url: string | null; email: string | null };
   reported_service?: { id: string; title: string; status: string | null } | null;
+  reported_comment?: { id: string; content: string } | null;
 }
 
 interface BannedUser {
@@ -134,11 +136,14 @@ export default function AdminReports() {
       // Fetch profile and service info for each report
       const reportsWithDetails = await Promise.all(
         data.map(async (report) => {
-          const [reporterRes, reportedRes, serviceRes] = await Promise.all([
+          const [reporterRes, reportedRes, serviceRes, commentRes] = await Promise.all([
             supabase.rpc("get_basic_profile", { _profile_id: report.reporter_id }),
             supabase.from("profiles").select("full_name, avatar_url, email").eq("id", report.reported_user_id).maybeSingle(),
             report.reported_service_id 
               ? supabase.from("services").select("id, title, status").eq("id", report.reported_service_id).maybeSingle()
+              : Promise.resolve({ data: null }),
+            report.reported_comment_id
+              ? supabase.from("service_comments").select("id, content").eq("id", report.reported_comment_id).maybeSingle()
               : Promise.resolve({ data: null }),
           ]);
           return {
@@ -146,6 +151,7 @@ export default function AdminReports() {
             reporter: reporterRes.data?.[0] || null,
             reported_user: reportedRes.data || null,
             reported_service: serviceRes.data || null,
+            reported_comment: commentRes.data || null,
           };
         })
       );
@@ -383,6 +389,32 @@ export default function AdminReports() {
     },
   });
 
+  // Delete comment mutation
+  const deleteComment = useMutation({
+    mutationFn: async ({ commentId, reportId }: { commentId: string; reportId: string }) => {
+      const { error } = await supabase.from("service_comments").delete().eq("id", commentId);
+      if (error) throw error;
+      await supabase
+        .from("reports")
+        .update({
+          status: "resolved",
+          reviewed_at: new Date().toISOString(),
+          admin_notes: adminNotes || "Comment deleted by admin",
+          resolved_by: user!.id,
+        })
+        .eq("id", reportId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-reports"] });
+      toast({ title: "Comment deleted successfully" });
+      setSelectedReport(null);
+      setAdminNotes("");
+    },
+    onError: (error: any) => {
+      toast({ title: "Failed to delete comment", description: error.message, variant: "destructive" });
+    },
+  });
+
   if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
@@ -469,7 +501,13 @@ export default function AdminReports() {
                           <div className="flex items-center gap-2 flex-wrap">
                             {getStatusBadge(report.status)}
                             <Badge variant="outline">{getReasonLabel(report.reason)}</Badge>
-                            {report.reported_service_id && (
+                            {report.reported_comment_id && (
+                              <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                                <MessageCircle className="h-3 w-3 mr-1" />
+                                Comment Report
+                              </Badge>
+                            )}
+                            {report.reported_service_id && !report.reported_comment_id && (
                               <Badge variant="secondary" className="bg-orange-100 text-orange-800">
                                 <FileX className="h-3 w-3 mr-1" />
                                 Listing Report
@@ -538,6 +576,14 @@ export default function AdminReports() {
                             </div>
                           )}
 
+                          {/* Reported Comment Content */}
+                          {report.reported_comment && (
+                            <div className="col-span-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg p-3 border border-purple-200 dark:border-purple-800">
+                              <p className="text-xs text-muted-foreground mb-1">Reported Comment</p>
+                              <p className="text-sm italic">"{report.reported_comment.content}"</p>
+                            </div>
+                          )}
+
                           {report.description && (
                             <div className="col-span-2 bg-muted/50 rounded-lg p-3">
                               <p className="text-sm">{report.description}</p>
@@ -584,6 +630,51 @@ export default function AdminReports() {
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                   >
                                     Delete Listing
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+
+                          {/* Delete Comment button for comment reports */}
+                          {report.reported_comment && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  className="gap-1"
+                                  onClick={() => setSelectedReport(report)}
+                                >
+                                  <MessageCircle className="h-4 w-4" />
+                                  Delete Comment
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete this comment?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will permanently delete the reported comment.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className="space-y-2">
+                                  <p className="text-sm italic bg-muted p-3 rounded-lg">"{report.reported_comment.content}"</p>
+                                  <Textarea
+                                    placeholder="Admin notes (optional)"
+                                    value={adminNotes}
+                                    onChange={(e) => setAdminNotes(e.target.value)}
+                                  />
+                                </div>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => deleteComment.mutate({ 
+                                      commentId: report.reported_comment!.id, 
+                                      reportId: report.id 
+                                    })}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  >
+                                    Delete Comment
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
                               </AlertDialogContent>
