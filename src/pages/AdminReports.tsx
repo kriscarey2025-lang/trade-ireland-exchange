@@ -415,7 +415,7 @@ export default function AdminReports() {
     },
   });
 
-
+  if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
         <Header />
