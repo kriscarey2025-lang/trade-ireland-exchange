@@ -165,38 +165,6 @@ export default function NewService() {
     }
   }, [user, authLoading, navigate]);
 
-  const handleAIGenerate = async () => {
-    if (!category) {
-      toast.error("Please select a category first");
-      return;
-    }
-    
-    setIsGenerating(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-service-post", {
-        body: {
-          goal: postCategory === "help_request" ? "find_help" : postCategory === "free_offer" ? "share_skill" : "both",
-          postCategory,
-          experienceLevel: "intermediate",
-          skillCategory: categoryLabels[category as ServiceCategory] || category,
-          skillDetails: description || title || "general skills",
-          location: location || "Ireland",
-          whatTheyWant: acceptedSkills.length > 0 ? acceptedSkills.map(s => categoryLabels[s as ServiceCategory] || s).join(", ") : undefined,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.title) setTitle(data.title);
-      if (data?.description) setDescription(data.description);
-      toast.success("✨ AI draft ready! Feel free to edit it.");
-    } catch (err: any) {
-      console.error("AI generate error:", err);
-      toast.error("Couldn't generate a draft right now. Try again in a moment.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
