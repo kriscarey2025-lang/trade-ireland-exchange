@@ -681,6 +681,7 @@ export default function AdminReports() {
                             </AlertDialog>
                           )}
 
+                          <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button
                                 variant="destructive"
