@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Shield, Ban, CheckCircle, XCircle, AlertTriangle, UserX, Globe, Wifi, FileX, ExternalLink } from "lucide-react";
+import { Loader2, Shield, Ban, CheckCircle, XCircle, AlertTriangle, UserX, Globe, Wifi, FileX, ExternalLink, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
