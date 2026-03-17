@@ -70,8 +70,19 @@ function getSkillLabel(skillKey: string): string {
 
 export default function PublicProfile() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const [showContactDialog, setShowContactDialog] = useState(false);
+
+  // Auto-open contact dialog when ?contact=true is in the URL (e.g. from email)
+  useEffect(() => {
+    if (searchParams.get("contact") === "true" && user && id && user.id !== id) {
+      setShowContactDialog(true);
+      // Clean up the URL param
+      searchParams.delete("contact");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, user, id, setSearchParams]);
 
   // Fetch public profile using the secure RPC function (returns only safe public data)
   const { data: profile, isLoading: profileLoading, error: profileError } = useQuery({
