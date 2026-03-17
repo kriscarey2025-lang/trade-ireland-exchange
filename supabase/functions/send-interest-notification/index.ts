@@ -183,14 +183,21 @@ function generateInterestEmail(
               ${servicesHtml}
               
               <div style="text-align: center; margin-top: 32px;">
-                <a href="https://swap-skills.ie/profile/${interestedUserId}" 
+                <a href="https://swap-skills.ie/profile/${interestedUserId}?contact=true" 
                    style="background: #f97316; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
+                  💬 Send Message
+                </a>
+              </div>
+              
+              <div style="text-align: center; margin-top: 16px;">
+                <a href="https://swap-skills.ie/profile/${interestedUserId}" 
+                   style="color: #f97316; text-decoration: none; font-size: 14px; font-weight: 500;">
                   View Their Profile →
                 </a>
               </div>
               
-              <p style="color: #6b7280; font-size: 14px; margin-top: 32px; text-align: center; line-height: 1.6;">
-                Check your profile to see all interested users and start a conversation!
+              <p style="color: #6b7280; font-size: 14px; margin-top: 24px; text-align: center; line-height: 1.6;">
+                Log in to SwapSkills to start a conversation and arrange your swap!
               </p>
             </td>
           </tr>
