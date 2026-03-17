@@ -61,6 +61,7 @@ import { ReportServiceDialog } from "@/components/reports/ReportServiceDialog";
 import { InterestButton } from "@/components/services/InterestButton";
 import { useGetOrCreateConversation } from "@/hooks/useMessaging";
 import { ReviewsList } from "@/components/reviews/ReviewsList";
+import { ServiceComments } from "@/components/services/ServiceComments";
 
 // Response from secure database function
 interface SecureServiceDetail {
