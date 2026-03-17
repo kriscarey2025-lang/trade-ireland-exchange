@@ -550,6 +550,14 @@ export default function AdminReports() {
                             </div>
                           )}
 
+                          {/* Reported Comment Content */}
+                          {report.reported_comment && (
+                            <div className="col-span-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg p-3 border border-purple-200 dark:border-purple-800">
+                              <p className="text-xs text-muted-foreground mb-1">Reported Comment</p>
+                              <p className="text-sm italic">"{report.reported_comment.content}"</p>
+                            </div>
+                          )}
+
                           {report.description && (
                             <div className="col-span-2 bg-muted/50 rounded-lg p-3">
                               <p className="text-sm">{report.description}</p>
