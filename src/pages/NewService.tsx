@@ -19,7 +19,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw, AlertTriangle, Zap, CalendarIcon, Wand2 } from "lucide-react";
+import { Loader2, ArrowLeft, Sparkles, Search, Gift, RefreshCw, AlertTriangle, Zap, CalendarIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allCategories, categoryLabels, categoryIcons } from "@/lib/categories";
