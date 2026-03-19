@@ -45,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
       await resend.emails.send({
         from: "SwapSkills <hello@swap-skills.ie>",
         to: [testEmail],
-        subject: "🔥 Fresh Skills on SwapSkills + New Commenting Feature!",
+        subject: "Fresh Skills on SwapSkills + New Commenting Feature!",
         html: generateAnnouncementEmail("there", unsubscribeToken),
       });
       return new Response(JSON.stringify({ success: true, sent: 1, test: true }), {
@@ -54,11 +54,20 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Fetch all digest subscribers (respect opt-out preferences)
+    // Fetch last 90 registered users who are subscribed
+    const { data: recentProfiles } = await supabase
+      .from("profiles")
+      .select("id")
+      .order("created_at", { ascending: false })
+      .limit(90);
+
+    const recentUserIds = (recentProfiles || []).map((p: any) => p.id);
+
     const { data: subscribers, error: subscribersError } = await supabase
       .from("user_preferences")
       .select("user_id, weekly_digest_enabled")
-      .eq("weekly_digest_enabled", true);
+      .eq("weekly_digest_enabled", true)
+      .in("user_id", recentUserIds);
 
     if (subscribersError) throw subscribersError;
 
@@ -100,7 +109,7 @@ const handler = async (req: Request): Promise<Response> => {
         const { error: emailError } = await resend.emails.send({
           from: "SwapSkills <hello@swap-skills.ie>",
           to: [profile.email],
-          subject: "🔥 Fresh Skills on SwapSkills + New Commenting Feature!",
+          subject: "Fresh Skills on SwapSkills + New Commenting Feature!",
           html: generateAnnouncementEmail(firstName, unsubscribeToken),
         });
 
