@@ -100,7 +100,7 @@ const handler = async (req: Request): Promise<Response> => {
         const { error: emailError } = await resend.emails.send({
           from: "SwapSkills <hello@swap-skills.ie>",
           to: [profile.email],
-          subject: "🚀 Big News: Boost Your Listings + Meet Up in Carlow!",
+          subject: "🔥 Fresh Skills on SwapSkills + New Commenting Feature!",
           html: generateAnnouncementEmail(firstName, unsubscribeToken),
         });
 
