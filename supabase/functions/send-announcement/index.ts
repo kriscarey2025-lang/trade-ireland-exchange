@@ -45,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
       await resend.emails.send({
         from: "SwapSkills <hello@swap-skills.ie>",
         to: [testEmail],
-        subject: "🚀 Big News: Boost Your Listings + Meet Up in Carlow!",
+        subject: "🔥 Fresh Skills on SwapSkills + New Commenting Feature!",
         html: generateAnnouncementEmail("there", unsubscribeToken),
       });
       return new Response(JSON.stringify({ success: true, sent: 1, test: true }), {
