@@ -45,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
       await resend.emails.send({
         from: "SwapSkills <hello@swap-skills.ie>",
         to: [testEmail],
-        subject: "🚀 Big News: Boost Your Listings + Meet Up in Carlow!",
+        subject: "🔥 Fresh Skills on SwapSkills + New Commenting Feature!",
         html: generateAnnouncementEmail("there", unsubscribeToken),
       });
       return new Response(JSON.stringify({ success: true, sent: 1, test: true }), {
@@ -100,7 +100,7 @@ const handler = async (req: Request): Promise<Response> => {
         const { error: emailError } = await resend.emails.send({
           from: "SwapSkills <hello@swap-skills.ie>",
           to: [profile.email],
-          subject: "🚀 Big News: Boost Your Listings + Meet Up in Carlow!",
+          subject: "🔥 Fresh Skills on SwapSkills + New Commenting Feature!",
           html: generateAnnouncementEmail(firstName, unsubscribeToken),
         });
 
@@ -135,13 +135,32 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 function generateAnnouncementEmail(firstName: string, unsubscribeToken: string): string {
+  const listings = [
+    { title: "Happy to Help and Trade Skills!", category: "Holistic & Wellness", location: "Carlow", name: "Li D.", id: "81cd5b70-e4a0-455a-aa9c-65a8ddf6c0a5" },
+    { title: "Babysitting, Cooking and Teaching English", category: "Childcare", location: "Dublin", name: "Aratrika C.", id: "a9738a17-840d-4d71-abe7-80d5eb573e21" },
+    { title: "Painting and Decorating", category: "Home Improvement", location: "Carlow", name: "Darren B.", id: "f908e237-23de-412a-a904-2cccc6853c3d" },
+    { title: "Personal Training", category: "Fitness", location: "Dublin", name: "Ciara M.", id: "65c0bdc9-6589-4ee6-baba-de490e71a0b2" },
+  ];
+
+  const listingCards = listings.map(l => `
+    <div style="background: #fffefa; border-radius: 12px; padding: 20px; margin: 12px 0; border: 1px solid #f0ebe3;">
+      <h4 style="margin: 0 0 6px 0; font-size: 16px; font-weight: 700; color: #1f2937;">${l.title}</h4>
+      <p style="margin: 0 0 12px 0; font-size: 13px; color: #6b7280;">
+        🏷️ ${l.category} · 📍 ${l.location} · by <strong>${l.name}</strong>
+      </p>
+      <a href="${baseUrl}/service/${l.id}" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;">
+        View Offer →
+      </a>
+    </div>
+  `).join("");
+
   return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SwapSkills Announcement</title>
+  <title>SwapSkills Digest</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #faf8f5;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -169,45 +188,42 @@ function generateAnnouncementEmail(firstName: string, unsubscribeToken: string):
               </h2>
               
               <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                We've got some exciting updates from SwapSkills this week — a brand new feature and our very first in-person meetup! 🎉
+                Here's what's fresh on SwapSkills — check out the latest skill offers from our community and an exciting new feature! 🎉
               </p>
               
-              <!-- Premium Boost Feature -->
+              <!-- Latest Listings -->
               <div style="background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%); border-radius: 12px; padding: 28px; margin: 24px 0; border: 1px solid #fed7aa;">
-                <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
-                  ✨ New: Boost Your Listing!
+                <h3 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
+                  🔥 Latest Skill Offers
                 </h3>
                 <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
-                  Want your skill to stand out? Our new <strong style="color: #f97316;">Premium Boost</strong> feature pins your listing to the top of search results with a shiny gold border and ✨ Boosted badge — all for just <strong>€5 for 30 days</strong>.
+                  These members are ready to swap — check out their offers and reach out!
                 </p>
-                <ul style="margin: 0 0 16px 0; padding-left: 20px; font-size: 14px; color: #4b5563; line-height: 2;">
-                  <li>📌 Pinned to the top of search results</li>
-                  <li>🏅 Gold border &amp; "Boosted" badge</li>
-                  <li>📊 Weekly performance stats emailed to you</li>
-                  <li>⚡ Larger card format for maximum visibility</li>
-                </ul>
+                ${listingCards}
                 <div style="text-align: center; margin-top: 20px;">
-                  <a href="${baseUrl}/new" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
-                    Create &amp; Boost a Listing →
+                  <a href="${baseUrl}/browse" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
+                    Browse All Skills →
                   </a>
                 </div>
               </div>
               
-              <!-- Carlow In-Person Meeting -->
+              <!-- New Commenting Feature -->
               <div style="background: linear-gradient(135deg, #ecfccb 0%, #d9f99d 100%); border-radius: 12px; padding: 28px; margin: 24px 0; border: 1px solid #bef264;">
                 <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
-                  📍 Meet Up in Carlow — April 2026!
+                  💬 New: Comment on Listings!
                 </h3>
                 <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
-                  We're planning our <strong style="color: #4d7c0f;">first ever in-person SwapSkills meetup</strong> in Carlow! Come meet fellow swappers, share skills face-to-face, and be part of something special.
+                  You can now <strong style="color: #4d7c0f;">ask questions and leave comments</strong> directly on any skill swap offer! Whether you want to clarify details, ask about availability, or just show some love — it's all public and open.
                 </p>
-                <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280;">
-                  🗓️ <strong>April 2026</strong> · 📍 <strong>Carlow, Ireland</strong><br>
-                  Exact date and venue will be confirmed based on RSVPs.
-                </p>
+                <ul style="margin: 0 0 16px 0; padding-left: 20px; font-size: 14px; color: #4b5563; line-height: 2;">
+                  <li>❓ Ask questions before reaching out privately</li>
+                  <li>💬 Leave feedback and encouragement</li>
+                  <li>🔔 Listing owners get notified of new comments</li>
+                  <li>🛡️ Report inappropriate comments easily</li>
+                </ul>
                 <div style="text-align: center; margin-top: 20px;">
-                  <a href="${baseUrl}/event/carlow" style="display: inline-block; background: linear-gradient(135deg, #4d7c0f 0%, #365314 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(77, 124, 15, 0.3);">
-                    RSVP Now — It's Free! →
+                  <a href="${baseUrl}/browse" style="display: inline-block; background: linear-gradient(135deg, #4d7c0f 0%, #365314 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(77, 124, 15, 0.3);">
+                    Try Commenting Now →
                   </a>
                 </div>
               </div>
@@ -215,11 +231,11 @@ function generateAnnouncementEmail(firstName: string, unsubscribeToken: string):
               <!-- Closing -->
               <div style="margin-top: 32px; padding: 24px; background: #faf8f5; border-radius: 12px; text-align: center;">
                 <p style="margin: 0 0 12px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-                  That's all for this week! We're buzzing about what's ahead. 🐝
+                  Got a skill to share? Post your own listing and start swapping! 🚀
                 </p>
-                <p style="margin: 0; font-size: 15px; color: #6b7280;">
-                  As always, if you've got any questions, just reply to this email.
-                </p>
+                <a href="${baseUrl}/new" style="display: inline-block; color: #f97316; text-decoration: underline; font-size: 15px; font-weight: 600;">
+                  Create a Listing →
+                </a>
               </div>
               
               <p style="margin: 32px 0 0 0; font-size: 16px; color: #4b5563;">
