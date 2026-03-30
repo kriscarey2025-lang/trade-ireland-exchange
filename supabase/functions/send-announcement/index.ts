@@ -145,10 +145,10 @@ const handler = async (req: Request): Promise<Response> => {
 
 function generateAnnouncementEmail(firstName: string, unsubscribeToken: string): string {
   const listings = [
-    { title: "Happy to Help and Trade Skills!", category: "Holistic & Wellness", location: "Carlow", name: "Li D.", id: "81cd5b70-e4a0-455a-aa9c-65a8ddf6c0a5" },
-    { title: "Babysitting, Cooking and Teaching English", category: "Childcare", location: "Dublin", name: "Aratrika C.", id: "a9738a17-840d-4d71-abe7-80d5eb573e21" },
-    { title: "Painting and Decorating", category: "Home Improvement", location: "Carlow", name: "Darren B.", id: "f908e237-23de-412a-a904-2cccc6853c3d" },
-    { title: "Personal Training", category: "Fitness", location: "Dublin", name: "Ciara M.", id: "65c0bdc9-6589-4ee6-baba-de490e71a0b2" },
+    { title: "Reiki", category: "Holistic & Wellness", location: "Laois", name: "Christine C.", id: "6c16cf4a-d035-4137-8234-5ace0b4cdbd5" },
+    { title: "Reflexology", category: "Holistic & Wellness", location: "Carlow", name: "Lorraine L.", id: "e3349c2c-6f88-4174-9755-ddcb36a6a0b3" },
+    { title: "DIY, a Lift, Help Cleaning or Massage", category: "Home Improvement", location: "Cork", name: "John J.", id: "825bd091-a2dc-4cdf-8c39-939f27bc0249" },
+    { title: "Private Wellbeing Sessions & Restorative Yoga", category: "Fitness", location: "Carlow", name: "Catriona C.", id: "4cff4746-afdb-4369-918c-daca9fc7424e" },
   ];
 
   const listingCards = listings.map(l => `
