@@ -45,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
       await resend.emails.send({
         from: "SwapSkills <hello@swap-skills.ie>",
         to: [testEmail],
-        subject: "Fresh Skills on SwapSkills + New Commenting Feature!",
+        subject: "SwapSkills Easter Digest - New Offers + Ambassador Programme",
         html: generateAnnouncementEmail("there", unsubscribeToken),
       });
       return new Response(JSON.stringify({ success: true, sent: 1, test: true }), {
@@ -109,7 +109,7 @@ const handler = async (req: Request): Promise<Response> => {
         const { error: emailError } = await resend.emails.send({
           from: "SwapSkills <hello@swap-skills.ie>",
           to: [profile.email],
-          subject: "Fresh Skills on SwapSkills + New Commenting Feature!",
+          subject: "SwapSkills Easter Digest - New Offers + Ambassador Programme",
           html: generateAnnouncementEmail(firstName, unsubscribeToken),
         });
 
@@ -145,10 +145,10 @@ const handler = async (req: Request): Promise<Response> => {
 
 function generateAnnouncementEmail(firstName: string, unsubscribeToken: string): string {
   const listings = [
-    { title: "Happy to Help and Trade Skills!", category: "Holistic & Wellness", location: "Carlow", name: "Li D.", id: "81cd5b70-e4a0-455a-aa9c-65a8ddf6c0a5" },
-    { title: "Babysitting, Cooking and Teaching English", category: "Childcare", location: "Dublin", name: "Aratrika C.", id: "a9738a17-840d-4d71-abe7-80d5eb573e21" },
-    { title: "Painting and Decorating", category: "Home Improvement", location: "Carlow", name: "Darren B.", id: "f908e237-23de-412a-a904-2cccc6853c3d" },
-    { title: "Personal Training", category: "Fitness", location: "Dublin", name: "Ciara M.", id: "65c0bdc9-6589-4ee6-baba-de490e71a0b2" },
+    { title: "Reiki", category: "Holistic & Wellness", location: "Laois", name: "Christine C.", id: "6c16cf4a-d035-4137-8234-5ace0b4cdbd5" },
+    { title: "Reflexology", category: "Holistic & Wellness", location: "Carlow", name: "Lorraine L.", id: "e3349c2c-6f88-4174-9755-ddcb36a6a0b3" },
+    { title: "DIY, a Lift, Help Cleaning or Massage", category: "Home Improvement", location: "Cork", name: "John J.", id: "825bd091-a2dc-4cdf-8c39-939f27bc0249" },
+    { title: "Private Wellbeing Sessions & Restorative Yoga", category: "Fitness", location: "Carlow", name: "Catriona C.", id: "4cff4746-afdb-4369-918c-daca9fc7424e" },
   ];
 
   const listingCards = listings.map(l => `
@@ -196,14 +196,14 @@ function generateAnnouncementEmail(firstName: string, unsubscribeToken: string):
                 Hi ${firstName}! 👋
               </h2>
               
-              <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                Here's what's fresh on SwapSkills — check out the latest skill offers from our community and an exciting new feature! 🎉
+               <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
+                Here's what's fresh on SwapSkills this week — check out the latest skill offers from our community! We hope you have a wonderful Easter break ahead.
               </p>
               
               <!-- Latest Listings -->
               <div style="background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%); border-radius: 12px; padding: 28px; margin: 24px 0; border: 1px solid #fed7aa;">
                 <h3 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
-                  🔥 Latest Skill Offers
+                  Latest Skill Offers
                 </h3>
                 <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
                   These members are ready to swap — check out their offers and reach out!
@@ -211,45 +211,52 @@ function generateAnnouncementEmail(firstName: string, unsubscribeToken: string):
                 ${listingCards}
                 <div style="text-align: center; margin-top: 20px;">
                   <a href="${baseUrl}/browse" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
-                    Browse All Skills →
+                    Browse All Skills
                   </a>
                 </div>
               </div>
               
-              <!-- New Commenting Feature -->
+              <!-- Easter Message -->
+              <div style="background: linear-gradient(135deg, #fef9c3 0%, #fde68a 100%); border-radius: 12px; padding: 28px; margin: 24px 0; border: 1px solid #fcd34d; text-align: center;">
+                <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
+                  Happy Easter from SwapSkills!
+                </h3>
+                <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
+                  We hope you enjoy a lovely long weekend with family and friends. Whether you're relaxing at home or exploring, we wish you a restful and happy Easter break!
+                </p>
+              </div>
+              
+              <!-- Ambassador Programme -->
               <div style="background: linear-gradient(135deg, #ecfccb 0%, #d9f99d 100%); border-radius: 12px; padding: 28px; margin: 24px 0; border: 1px solid #bef264;">
                 <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
-                  💬 New: Comment on Listings!
+                  Become a SwapSkills Ambassador!
                 </h3>
                 <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
-                  You can now <strong style="color: #4d7c0f;">ask questions and leave comments</strong> directly on any skill swap offer! Whether you want to clarify details, ask about availability, or just show some love — it's all public and open.
+                  We're looking for passionate people to help spread the word about SwapSkills in cities across Ireland. As a <strong style="color: #4d7c0f;">SwapSkills Ambassador</strong>, you'll help grow the skill-swapping community in your area.
                 </p>
                 <ul style="margin: 0 0 16px 0; padding-left: 20px; font-size: 14px; color: #4b5563; line-height: 2;">
-                  <li>❓ Ask questions before reaching out privately</li>
-                  <li>💬 Leave feedback and encouragement</li>
-                  <li>🔔 Listing owners get notified of new comments</li>
-                  <li>🛡️ Report inappropriate comments easily</li>
+                  <li>Help connect people who want to swap skills in your city</li>
+                  <li>Share SwapSkills with local communities and groups</li>
+                  <li>Be part of something meaningful for Ireland</li>
                 </ul>
-                <div style="text-align: center; margin-top: 20px;">
-                  <a href="${baseUrl}/browse" style="display: inline-block; background: linear-gradient(135deg, #4d7c0f 0%, #365314 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(77, 124, 15, 0.3);">
-                    Try Commenting Now →
-                  </a>
-                </div>
+                <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
+                  Interested? Simply <strong style="color: #4d7c0f;">reply to this email</strong> and let us know which city or area you'd like to represent. We'd love to hear from you!
+                </p>
               </div>
               
               <!-- Closing -->
               <div style="margin-top: 32px; padding: 24px; background: #faf8f5; border-radius: 12px; text-align: center;">
                 <p style="margin: 0 0 12px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-                  Got a skill to share? Post your own listing and start swapping! 🚀
+                  Got a skill to share? Post your own listing and start swapping!
                 </p>
                 <a href="${baseUrl}/new" style="display: inline-block; color: #f97316; text-decoration: underline; font-size: 15px; font-weight: 600;">
-                  Create a Listing →
+                  Create a Listing
                 </a>
               </div>
               
               <p style="margin: 32px 0 0 0; font-size: 16px; color: #4b5563;">
                 Sláinte,<br>
-                <strong style="color: #f97316;">The SwapSkills Team</strong> 🇮🇪
+                <strong style="color: #f97316;">The SwapSkills Team</strong>
               </p>
             </td>
           </tr>
