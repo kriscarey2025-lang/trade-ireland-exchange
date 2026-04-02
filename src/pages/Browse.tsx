@@ -36,7 +36,7 @@ import { postCategoryLabels } from "@/lib/postCategories";
 import { MatchesDialog } from "@/components/matching/MatchesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { HeroSection } from "@/components/home/HeroSection";
-import { SwapStatsSection } from "@/components/home/SwapStatsSection";
+
 import { ReviewsMarquee } from "@/components/home/ReviewsMarquee";
 
 
