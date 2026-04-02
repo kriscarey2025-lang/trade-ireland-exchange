@@ -400,6 +400,7 @@ export default function ServiceDetail() {
   if (error || !service) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-background">
+        <SEO title="Service Not Found" noindex />
         <Header />
         <div className="container py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Service Not Found</h1>
