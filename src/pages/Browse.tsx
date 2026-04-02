@@ -208,7 +208,7 @@ export default function Browse() {
             </div>
           </div>
           
-          <SwapStatsSection />
+          
           <div id="services-section" className="container py-8">
 
           {/* Matches Dialog */}
