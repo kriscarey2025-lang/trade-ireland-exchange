@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 
 interface SEOProps {
   title?: string;
@@ -10,11 +11,12 @@ interface SEOProps {
   noindex?: boolean;
 }
 
+const CANONICAL_ORIGIN = "https://swap-skills.ie";
+
 const defaultMeta = {
   title: "Swap Skills | Trade Skills, Not Money",
   description: "Ireland's community for trading skills and services without money. Exchange tiling, tutoring, gardening, childcare and more with verified neighbours.",
-  image: "https://swap-skills.ie/og-image-social.png?v=3",
-  url: "https://swap-skills.ie",
+  image: `${CANONICAL_ORIGIN}/og-image-social.png?v=3`,
 };
 
 export function SEO({
@@ -22,13 +24,17 @@ export function SEO({
   description = defaultMeta.description,
   keywords,
   image = defaultMeta.image,
-  url = defaultMeta.url,
+  url,
   type = "website",
   noindex = false,
 }: SEOProps) {
+  const location = useLocation();
   const fullTitle = title 
     ? `${title} | Swap Skills` 
     : defaultMeta.title;
+
+  // Always build canonical from pathname only (strips query params & fragments)
+  const canonicalUrl = url || `${CANONICAL_ORIGIN}${location.pathname}`;
 
   return (
     <Helmet>
@@ -44,7 +50,7 @@ export function SEO({
       <meta property="og:image" content={image} />
       <meta property="og:image:width" content="1280" />
       <meta property="og:image:height" content="720" />
-      <meta property="og:url" content={url} />
+      <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content="SwapSkills" />
 
       {/* Twitter */}
@@ -55,7 +61,7 @@ export function SEO({
       <meta name="twitter:site" content="@swapskills" />
 
       {/* Canonical */}
-      <link rel="canonical" href={url} />
+      <link rel="canonical" href={canonicalUrl} />
     </Helmet>
   );
 }
