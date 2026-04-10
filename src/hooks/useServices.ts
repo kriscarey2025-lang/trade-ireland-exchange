@@ -214,15 +214,6 @@ export function useServices(options: UseServicesOptions = {}) {
       // Build boosted set
       const boostedSet = new Set(boostsResult.data?.map((b: any) => b.service_id) || []);
       
-      // Build profile-level completed swaps map (aggregate across all services per user)
-      const userSwapsMap = new Map<string, number>();
-      services.forEach(service => {
-        if (service.userId && service.completedSwapsCount) {
-          const existing = userSwapsMap.get(service.userId) || 0;
-          userSwapsMap.set(service.userId, existing + service.completedSwapsCount);
-        }
-      });
-      
       // Update services
       services.forEach(service => {
         service.isBoosted = boostedSet.has(service.id);
@@ -231,8 +222,8 @@ export function useServices(options: UseServicesOptions = {}) {
             const rating = ratingsMap.get(service.userId)!;
             service.user.rating = rating.sum / rating.count;
           }
-          // Use profile-level aggregated swap count
-          service.user.completedTrades = userSwapsMap.get(service.userId) || 0;
+          // completed_swaps_count is already profile-level aggregated from the DB function
+          service.user.completedTrades = service.completedSwapsCount || 0;
         }
       });
       
