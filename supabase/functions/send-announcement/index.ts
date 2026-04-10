@@ -13,6 +13,7 @@ const corsHeaders = {
 interface RequestBody {
   test_email?: string;
   dry_run?: boolean;
+  segment?: 1 | 2;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -21,14 +22,16 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log("🚀 Starting announcement email...");
+    console.log("🚀 Starting farewell announcement email...");
 
     let testEmail: string | null = null;
     let dryRun = false;
+    let segment: 1 | 2 = 1;
     try {
       const body: RequestBody = await req.json();
       testEmail = body.test_email || null;
       dryRun = body.dry_run || false;
+      segment = body.segment || 1;
     } catch {
       // No body
     }
@@ -38,6 +41,8 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    const emailSubject = "A message from SwapSkills - Thank you";
+
     // If test mode, send only to test email
     if (testEmail) {
       console.log(`📧 Test mode: sending to ${testEmail}`);
@@ -45,8 +50,8 @@ const handler = async (req: Request): Promise<Response> => {
       await resend.emails.send({
         from: "SwapSkills <hello@swap-skills.ie>",
         to: [testEmail],
-        subject: "SwapSkills Easter Digest - New Offers + Ambassador Programme",
-        html: generateAnnouncementEmail("there", unsubscribeToken),
+        subject: emailSubject,
+        html: generateFarewellEmail("there", unsubscribeToken),
       });
       return new Response(JSON.stringify({ success: true, sent: 1, test: true }), {
         status: 200,
@@ -54,37 +59,37 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Fetch last 90 registered users who are subscribed
-    const { data: recentProfiles } = await supabase
-      .from("profiles")
-      .select("id")
-      .order("created_at", { ascending: false })
-      .limit(90);
-
-    const recentUserIds = (recentProfiles || []).map((p: any) => p.id);
-
-    const { data: subscribers, error: subscribersError } = await supabase
+    // Fetch ALL subscribed users ordered by user_id for deterministic splitting
+    const { data: allSubscribers, error: subscribersError } = await supabase
       .from("user_preferences")
-      .select("user_id, weekly_digest_enabled")
+      .select("user_id")
       .eq("weekly_digest_enabled", true)
-      .in("user_id", recentUserIds);
+      .order("user_id", { ascending: true });
 
     if (subscribersError) throw subscribersError;
 
-    console.log(`Found ${subscribers?.length || 0} subscribers`);
-
-    if (!subscribers || subscribers.length === 0) {
+    if (!allSubscribers || allSubscribers.length === 0) {
       return new Response(JSON.stringify({ success: true, sent: 0, reason: "no_subscribers" }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
+    console.log(`Total subscribers: ${allSubscribers.length}, Segment: ${segment}`);
+
+    // Split into two segments
+    const midIndex = Math.ceil(allSubscribers.length / 2);
+    const segmentSubscribers = segment === 1
+      ? allSubscribers.slice(0, midIndex)
+      : allSubscribers.slice(midIndex);
+
+    console.log(`Segment ${segment} has ${segmentSubscribers.length} subscribers`);
+
     let emailsSent = 0;
     let errors: string[] = [];
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    for (const subscriber of subscribers) {
+    for (const subscriber of segmentSubscribers) {
       const { data: profile } = await supabase
         .from("profiles")
         .select("email, full_name")
@@ -109,8 +114,8 @@ const handler = async (req: Request): Promise<Response> => {
         const { error: emailError } = await resend.emails.send({
           from: "SwapSkills <hello@swap-skills.ie>",
           to: [profile.email],
-          subject: "SwapSkills Easter Digest - New Offers + Ambassador Programme",
-          html: generateAnnouncementEmail(firstName, unsubscribeToken),
+          subject: emailSubject,
+          html: generateFarewellEmail(firstName, unsubscribeToken),
         });
 
         if (emailError) {
@@ -128,10 +133,10 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    console.log(`Announcement complete. Sent: ${emailsSent}, Errors: ${errors.length}`);
+    console.log(`Segment ${segment} complete. Sent: ${emailsSent}, Errors: ${errors.length}`);
 
     return new Response(
-      JSON.stringify({ success: true, sent: emailsSent, errors: errors.length > 0 ? errors : undefined }),
+      JSON.stringify({ success: true, sent: emailsSent, segment, errors: errors.length > 0 ? errors : undefined }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error: any) {
@@ -143,33 +148,14 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
-function generateAnnouncementEmail(firstName: string, unsubscribeToken: string): string {
-  const listings = [
-    { title: "Reiki", category: "Holistic & Wellness", location: "Laois", name: "Christine C.", id: "6c16cf4a-d035-4137-8234-5ace0b4cdbd5" },
-    { title: "Reflexology", category: "Holistic & Wellness", location: "Carlow", name: "Lorraine L.", id: "e3349c2c-6f88-4174-9755-ddcb36a6a0b3" },
-    { title: "DIY, a Lift, Help Cleaning or Massage", category: "Home Improvement", location: "Cork", name: "John J.", id: "825bd091-a2dc-4cdf-8c39-939f27bc0249" },
-    { title: "Private Wellbeing Sessions & Restorative Yoga", category: "Fitness", location: "Carlow", name: "Catriona C.", id: "4cff4746-afdb-4369-918c-daca9fc7424e" },
-  ];
-
-  const listingCards = listings.map(l => `
-    <div style="background: #fffefa; border-radius: 12px; padding: 20px; margin: 12px 0; border: 1px solid #f0ebe3;">
-      <h4 style="margin: 0 0 6px 0; font-size: 16px; font-weight: 700; color: #1f2937;">${l.title}</h4>
-      <p style="margin: 0 0 12px 0; font-size: 13px; color: #6b7280;">
-        🏷️ ${l.category} · 📍 ${l.location} · by <strong>${l.name}</strong>
-      </p>
-      <a href="${baseUrl}/service/${l.id}" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;">
-        View Offer →
-      </a>
-    </div>
-  `).join("");
-
+function generateFarewellEmail(firstName: string, unsubscribeToken: string): string {
   return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SwapSkills Digest</title>
+  <title>A message from SwapSkills</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #faf8f5;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -181,10 +167,10 @@ function generateAnnouncementEmail(firstName: string, unsubscribeToken: string):
           <tr>
             <td style="background-color: #fffefa; padding: 40px 40px 24px 40px; text-align: center; border-bottom: 2px solid #f97316;">
               <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #f97316; letter-spacing: -0.5px;">
-                🤝 SwapSkills
+                SwapSkills
               </h1>
               <p style="margin: 8px 0 0 0; font-size: 14px; color: #6b7280;">
-                Ireland's skill sharing community 🍀
+                Ireland's skill sharing community
               </p>
             </td>
           </tr>
@@ -192,71 +178,57 @@ function generateAnnouncementEmail(firstName: string, unsubscribeToken: string):
           <!-- Main content -->
           <tr>
             <td style="padding: 40px; background-color: #fffefa;">
-              <h2 style="margin: 0 0 16px 0; font-size: 24px; font-weight: 700; color: #1f2937;">
-                Hi ${firstName}! 👋
+              <p style="margin: 0 0 8px 0; font-size: 32px; text-align: center;">🤝</p>
+              <h2 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 700; color: #1f2937; text-align: center;">
+                Hi ${firstName},
               </h2>
               
-               <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
-                Here's what's fresh on SwapSkills this week — check out the latest skill offers from our community! We hope you have a wonderful Easter break ahead.
+              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
+                I wanted to reach out personally to share some news about SwapSkills.
               </p>
               
-              <!-- Latest Listings -->
-              <div style="background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%); border-radius: 12px; padding: 28px; margin: 24px 0; border: 1px solid #fed7aa;">
-                <h3 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
-                  Latest Skill Offers
-                </h3>
-                <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
-                  These members are ready to swap — check out their offers and reach out!
-                </p>
-                ${listingCards}
-                <div style="text-align: center; margin-top: 20px;">
-                  <a href="${baseUrl}/browse" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
-                    Browse All Skills
-                  </a>
-                </div>
-              </div>
-              
-              <!-- Easter Message -->
-              <div style="background: linear-gradient(135deg, #fef9c3 0%, #fde68a 100%); border-radius: 12px; padding: 28px; margin: 24px 0; border: 1px solid #fcd34d; text-align: center;">
-                <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
-                  Happy Easter from SwapSkills!
-                </h3>
-                <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
-                  We hope you enjoy a lovely long weekend with family and friends. Whether you're relaxing at home or exploring, we wish you a restful and happy Easter break!
-                </p>
-              </div>
-              
-              <!-- Ambassador Programme -->
+              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
+                After months of building this platform, I've decided to step back from actively promoting and growing SwapSkills. It's been an incredible journey, and I'm genuinely grateful to every single person who signed up, posted a skill, sent a message, or simply believed in the idea of neighbours helping neighbours.
+              </p>
+
+              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
+                I also want to let you know that the <strong>Carlow meet-up</strong> we had planned for April 17th has been <strong>cancelled</strong>.
+              </p>
+
+              <!-- The good news -->
               <div style="background: linear-gradient(135deg, #ecfccb 0%, #d9f99d 100%); border-radius: 12px; padding: 28px; margin: 24px 0; border: 1px solid #bef264;">
                 <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 700; color: #1f2937;">
-                  Become a SwapSkills Ambassador!
+                  The platform stays live
                 </h3>
-                <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
-                  We're looking for passionate people to help spread the word about SwapSkills in cities across Ireland. As a <strong style="color: #4d7c0f;">SwapSkills Ambassador</strong>, you'll help grow the skill-swapping community in your area.
+                <p style="margin: 0 0 12px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
+                  SwapSkills isn't going anywhere. The website will remain fully available — you can still:
                 </p>
-                <ul style="margin: 0 0 16px 0; padding-left: 20px; font-size: 14px; color: #4b5563; line-height: 2;">
-                  <li>Help connect people who want to swap skills in your city</li>
-                  <li>Share SwapSkills with local communities and groups</li>
-                  <li>Be part of something meaningful for Ireland</li>
+                <ul style="margin: 0 0 0 0; padding-left: 20px; font-size: 15px; color: #4b5563; line-height: 2;">
+                  <li>Post skills you can offer or are looking for</li>
+                  <li>Browse what others have listed</li>
+                  <li>Message people and make connections</li>
+                  <li>Complete swaps and leave reviews</li>
                 </ul>
-                <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #4b5563;">
-                  Interested? Simply <strong style="color: #4d7c0f;">reply to this email</strong> and let us know which city or area you'd like to represent. We'd love to hear from you!
-                </p>
               </div>
               
-              <!-- Closing -->
-              <div style="margin-top: 32px; padding: 24px; background: #faf8f5; border-radius: 12px; text-align: center;">
-                <p style="margin: 0 0 12px 0; font-size: 16px; color: #4b5563; line-height: 1.7;">
-                  Got a skill to share? Post your own listing and start swapping!
-                </p>
-                <a href="${baseUrl}/new" style="display: inline-block; color: #f97316; text-decoration: underline; font-size: 15px; font-weight: 600;">
-                  Create a Listing
+              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
+                The only thing that's changing is that I won't be actively marketing or promoting the platform. Everything you've come to use will keep working exactly as it does today.
+              </p>
+
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${baseUrl}/browse" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 15px; font-weight: 600; box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);">
+                  Visit SwapSkills
                 </a>
               </div>
+
+              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.7; color: #4b5563;">
+                Thank you for being part of this community. The spirit of skill-swapping doesn't need a marketing budget — it just needs good people willing to help each other. And that's exactly what you are.
+              </p>
               
               <p style="margin: 32px 0 0 0; font-size: 16px; color: #4b5563;">
-                Sláinte,<br>
-                <strong style="color: #f97316;">The SwapSkills Team</strong>
+                With gratitude,<br>
+                <strong style="color: #f97316;">Kris</strong><br>
+                <span style="font-size: 14px; color: #9ca3af;">Founder, SwapSkills</span>
               </p>
             </td>
           </tr>
@@ -271,7 +243,7 @@ function generateAnnouncementEmail(firstName: string, unsubscribeToken: string):
                 Unsubscribe from future emails
               </a>
               <p style="margin: 12px 0 0 0; font-size: 11px; color: #d1d5db;">
-                © ${new Date().getFullYear()} SwapSkills · Made with ❤️ in Ireland
+                © ${new Date().getFullYear()} SwapSkills · Made with care in Ireland
               </p>
             </td>
           </tr>

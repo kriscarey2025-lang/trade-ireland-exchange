@@ -22,7 +22,7 @@ import {
   ArrowRightLeft
 } from "lucide-react";
 import { toast } from "sonner";
-import { EventRSVPSection } from "@/components/admin/EventRSVPSection";
+
 
 interface PlatformStats {
   dailyActiveUsers: number;
@@ -365,10 +365,6 @@ export default function AdminPlatformHealth() {
               </CardContent>
             </Card>
 
-            {/* Event RSVPs Section */}
-            <div className="mt-6">
-              <EventRSVPSection />
-            </div>
           </>
         ) : (
           <Card className="p-8 text-center">
