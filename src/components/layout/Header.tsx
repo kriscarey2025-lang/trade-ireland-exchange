@@ -130,7 +130,7 @@ export function Header() {
 
   const adminLinks = [
     { href: "/admin/health", label: "Platform Health", icon: Activity },
-    { href: "/admin/events", label: "Events", icon: Calendar },
+    
     { href: "/admin/advertisers", label: "Advertisers", icon: Megaphone },
     { href: "/admin/reports", label: "Reports", icon: Flag },
     { href: "/admin/verification", label: "Verification", icon: CheckCircle },
