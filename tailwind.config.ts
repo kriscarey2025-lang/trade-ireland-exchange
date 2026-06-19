@@ -73,6 +73,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        brand: {
+          linkedin: "#0A66C2",
+          facebook: "#1877F2",
+          instagram: "#E4405F",
+          whatsapp: "#25D366",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -327,7 +327,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
                       className="hover:opacity-70 transition-opacity p-1"
                       title="View LinkedIn profile"
                     >
-                      <Linkedin className="h-5 w-5 text-[#0A66C2]" />
+                      <Linkedin className="h-5 w-5 text-brand-linkedin" />
                     </a>
                   )}
                   {service.user?.facebookUrl && (
@@ -338,7 +338,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
                       className="hover:opacity-70 transition-opacity p-1"
                       title="View Facebook profile"
                     >
-                      <Facebook className="h-5 w-5 text-[#1877F2]" />
+                      <Facebook className="h-5 w-5 text-brand-facebook" />
                     </a>
                   )}
                   {service.user?.instagramUrl && (
@@ -349,7 +349,7 @@ function ServiceCardMobileComponent({ service, className }: ServiceCardMobilePro
                       className="hover:opacity-70 transition-opacity p-1"
                       title="View Instagram profile"
                     >
-                      <Instagram className="h-5 w-5 text-[#E4405F]" />
+                      <Instagram className="h-5 w-5 text-brand-instagram" />
                     </a>
                   )}
                 </div>
