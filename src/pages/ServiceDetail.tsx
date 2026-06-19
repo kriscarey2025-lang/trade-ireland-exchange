@@ -799,7 +799,16 @@ export default function ServiceDetail() {
 
                   {/* Actions */}
                   <div className="space-y-3">
-                    {!isOwner ? (
+                    {service.status === "completed" ? (
+                      <div className="rounded-lg border border-accent/30 bg-accent/10 p-4 text-center">
+                        <p className="text-sm font-medium text-foreground mb-1">
+                          This swap has been completed
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          The provider is no longer accepting new requests for this listing.
+                        </p>
+                      </div>
+                    ) : !isOwner ? (
                       <>
                         <Tooltip>
                           <TooltipTrigger asChild>
