@@ -29,7 +29,7 @@ export function SocialShareButtons({ url, title, description, className = "" }: 
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 text-muted-foreground hover:text-[#1877F2] hover:bg-[#1877F2]/10"
+        className="h-8 w-8 text-muted-foreground hover:text-brand-facebook hover:bg-brand-facebook/10"
         onClick={() => handleShare("facebook")}
         aria-label="Share on Facebook"
       >
@@ -47,7 +47,7 @@ export function SocialShareButtons({ url, title, description, className = "" }: 
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 text-muted-foreground hover:text-[#0A66C2] hover:bg-[#0A66C2]/10"
+        className="h-8 w-8 text-muted-foreground hover:text-brand-linkedin hover:bg-brand-linkedin/10"
         onClick={() => handleShare("linkedin")}
         aria-label="Share on LinkedIn"
       >

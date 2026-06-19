@@ -151,7 +151,7 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
                         onClick={(e) => e.stopPropagation()}
                         className="hover:opacity-70 transition-opacity"
                       >
-                        <Linkedin className="h-3 w-3 text-[#0A66C2]" />
+                        <Linkedin className="h-3 w-3 text-brand-linkedin" />
                       </a>
                     )}
                     {service.user.facebookUrl && (
@@ -162,7 +162,7 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
                         onClick={(e) => e.stopPropagation()}
                         className="hover:opacity-70 transition-opacity"
                       >
-                        <Facebook className="h-3 w-3 text-[#1877F2]" />
+                        <Facebook className="h-3 w-3 text-brand-facebook" />
                       </a>
                     )}
                     {service.user.instagramUrl && (
@@ -173,7 +173,7 @@ export function ServiceCardCompact({ service, className }: ServiceCardCompactPro
                         onClick={(e) => e.stopPropagation()}
                         className="hover:opacity-70 transition-opacity"
                       >
-                        <Instagram className="h-3 w-3 text-[#E4405F]" />
+                        <Instagram className="h-3 w-3 text-brand-instagram" />
                       </a>
                     )}
                   </>

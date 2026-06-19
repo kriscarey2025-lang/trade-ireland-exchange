@@ -132,7 +132,7 @@ export function TrustSignals({
                 href={linkedinUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0A66C2]/10 text-[#0A66C2] hover:bg-[#0A66C2]/20 transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-linkedin/10 text-brand-linkedin hover:bg-brand-linkedin/20 transition-colors text-sm font-medium"
               >
                 <Linkedin className="h-4 w-4" />
                 LinkedIn
@@ -143,7 +143,7 @@ export function TrustSignals({
                 href={facebookUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20 transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-facebook/10 text-brand-facebook hover:bg-brand-facebook/20 transition-colors text-sm font-medium"
               >
                 <Facebook className="h-4 w-4" />
                 Facebook
@@ -154,7 +154,7 @@ export function TrustSignals({
                 href={instagramUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#E4405F]/10 text-[#E4405F] hover:bg-[#E4405F]/20 transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-instagram/10 text-brand-instagram hover:bg-brand-instagram/20 transition-colors text-sm font-medium"
               >
                 <Instagram className="h-4 w-4" />
                 Instagram
@@ -210,7 +210,7 @@ export function TrustSignals({
               href={linkedinUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0A66C2]/10 text-[#0A66C2] hover:bg-[#0A66C2]/20 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-linkedin/10 text-brand-linkedin hover:bg-brand-linkedin/20 transition-colors text-sm font-medium"
             >
               <Linkedin className="h-4 w-4" />
               LinkedIn
@@ -221,7 +221,7 @@ export function TrustSignals({
               href={facebookUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-facebook/10 text-brand-facebook hover:bg-brand-facebook/20 transition-colors text-sm font-medium"
             >
               <Facebook className="h-4 w-4" />
               Facebook
@@ -232,7 +232,7 @@ export function TrustSignals({
               href={instagramUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#E4405F]/10 text-[#E4405F] hover:bg-[#E4405F]/20 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-instagram/10 text-brand-instagram hover:bg-brand-instagram/20 transition-colors text-sm font-medium"
             >
               <Instagram className="h-4 w-4" />
               Instagram

@@ -122,7 +122,7 @@ export function SocialLinksCard({
 
           <div className="space-y-2">
             <Label htmlFor="linkedin" className="flex items-center gap-2">
-              <Linkedin className="h-4 w-4 text-[#0A66C2]" />
+              <Linkedin className="h-4 w-4 text-brand-linkedin" />
               LinkedIn
             </Label>
             <Input
@@ -136,7 +136,7 @@ export function SocialLinksCard({
           
           <div className="space-y-2">
             <Label htmlFor="facebook" className="flex items-center gap-2">
-              <Facebook className="h-4 w-4 text-[#1877F2]" />
+              <Facebook className="h-4 w-4 text-brand-facebook" />
               Facebook
             </Label>
             <Input
@@ -150,7 +150,7 @@ export function SocialLinksCard({
           
           <div className="space-y-2">
             <Label htmlFor="instagram" className="flex items-center gap-2">
-              <Instagram className="h-4 w-4 text-[#E4405F]" />
+              <Instagram className="h-4 w-4 text-brand-instagram" />
               Instagram
             </Label>
             <Input
@@ -201,7 +201,7 @@ export function SocialLinksCard({
                 href={linkedinUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#0A66C2] transition-colors"
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-brand-linkedin transition-colors"
               >
                 <Linkedin className="h-4 w-4" />
                 View LinkedIn
@@ -212,7 +212,7 @@ export function SocialLinksCard({
                 href={facebookUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#1877F2] transition-colors"
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-brand-facebook transition-colors"
               >
                 <Facebook className="h-4 w-4" />
                 View Facebook
@@ -223,7 +223,7 @@ export function SocialLinksCard({
                 href={instagramUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#E4405F] transition-colors"
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-brand-instagram transition-colors"
               >
                 <Instagram className="h-4 w-4" />
                 View Instagram
