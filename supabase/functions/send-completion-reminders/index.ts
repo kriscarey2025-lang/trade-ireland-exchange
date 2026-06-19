@@ -24,7 +24,8 @@ serve(async (req) => {
     
     console.log(`Checking for swaps with completion date: ${today}`);
 
-    // Find all accepted swaps with completion date = today
+    // Find all accepted swaps with completion date = today.
+    // agreed_completion_date is a DATE column, so compare directly.
     const { data: swaps, error: swapsError } = await supabase
       .from("conversations")
       .select(`
@@ -37,8 +38,7 @@ serve(async (req) => {
         services!conversations_service_id_fkey (title)
       `)
       .eq("swap_status", "accepted")
-      .gte("agreed_completion_date", `${today}T00:00:00`)
-      .lt("agreed_completion_date", `${today}T23:59:59`);
+      .eq("agreed_completion_date", today);
 
     if (swapsError) {
       console.error("Error fetching swaps:", swapsError);
