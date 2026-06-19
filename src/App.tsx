@@ -61,6 +61,7 @@ const Sponsors = lazy(() => import("./pages/Sponsors"));
 const CommunityHero = lazy(() => import("./pages/CommunityHero"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const NewsletterFeedback = lazy(() => import("./pages/NewsletterFeedback"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -143,6 +144,7 @@ const App = () => (
                 <Route path="/flyer" element={<Flyer />} />
                 <Route path="/community-hero" element={<CommunityHero />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/newsletter-feedback" element={<NewsletterFeedback />} />
                 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

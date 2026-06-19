@@ -802,6 +802,42 @@ export type Database = {
           },
         ]
       }
+      newsletter_runs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_count: number
+          id: string
+          notes: string | null
+          scheduled_for: string
+          segment: number
+          sent_count: number
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_count?: number
+          id?: string
+          notes?: string | null
+          scheduled_for: string
+          segment: number
+          sent_count?: number
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_count?: number
+          id?: string
+          notes?: string | null
+          scheduled_for?: string
+          segment?: number
+          sent_count?: number
+          status?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
